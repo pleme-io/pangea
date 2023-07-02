@@ -1,0 +1,2 @@
+# pangea
+control crud declaratively
