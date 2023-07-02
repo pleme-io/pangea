@@ -1,4 +1,4 @@
 require_relative './abstract'
 
-class Site < AbstractStitchesStructure
+class Site < AbstractPangeaStructure
 end
