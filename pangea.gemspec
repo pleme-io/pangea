@@ -31,7 +31,16 @@ Gem::Specification.new do |spec|
     spec.add_development_dependency(gem)
   end
 
-  %i[terraform-synthesizer tty-option].each do |gem|
+  %i[
+    terraform-synthesizer
+    abstract-synthesizer
+    tty-progressbar
+    tty-option
+    tty-table
+    tty-color
+    tty-box
+    toml-rb
+  ].each do |gem|
     spec.add_runtime_dependency(gem)
   end
 
