@@ -1,1 +1,1 @@
-require_relative %(./cli/subcommands/main)
+require %(pangea/cli/subcommands/main)

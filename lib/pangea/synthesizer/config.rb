@@ -1,4 +1,4 @@
-require_relative %(../cli/constants)
+require %(pangea/cli/constants)
 require %(abstract-synthesizer)
 require %(toml-rb)
 require %(json)
