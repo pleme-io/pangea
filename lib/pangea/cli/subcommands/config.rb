@@ -1,6 +1,6 @@
 require_relative %(./pangea)
 
-class ConfigCommand < StitchesCommand
+class ConfigCommand < PangeaCommand
   usage do
     desc %(manage configuration)
     program %(pangea)
