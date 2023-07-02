@@ -1,7 +1,7 @@
 require_relative %(./pangea)
 require_relative %(./infra)
 require_relative %(./config)
-require_relative %(../version)
+require_relative %(./version)
 
 ###############################################################################
 # cli entrypoint
