@@ -48,7 +48,7 @@ class Command < PangeaCommand
       ConfigCommand.new.run(argv)
     else
       if params[:version]
-        puts Pangea::Cli::VERSION
+        puts Pangea::VERSION
       else
         puts help
       end
