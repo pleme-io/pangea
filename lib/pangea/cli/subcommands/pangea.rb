@@ -1,7 +1,7 @@
 require %(tty-option)
 
-# shared command behavior for all commands in Stitches
-class StitchesCommand
+# shared command behavior for all commands in Pangea
+class PangeaCommand
   include TTY::Option
 
   flag :help do

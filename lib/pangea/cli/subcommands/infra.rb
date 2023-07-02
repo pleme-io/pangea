@@ -11,7 +11,7 @@ require_relative %(../../say/init)
 require %(pangea/synthesizer/terraform)
 require %(json)
 
-class InfraCommand < StitchesCommand
+class InfraCommand < PangeaCommand
   include Constants
   NAME = :infra
 

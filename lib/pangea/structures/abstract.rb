@@ -1,2 +1,2 @@
-class AbstractStitchesStructure
+class AbstractPangeaStructure
 end
