@@ -1,5 +1,5 @@
 require_relative %(../cli/constants)
-require %(pangea/synthesizer/abstract)
+require %(abstract-synthesizer)
 require %(toml-rb)
 require %(json)
 require %(yaml)
