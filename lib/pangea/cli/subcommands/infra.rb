@@ -8,7 +8,7 @@ require_relative %(../../errors/no_infra_target_error)
 require_relative %(../../errors/incorrect_subcommand_error)
 require_relative %(../../say/init)
 
-require %(pangea/synthesizer/terraform)
+require %(terraform-synthesizer)
 require %(json)
 
 class InfraCommand < PangeaCommand
