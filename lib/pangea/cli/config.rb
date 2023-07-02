@@ -18,25 +18,55 @@ module Config
 
     # return array of paths that can store a configuration
     def default_paths
-      p = {}
+      paths = {}
 
+      # configuration files to look for
       EXTENSIONS.each do |ext|
-        p[ext] = [] unless p[ext]
-        p[ext] << File.join(%(/opt), %(share), %(pangea.#{ext}))
-        p[ext] << File.join(%(/etc), %(pangea), %(pangea.#{ext}))
-        p[ext].concat(
+        paths[ext] = [] unless p[ext]
+
+        ###############################
+        # system level configuration
+        ###############################
+
+        paths[ext] << File.join(%(/etc), %(pangea), %(pangea.#{ext}))
+        paths[ext].concat(
           Dir.glob(
             File.join(%(/etc/), %(pangea), %(conf.d), %(*.#{ext}))
           )
         )
-        p[ext] << File.join(xdg_config_home, %(pangea), %(pangea.#{ext}))
-        p[ext].concat(
+
+        # end system level configuration
+        
+        ###############################
+        # home configuration
+        ###############################
+
+        paths[ext] << File.join(xdg_config_home, %(pangea), %(pangea.#{ext}))
+        paths[ext].concat(
           Dir.glob(
             File.join(xdg_config_home, %(pangea), %(conf.d), %(*.#{ext}))
           )
         )
+
+        # end home configuration
+        
+        ###############################
+        # local configuration
+        ###############################
+
+        paths[ext] << %(pangea.#{ext})
+        paths[ext] << Dir.glob(
+          File.join(
+            %(pangea),
+            %(conf.d),
+            %(*.#{ext})
+          )
+        )
+
+        # end local configuration
       end
 
+      # only return existing files
       res = []
       EXTENSIONS.each do |ext|
         files = p[ext]
