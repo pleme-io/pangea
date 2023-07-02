@@ -61,6 +61,15 @@ module Docker
       cmd << name
       run cmd
     end
+
+    def login(name)
+      cmd = []
+      cmd << %(exec)
+      cmd << %(-it)
+      cmd << name
+      cmd << %(/bin/bash)
+      run cmd
+    end
   end
 end
 
@@ -87,5 +96,9 @@ class Container
 
   def start
     Docker.start(@name)
+  end
+
+  def login
+    Docker.login(@name)
   end
 end

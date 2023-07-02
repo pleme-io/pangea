@@ -31,4 +31,9 @@ namespace :container do
     container = Container.new(:pangea, :pangea)
     container.start
   end
+
+  task :login do
+    container = Container.new(:pangea, :pangea)
+    container.login
+  end
 end
