@@ -58,8 +58,8 @@ module Docker
     def start(name)
       cmd = []
       cmd << %(start)
-      cmd << %(-i -a)
       cmd << name
+      run cmd
     end
   end
 end
