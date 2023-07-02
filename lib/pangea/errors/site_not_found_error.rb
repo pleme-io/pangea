@@ -1,0 +1,2 @@
+class SiteNotFoundError < StandardError
+end

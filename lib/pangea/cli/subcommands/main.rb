@@ -1,0 +1,60 @@
+require_relative %(./pangea)
+require_relative %(./infra)
+require_relative %(./config)
+require_relative %(../version)
+
+###############################################################################
+# cli entrypoint
+###############################################################################
+
+class Command < PangeaCommand
+  usage do
+    desc %(manage crud apis declaratively)
+    program %(pangea)
+  end
+
+  argument :subcommand do
+    desc %(subcommand for pangea)
+    required
+  end
+
+  def help
+    <<~HELP
+      Usage: pangea command [OPTIONS] SUBCOMMAND
+
+      stitch together infrastructure
+
+      Arguments:
+        SUBCOMMAND  subcommand for pangea
+
+      Options:
+        -h, --help     Print usage
+        -v, --version  Print version
+
+      Subcommands:
+        infra   manage infrastructure
+        config  manage configuration
+    HELP
+  end
+
+  def run
+    argv = ARGV
+    parse(argv)
+
+    case params[:subcommand].to_s
+    when %(infra)
+      InfraCommand.new.run(argv)
+    when %(config)
+      ConfigCommand.new.run(argv)
+    else
+      if params[:version]
+        puts Pangea::Cli::VERSION
+      else
+        puts help
+      end
+      exit
+    end
+  end
+end
+
+# end cli entrypoint

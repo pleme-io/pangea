@@ -1,0 +1,2 @@
+class NoInfraTargetError < StandardError
+end

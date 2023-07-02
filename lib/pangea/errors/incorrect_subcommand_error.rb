@@ -1,0 +1,2 @@
+class IncorrectSubcommandError < StandardError
+end
