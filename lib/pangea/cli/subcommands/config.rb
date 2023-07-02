@@ -1,4 +1,4 @@
-require_relative %(./pangea)
+require %(pangea/cli/subcommands/pangea)
 
 class ConfigCommand < PangeaCommand
   usage do

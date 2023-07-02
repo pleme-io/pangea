@@ -1,5 +1,5 @@
-require_relative %(../synthesizer/config)
-require_relative %(./constants)
+require %(pangea/synthesizer/config)
+require %(pangea/cli/constants)
 
 module Config
   class << self

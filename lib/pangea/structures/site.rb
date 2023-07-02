@@ -1,4 +1,4 @@
-require_relative './abstract'
+require %(pangea/structures/abstract)
 
 class Site < AbstractPangeaStructure
 end
