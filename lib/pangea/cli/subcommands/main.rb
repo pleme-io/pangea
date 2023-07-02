@@ -22,8 +22,6 @@ class Command < PangeaCommand
     <<~HELP
       Usage: pangea command [OPTIONS] SUBCOMMAND
 
-      stitch together infrastructure
-
       Arguments:
         SUBCOMMAND  subcommand for pangea
 

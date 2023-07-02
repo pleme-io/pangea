@@ -87,13 +87,13 @@ class InfraCommand < PangeaCommand
                 %(src),
                 src_dir.to_s
               ))
-                stitch_files = Dir.glob("#{File.join(
+                synth_files = Dir.glob("#{File.join(
                   project[:src][:location].to_s,
                   %(src),
                   src_dir.to_s
                 )}/**/*.rb")
-                stitch_files.each do |stitch_file|
-                  synth.synthesize(File.read(stitch_file))
+                synth_files.each do |synth_file|
+                  synth.synthesize(File.read(synth_file))
                 end
               end
             end
