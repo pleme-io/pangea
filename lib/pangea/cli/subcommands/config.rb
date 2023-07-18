@@ -27,12 +27,13 @@ class ConfigCommand < PangeaCommand
   end
 
   def run(argv)
-    puts params[:subcommand]
-    case params[:subcommand].to_s
-    when %(show)
-      config = Config.resolve_configurations
-      puts config
-    end
+    puts argv
+    puts params
+    # case params[:subcommand].to_s
+    # when %(show)
+    #   config = Config.resolve_configurations
+    #   puts config
+    # end
 
   end
 end
