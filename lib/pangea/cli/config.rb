@@ -71,7 +71,7 @@ module Config
       EXTENSIONS.each do |ext|
         files = paths[ext]
         files.each do |file|
-          res << file if File.exist?(file)
+          res << file if File.exist?(file.to_s)
         end
       end
 
