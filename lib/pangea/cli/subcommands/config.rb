@@ -1,6 +1,7 @@
 require %(pangea/cli/subcommands/pangea)
 require %(pangea/synthesizer/config)
 require %(pangea/cli/config)
+require %(json)
 
 class ConfigCommand < PangeaCommand
   usage do
@@ -30,7 +31,7 @@ class ConfigCommand < PangeaCommand
     case argv[1].to_s
     when %(show)
       config = Config.resolve_configurations
-      puts config
+      puts JSON.pretty_generate(config)
     end
   end
 end
