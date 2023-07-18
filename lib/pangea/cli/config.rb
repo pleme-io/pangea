@@ -22,7 +22,7 @@ module Config
 
       # configuration files to look for
       EXTENSIONS.each do |ext|
-        paths[ext] = [] unless p[ext]
+        paths[ext] = [] unless paths[ext]
 
         ###############################
         # system level configuration
@@ -69,7 +69,7 @@ module Config
       # only return existing files
       res = []
       EXTENSIONS.each do |ext|
-        files = p[ext]
+        files = paths[ext]
         files.each do |file|
           res << file if File.exist?(file)
         end
