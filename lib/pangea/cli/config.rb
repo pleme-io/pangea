@@ -81,6 +81,7 @@ module Config
     # read file paths and run configuration parsers
     # then appropriately merge configurations
     def resolve_configurations(ignore_default_paths: false, extra_paths: [])
+      puts default_paths
       paths = if ignore_default_paths
                 extra_paths
               else
