@@ -1,4 +1,6 @@
 require %(pangea/cli/subcommands/pangea)
+require %(pangea/synthesizer/config)
+require %(pangea/cli/config)
 
 class ConfigCommand < PangeaCommand
   usage do
@@ -31,7 +33,8 @@ class ConfigCommand < PangeaCommand
 
     case params[:subcommand].to_s
     when %(show)
-      nil
+      config = Config.resolve_configurations
+      puts config
     end
 
   end
