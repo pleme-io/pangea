@@ -1,5 +1,6 @@
 require %(pangea/cli/subcommands/pangea)
 require %(pangea/cli/subcommands/infra)
+require %(pangea/cli/subcommands/config)
 require %(pangea/cli/config)
 require %(pangea/version)
 
