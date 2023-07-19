@@ -17,6 +17,7 @@ end
 
 group :production do
   %w[
+    aws-sdk-dynamodb
     terraform-synthesizer
     abstract-synthesizer
     tty-progressbar

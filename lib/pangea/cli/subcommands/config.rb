@@ -32,6 +32,16 @@ class ConfigCommand < PangeaCommand
     when %(show)
       config = Config.resolve_configurations
       puts JSON.pretty_generate(config)
+    when %(init)
+      config = Config.resolve_configurations
+      config[:namespace].each_key do |ns_name|
+        ns = config[:namespace][ns_name]
+        ns.each_key do |ctx_name|
+          ctx = ns[ctx_name]
+          if ctx[:state_config][:terraform][:s3]
+            # does dynamodb table exist?
+          end
+        end
     end
   end
 end
