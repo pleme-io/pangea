@@ -85,7 +85,7 @@ class ConfigCommand < PangeaCommand
                   )
                 )
                 puts "Created table. Status: #{result.table_description.table_status}"
-              rescue Aws::DynamoDB:Errors::ServiceError => error
+              rescue Aws::DynamoDB::Errors::ServiceError => error
                 puts error.message.to_s
               end
             end
