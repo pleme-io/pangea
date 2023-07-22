@@ -112,7 +112,7 @@ class ConfigCommand < PangeaCommand
               puts "bucket already exists: #{ctx[:state_config][:terraform][:s3][:bucket]}"
             else
               s3.create_bucket(
-                bucket: ctx[:state_config][:terrraform][:s3][:bucket]
+                bucket: ctx[:state_config][:terraform][:s3][:bucket]
               )
             end
 
