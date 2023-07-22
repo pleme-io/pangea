@@ -19,23 +19,22 @@ class ConfigCommand < PangeaCommand
 
   def help
     <<~HELP
-    Usage: pangea config [OPTIONS] SUBCOMMAND
+      Usage: pangea config [OPTIONS] SUBCOMMAND
 
-    Arguments:
-      SUBCOMMAND  subcommand for config
+      Arguments:
+        SUBCOMMAND  subcommand for config
 
-    Options:
-      -h, --help    Print usage
+      Options:
+        -h, --help    Print usage
     HELP
   end
 
   # check if dynamodb table exists
   def table_exists?(table_name)
     dynamodb.describe_table({ table_name: table_name })
-    return true
-
+    true
   rescue Aws::DynamoDB::Errors::ResourceNotFoundException
-    return false
+    false
   end
 
   def s3
@@ -68,7 +67,7 @@ class ConfigCommand < PangeaCommand
       provisioned_throughput: {
         read_capacity_units: 5,
         write_capacity_units: 5
-      },
+      }
     }
   end
 
@@ -78,47 +77,46 @@ class ConfigCommand < PangeaCommand
       config = Config.resolve_configurations
       puts JSON.pretty_generate(config)
     when %(init)
-      puts "intializing pangea configuration..."
+      puts 'intializing pangea configuration...'
       config = Config.resolve_configurations
 
       config[:namespace].each_key do |ns_name|
         ns = config[:namespace][ns_name]
         ns.each_key do |ctx_name|
           ctx = ns[ctx_name]
-          if ctx[:state_config][:terraform][:s3]
-            ###################################################################
-            # dynamodb table setup
-            ###################################################################
+          next unless ctx[:state_config][:terraform][:s3]
 
-            unless table_exists?(ctx[:state_config][:terraform][:s3][:dynamodb_table])
-              begin
-                result = dynamodb.create_table(
-                  dynamodb_terraform_lock_spec(
-                    ctx[:state_config][:terraform][:s3][:dynamodb_table]
-                  )
+          ###################################################################
+          # dynamodb table setup
+          ###################################################################
+
+          unless table_exists?(ctx[:state_config][:terraform][:s3][:dynamodb_table])
+            begin
+              result = dynamodb.create_table(
+                dynamodb_terraform_lock_spec(
+                  ctx[:state_config][:terraform][:s3][:dynamodb_table]
                 )
-                puts "Created table. Status: #{result.table_description.table_status}"
-              rescue Aws::DynamoDB::Errors::ServiceError => error
-                puts error.message.to_s
-              end
+              )
+              puts "Created table. Status: #{result.table_description.table_status}"
+            rescue Aws::DynamoDB::Errors::ServiceError => e
+              puts e.message.to_s
             end
-
-            # dynamodb table setup
-            
-            ###################################################################
-            # s3 bucket setup
-            ###################################################################
-            bucket_name = 
-              ctx[:state_config][:terraform][:s3][:bucket]
-            if bucket_exist?(bucket_name)
-              puts "bucket already exists: #{bucket_name}"
-            else
-              s3.create_bucket(bucket: bucket_name)
-            end
-
-            # end s3 bucket setup
-
           end
+
+          # dynamodb table setup
+
+          ###################################################################
+          # s3 bucket setup
+          ###################################################################
+          bucket_name =
+            ctx[:state_config][:terraform][:s3][:bucket]
+          if bucket_exist?(bucket_name)
+            puts "bucket already exists: #{bucket_name}"
+          else
+            s3.create_bucket(bucket: bucket_name)
+          end
+
+          # end s3 bucket setup
         end
       end
     end

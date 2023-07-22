@@ -82,19 +82,19 @@ class InfraCommand < PangeaCommand
           when :local
             system %(mkdir -p #{CACHE_DIR}) unless Dir.exist?(CACHE_DIR)
             PROJECT_SRC_DIRS.each do |src_dir|
-              if File.exist?(File.join(
+              next unless File.exist?(File.join(
+                                        project[:src][:location].to_s,
+                                        %(src),
+                                        src_dir.to_s
+                                      ))
+
+              synth_files = Dir.glob("#{File.join(
                 project[:src][:location].to_s,
                 %(src),
                 src_dir.to_s
-              ))
-                synth_files = Dir.glob("#{File.join(
-                  project[:src][:location].to_s,
-                  %(src),
-                  src_dir.to_s
-                )}/**/*.rb")
-                synth_files.each do |synth_file|
-                  synth.synthesize(File.read(synth_file))
-                end
+              )}/**/*.rb")
+              synth_files.each do |synth_file|
+                synth.synthesize(File.read(synth_file))
               end
             end
 
