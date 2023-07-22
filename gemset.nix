@@ -34,10 +34,10 @@
     platforms = [];
     source = {
       remotes = ["https://rubygems.org"];
-      sha256 = "1ql81hpf99z6py3nnkrc7k3yzrh75l6za8576x4c70zapmjw4kj8";
+      sha256 = "0728316dwkkfw2m4pwy37dmrl7mxalxvjny2y942nd1zd16n72p9";
       type = "gem";
     };
-    version = "1.788.0";
+    version = "1.791.0";
   };
   aws-sdk-core = {
     dependencies = ["aws-eventstream" "aws-partitions" "aws-sigv4" "jmespath"];
@@ -200,10 +200,10 @@
     platforms = [];
     source = {
       remotes = ["https://rubygems.org"];
-      sha256 = "0c3r6dxi50cy4bdn10jr08yi7hdrgy4x4l3z64703i71kv0fwzmm";
+      sha256 = "1jw8a20a9k05fpz3q24im19b97idss3179z76yn5scc5b8lk2rl7";
       type = "gem";
     };
-    version = "1.15.2";
+    version = "1.15.3";
   };
   parallel = {
     groups = ["default" "development"];
@@ -347,10 +347,10 @@
     platforms = [];
     source = {
       remotes = ["https://rubygems.org"];
-      sha256 = "1hfm17xakfvwya236graj6c2arr4sb9zasp35q5fykhyz8mhs0w2";
+      sha256 = "1gq7gviwpck7fhp4y5ibljljvxgjklza18j62qf6zkm2icaa8lfy";
       type = "gem";
     };
-    version = "3.12.5";
+    version = "3.12.6";
   };
   rspec-support = {
     groups = ["default" "development"];
@@ -368,10 +368,10 @@
     platforms = [];
     source = {
       remotes = ["https://rubygems.org"];
-      sha256 = "02ysjbi1gkcpj4x1fdlbzz3vs2vqkk161smrawnaw77y7m3gvq8z";
+      sha256 = "1hc469ahgpfwbvv2q3hqlhp7dlzcii8dlm8k6k324sq26lilv27r";
       type = "gem";
     };
-    version = "1.54.0";
+    version = "1.54.2";
   };
   rubocop-ast = {
     dependencies = ["parser"];
