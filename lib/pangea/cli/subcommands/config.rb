@@ -91,7 +91,7 @@ class ConfigCommand < PangeaCommand
             end
           end
         end
-
+      end
     end
   end
 end
