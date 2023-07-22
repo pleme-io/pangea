@@ -11,7 +11,7 @@ module Config
 
     def xdg_config_home
       ENV.fetch(
-        %(XDG_CONFIG_HOME), 
+        %(XDG_CONFIG_HOME),
         %(#{ENV.fetch('HOME', nil)}/.config)
       )
     end
@@ -36,7 +36,7 @@ module Config
         )
 
         # end system level configuration
-        
+
         ###############################
         # home configuration
         ###############################
@@ -49,7 +49,7 @@ module Config
         )
 
         # end home configuration
-        
+
         ###############################
         # local configuration
         ###############################
