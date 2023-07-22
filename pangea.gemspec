@@ -36,6 +36,7 @@ Gem::Specification.new do |spec|
     abstract-synthesizer
     aws-sdk-dynamodb
     tty-progressbar
+    aws-sdk-s3
     tty-option
     tty-table
     tty-color
