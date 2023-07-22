@@ -19,6 +19,59 @@
     };
     version = "2.4.2";
   };
+  aws-eventstream = {
+    groups = ["default" "production"];
+    platforms = [];
+    source = {
+      remotes = ["https://rubygems.org"];
+      sha256 = "1pyis1nvnbjxk12a43xvgj2gv0mvp4cnkc1gzw0v1018r61399gz";
+      type = "gem";
+    };
+    version = "1.2.0";
+  };
+  aws-partitions = {
+    groups = ["default" "production"];
+    platforms = [];
+    source = {
+      remotes = ["https://rubygems.org"];
+      sha256 = "1ql81hpf99z6py3nnkrc7k3yzrh75l6za8576x4c70zapmjw4kj8";
+      type = "gem";
+    };
+    version = "1.788.0";
+  };
+  aws-sdk-core = {
+    dependencies = ["aws-eventstream" "aws-partitions" "aws-sigv4" "jmespath"];
+    groups = ["default" "production"];
+    platforms = [];
+    source = {
+      remotes = ["https://rubygems.org"];
+      sha256 = "1jv5h7n0vkyjq0v3xqad5xhrl4ijnh214zq3xg4ghvsk6ah8a90r";
+      type = "gem";
+    };
+    version = "3.178.0";
+  };
+  aws-sdk-dynamodb = {
+    dependencies = ["aws-sdk-core" "aws-sigv4"];
+    groups = ["production"];
+    platforms = [];
+    source = {
+      remotes = ["https://rubygems.org"];
+      sha256 = "1bnm7bxpz14jggrgidddzirm20w1hj9jfafp20l8rrxrw017bdgi";
+      type = "gem";
+    };
+    version = "1.92.0";
+  };
+  aws-sigv4 = {
+    dependencies = ["aws-eventstream"];
+    groups = ["default" "production"];
+    platforms = [];
+    source = {
+      remotes = ["https://rubygems.org"];
+      sha256 = "0z889c4c1w7wsjm3szg64ay5j51kjl4pdf94nlr1yks2rlanm7na";
+      type = "gem";
+    };
+    version = "1.6.0";
+  };
   backport = {
     groups = ["default" "development"];
     platforms = [];
@@ -78,6 +131,16 @@
       type = "gem";
     };
     version = "1.5.6";
+  };
+  jmespath = {
+    groups = ["default" "production"];
+    platforms = [];
+    source = {
+      remotes = ["https://rubygems.org"];
+      sha256 = "1cdw9vw2qly7q7r41s7phnac264rbsdqgj4l0h4nqgbjb157g393";
+      type = "gem";
+    };
+    version = "1.6.2";
   };
   json = {
     groups = ["default" "development"];
