@@ -108,12 +108,12 @@ class ConfigCommand < PangeaCommand
             ###################################################################
             # s3 bucket setup
             ###################################################################
-            if bucket_exist?(ctx[:state_config][:terraform][:s3][:bucket])
-              puts "bucket already exists: #{ctx[:state_config][:terraform][:s3][:bucket]}"
+            bucket_name = 
+              ctx[:state_config][:terraform][:s3][:bucket]
+            if bucket_exist?(bucket_name)
+              puts "bucket already exists: #{bucket_name}"
             else
-              s3.create_bucket(
-                bucket: ctx[:state_config][:terraform][:s3][:bucket]
-              )
+              s3.create_bucket(bucket: bucket_name)
             end
 
             # end s3 bucket setup
