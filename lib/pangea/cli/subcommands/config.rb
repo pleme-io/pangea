@@ -3,6 +3,7 @@ require %(pangea/synthesizer/config)
 require %(pangea/cli/config)
 require %(json)
 require %(aws-sdk-dynamodb)
+require %(aws-sdk-s3)
 
 class ConfigCommand < PangeaCommand
   usage do
@@ -35,6 +36,14 @@ class ConfigCommand < PangeaCommand
 
   rescue Aws::DynamoDB::Errors::ResourceNotFoundException
     return false
+  end
+
+  def s3
+    @s3 ||= Aws::S3::Resource.new
+  end
+
+  def bucket_exist?(name)
+    s3.bucket(name).exists?
   end
 
   def dynamodb
@@ -77,6 +86,10 @@ class ConfigCommand < PangeaCommand
         ns.each_key do |ctx_name|
           ctx = ns[ctx_name]
           if ctx[:state_config][:terraform][:s3]
+            ###################################################################
+            # dynamodb table setup
+            ###################################################################
+
             unless table_exists?(ctx[:state_config][:terraform][:s3][:dynamodb_table])
               begin
                 result = dynamodb.create_table(
@@ -89,6 +102,22 @@ class ConfigCommand < PangeaCommand
                 puts error.message.to_s
               end
             end
+
+            # dynamodb table setup
+            
+            ###################################################################
+            # s3 bucket setup
+            ###################################################################
+            if bucket_exist?(ctx[:state_config][:terraform][:s3][:bucket])
+              puts "bucket already exists: #{ctx[:state_config][:terraform][:s3][:bucket]}"
+            else
+              s3.create_bucket(
+                bucket: ctx[:state_config][:terrraform][:s3][:bucket]
+              )
+            end
+
+            # end s3 bucket setup
+
           end
         end
       end
