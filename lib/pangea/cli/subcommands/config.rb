@@ -129,7 +129,7 @@ class ConfigCommand < PangeaCommand
               # process src if exists
 
               src_dir   = File.join(this_mod[:path], %(src))
-              src_files = Dir.glob(File.join(this_mod[:path], %(src), %(**/*.rb)))
+              src_files = Dir.glob(File.join(src_dir, %(**/*.rb)))
               puts src_dir
               puts src_files
 
@@ -139,8 +139,7 @@ class ConfigCommand < PangeaCommand
                 synth.synthesize(
                   File.read(
                     File.join(
-                      this_mod[:path],
-                      %(src),
+                      src_dir,
                       src_file
                     )
                   )
