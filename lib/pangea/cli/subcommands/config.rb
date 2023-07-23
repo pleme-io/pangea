@@ -80,6 +80,7 @@ class ConfigCommand < PangeaCommand
     when %(plan)
       puts 'planning pangea configuration...'
       config = Config.resolve_configurations
+      puts JSON.pretty_generate(config)
 
       config[:namespace].each_key do |ns_name|
         ns = config[:namespace][ns_name]
@@ -93,6 +94,9 @@ class ConfigCommand < PangeaCommand
           module_dirs = %w[lib src test]
           modules     = ctx[:modules]
           synth       = TerraformSynthesizer.new
+
+          puts "modules:"
+          puts JSON.pretty_generate(modules)
 
           modules.each_key do |mod_name|
             this_mod = modules[mod_name]
