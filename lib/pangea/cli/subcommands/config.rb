@@ -79,6 +79,7 @@ class ConfigCommand < PangeaCommand
       puts JSON.pretty_generate(config)
     when %(plan)
       puts 'planning pangea configuration...'
+      synth  = TerraformSynthesizer.new
       config = Config.resolve_configurations
       puts JSON.pretty_generate(config)
 
@@ -93,7 +94,6 @@ class ConfigCommand < PangeaCommand
 
           module_dirs = %w[lib src test]
           modules     = ctx[:modules]
-          synth       = TerraformSynthesizer.new
 
           puts "modules:"
           puts JSON.pretty_generate(modules)
