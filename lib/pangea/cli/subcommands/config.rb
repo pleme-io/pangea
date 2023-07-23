@@ -4,6 +4,7 @@ require %(pangea/cli/config)
 require %(json)
 require %(aws-sdk-dynamodb)
 require %(aws-sdk-s3)
+require %(terraform-synthesizer)
 
 class ConfigCommand < PangeaCommand
   usage do
@@ -76,6 +77,78 @@ class ConfigCommand < PangeaCommand
     when %(show)
       config = Config.resolve_configurations
       puts JSON.pretty_generate(config)
+    when %(plan)
+      puts "planning pangea configuration..."
+      config = Config.resolve_configurations
+
+      config[:namespace].each_key do |ns_name|
+        ns = config[:namespace][ns_name]
+        ns.each_key do |ctx_name|
+          ctx = ns[ctx_name]
+
+          ###################################################################
+          # setup modules
+          ###################################################################
+
+          module_dirs = %w[lib src test]
+          modules     = ctx[:modules]
+          synth       = TerraformSynthesizer.new
+
+          modules.each_key do |mod_name|
+            this_mod = modules[mod_name]
+
+            if this_mod[:sandboxed]
+              # TODO: setup sandboxed module
+              nil
+            else
+              if this_mod[:path]
+                # read mod from a local path
+                # use terraform synthesizer to do it
+
+                # process lib if exists
+
+                lib_dir   = File.join(this_mod[:path], %(lib))
+                lib_files = Dir.glob(File.join(this_mod[:path], %(lib), %(**/*.rb))
+
+                system(%(mkdir -p #{lib_dir})) unless Dir.exist?(lib_dir)
+
+                lib_files.each do |lib_file|
+                  synth.synthesize(
+                    File.read(
+                      File.join(
+                        this_mod[:path], 
+                        %(lib), 
+                        lib_file
+                      )
+                    )
+                  )
+                end
+
+                # end process lib if exists
+                # process src if exists
+
+                src_dir   = File.join(this_mod[:path], %(src))
+                src_files = Dir.glob(File.join(this_mod[:path], %(src), %(**/*.rb))
+
+                system(%(mkdir -p #{src_dir})) unless Dir.exist?(src_dir)
+
+                lib_files.each do |lib_file|
+                  synth.synthesize(
+                    File.read(
+                      File.join(
+                        this_mod[:path], 
+                        %(lib), 
+                        lib_file
+                      )
+                    )
+                  )
+                end
+              end
+            end
+          end
+        end
+        puts JSON.pretty_generate(synth.synthesis)
+      end
     when %(init)
       puts 'intializing pangea configuration...'
       config = Config.resolve_configurations
@@ -117,6 +190,19 @@ class ConfigCommand < PangeaCommand
           end
 
           # end s3 bucket setup
+          
+          ###################################################################
+          # setup directories
+          ###################################################################
+
+          base_dir    = File.join(ENV[%(HOME)], %(.pangea))
+          context_dir = File.join(base_dir, ctx_name)
+          synth_dir   = File.join(base_dir, synth_dir)
+
+          system(%(mkdir -p #{context_dir})) unless Dir.exist?(context_dir)
+          system(%(mkdir -p #{synth_dir})) unless Dir.exist?(synth_dir)
+
+          # end setup directories
         end
       end
     end
