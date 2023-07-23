@@ -136,14 +136,7 @@ class ConfigCommand < PangeaCommand
               system(%(mkdir -p #{src_dir})) unless Dir.exist?(src_dir)
 
               src_files.each do |src_file|
-                synth.synthesize(
-                  File.read(
-                    File.join(
-                      src_dir,
-                      src_file
-                    )
-                  )
-                )
+                synth.synthesize(File.read(File.join(src_file)))
               end
             end
           end
