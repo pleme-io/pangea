@@ -108,6 +108,8 @@ class ConfigCommand < PangeaCommand
 
               lib_dir   = File.join(this_mod[:path], %(lib))
               lib_files = Dir.glob(File.join(this_mod[:path], %(lib), %(**/*.rb)))
+              puts lib_dir
+              puts lib_files
 
               system(%(mkdir -p #{lib_dir})) unless Dir.exist?(lib_dir)
 
@@ -128,6 +130,8 @@ class ConfigCommand < PangeaCommand
 
               src_dir   = File.join(this_mod[:path], %(src))
               src_files = Dir.glob(File.join(this_mod[:path], %(src), %(**/*.rb)))
+              puts src_dir
+              puts src_files
 
               system(%(mkdir -p #{src_dir})) unless Dir.exist?(src_dir)
 
