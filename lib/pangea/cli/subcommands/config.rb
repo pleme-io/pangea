@@ -135,22 +135,17 @@ class ConfigCommand < PangeaCommand
 
               system(%(mkdir -p #{src_dir})) unless Dir.exist?(src_dir)
 
-              lib_files.each do |lib_file|
+              src_files.each do |src_file|
                 synth.synthesize(
                   File.read(
                     File.join(
                       this_mod[:path],
-                      %(lib),
-                      lib_file
+                      %(src),
+                      src_file
                     )
                   )
                 )
               end
-              # read mod from a local path
-              # use terraform synthesizer to do it
-
-              # process lib if exists
-
             end
           end
         end
