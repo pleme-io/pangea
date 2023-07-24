@@ -1,14 +1,14 @@
 require %(pangea/cli/subcommands/pangea)
 require %(pangea/synthesizer/config)
+require %(terraform-synthesizer)
 require %(pangea/cli/config)
-require %(json)
 require %(aws-sdk-dynamodb)
 require %(aws-sdk-s3)
-require %(terraform-synthesizer)
+require %(json)
 
 class ConfigCommand < PangeaCommand
   usage do
-    desc %(manage configuration)
+    desc    %(manage configuration)
     program %(pangea)
     command %(config)
   end
@@ -29,6 +29,10 @@ class ConfigCommand < PangeaCommand
         -h, --help    Print usage
     HELP
   end
+
+  #############################################################################
+  # helpers
+  #############################################################################
 
   # check if dynamodb table exists
   def table_exists?(table_name)
@@ -71,6 +75,12 @@ class ConfigCommand < PangeaCommand
       }
     }
   end
+
+  # end helpers
+
+  #####################################################################
+  # catch pangea config <subcommand>
+  #####################################################################
 
   def run(argv)
     case argv[1].to_s
@@ -149,6 +159,11 @@ class ConfigCommand < PangeaCommand
 
       config[:namespace].each_key do |ns_name|
         ns = config[:namespace][ns_name]
+
+        #####################################################################
+        # process namespaces in configuraton
+        #####################################################################
+
         ns.each_key do |ctx_name|
           ctx = ns[ctx_name]
           next unless ctx[:state_config][:terraform][:s3]
@@ -175,6 +190,7 @@ class ConfigCommand < PangeaCommand
           ###################################################################
           # s3 bucket setup
           ###################################################################
+
           bucket_name =
             ctx[:state_config][:terraform][:s3][:bucket]
           if bucket_exist?(bucket_name)
@@ -198,7 +214,11 @@ class ConfigCommand < PangeaCommand
 
           # end setup directories
         end
+
+        # end process namespaces in configuraton
       end
     end
   end
+
+  # end catch pangea config <subcommand>
 end
