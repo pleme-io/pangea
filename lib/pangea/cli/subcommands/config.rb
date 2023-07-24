@@ -105,9 +105,6 @@ class ConfigCommand < PangeaCommand
           module_dirs = %w[lib src test]
           modules     = ctx[:modules]
 
-          puts "modules:"
-          puts JSON.pretty_generate(modules)
-
           modules.each_key do |mod_name|
             this_mod = modules[mod_name]
 
@@ -118,8 +115,6 @@ class ConfigCommand < PangeaCommand
 
               lib_dir   = File.join(this_mod[:path], %(lib))
               lib_files = Dir.glob(File.join(this_mod[:path], %(lib), %(**/*.rb)))
-              puts lib_dir
-              puts lib_files
 
               system(%(mkdir -p #{lib_dir})) unless Dir.exist?(lib_dir)
 
@@ -140,8 +135,6 @@ class ConfigCommand < PangeaCommand
 
               src_dir   = File.join(this_mod[:path], %(src))
               src_files = Dir.glob(File.join(src_dir, %(**/*.rb)))
-              puts src_dir
-              puts src_files
 
               system(%(mkdir -p #{src_dir})) unless Dir.exist?(src_dir)
 
@@ -194,7 +187,7 @@ class ConfigCommand < PangeaCommand
           bucket_name =
             ctx[:state_config][:terraform][:s3][:bucket]
           if bucket_exist?(bucket_name)
-            puts "bucket already exists: #{bucket_name}"
+            nil
           else
             s3.create_bucket(bucket: bucket_name)
           end
