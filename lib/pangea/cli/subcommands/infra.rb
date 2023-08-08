@@ -25,14 +25,12 @@ class InfraCommand < PangeaCommand
   end
 
   argument :target do
-    desc %(target like ${namespace}.${site}.${project})
+    desc %(target like ${namespace}.${site})
   end
 
   def run(argv)
     Say.terminal %(planning!)
     parse(argv)
-    puts argv
-    exit 1
 
     # grab a config synth
     cfg_synth = Config.resolve_configurations
@@ -43,11 +41,11 @@ class InfraCommand < PangeaCommand
       exit
     end
 
-    puts cfg_synth
+    Say.terminal JSON.pretty_generate(cfg_synth)
 
     # preflight checks for the command execution
     # check_run
-    # check_target(params[:target], cfg_synth)
+    check_target(params[:target], cfg_synth)
 
     # targets = params[:target].split('.').map(&:to_sym)
     # process_target(targets, cfg_synth)
@@ -151,7 +149,6 @@ class InfraCommand < PangeaCommand
   # targets can be...
   # ${namespace}
   # ${namespace}.${site}
-  # ${namespace}.${site}.${project}
   def check_target(target, config)
     raise NamespaceNotFoundError if target.nil?
 
