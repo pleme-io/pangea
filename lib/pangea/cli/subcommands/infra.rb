@@ -7,6 +7,7 @@ require %(pangea/errors/project_not_found_error)
 require %(pangea/errors/no_infra_target_error)
 require %(pangea/errors/incorrect_subcommand_error)
 require %(pangea/say/init)
+require %(pangea/modules)
 require %(terraform-synthesizer)
 require %(json)
 
@@ -45,10 +46,32 @@ class InfraCommand < PangeaCommand
 
     # preflight checks for the command execution
     # check_run
-    check_target(params[:target], cfg_synth)
+    # check_target(params[:target], cfg_synth)
 
     # targets = params[:target].split('.').map(&:to_sym)
     # process_target(targets, cfg_synth)
+    
+    ###########################################################################
+    # modules
+    # modules can be fetched from git or local path
+    # modules can have a virtual environment to execute in
+    ###########################################################################
+
+    namespaces = cfg_synth[:namespace].keys.map(&:to_sym)
+    namespaces.each do |namespace_name|
+
+      namespace = cfg_synth[:namespace][namespace_name]
+      modules   = namespace[:modules]
+
+      modules.each do |mod|
+        if mod[:path]
+          terraform_synth = TerraformSynthesizer.new
+        end
+      end
+
+    end
+
+    ###########################################################################
 
     # provide some kind of default exit of the command execution
     exit
@@ -150,48 +173,48 @@ class InfraCommand < PangeaCommand
   # ${namespace}
   # ${namespace}.${site}
   def check_target(target, config)
-    raise NamespaceNotFoundError if target.nil?
+    # raise NamespaceNotFoundError if target.nil?
 
-    targets       = target.split('.').map(&:to_sym)
-    namespaces    = config[:namespace].keys.map(&:to_sym)
-    runtype       = nil
-    environments  = []
+    # targets       = target.split('.').map(&:to_sym)
+    # namespaces    = config[:namespace].keys.map(&:to_sym)
+    # runtype       = nil
+    # environments  = []
 
-    namespaces.each do |ns_name|
-      environments.concat(config[:namespace][ns_name].keys.map(&:to_sym))
-    end
+    # namespaces.each do |ns_name|
+    #   environments.concat(config[:namespace][ns_name].keys.map(&:to_sym))
+    # end
 
-    raise NamespaceNotFoundError unless namespaces.include?(targets[0])
+    # raise NamespaceNotFoundError unless namespaces.include?(targets[0])
 
-    namespaces.each do |ns_name|
-      environments.each do |e_name|
-        sites = config[:namespace][ns_name][e_name][:sites] || []
-
-        next if sites.empty?
-
-        site_names = []
-        sites.each do |site|
-          site_names << site[:name]
-        end
-
-        raise SiteNotFoundError unless site_names.include?(targets[1].to_sym)
-
-        projects = config[:namespace][ns_name][e_name][:projects] || []
-
-        next if projects.empty?
-
-        project_names = []
-        projects.each do |project|
-          project_names << project[:name]
-        end
-
-        raise ProjectNotFoundError \
-        unless project_names
-               .include?(
-                 targets[2].to_sym
-               )
-      end
-    end
+    # namespaces.each do |ns_name|
+    #   environments.each do |e_name|
+    #     sites = config[:namespace][ns_name][e_name][:sites] || []
+    #
+    #     next if sites.empty?
+    #
+    #     site_names = []
+    #     sites.each do |site|
+    #       site_names << site[:name]
+    #     end
+    #
+    #     raise SiteNotFoundError unless site_names.include?(targets[1].to_sym)
+    #
+    #     projects = config[:namespace][ns_name][e_name][:projects] || []
+    #
+    #     next if projects.empty?
+    #
+    #     project_names = []
+    #     projects.each do |project|
+    #       project_names << project[:name]
+    #     end
+    #
+    #     raise ProjectNotFoundError \
+    #     unless project_names
+    #            .include?(
+    #              targets[2].to_sym
+    #            )
+    #   end
+    # end
   end
 
   def check_run
