@@ -29,7 +29,10 @@ class InfraCommand < PangeaCommand
   end
 
   def run(argv)
+    Say.terminal %(planning!)
     parse(argv)
+    puts argv
+    exit 1
 
     # grab a config synth
     cfg_synth = Config.resolve_configurations
@@ -40,12 +43,14 @@ class InfraCommand < PangeaCommand
       exit
     end
 
-    # preflight checks for the command execution
-    check_run
-    check_target(params[:target], cfg_synth)
+    puts cfg_synth
 
-    targets = params[:target].split('.').map(&:to_sym)
-    process_target(targets, cfg_synth)
+    # preflight checks for the command execution
+    # check_run
+    # check_target(params[:target], cfg_synth)
+
+    # targets = params[:target].split('.').map(&:to_sym)
+    # process_target(targets, cfg_synth)
 
     # provide some kind of default exit of the command execution
     exit
