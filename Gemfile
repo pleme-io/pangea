@@ -4,9 +4,7 @@ group :development do
   %w[
     rubocop-rspec
     rubocop-rake
-    solargraph
     keycutter
-    rubocop
     rspec
     rake
     yard
