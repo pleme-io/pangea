@@ -5,7 +5,7 @@
 # for terraform code.
 ###############################################################################
 
-module Modules
+module PangeaModule
 end
 
 # end modules
