@@ -58,16 +58,30 @@ class InfraCommand < PangeaCommand
     ###########################################################################
 
     namespaces = cfg_synth[:namespace].keys.map(&:to_sym)
+
     namespaces.each do |namespace_name|
 
-      namespace = cfg_synth[:namespace][namespace_name]
-      modules   = namespace[:modules]
+      namespace     = cfg_synth[:namespace][namespace_name]
+      context_names = namespace.keys.map(&:to_sym)
 
-      modules.each do |mod|
-        if mod[:path]
-          terraform_synth = TerraformSynthesizer.new
+      context_names.each do |cn|
+
+        context = namespace[cn]
+        modules = context[:modules]
+
+        modules.each do |mod|
+          PangeaModule.process(mod)
+          # if mod[:path]
+          #   terraform_synth = TerraformSynthesizer.new
+          #   sections        = %w[lib src]
+          #
+          #   sections.each do |section|
+          #   end
+          # end
         end
       end
+
+
 
     end
 
