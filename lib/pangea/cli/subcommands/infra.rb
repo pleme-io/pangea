@@ -50,7 +50,7 @@ class InfraCommand < PangeaCommand
 
     # targets = params[:target].split('.').map(&:to_sym)
     # process_target(targets, cfg_synth)
-    
+
     ###########################################################################
     # modules
     # modules can be fetched from git or local path
@@ -60,29 +60,17 @@ class InfraCommand < PangeaCommand
     namespaces = cfg_synth[:namespace].keys.map(&:to_sym)
 
     namespaces.each do |namespace_name|
-
       namespace     = cfg_synth[:namespace][namespace_name]
       context_names = namespace.keys.map(&:to_sym)
 
       context_names.each do |cn|
-
         context = namespace[cn]
         modules = context[:modules]
 
         modules.each do |mod|
           PangeaModule.process(mod)
-          # if mod[:path]
-          #   terraform_synth = TerraformSynthesizer.new
-          #   sections        = %w[lib src]
-          #
-          #   sections.each do |section|
-          #   end
-          # end
         end
       end
-
-
-
     end
 
     ###########################################################################
