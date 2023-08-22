@@ -69,13 +69,6 @@ class InfraCommand < PangeaCommand
 
         modules.each do |mod|
           PangeaModule.process(mod)
-          # if mod[:path]
-          #   terraform_synth = TerraformSynthesizer.new
-          #   sections        = %w[lib src]
-          #
-          #   sections.each do |section|
-          #   end
-          # end
         end
       end
     end
