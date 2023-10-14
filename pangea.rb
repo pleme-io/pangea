@@ -2,7 +2,6 @@ namespace :nexus, :atavan do
   long  :atavan
   short :at
 
-
   state_config({
     terraform: {
       s3: {
