@@ -110,6 +110,7 @@ class ConfigCommand < PangeaCommand
 
             if this_mod[:sandboxed]
               # TODO: setup sandboxed module
+              # sandbox should be a complete ruby executable space
               nil
             elsif this_mod[:path]
 
@@ -174,7 +175,7 @@ class ConfigCommand < PangeaCommand
               )
               puts "Created table. Status: #{result.table_description.table_status}"
             rescue Aws::DynamoDB::Errors::ServiceError => e
-              puts e.message.to_s
+              puts e.message
             end
           end
 
