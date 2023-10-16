@@ -41,6 +41,10 @@ class SandBox
     ensure_rubies_installed
   end
 
+  def clean_sandbox
+    system %(rm -rf #{base_dir})
+  end
+
   private
 
   def ensure_base_dir_exists
