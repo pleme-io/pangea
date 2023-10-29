@@ -51,11 +51,6 @@ module PangeaModule
     %(rubies)
   )
 
-  RUBIES_DIR = File.join(
-    BASE_DIR,
-    %(rubies)
-  )
-
   SECTIONS = %i[
     lib
     src
