@@ -7,7 +7,7 @@
 ###############################################################################
 
 class SandboxRuby
-  attr_reader %i[base_dir name gemset version]
+  attr_reader(*%i[base_dir name gemset version])
 
   def initialize(base_dir:, name:, gemset:, version:)
     @base_dir = base_dir
@@ -18,7 +18,7 @@ class SandboxRuby
 end
 
 class SandBox
-  attr_reader %i[base_dir name rubies]
+  attr_reader(*%i[base_dir name rubies])
 
   def initialize(
     name:,
@@ -59,7 +59,7 @@ class SandBox
   end
 
   def command_exists_on_path?(cmd)
-    `#{cmd}`.strip != ''
+    system("which #{cmd} > /dev/null 2>&1")
   end
 
   def ruby_build_installed?
