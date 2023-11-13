@@ -1,3 +1,3 @@
 module Pangea
-  VERSION = %(0.0.32).freeze
+  VERSION = %(0.0.34).freeze
 end

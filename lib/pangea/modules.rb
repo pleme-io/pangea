@@ -51,10 +51,10 @@ module PangeaModule
     %(rubies)
   )
 
-  SECTIONS = %i[
-    lib
-    src
-  ].freeze
+  # SECTIONS = %i[
+  #   lib
+  #   src
+  # ].freeze
 
   class << self
     # entrypoint for module processing

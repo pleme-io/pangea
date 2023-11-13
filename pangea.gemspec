@@ -13,10 +13,13 @@ Gem::Specification.new do |spec|
   spec.summary               = %(control rest apis declaratively with ruby)
   spec.homepage              = %(https://github.com/drzln/#{spec.name})
   spec.license               = %(MIT)
-  spec.files                 = `git ls-files`.split($OUTPUT_RECORD_SEPARATOR)
   spec.require_paths         = [%(lib)]
   spec.executables           = spec.files.grep(%r{^bin/}) { |f| File.basename(f) }
   spec.required_ruby_version = %(>= #{`cat .ruby-version`})
+
+  spec.files = `git ls-files -z`.split("\x0").reject do |f|
+    f.match(%r{^(test|spec|features)/})
+  end
 
   %i[
     rubocop-rspec
