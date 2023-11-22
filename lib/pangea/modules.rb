@@ -144,10 +144,12 @@ module PangeaModule
           ruby_gemset
         )
 
-        gems_load_path = File.join(
-          gemset_path,
-          %(gems)
-        )
+        rakebin = File.join(gemset_path, %(bin), %(rake))
+
+        # gems_load_path = File.join(
+        #   gemset_path,
+        #   %(gems)
+        # )
 
         PangeaRubyBuild.ruby_build(
           ruby_version,
@@ -170,41 +172,28 @@ module PangeaModule
             mpath,
             gemset_path
           )
+
+          ################################
+          # run shell module
+          ################################
+
+          data      = mod.fetch(:data, {})
+          data_path = File.join(mpath, %(data.json))
+
+          system %(rm -rf #{data_path}) if File.exist?(data_path)
+          File.write(data_path, JSON.dumps(data))
+
+          def rake(cmd)
+            system [%(OLD=$(pwd) && cd #{mpath} &&), rakebin].concat(cmd).concat([%(cd $OLD)]).join(%( ))
+          end
+
+          rake %(evaluate)
+
+          # end run shell module
+
         end
 
         # end setup ruby environment for module
-
-        ################################
-        # run module
-        ################################
-
-        # set the $LOAD_PATH to empty to make sure
-        # its clean
-        # $LOAD_PATH = []
-
-        # $LOAD_PATH.concat(gems_load_path)
-
-        # add ruby gems path to $LOAD_PATH
-        # $LOAD_PATH.unshift(File.join())
-
-        SECTIONS.each do |section|
-          rfiles = Dir.glob(
-            File.join(
-              mpath.to_s,
-              section.to_s,
-              %(**),
-              %(*.rb)
-            )
-          )
-          # rdirs = rfiles.map { |file_path| File.dirname(file_path) }
-          # rdirs = rdirs.uniq
-          rfiles.each do |rfile|
-            terraform_synth.synthesize(File.read(rfile))
-          end
-        end
-        puts terraform_synth.synthesis
-
-        # end run module
 
       end
     end
