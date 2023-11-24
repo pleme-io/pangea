@@ -6,6 +6,7 @@
 ###############################################################################
 
 require %(terraform-synthesizer)
+require %(bundler)
 
 module PangeaBase
   BASE_DIR = File.join(
@@ -41,7 +42,6 @@ module PangeaRbenv
     def rbenv_install(version, path)
       system %(mkdir -p #{VERSIONS_DIR}) unless Dir.exist?(VERSIONS_DIR)
       if rbenv_installed? && !Dir.exist?(File.join(path.to_s))
-        puts [BIN, %(install), version.to_s, path.to_s].join(%( ))
         system [BIN, %(install), version.to_s, path.to_s].join(%( ))
       end
     end
@@ -62,31 +62,26 @@ module PangeaRubyBuild
 
     def ruby_build(version, path)
       system %(mkdir -p #{PangeaRbenv.versions_dir}) unless Dir.exist?(PangeaRbenv.versions_dir)
-      if ruby_build_installed? && !Dir.exist?(File.join(path.to_s))
-        puts [BIN, version.to_s, path.to_s].join(%( ))
-        system [BIN, version.to_s, path.to_s].join(%( ))
-      end
+      system [BIN, version.to_s, path.to_s].join(%( )) if ruby_build_installed? && !Dir.exist?(File.join(path.to_s))
     end
 
     def gem_install(gem, ruby_version, gem_version, gemset_path)
       gem_path = File.join(gemset_path, %(lib), %(ruby), %(gems), ruby_version.to_s, %(gems), %(#{gem}-#{gem_version}))
       unless Dir.exist?(gem_path)
         gembin = File.join(gemset_path, %(bin), %(gem))
-        puts [gembin, %(install), gem.to_s.strip, %(-v), gem_version.to_s].join(%( ))
         system [gembin, %(install), gem.to_s.strip, %(-v), gem_version.to_s].join(%( ))
       end
     end
 
     def bundle_install(mpath, gemset_path)
-      bundlebin = File.join(gemset_path, %(bin), %(bundle))
+      @bundlebin = File.join(gemset_path, %(bin), %(bundle))
       bundlehint = File.join(gemset_path, %(bundle_hint))
       unless File.exist?(bundlehint)
         cmd = [
           # %(cd #{mpath} &&),
-          %(BUNDLE_GEMFILE=#{File.join(mpath, %(Gemfile))}), bundlebin,
+          %(BUNDLE_GEMFILE=#{File.join(mpath, %(Gemfile))}), @bundlebin,
           %(install)
         ].join(%( ))
-        puts cmd
         system cmd
         system [%(touch), bundlehint].join(%( ))
       end
@@ -116,85 +111,23 @@ module PangeaModule
       @terraform_synth ||= TerraformSynthesizer.new
     end
 
-    SECTIONS = %i[
-      lib
-      src
-    ].freeze
-
     # entrypoint for module processing
     def process(mod)
       mod = symbolize(mod)
       if mod.fetch(:sandboxed)
 
-        ################################
-        # setup ruby environment for module
-        ################################
-
-        ruby_version    = mod.fetch(:ruby_version, %(3.1.0))
-        bundle_version  = mod.fetch(:ruby_version, %(2.3.3))
-        name            = mod.fetch(:name)
+        name = mod.fetch(:name)
 
         raise ArgumentError, %(name cannot be nil) if name.nil?
 
-        ruby_gemset = mod.fetch(:ruby_gemset, name)
+        # understanding that module entrypoint loading
+        # will work with #{context}-#{name}
+        context       = mod.fetch(:context, %(pangea-component))
+        require_name  = %(#{context}-#{name})
 
-        gemset_path = File.join(
-          RUBIES_DIR,
-          ruby_version,
-          ruby_gemset
-        )
-
-        rakebin = File.join(gemset_path, %(bin), %(rake))
-
-        # gems_load_path = File.join(
-        #   gemset_path,
-        #   %(gems)
-        # )
-
-        PangeaRubyBuild.ruby_build(
-          ruby_version,
-          gemset_path
-        )
-
-        PangeaRubyBuild.gem_install(
-          %(bundler),
-          ruby_version,
-          bundle_version,
-          gemset_path
-        )
-
-        location  = mod.fetch(:location)
-        type      = location.fetch(:type)
-
-        if type.to_s.eql?(%(directory))
-          mpath = location.fetch(:path)
-          PangeaRubyBuild.bundle_install(
-            mpath,
-            gemset_path
-          )
-
-          ################################
-          # run shell module
-          ################################
-
-          data      = mod.fetch(:data, {})
-          data_path = File.join(mpath, %(data.json))
-
-          system %(rm -rf #{data_path}) if File.exist?(data_path)
-          File.write(data_path, JSON.dumps(data))
-
-          def rake(cmd)
-            system [%(OLD=$(pwd) && cd #{mpath} &&), rakebin].concat(cmd).concat([%(cd $OLD)]).join(%( ))
-          end
-
-          rake %(evaluate)
-
-          # end run shell module
-
-        end
-
-        # end setup ruby environment for module
-
+        require require_name
+        puts    render
+        puts    %(end)
       end
     end
   end

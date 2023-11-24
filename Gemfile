@@ -24,6 +24,7 @@ group :production do
     tty-color
     tty-box
     toml-rb
+    bundler
   ].each do |this_gem|
     gem this_gem
   end
