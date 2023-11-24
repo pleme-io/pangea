@@ -104,6 +104,7 @@ PLATFORMS
 DEPENDENCIES
   abstract-synthesizer
   aws-sdk-dynamodb
+  bundler
   keycutter
   rake
   rspec
