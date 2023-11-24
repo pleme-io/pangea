@@ -113,10 +113,10 @@ module PangeaModule
 
     # entrypoint for module processing
     def process(mod)
-      Say.terminal mod
       mod = symbolize(mod)
 
       name = mod.fetch(:name)
+      data = mod.fetch(:data, {})
 
       raise ArgumentError, %(name cannot be nil) if name.nil?
 
@@ -126,8 +126,7 @@ module PangeaModule
       require_name  = %(#{context}-#{name})
 
       require require_name
-      puts    render
-      puts    %(end)
+      render(data)
     end
   end
 end
