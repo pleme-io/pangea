@@ -112,23 +112,23 @@ module PangeaModule
     end
 
     # entrypoint for module processing
-    # def process(mod)
-    #   Say.terminal mod
-    #   mod = symbolize(mod)
-    #
-    #   name = mod.fetch(:name)
-    #
-    #   raise ArgumentError, %(name cannot be nil) if name.nil?
-    #
-    #   # understanding that module entrypoint loading
-    #   # will work with #{context}-#{name}
-    #   context       = mod.fetch(:context, %(pangea-component))
-    #   require_name  = %(#{context}-#{name})
-    #
-    #   require require_name
-    #   puts    render
-    #   puts    %(end)
-    # end
+    def process(mod)
+      Say.terminal mod
+      mod = symbolize(mod)
+
+      name = mod.fetch(:name)
+
+      raise ArgumentError, %(name cannot be nil) if name.nil?
+
+      # understanding that module entrypoint loading
+      # will work with #{context}-#{name}
+      context       = mod.fetch(:context, %(pangea-component))
+      require_name  = %(#{context}-#{name})
+
+      require require_name
+      puts    render
+      puts    %(end)
+    end
   end
 end
 
