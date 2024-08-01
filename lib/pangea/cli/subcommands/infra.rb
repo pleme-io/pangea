@@ -6,10 +6,9 @@ require %(pangea/errors/site_not_found_error)
 require %(pangea/errors/project_not_found_error)
 require %(pangea/errors/no_infra_target_error)
 require %(pangea/errors/incorrect_subcommand_error)
+require %(pangea/shell/terraform)
 require %(pangea/say/init)
 require %(pangea/modules)
-# require %(terraform-synthesizer)
-# require %(json)
 
 class InfraCommand < PangeaCommand
   include Constants
@@ -50,6 +49,14 @@ class InfraCommand < PangeaCommand
     HELP
   end
 
+  def pangea_home
+    File.join(Dir.home, %(.pangea))
+  end
+
+  def terraform_files_home
+    File.join(pangea_home, %(terraform))
+  end
+
   def cfg_synth
     @cfg_synth ||= Config.resolve_configurations
   end
@@ -57,7 +64,25 @@ class InfraCommand < PangeaCommand
   def plan(argv)
     Say.terminal %(planning!)
     parse(argv)
-    process_modules
+    namespaces = cfg_synth[:namespace].keys.map(&:to_sym)
+    namespaces.each do |namespace|
+      system(%(mkdir -p #{File.join(terraform_files_home.to_s, namespace.to_s)})) unless Dir.exist?(
+        File.join(
+          terraform_files_home.to_s, namespace.to_s
+        )
+      )
+    end
+    namespaces.each do |ns|
+      processed = process_modules(ns)
+      template = processed[:template]
+      ns_home = File.join(terraform_files_home, ns.to_s)
+      File.write(
+        File.join(ns_home, %(template.tf.json)),
+        JSON[template]
+      )
+      system(%(cd #{ns_home} && terraform init))
+      system(%(cd #{ns_home} && terraform plan))
+    end
   end
 
   def config
@@ -68,22 +93,26 @@ class InfraCommand < PangeaCommand
     reject_empty_configurations
   end
 
-  def process_modules
+  def process_modules(namespace)
+    template = {}
     namespaces = cfg_synth[:namespace].keys.map(&:to_sym)
     namespaces.each do |namespace_name|
-      namespace     = cfg_synth[:namespace][namespace_name]
-      context_names = namespace.keys.map(&:to_sym)
+      ns = cfg_synth[:namespace][namespace_name]
+      context_names = ns.keys.map(&:to_sym)
 
       context_names.each do |cn|
-        context = namespace[cn]
+        context = ns[cn]
         modules = context[:modules]
+
+        next unless namespace_name.to_s.eql?(namespace.to_s)
 
         modules.each_key do |mod_key|
           mod = modules[mod_key]
-          PangeaModule.process(mod)
+          template.merge!(PangeaModule.process(mod))
         end
       end
     end
+    { template: template, namespaces: cfg_synth[:namespace].keys.map(&:to_sym) }
   end
 
   def run(argv)

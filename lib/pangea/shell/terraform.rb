@@ -5,9 +5,9 @@ module Shell
     class << self
       def run(terraform_cmd)
         cmd = []
-        cmd << %(cd)
-        cmd << Dir.pwd
-        cmd << %(&&)
+        # cmd << %(cd)
+        # cmd << Dir.pwd
+        # cmd << %(&&)
         cmd << BIN
         cmd << terraform_cmd
         system cmd.join(%( ))
