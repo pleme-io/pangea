@@ -2,7 +2,7 @@
 
 lib = File.expand_path(%(lib), __dir__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require_relative %(./lib/pangea/version)
+require_relative %(lib/pangea/version)
 
 Gem::Specification.new do |spec|
   spec.name                  = %(pangea)
@@ -15,15 +15,33 @@ Gem::Specification.new do |spec|
   spec.license               = %(MIT)
   spec.require_paths         = [%(lib)]
   spec.executables << %(pangea)
-  spec.required_ruby_version = %(3.6.6)
+  spec.required_ruby_version = %(>=3.3.6)
 
   spec.files = `git ls-files -z`.split("\x0").reject do |f|
     f.match(%r{^(test|spec|features)/})
   end
 
-  definition = Bundler::Definition.build("Gemfile", "Gemfile.lock", nil)
-  runtime_deps = definition.dependencies.select { |dep| dep.groups.include?(:default) }
-  runtime_deps.each do |dep|
-    spec.add_dependency(dep.name, *dep.requirement.as_list)
+  %w[
+    rspec
+    rake
+    rubocop
+  ].each do |dep|
+    spec.add_development_dependency dep
   end
+
+  %w[
+    terraform-synthesizer
+    abstract-synthesizer
+    aws-sdk-dynamodb
+    tty-progressbar
+    tty-option
+    tty-table
+    tty-color
+    tty-box
+    toml-rb
+    bundler
+  ].each do |dep|
+    spec.add_dependency dep
+  end
+  spec.metadata['rubygems_mfa_required'] = 'true'
 end

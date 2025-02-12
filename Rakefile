@@ -4,7 +4,7 @@ require %(bundler/gem_tasks)
 require %(rubocop/rake_task)
 require %(rspec/core/rake_task)
 
-require_relative %(./lib/pangea/docker)
+require_relative %(lib/pangea/docker)
 
 RSpec::Core::RakeTask.new(:spec)
 RuboCop::RakeTask.new(:rubocop) do |t|

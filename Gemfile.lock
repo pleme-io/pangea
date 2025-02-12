@@ -1,3 +1,18 @@
+PATH
+  remote: .
+  specs:
+    pangea (0.0.45)
+      abstract-synthesizer
+      aws-sdk-dynamodb
+      bundler
+      terraform-synthesizer
+      toml-rb
+      tty-box
+      tty-color
+      tty-option
+      tty-progressbar
+      tty-table
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -93,19 +108,10 @@ PLATFORMS
   x86_64-linux
 
 DEPENDENCIES
-  abstract-synthesizer
-  aws-sdk-dynamodb
-  bundler
+  pangea!
   rake
   rspec
   rubocop
-  terraform-synthesizer
-  toml-rb
-  tty-box
-  tty-color
-  tty-option
-  tty-progressbar
-  tty-table
 
 BUNDLED WITH
    2.5.22

@@ -132,6 +132,16 @@
     };
     version = "3.17.0.4";
   };
+  pangea = {
+    dependencies = ["abstract-synthesizer" "aws-sdk-dynamodb" "terraform-synthesizer" "toml-rb" "tty-box" "tty-color" "tty-option" "tty-progressbar" "tty-table"];
+    groups = ["default"];
+    platforms = [];
+    source = {
+      path = ./.;
+      type = "path";
+    };
+    version = "0.0.45";
+  };
   parallel = {
     groups = ["default" "development"];
     platforms = [];
