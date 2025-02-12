@@ -25,7 +25,6 @@ Gem::Specification.new do |spec|
     rspec
     rake
     rubocop
-    solargraph
   ].each do |dep|
     spec.add_development_dependency dep
   end
