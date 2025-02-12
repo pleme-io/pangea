@@ -1,15 +1,12 @@
 module Constants
-  # useful names
   ARTIFACT_FILE = %(artifact.tf.json)
 
-  # cli related constants
   CACHE_DIR = File.join(
     ENV.fetch(%(HOME), nil),
     %(.cache),
     %(pangea)
   ).freeze
 
-  # project related constants
   PROJECT_VERSION = %i[version.rb].freeze
 
   # order of elements matters here
