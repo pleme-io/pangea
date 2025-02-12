@@ -15,7 +15,7 @@ Gem::Specification.new do |spec|
   spec.license               = %(MIT)
   spec.require_paths         = [%(lib)]
   spec.executables << %(pangea)
-  spec.required_ruby_version = %(>=3.3.6)
+  spec.required_ruby_version = %(>=3.3.0)
 
   spec.files = `git ls-files -z`.split("\x0").reject do |f|
     f.match(%r{^(test|spec|features)/})

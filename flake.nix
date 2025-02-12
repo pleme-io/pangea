@@ -7,8 +7,8 @@
 
   outputs = {
     nixpkgs,
-    flake-utils,
     ruby-nix,
+    flake-utils,
     ...
   }:
     flake-utils.lib.eachDefaultSystem (system: let
@@ -27,15 +27,8 @@
       devShells = rec {
         default = dev;
         dev = pkgs.mkShell {
-          buildInputs = [
-            env
-            ruby
-          ];
+          buildInputs = [env ruby];
         };
-      };
-
-      packages = {
-        inherit env;
       };
     });
 }
