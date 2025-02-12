@@ -10,7 +10,6 @@ require %(pangea/version)
 
 class Command < PangeaCommand
   usage do
-    desc %(manage crud apis declaratively)
     program %(pangea)
   end
 
