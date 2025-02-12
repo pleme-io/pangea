@@ -4,10 +4,10 @@
     platforms = [];
     source = {
       remotes = ["https://rubygems.org"];
-      sha256 = "0fy505w9insz837ssib3n87vswds16qyyw74rrq1z9wsdh34kf78";
+      sha256 = "0n8z91za9cljq8js8hjgnflkhxa1vjvb21wywi48h5cxfzqzi6pv";
       type = "gem";
     };
-    version = "0.0.7";
+    version = "0.0.9";
   };
   ast = {
     groups = ["default" "development"];
@@ -359,10 +359,10 @@
     platforms = [];
     source = {
       remotes = ["https://rubygems.org"];
-      sha256 = "043k8fafr9h2q1h0jvmasfjwffdm6nlsbsx0il4vb7yblh72xdpr";
+      sha256 = "1jzv4arl0gp9g7k5b3svwmcxmbyjbxrymw389mz1j9hm60ynb4sm";
       type = "gem";
     };
-    version = "0.0.24";
+    version = "0.0.26";
   };
   toml-rb = {
     dependencies = ["citrus" "racc"];
