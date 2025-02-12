@@ -155,7 +155,7 @@
     version = "3.17.0.4";
   };
   pangea = {
-    dependencies = ["abstract-synthesizer" "aws-sdk-dynamodb" "aws-sdk-s3" "terraform-synthesizer" "toml-rb" "tty-box" "tty-color" "tty-option" "tty-progressbar" "tty-table"];
+    dependencies = ["abstract-synthesizer" "aws-sdk-dynamodb" "aws-sdk-s3" "rexml" "terraform-synthesizer" "toml-rb" "tty-box" "tty-color" "tty-option" "tty-progressbar" "tty-table"];
     groups = ["default"];
     platforms = [];
     source = {
@@ -235,6 +235,16 @@
       type = "gem";
     };
     version = "2.10.0";
+  };
+  rexml = {
+    groups = ["default"];
+    platforms = [];
+    source = {
+      remotes = ["https://rubygems.org"];
+      sha256 = "1ch4k2y80r4glr579kxliqnxld2qa91ydq8fiqam38bzpbps3gpg";
+      type = "gem";
+    };
+    version = "3.4.0";
   };
   rspec = {
     dependencies = ["rspec-core" "rspec-expectations" "rspec-mocks"];

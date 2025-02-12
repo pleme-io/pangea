@@ -15,10 +15,10 @@ module Constants
   # this order. changing this can significantly
   # impact how a project is processed.
   PROJECT_SRC_DIRS = %i[
-    lib
-    pre
     resources
     post
+    lib
+    pre
   ].freeze
 
   # configuration extensions

@@ -22,8 +22,8 @@ Gem::Specification.new do |spec|
   end
 
   %w[
-    rspec
     rake
+    rspec
     rubocop
   ].each do |dep|
     spec.add_development_dependency dep
@@ -41,6 +41,7 @@ Gem::Specification.new do |spec|
     tty-box
     toml-rb
     bundler
+    rexml
   ].each do |dep|
     spec.add_dependency dep
   end

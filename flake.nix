@@ -27,7 +27,7 @@
       devShells = rec {
         default = dev;
         dev = pkgs.mkShell {
-          buildInputs = [env ruby];
+          buildInputs = with pkgs; [env ruby opentofu];
           shellHook = ''
             export PATH=$PWD/bin:$PATH
           '';
