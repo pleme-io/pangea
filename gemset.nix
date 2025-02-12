@@ -1,13 +1,13 @@
 {
   abstract-synthesizer = {
-    groups = ["production"];
+    groups = ["default"];
     platforms = [];
     source = {
       remotes = ["https://rubygems.org"];
-      sha256 = "0bsjl0qgpidjpk7mj45rg02jmmapz6lfc6j0q8lc34x5sqj1rw76";
+      sha256 = "0fy505w9insz837ssib3n87vswds16qyyw74rrq1z9wsdh34kf78";
       type = "gem";
     };
-    version = "0.0.4";
+    version = "0.0.7";
   };
   ast = {
     groups = ["default" "development"];
@@ -345,14 +345,14 @@
   };
   terraform-synthesizer = {
     dependencies = ["abstract-synthesizer"];
-    groups = ["production"];
+    groups = ["default"];
     platforms = [];
     source = {
       remotes = ["https://rubygems.org"];
-      sha256 = "10rl2pg5p991hr1jmqsdp0zl42q8d88d85s2cxb0z2rk7zgdz7ag";
+      sha256 = "043k8fafr9h2q1h0jvmasfjwffdm6nlsbsx0il4vb7yblh72xdpr";
       type = "gem";
     };
-    version = "0.0.22";
+    version = "0.0.24";
   };
   toml-rb = {
     dependencies = ["citrus" "racc"];
