@@ -2,39 +2,39 @@
 
 require %(pangea/sandbox)
 
-RSpec.configure do |config|
-  config.before(:suite) do
-    @sandbox = SandBox.new(
-      base_dir: %(./spare/spec/sandbox),
-      name: %(spec_test_sandbox),
-      rubies: [
-        SandboxRuby.new(
-          base_dir: %(./spare/spec/sandbox),
-          version: %(3.1.0),
-          name: %(spec_test_ruby),
-          gemset: %(spec_test_ruby_gemset)
-        )
-      ]
-    )
-    @sandbox.prepare_sandbox
-  end
-
-  config.after(:suite) do
-    @sandbox = SandBox.new(
-      base_dir: %(./spare/spec/sandbox),
-      name: %(spec_test_sandbox),
-      rubies: [
-        SandboxRuby.new(
-          base_dir: %(./spare/spec/sandbox),
-          version: %(3.1.0),
-          name: %(spec_test_ruby),
-          gemset: %(spec_test_ruby_gemset)
-        )
-      ]
-    )
-    @sandbox.clean_sandbox
-  end
-end
+# RSpec.configure do |config|
+#   config.before(:suite) do
+#     @sandbox = SandBox.new(
+#       base_dir: %(./spare/spec/sandbox),
+#       name: %(spec_test_sandbox),
+#       rubies: [
+#         SandboxRuby.new(
+#           base_dir: %(./spare/spec/sandbox),
+#           version: %(3.1.0),
+#           name: %(spec_test_ruby),
+#           gemset: %(spec_test_ruby_gemset)
+#         )
+#       ]
+#     )
+#     @sandbox.prepare_sandbox
+#   end
+#
+#   config.after(:suite) do
+#     @sandbox = SandBox.new(
+#       base_dir: %(./spare/spec/sandbox),
+#       name: %(spec_test_sandbox),
+#       rubies: [
+#         SandboxRuby.new(
+#           base_dir: %(./spare/spec/sandbox),
+#           version: %(3.1.0),
+#           name: %(spec_test_ruby),
+#           gemset: %(spec_test_ruby_gemset)
+#         )
+#       ]
+#     )
+#     @sandbox.clean_sandbox
+#   end
+# end
 
 # describe Sandbox do
 #   let(:sandbox) do

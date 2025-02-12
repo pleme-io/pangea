@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require %(pangea/synthesizer/config)
+# require %(pangea/synthesizer/config)
 
 # describe ConfigSynthesizer do
 #   context %(main) do
