@@ -6,3 +6,6 @@
 
 # artifacts
 pkg
+
+# nix current build
+result
