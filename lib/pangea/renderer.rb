@@ -22,25 +22,52 @@ class Renderer
     %(#{home_dir}/infra)
   end
 
+  def init_dir
+    %(#{infra_dir}/init)
+  end
+
   def artifact_json
-    File.join(infra_dir, %(artifact.json))
+    File.join(init_dir, %(artifact.tf.json))
   end
 
   def pretty(content)
     JSON.pretty_generate(content)
   end
 
-  def run
-    system %(mkdir -p #{infra_dir}) unless Dir.exist?(infra_dir)
-    # system %(cd #{infra_dir} && #{BIN} init -json)
+  def create_prepped_state_directory(dir)
+    system %(mkdir -p #{dir}) unless Dir.exist?(dir)
     synthesizer.synthesize do
       resource :aws_vpc, :foo do
         cidr_block %(10.0.0.0/16)
         tags(Name: :foo)
       end
     end
-    puts pretty(synthesizer.synthesis)
-    File.write(artifact_json, JSON[synthesizer.synthesis])
+    File.write(File.join(dir, %(artifact.tf.json)), JSON[synthesizer.synthesis])
+    system %(cd #{dir} && #{BIN} init -json) unless Dir.exist?(File.join(dir, %(.terraform)))
+    true
+  end
+
+  def run
+    test_cycle
+  end
+
+  def test_cycle
+    dir = %(#{init_dir})
+    synthesizer.synthesize do
+      resource :aws_vpc, :foo do
+        cidr_block %(10.0.0.0/16)
+        tags(Name: :foo)
+      end
+    end
+    resource_type = synthesizer.synthesis[:resource].keys[0]
+    resource_name = synthesizer.synthesis[:resource][synthesizer.synthesis[:resource].keys[0]].keys[0]
+    puts pretty(resource_type)
+    puts pretty(resource_name)
+    dir = File.join(init_dir, resource_type.to_s, resource_name.to_s)
+    create_prepped_state_directory(dir)
+    # system %(cd #{init_dir} && #{BIN} plan)
+    # system %(cd #{init_dir} && #{BIN} apply -auto-approve)
+    # system %(cd #{init_dir} && #{BIN} destroy -auto-approve)
   end
 end
 
