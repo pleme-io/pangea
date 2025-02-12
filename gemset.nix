@@ -61,6 +61,28 @@
     };
     version = "1.136.0";
   };
+  aws-sdk-kms = {
+    dependencies = ["aws-sdk-core" "aws-sigv4"];
+    groups = ["default"];
+    platforms = [];
+    source = {
+      remotes = ["https://rubygems.org"];
+      sha256 = "1gmvshmb2m03230apd4shrwk32l1mg69fznvl16hn70bbcdwca72";
+      type = "gem";
+    };
+    version = "1.98.0";
+  };
+  aws-sdk-s3 = {
+    dependencies = ["aws-sdk-core" "aws-sdk-kms" "aws-sigv4"];
+    groups = ["default"];
+    platforms = [];
+    source = {
+      remotes = ["https://rubygems.org"];
+      sha256 = "0v66s1s9vdcjipqhflh44j6yb9ydh2vbazbrllwgwsxkjjk4anik";
+      type = "gem";
+    };
+    version = "1.180.0";
+  };
   aws-sigv4 = {
     dependencies = ["aws-eventstream"];
     groups = ["default" "production"];
@@ -133,7 +155,7 @@
     version = "3.17.0.4";
   };
   pangea = {
-    dependencies = ["abstract-synthesizer" "aws-sdk-dynamodb" "terraform-synthesizer" "toml-rb" "tty-box" "tty-color" "tty-option" "tty-progressbar" "tty-table"];
+    dependencies = ["abstract-synthesizer" "aws-sdk-dynamodb" "aws-sdk-s3" "terraform-synthesizer" "toml-rb" "tty-box" "tty-color" "tty-option" "tty-progressbar" "tty-table"];
     groups = ["default"];
     platforms = [];
     source = {

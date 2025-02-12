@@ -33,6 +33,7 @@ Gem::Specification.new do |spec|
     terraform-synthesizer
     abstract-synthesizer
     aws-sdk-dynamodb
+    aws-sdk-s3
     tty-progressbar
     tty-option
     tty-table

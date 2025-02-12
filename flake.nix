@@ -28,6 +28,9 @@
         default = dev;
         dev = pkgs.mkShell {
           buildInputs = [env ruby];
+          shellHook = ''
+            export PATH=$PWD/bin:$PATH
+          '';
         };
       };
     });
