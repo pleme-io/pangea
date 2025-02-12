@@ -34,41 +34,8 @@
         };
       };
 
-      # Here we add a package derivation for the built binary:
       packages = {
         inherit env;
-        pangea = pkgs.stdenv.mkDerivation {
-          pname = "pangea";
-          version = "0.1.0";
-          # Assume your project root (including bin/, lib/, etc.) is the source
-          src = ./.;
-          buildInputs = [env ruby pkgs.makeWrapper];
-
-          # Optionally, if your build process is more elaborate you can invoke
-          # a build command (e.g. via rake). For a simple CLI, if your binary
-          # is already present in bin/pangea (or built via a small script),
-          # you may simply install it.
-          buildPhase = ''
-            echo "Building pangea binary"
-            # For example, you might run:
-            # bundle exec rake build
-          '';
-
-          installPhase = ''
-            mkdir -p $out/bin
-            cp bin/pangea $out/bin/
-            chmod +x $out/bin/pangea
-            # Optionally wrap the binary so that the Ruby interpreter is in PATH:
-            wrapProgram $out/bin/pangea --prefix PATH : "${ruby}/bin"
-          '';
-
-          meta = with pkgs.lib; {
-            description = "Pangea CLI built with a ruby-nix gem environment";
-            homepage = "https://github.com/your-org/pangea";
-            license = licenses.mit;
-            maintainers = ["your-name"];
-          };
-        };
       };
     });
 }

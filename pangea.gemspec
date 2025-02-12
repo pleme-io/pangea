@@ -15,39 +15,15 @@ Gem::Specification.new do |spec|
   spec.license               = %(MIT)
   spec.require_paths         = [%(lib)]
   spec.executables << %(pangea)
-  spec.required_ruby_version = %(>= #{`cat .ruby-version`})
+  spec.required_ruby_version = %(3.6.6)
 
   spec.files = `git ls-files -z`.split("\x0").reject do |f|
     f.match(%r{^(test|spec|features)/})
   end
 
-  %i[
-    rubocop-rspec
-    rubocop-rake
-    solargraph
-    keycutter
-    rubocop
-    rspec
-    rake
-    yard
-  ].each do |gem|
-    spec.add_development_dependency(gem)
+  definition = Bundler::Definition.build("Gemfile", "Gemfile.lock", nil)
+  runtime_deps = definition.dependencies.select { |dep| dep.groups.include?(:default) }
+  runtime_deps.each do |dep|
+    spec.add_dependency(dep.name, *dep.requirement.as_list)
   end
-
-  %i[
-    terraform-synthesizer
-    abstract-synthesizer
-    aws-sdk-dynamodb
-    tty-progressbar
-    aws-sdk-s3
-    tty-option
-    tty-table
-    tty-color
-    tty-box
-    toml-rb
-  ].each do |gem|
-    spec.add_runtime_dependency(gem)
-  end
-
-  spec.metadata[%(rubygems_mfa_required)] = %(true)
 end
