@@ -71,8 +71,6 @@ class InfraCommand < PangeaCommand
           terraform_files_home.to_s, namespace.to_s
         )
       )
-    end
-    namespaces.each do |ns|
       processed = process_modules(ns)
       template = processed[:template]
       ns_home = File.join(terraform_files_home, ns.to_s)

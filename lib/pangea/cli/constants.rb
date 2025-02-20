@@ -1,8 +1,8 @@
 module Constants
-  ARTIFACT_FILE = %(artifact.tf.json)
+  ARTIFACT_FILE = %(artifact.tf.json).freeze
 
   CACHE_DIR = File.join(
-    ENV.fetch(%(HOME), nil),
+    Dir.home,
     %(.cache),
     %(pangea)
   ).freeze

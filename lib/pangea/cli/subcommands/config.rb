@@ -101,9 +101,7 @@ class ConfigCommand < PangeaCommand
           ###################################################################
           # setup modules
           ###################################################################
-
-          module_dirs = %w[lib src test]
-          modules     = ctx[:modules]
+          modules = ctx[:modules]
 
           modules.each_key do |mod_name|
             this_mod = modules[mod_name]
@@ -187,11 +185,7 @@ class ConfigCommand < PangeaCommand
 
           bucket_name =
             ctx[:state_config][:terraform][:s3][:bucket]
-          if bucket_exist?(bucket_name)
-            nil
-          else
-            s3.create_bucket(bucket: bucket_name)
-          end
+          s3.create_bucket(bucket: bucket_name) unless bucket_exist?(bucket_name)
 
           # end s3 bucket setup
 
@@ -199,7 +193,7 @@ class ConfigCommand < PangeaCommand
           # setup directories
           ###################################################################
 
-          base_dir    = File.join(ENV.fetch(%(HOME), nil), %(.pangea))
+          base_dir    = File.join(Dir.home, %(.pangea))
           context_dir = File.join(base_dir, ctx_name)
           synth_dir   = File.join(base_dir, synth_dir)
 

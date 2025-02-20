@@ -12,7 +12,7 @@ module Config
     def xdg_config_home
       ENV.fetch(
         %(XDG_CONFIG_HOME),
-        %(#{ENV.fetch('HOME', nil)}/.config)
+        %(#{Dir.home}/.config)
       )
     end
 
