@@ -25,6 +25,7 @@ Gem::Specification.new do |spec|
     rake
     rspec
     rubocop
+    ruby-lsp
   ].each do |dep|
     spec.add_development_dependency dep
   end
