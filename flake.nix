@@ -29,7 +29,7 @@
         dev = pkgs.mkShell {
           buildInputs = with pkgs; [env ruby opentofu];
           shellHook = ''
-            export PATH=$PWD/bin:$PATH
+            PATH=$PWD/bin:$PATH
           '';
         };
       };

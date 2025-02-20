@@ -114,6 +114,37 @@
     };
     version = "3.0.2";
   };
+  date = {
+    groups = ["default" "development"];
+    platforms = [];
+    source = {
+      remotes = ["https://rubygems.org"];
+      sha256 = "0kz6mc4b9m49iaans6cbx031j9y7ldghpi5fzsdh0n3ixwa8w9mz";
+      type = "gem";
+    };
+    version = "3.4.1";
+  };
+  debug = {
+    dependencies = ["irb" "reline"];
+    groups = ["development"];
+    platforms = [];
+    source = {
+      remotes = ["https://rubygems.org"];
+      sha256 = "1977s95s9ns6mpbhg68pg6ggnpxxf8wly4244ihrx5vm92kqrqhi";
+      type = "gem";
+    };
+    version = "1.10.0";
+  };
+  debug_inspector = {
+    groups = ["development"];
+    platforms = [];
+    source = {
+      remotes = ["https://rubygems.org"];
+      sha256 = "18k8x9viqlkh7dbmjzh8crbjy8w480arpa766cw1dnn3xcpa1pwv";
+      type = "gem";
+    };
+    version = "1.2.0";
+  };
   diff-lcs = {
     groups = ["default" "development"];
     platforms = [];
@@ -123,6 +154,27 @@
       type = "gem";
     };
     version = "1.6.0";
+  };
+  io-console = {
+    groups = ["default" "development"];
+    platforms = [];
+    source = {
+      remotes = ["https://rubygems.org"];
+      sha256 = "18pgvl7lfjpichdfh1g50rpz0zpaqrpr52ybn9liv1v9pjn9ysnd";
+      type = "gem";
+    };
+    version = "0.8.0";
+  };
+  irb = {
+    dependencies = ["pp" "rdoc" "reline"];
+    groups = ["default" "development"];
+    platforms = [];
+    source = {
+      remotes = ["https://rubygems.org"];
+      sha256 = "1478m97wiy6nwg6lnl0szy39p46acsvrhax552vsh1s2mi2sgg6r";
+      type = "gem";
+    };
+    version = "1.15.1";
   };
   jmespath = {
     groups = ["default" "production"];
@@ -216,6 +268,27 @@
     };
     version = "0.8.0";
   };
+  pp = {
+    dependencies = ["prettyprint"];
+    groups = ["default" "development"];
+    platforms = [];
+    source = {
+      remotes = ["https://rubygems.org"];
+      sha256 = "1zxnfxjni0r9l2x42fyq0sqpnaf5nakjbap8irgik4kg1h9c6zll";
+      type = "gem";
+    };
+    version = "0.6.2";
+  };
+  prettyprint = {
+    groups = ["default" "development"];
+    platforms = [];
+    source = {
+      remotes = ["https://rubygems.org"];
+      sha256 = "14zicq3plqi217w6xahv7b8f7aj5kpxv1j1w98344ix9h5ay3j9b";
+      type = "gem";
+    };
+    version = "0.2.0";
+  };
   prism = {
     groups = ["default" "development"];
     platforms = [];
@@ -225,6 +298,17 @@
       type = "gem";
     };
     version = "1.3.0";
+  };
+  psych = {
+    dependencies = ["date" "stringio"];
+    groups = ["default" "development"];
+    platforms = [];
+    source = {
+      remotes = ["https://rubygems.org"];
+      sha256 = "1vjrx3yd596zzi42dcaq5xw7hil1921r769dlbz08iniaawlp9c4";
+      type = "gem";
+    };
+    version = "5.2.3";
   };
   racc = {
     groups = ["default" "development" "production"];
@@ -267,6 +351,17 @@
     };
     version = "3.8.1";
   };
+  rdoc = {
+    dependencies = ["psych"];
+    groups = ["default" "development"];
+    platforms = [];
+    source = {
+      remotes = ["https://rubygems.org"];
+      sha256 = "1q2nkyk6r3m15a2an7lwm4ilkcxzdh3j93s4ib8sbzqb0xp70vvx";
+      type = "gem";
+    };
+    version = "6.12.0";
+  };
   regexp_parser = {
     groups = ["default" "development"];
     platforms = [];
@@ -276,6 +371,17 @@
       type = "gem";
     };
     version = "2.10.0";
+  };
+  reline = {
+    dependencies = ["io-console"];
+    groups = ["default" "development"];
+    platforms = [];
+    source = {
+      remotes = ["https://rubygems.org"];
+      sha256 = "1lirwlw59apc8m1wjk85y2xidiv0fkxjn6f7p84yqmmyvish6qjp";
+      type = "gem";
+    };
+    version = "0.6.0";
   };
   rexml = {
     groups = ["default"];
@@ -393,6 +499,16 @@
       type = "gem";
     };
     version = "0.5.11839";
+  };
+  stringio = {
+    groups = ["default" "development"];
+    platforms = [];
+    source = {
+      remotes = ["https://rubygems.org"];
+      sha256 = "0w0xb48347vclpagqs9qbmcgrq9npxnr4v8zq8bhhqc839pqzmkx";
+      type = "gem";
+    };
+    version = "3.1.4";
   };
   strings = {
     dependencies = ["strings-ansi" "unicode-display_width" "unicode_utils"];
