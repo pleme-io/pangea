@@ -33,18 +33,18 @@ Gem::Specification.new do |spec|
   end
 
   %w[
-    terraform-synthesizer
-    abstract-synthesizer
-    aws-sdk-dynamodb
+    rexml
+    bundler
+    toml-rb
+    tty-box
+    tty-color
+    tty-table
+    tty-option
     aws-sdk-s3
     tty-progressbar
-    tty-option
-    tty-table
-    tty-color
-    tty-box
-    toml-rb
-    bundler
-    rexml
+    aws-sdk-dynamodb
+    abstract-synthesizer
+    terraform-synthesizer
   ].each do |dep|
     spec.add_dependency dep
   end
