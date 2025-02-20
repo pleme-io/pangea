@@ -9,14 +9,14 @@ require %(json)
 require %(digest)
 
 class Renderer
-  BIN = %(tofu)
+  BIN = %(tofu).freeze
 
   def synthesizer
     @synthesizer ||= TerraformSynthesizer.new
   end
 
   def home_dir
-    %(#{ENV.fetch(%(HOME), nil)}/.pangea)
+    %(#{Dir.home}/.pangea)
   end
 
   def infra_dir

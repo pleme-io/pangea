@@ -28,12 +28,11 @@ class ConfigSynthesizer < AbstractSynthesizer
     end
   end
 
-  def method_missing(method_name, *args, &block)
+  def method_missing(method_name, ...)
     abstract_method_missing(
       method_name,
       %i[namespace],
-      *args,
-      &block
+      ...
     )
   end
 end

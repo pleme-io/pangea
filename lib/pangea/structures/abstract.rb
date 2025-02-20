@@ -1,2 +1,2 @@
-class AbstractPangeaStructure
-end
+# class AbstractPangeaStructure
+# end

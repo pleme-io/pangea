@@ -469,6 +469,28 @@
     };
     version = "1.38.0";
   };
+  rubocop-rake = {
+    dependencies = ["lint_roller" "rubocop"];
+    groups = ["development"];
+    platforms = [];
+    source = {
+      remotes = ["https://rubygems.org"];
+      sha256 = "0kdfrckz1v32dy7c7bdiksjysx9l9zsda9kc6zvrsghch6vg55rp";
+      type = "gem";
+    };
+    version = "0.7.1";
+  };
+  rubocop-rspec = {
+    dependencies = ["lint_roller" "rubocop"];
+    groups = ["development"];
+    platforms = [];
+    source = {
+      remotes = ["https://rubygems.org"];
+      sha256 = "0k1hsppf3p72q9phm2084ad94ldhvf5vnp57xsl4p25gw4pr833i";
+      type = "gem";
+    };
+    version = "3.5.0";
+  };
   ruby-lsp = {
     dependencies = ["language_server-protocol" "prism" "rbs" "sorbet-runtime"];
     groups = ["development"];

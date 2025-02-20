@@ -27,6 +27,8 @@ Gem::Specification.new do |spec|
     debug
     rubocop
     ruby-lsp
+    rubocop-rake
+    rubocop-rspec
     debug_inspector
   ].each do |dep|
     spec.add_development_dependency dep
