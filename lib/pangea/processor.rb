@@ -93,7 +93,7 @@ module Pangea
             File.join(local_cache, 'main.tf.json')
           )]
         )
-        puts JSON.pretty_generate(tempalte) if @action.to_s.eql?('show')
+        puts JSON.pretty_generate(template) if @action.to_s.eql?('show')
         { template: template }
       end
     end
