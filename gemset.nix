@@ -104,6 +104,16 @@
     };
     version = "0.2.0";
   };
+  bigdecimal = {
+    groups = ["default"];
+    platforms = [];
+    source = {
+      remotes = ["https://rubygems.org"];
+      sha256 = "1k6qzammv9r6b2cw3siasaik18i6wjc5m0gw5nfdc6jj64h79z1g";
+      type = "gem";
+    };
+    version = "3.1.9";
+  };
   citrus = {
     groups = ["default" "production"];
     platforms = [];
@@ -227,14 +237,14 @@
     version = "1.6.6";
   };
   pangea = {
-    dependencies = ["abstract-synthesizer" "aws-sdk-dynamodb" "aws-sdk-s3" "rexml" "terraform-synthesizer" "toml-rb" "tty-box" "tty-color" "tty-option" "tty-progressbar" "tty-table"];
+    dependencies = ["abstract-synthesizer" "aws-sdk-dynamodb" "aws-sdk-s3" "bigdecimal" "rexml" "terraform-synthesizer" "toml-rb" "tty-box" "tty-color" "tty-option" "tty-progressbar" "tty-table"];
     groups = ["default"];
     platforms = [];
     source = {
       path = ./.;
       type = "path";
     };
-    version = "0.0.45";
+    version = "0.0.46";
   };
   parallel = {
     groups = ["default" "development"];
