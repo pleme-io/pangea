@@ -20,11 +20,19 @@ module TheseUtils
         ns_config = cfg[:namespaces][nk]
         case ns_config[:state][:type].to_sym
         when :s3
-          bucket_name    = ns_config[:state][:config][:bucket]
-          region         = ns_config[:state][:config][:region]
+          bucket_name     = ns_config[:state][:config][:bucket]
+          region          = ns_config[:state][:config][:region]
           lock_table_name = ns_config[:state][:config][:lock]
-          state.create_bucket(name: bucket_name, region: region)
-          state.create_dynamodb_table_for_lock(name: lock_table_name, region: region)
+
+          state.create_bucket(
+            name: bucket_name,
+            region: region
+          )
+
+          state.create_dynamodb_table_for_lock(
+            name: lock_table_name,
+            region: region
+          )
         end
       end
     end
