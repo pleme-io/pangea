@@ -10,7 +10,7 @@ module Pangea
   module Processor
     class << self
       def register_action(action)
-        permitted_actions = %i[plan apply show]
+        permitted_actions = %i[plan apply show destroy]
         @action = action if permitted_actions.map(&:to_s).include?(action.to_s)
         @action = 'plan' if @action.nil?
       end
