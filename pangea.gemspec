@@ -43,6 +43,7 @@ Gem::Specification.new do |spec|
     tty-table
     tty-option
     aws-sdk-s3
+    bigdecimal
     tty-progressbar
     aws-sdk-dynamodb
     abstract-synthesizer
