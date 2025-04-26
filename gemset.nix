@@ -244,7 +244,7 @@
       path = ./.;
       type = "path";
     };
-    version = "0.0.47";
+    version = "0.0.48";
   };
   parallel = {
     groups = ["default" "development"];
