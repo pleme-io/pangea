@@ -1,0 +1,6 @@
+#!/usr/bin/env ruby
+
+def fala
+  puts 'eu sou alainy'
+end
+fala
