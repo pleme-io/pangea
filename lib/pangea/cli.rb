@@ -9,7 +9,9 @@ require 'thor'
 module TheseUtils
   class << self
     def cfg
-      @cfg ||= Pangea::Utils.symbolize(Pangea::Config.config)
+      @cfg ||= Pangea::Utils.symbolize(
+        Pangea::Config.config
+      )
     end
 
     def state_init
