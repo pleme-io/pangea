@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    pangea (0.0.50)
+    pangea (0.0.51)
       abstract-synthesizer
       aws-sdk-dynamodb
       aws-sdk-s3
