@@ -35,6 +35,7 @@ Gem::Specification.new do |spec|
   end
 
   %w[
+    thor
     rexml
     bundler
     toml-rb
