@@ -64,6 +64,7 @@ module Pangea
       dir = File.join(init_dir, resource_type.to_s, resource_name.to_s)
       create_prepped_state_directory(dir, synthesizer.synthesis)
       system %(cd #{dir} && #{BIN} show -json tfplan > plan.json)
+      system %(cd #{dir} && #{BIN} init -input=false)
       system %(cd #{dir} && #{BIN} apply -auto-approve)
 
       synthesizer.clear_synthesis!
