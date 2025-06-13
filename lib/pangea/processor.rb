@@ -12,7 +12,6 @@ module Pangea
       def register_action(action)
         permitted_actions = %i[plan apply show destroy]
         @action = action if permitted_actions.map(&:to_s).include?(action.to_s)
-        @action = 'plan' if @action.nil?
       end
 
       def process(content)
@@ -84,9 +83,13 @@ module Pangea
           )
         )
 
-        system("cd #{local_cache} && #{bin} apply -auto-approve") if @action.to_s.eql?('apply')
-        system("cd #{local_cache} && #{bin} plan") if @action.to_s.eql?('plan')
-        system("cd #{local_cache} && #{bin} destroy -auto-approve") if @action.to_s.eql?('destroy')
+        if @action.to_s == 'apply'
+          system "cd #{local_cache} && #{bin} apply -auto-approve"
+        elsif @action.to_s == 'plan'
+          system "cd #{local_cache} && #{bin} plan"
+        elsif @action.to_s == 'destroy'
+          system "cd #{local_cache} && #{bin} destroy -auto-approve"
+        end
 
         template = Pangea::Utils.symbolize(
           JSON[File.read(
