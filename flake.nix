@@ -32,11 +32,14 @@
           cp bin/pangea $out/bin/pangea-real
           chmod +x $out/bin/pangea-real
 
-          # Wrap with correct Ruby env
+          # Find GEM_HOME dynamically (ruby-nix puts gems here)
+          GEM_HOME=$(find ${env}/lib/ruby/gems -maxdepth 1 -type d | tail -n1)
+          RUBYLIB=$(find ${env}/lib/ruby -maxdepth 1 -type d | tail -n1)
+
           makeWrapper $out/bin/pangea-real $out/bin/pangea \
-            --set GEM_HOME ${env}/lib/ruby/gems/${ruby.version} \
-            --set GEM_PATH ${env}/lib/ruby/gems/${ruby.version} \
-            --set RUBYLIB ${env}/lib/ruby/${ruby.version}
+            --set GEM_HOME $GEM_HOME \
+            --set GEM_PATH $GEM_HOME \
+            --set RUBYLIB $RUBYLIB
         '';
       };
     in {
