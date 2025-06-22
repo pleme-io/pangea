@@ -29,8 +29,14 @@
         buildInputs = [env ruby];
         installPhase = ''
           mkdir -p $out/bin
-          cp bin/pangea $out/bin/pangea
-          chmod +x $out/bin/pangea
+          cp bin/pangea $out/bin/pangea-real
+          chmod +x $out/bin/pangea-real
+
+          # Wrap with correct Ruby env
+          makeWrapper $out/bin/pangea-real $out/bin/pangea \
+            --set GEM_HOME ${env}/lib/ruby/gems/${ruby.version} \
+            --set GEM_PATH ${env}/lib/ruby/gems/${ruby.version} \
+            --set RUBYLIB ${env}/lib/ruby/${ruby.version}
         '';
       };
     in {
