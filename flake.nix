@@ -23,7 +23,21 @@
       };
       env = rnix-env.env;
       ruby = rnix-env.ruby;
+      pangea-cli = pkgs.stdenv.mkDerivation {
+        name = "pangea-cli";
+        src = ./.;
+        buildInputs = [env ruby];
+        installPhase = ''
+          mkdir -p $out/bin
+          cp bin/pangea $out/bin/pangea
+          chmod +x $out/bin/pangea
+        '';
+      };
     in {
+      packages = {
+        default = pangea-cli;
+        pangea = pangea-cli;
+      };
       devShells = rec {
         default = dev;
         dev = pkgs.mkShell {
