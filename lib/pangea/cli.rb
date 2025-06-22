@@ -43,7 +43,7 @@ module Pangea
   class Cli < Thor
     desc 'apply FILE', 'apply a FILE of pangea code'
     def apply(file)
-      Pangea::Processor.register_action('plan')
+      Pangea::Processor.register_action('apply')
       Pangea::Processor.process(File.read(file))
     end
 
