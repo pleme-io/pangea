@@ -26,6 +26,7 @@
       pangea-cli = pkgs.stdenv.mkDerivation {
         name = "pangea-cli";
         src = ./.;
+        nativeBuildInputs = [pkgs.makeWrapper];
         buildInputs = [env ruby];
         installPhase = ''
           mkdir -p $out/bin
