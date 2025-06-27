@@ -18,23 +18,7 @@ module Pangea
         instance_eval(content)
       end
 
-      def synthesizer
-        @synthesizer ||= TerraformSynthesizer.new
-      end
-
-      def config
-        @config ||= Pangea::Utils.symbolize(
-          Pangea::Config.config
-        )
-      end
-
-      def namespace
-        @namespace ||= ENV.fetch('PANGEA_NAMESPACE')
-      end
-
-      def s3
-        @s3 = Aws::S3::Client.new
-      end
+      attr_reader :synthesizer, :config, :namespace, :s3_client
 
       def bin
         'tofu'
@@ -42,21 +26,21 @@ module Pangea
 
       def namespace_config
         sns = ''
-        config[:namespaces].each_key do |ns|
-          sns = config[:namespaces][ns] if ns.to_s.eql?(namespace.to_s)
+        @config[:namespaces].each_key do |ns|
+          sns = @config[:namespaces][ns] if ns.to_s.eql?(@namespace.to_s)
         end
         @namespace_config ||= sns
       end
 
       def template(name, &block)
-        prefix = "#{namespace}/#{name}"
-        pangea_home = %(#{Dir.home}/.pangea/#{namespace})
+        prefix = "#{@namespace}/#{name}"
+        pangea_home = %(#{Dir.home}/.pangea/#{@namespace})
         local_cache = File.join(pangea_home, prefix)
         `mkdir -p #{local_cache}` unless Dir.exist?(local_cache)
-        synthesizer.synthesize(&block)
+        @synthesizer.synthesize(&block)
         sns = namespace_config
-        unless synthesizer.synthesis[:terraform]
-          synthesizer.synthesize do
+        unless @synthesizer.synthesis[:terraform]
+          @synthesizer.synthesize do
             terraform do
               backend(
                 s3: {
@@ -73,7 +57,7 @@ module Pangea
         File.write(
           File.join(
             local_cache, 'main.tf.json'
-          ), JSON[synthesizer.synthesis]
+          ), JSON[@synthesizer.synthesis]
         )
 
         system("cd #{local_cache} && #{bin} init -input=false") unless File.exist?(
@@ -99,6 +83,5 @@ module Pangea
         puts JSON.pretty_generate(template) if @action.to_s.eql?('show')
         { template: template }
       end
-    end
   end
 end

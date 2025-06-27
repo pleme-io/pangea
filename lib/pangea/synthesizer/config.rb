@@ -11,20 +11,22 @@ require %(yaml)
 class ConfigSynthesizer < AbstractSynthesizer
   include Constants
 
-  def synthesize(content, ext)
-    case ext.to_s
-    when %(yaml), %(yml)
-      translation[:template] = YAML.safe_load(content)
-    when %(toml)
-      translation[:template] = TomlRB.parse(content)
-    when %(json)
-      translation[:template] = JSON.parse(content)
-    when %(rb)
-      if block_given?
-        yield
-      else
+  def synthesize(content = nil, ext = nil, &block)
+    if block_given?
+      instance_eval(&block)
+    elsif content && ext
+      case ext.to_s
+      when %(yaml), %(yml)
+        translation[:template] = YAML.safe_load(content)
+      when %(toml)
+        translation[:template] = TomlRB.parse(content)
+      when %(json)
+        translation[:template] = JSON.parse(content)
+      when %(rb)
         instance_eval(content)
       end
+    else
+      raise ArgumentError, "Either a block or content and extension must be provided."
     end
   end
 
