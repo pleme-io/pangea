@@ -23,7 +23,31 @@
       };
       env = rnix-env.env;
       ruby = rnix-env.ruby;
+      pangea-cli = pkgs.stdenv.mkDerivation {
+        name = "pangea-cli";
+        src = ./.;
+        nativeBuildInputs = [pkgs.makeWrapper];
+        buildInputs = [env ruby];
+        installPhase = ''
+          mkdir -p $out/bin
+          cp bin/pangea $out/bin/pangea-real
+          chmod +x $out/bin/pangea-real
+
+          # Find GEM_HOME dynamically (ruby-nix puts gems here)
+          GEM_HOME=$(find ${env}/lib/ruby/gems -maxdepth 1 -type d | tail -n1)
+          RUBYLIB=$(find ${env}/lib/ruby -maxdepth 1 -type d | tail -n1)
+
+          makeWrapper $out/bin/pangea-real $out/bin/pangea \
+            --set GEM_HOME $GEM_HOME \
+            --set GEM_PATH $GEM_HOME \
+            --set RUBYLIB $RUBYLIB
+        '';
+      };
     in {
+      packages = {
+        default = pangea-cli;
+        pangea = pangea-cli;
+      };
       devShells = rec {
         default = dev;
         dev = pkgs.mkShell {
