@@ -1,0 +1,50 @@
+# frozen_string_literal: true
+
+module Pangea
+  module Resources
+    module AWS
+      class GlueJobAttributes < Dry::Struct
+        @attributes: Hash[Symbol, untyped]
+        
+        attr_reader name: String
+        attr_reader role_arn: String
+        attr_reader description: String?
+        attr_reader glue_version: String?
+        attr_reader command: Hash[Symbol, untyped]
+        attr_reader default_arguments: Hash[String, String]
+        attr_reader non_overridable_arguments: Hash[String, String]
+        attr_reader connections: Array[String]
+        attr_reader max_capacity: Float?
+        attr_reader worker_type: String?
+        attr_reader number_of_workers: Integer?
+        attr_reader timeout: Integer?
+        attr_reader max_retries: Integer?
+        attr_reader security_configuration: String?
+        attr_reader notification_property: Hash[Symbol, Integer?]?
+        attr_reader execution_property: Hash[Symbol, Integer?]
+        attr_reader tags: Hash[Symbol, String]
+        
+        def self.new: (Hash[Symbol, untyped] attributes) -> GlueJobAttributes
+        
+        # Query methods
+        def uses_worker_configuration?: () -> bool
+        def is_streaming_job?: () -> bool
+        def is_python_shell_job?: () -> bool
+        def is_etl_job?: () -> bool
+        
+        # Computed properties
+        def effective_glue_version: () -> String
+        def effective_python_version: () -> String
+        def estimated_dpu_capacity: () -> Float
+        def estimated_hourly_cost_usd: () -> Float
+        def configuration_warnings: () -> Array[String]
+        
+        # Class methods for defaults and recommendations
+        def self.default_arguments_for_job_type: (String | Symbol job_type, ?Hash[Symbol, String] options) -> Hash[String, String]
+        def self.worker_recommendations_for_workload: (String | Symbol workload_type, ?Integer? data_size_gb) -> Hash[Symbol, untyped]
+        
+        def to_h: () -> Hash[Symbol, untyped]
+      end
+    end
+  end
+end

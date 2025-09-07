@@ -1,0 +1,49 @@
+# RBS type definitions for AWS SSM Document types
+
+module Pangea
+  module Resources
+    module AWS
+      class SsmDocumentAttributes < Dry::Struct
+        attr_reader name: String
+        attr_reader document_type: String
+        attr_reader content: String
+        attr_reader document_format: String
+        attr_reader target_type: String?
+        attr_reader schema_version: String?
+        attr_reader version_name: String?
+        attr_reader permissions: Hash[Symbol, untyped]
+        attr_reader requires: Array[Hash[Symbol, untyped]]
+        attr_reader attachments_source: Array[Hash[Symbol, untyped]]
+        attr_reader tags: Hash[Symbol, String]
+        
+        def is_command_document?: () -> bool
+        def is_automation_document?: () -> bool
+        def is_policy_document?: () -> bool
+        def is_session_document?: () -> bool
+        def uses_json_format?: () -> bool
+        def uses_yaml_format?: () -> bool
+        def has_target_type?: () -> bool
+        def has_schema_version?: () -> bool
+        def has_version_name?: () -> bool
+        def is_shared?: () -> bool
+        def is_private?: () -> bool
+        def has_dependencies?: () -> bool
+        def has_attachments?: () -> bool
+        def shared_with_accounts: () -> Array[String]
+        def dependency_names: () -> Array[String]
+        def parsed_content: () -> Hash[String, untyped]?
+        def document_steps: () -> Array[Hash[String, untyped]]
+        def estimated_execution_time: () -> String
+      end
+
+      module SsmDocumentConfigs
+        def self.command_document: (String, (Array[String] | String), ?description: String?) -> Hash[Symbol, untyped]
+        def self.powershell_command_document: (String, (Array[String] | String), ?description: String?) -> Hash[Symbol, untyped]
+        def self.automation_document: (String, Array[Hash[Symbol, untyped]], ?description: String?) -> Hash[Symbol, untyped]
+        def self.session_document: (String, ?shell_profile: Hash[Symbol, untyped], ?description: String?) -> Hash[Symbol, untyped]
+        def self.package_install_document: (String, String, ?version: String, ?description: String?) -> Hash[Symbol, untyped]
+        def self.shared_document: (String, String, Array[String], ?version: String?) -> Hash[Symbol, untyped]
+      end
+    end
+  end
+end

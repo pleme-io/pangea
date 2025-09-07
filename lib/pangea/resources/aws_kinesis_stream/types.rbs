@@ -1,0 +1,43 @@
+# frozen_string_literal: true
+
+module Pangea
+  module Resources
+    module AWS
+      module Types
+        class KinesisStreamAttributes < Dry::Struct
+          @attributes: Hash[Symbol, untyped]
+          
+          attr_reader name: String
+          attr_reader shard_count: Integer
+          attr_reader retention_period: Integer
+          attr_reader shard_level_metrics: Array[String]
+          attr_reader encryption_type: String
+          attr_reader kms_key_id: String?
+          attr_reader stream_mode_details: Hash[Symbol, String]?
+          attr_reader tags: Hash[Symbol, String]
+          
+          def self.new: (Hash[Symbol, untyped] attributes) -> KinesisStreamAttributes
+          
+          # Validation methods
+          def self.valid_kms_key_id?: (String key_id) -> bool
+          
+          # Query methods
+          def is_encrypted?: () -> bool
+          def is_on_demand_mode?: () -> bool
+          def is_provisioned_mode?: () -> bool
+          def has_enhanced_metrics?: () -> bool
+          
+          # Computed properties
+          def max_throughput_per_shard_mbps: () -> Float
+          def max_throughput_per_shard_records: () -> Integer
+          def total_max_throughput_mbps: () -> (Float | nil)
+          def total_max_throughput_records: () -> (Integer | nil)
+          def retention_period_days: () -> Integer
+          def estimated_monthly_cost_usd: () -> (Float | String)
+          
+          def to_h: () -> Hash[Symbol, (String | Integer | Array[String] | Hash[Symbol, String] | nil)]
+        end
+      end
+    end
+  end
+end

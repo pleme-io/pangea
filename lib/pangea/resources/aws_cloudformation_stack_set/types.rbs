@@ -1,0 +1,48 @@
+# RBS type definitions for AWS CloudFormation Stack Set types
+
+module Pangea
+  module Resources
+    module AWS
+      class CloudFormationStackSetAttributes < Dry::Struct
+        attr_reader name: String
+        attr_reader template_body: String?
+        attr_reader template_url: String?
+        attr_reader description: String?
+        attr_reader parameters: Hash[String, String]
+        attr_reader capabilities: Array[String]
+        attr_reader permission_model: String
+        attr_reader auto_deployment: Hash[Symbol, untyped]?
+        attr_reader administration_role_arn: String?
+        attr_reader execution_role_name: String?
+        attr_reader operation_preferences: Hash[Symbol, untyped]?
+        attr_reader call_as: String
+        attr_reader tags: Hash[Symbol, String]
+        
+        def uses_template_body?: () -> bool
+        def uses_template_url?: () -> bool
+        def has_parameters?: () -> bool
+        def has_capabilities?: () -> bool
+        def has_description?: () -> bool
+        def is_service_managed?: () -> bool
+        def is_self_managed?: () -> bool
+        def has_auto_deployment?: () -> bool
+        def auto_deployment_enabled?: () -> bool
+        def retains_stacks_on_removal?: () -> bool
+        def has_operation_preferences?: () -> bool
+        def uses_parallel_deployment?: () -> bool
+        def uses_sequential_deployment?: () -> bool
+        def requires_iam_capabilities?: () -> bool
+        def template_source: () -> Symbol
+      end
+
+      module CloudFormationStackSetConfigs
+        def self.service_managed_stack_set: (String, String) -> Hash[Symbol, untyped]
+        def self.self_managed_stack_set: (String, String, String, String) -> Hash[Symbol, untyped]
+        def self.parallel_deployment_stack_set: (String, String) -> Hash[Symbol, untyped]
+        def self.conservative_deployment_stack_set: (String, String) -> Hash[Symbol, untyped]
+        def self.iam_stack_set: (String, String, String, String) -> Hash[Symbol, untyped]
+        def self.custom_operation_stack_set: (String, String, ?max_concurrent: Integer, ?failure_tolerance: Integer) -> Hash[Symbol, untyped]
+      end
+    end
+  end
+end

@@ -1,0 +1,17 @@
+# RBS type definitions for AWS CloudFront Origin Request Policy
+
+module Pangea
+  module Resources
+    module AWS
+      type cloudfront_origin_request_policy_attributes = {
+        name: String,
+        comment?: String?,
+        headers_config?: Hash[Symbol, untyped]?,
+        query_strings_config?: Hash[Symbol, untyped]?,
+        cookies_config?: Hash[Symbol, untyped]?
+      }
+
+      def aws_cloudfront_origin_request_policy: (Symbol name, cloudfront_origin_request_policy_attributes attributes) -> ResourceReference
+    end
+  end
+end

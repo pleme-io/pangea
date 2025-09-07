@@ -1,0 +1,10 @@
+# frozen_string_literal: true
+
+module Pangea
+  module Resources
+    module AWS
+      # Create AWS Config Delivery Channel resource
+      def aws_config_delivery_channel: (Symbol name, Hash[Symbol, untyped] attributes) -> ResourceReference
+    end
+  end
+end

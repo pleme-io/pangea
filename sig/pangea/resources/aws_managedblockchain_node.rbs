@@ -1,0 +1,71 @@
+# RBS type definitions for AWS Managed Blockchain Node resource
+
+module Pangea
+  module Resources
+    module AWS
+      # Instance type enumeration
+      type blockchain_instance_type = "bc.t3.small" | "bc.t3.medium" | "bc.t3.large" | "bc.t3.xlarge" | 
+                                     "bc.m5.large" | "bc.m5.xlarge" | "bc.m5.2xlarge" | "bc.m5.4xlarge" |
+                                     "bc.c5.large" | "bc.c5.xlarge" | "bc.c5.2xlarge" | "bc.c5.4xlarge"
+      
+      # State database type
+      type state_db_type = "LevelDB" | "CouchDB"
+      
+      # Performance tier
+      type performance_tier = :development | :standard | :performance | :high_performance | :unknown
+      
+      # CloudWatch configuration type
+      type node_cloudwatch_config = {
+        enabled?: bool?
+      }
+      
+      # Chaincode logs configuration type
+      type chaincode_logs_config = {
+        cloudwatch?: node_cloudwatch_config?
+      }
+      
+      # Peer logs configuration type
+      type peer_logs_config = {
+        cloudwatch?: node_cloudwatch_config?
+      }
+      
+      # Fabric logs configuration type
+      type fabric_node_logs_config = {
+        chaincode_logs?: chaincode_logs_config?,
+        peer_logs?: peer_logs_config?
+      }
+      
+      # Node log publishing configuration type
+      type node_log_publishing_configuration = {
+        fabric?: fabric_node_logs_config?
+      }
+      
+      # Node configuration type
+      type node_configuration = {
+        availability_zone: String,
+        instance_type: blockchain_instance_type,
+        log_publishing_configuration?: node_log_publishing_configuration?,
+        state_db?: state_db_type?
+      }
+      
+      # Recommended specs type
+      type recommended_specs = {
+        vcpu: Integer,
+        memory_gib: Integer,
+        network: String,
+        state_db: String
+      }
+      
+      # Managed blockchain node attributes type
+      type managedblockchain_node_attributes = {
+        network_id: String,
+        member_id?: String?,
+        node_configuration: node_configuration,
+        tags?: Hash[String, String]?
+      }
+      
+      # Managed blockchain node resource function
+      def aws_managedblockchain_node: (Symbol name, managedblockchain_node_attributes attributes) -> ResourceReference
+    end
+  end
+end

@@ -30,25 +30,32 @@ Gem::Specification.new do |spec|
     rubocop-rake
     rubocop-rspec
     debug_inspector
+    rbs
+    steep
+    typeprof
   ].each do |dep|
     spec.add_development_dependency dep
   end
 
   %w[
-    thor
+    tty-config
+    tty-table
+    tty-spinner
+    tty-progressbar
+    tty-logger
+    tty-box
+    pastel
+    diff-lcs
     rexml
     bundler
     toml-rb
-    tty-box
-    tty-color
-    tty-table
-    tty-option
     aws-sdk-s3
-    bigdecimal
-    tty-progressbar
     aws-sdk-dynamodb
     abstract-synthesizer
     terraform-synthesizer
+    dry-types
+    dry-struct
+    dry-validation
   ].each do |dep|
     spec.add_dependency dep
   end

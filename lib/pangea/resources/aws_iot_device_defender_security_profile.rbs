@@ -1,0 +1,14 @@
+module Pangea
+  module Resources
+    module AWS
+      class IotDeviceDefenderSecurityProfileAttributes < Dry::Struct
+        def target_count: () -> Integer
+        def behavior_count: () -> Integer
+        def has_ml_behaviors?: () -> bool
+        def defender_coverage_level: () -> String
+      end
+
+      def aws_iot_device_defender_security_profile: (Symbol name, Hash[Symbol, untyped] attributes) -> ResourceReference
+    end
+  end
+end

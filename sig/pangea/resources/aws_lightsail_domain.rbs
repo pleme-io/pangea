@@ -1,0 +1,12 @@
+module Pangea
+  module Resources
+    module AWS
+      # AWS Lightsail domain resource function
+      #
+      # @param name [Symbol] The resource name
+      # @param attributes [Hash] Domain attributes
+      # @return [ResourceReference] Reference object with outputs
+      def aws_lightsail_domain: (Symbol name, Hash[Symbol, untyped] attributes) -> ResourceReference
+    end
+  end
+end

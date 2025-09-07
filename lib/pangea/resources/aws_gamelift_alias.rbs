@@ -1,0 +1,44 @@
+# TypeProf 0.21.2
+
+module Pangea
+  module Resources
+    module AwsGameliftAlias
+      module Types
+        class RoutingStrategy
+          attr_reader type: "SIMPLE" | "TERMINAL"
+          attr_reader fleet_id: String?
+          attr_reader message: String?
+
+          def self.from_dynamic: (Hash[Symbol, untyped] d) -> RoutingStrategy
+        end
+
+        class Attributes
+          attr_reader name: String
+          attr_reader description: String
+          attr_reader routing_strategy: RoutingStrategy
+          attr_reader tags: Hash[String, String]?
+
+          def self.from_dynamic: (Hash[Symbol, untyped] d) -> Attributes
+        end
+
+        class Reference
+          attr_reader id: String
+          attr_reader arn: String
+          attr_reader creation_time: String
+          attr_reader last_updated_time: String
+        end
+      end
+
+      module Resource
+        def self.validate: (Hash[Symbol, untyped] definition) -> Types::Attributes
+        def self.defaults: () -> Hash[Symbol, untyped]
+        def self.required_attributes: () -> Array[Symbol]
+        def self.compute_attributes: (Hash[Symbol, untyped] definition) -> Types::Reference
+        
+        private
+        
+        def self.ref: (String | Symbol name, Symbol attribute) -> String
+      end
+    end
+  end
+end

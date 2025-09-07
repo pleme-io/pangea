@@ -1,0 +1,12 @@
+module Pangea
+  module Resources
+    module AWS
+      # AWS Lightsail disk attachment resource function
+      #
+      # @param name [Symbol] The resource name
+      # @param attributes [Hash] Disk attachment attributes
+      # @return [ResourceReference] Reference object with outputs
+      def aws_lightsail_disk_attachment: (Symbol name, Hash[Symbol, untyped] attributes) -> ResourceReference
+    end
+  end
+end

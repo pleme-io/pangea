@@ -1,0 +1,36 @@
+# RBS type definitions for AWS Cognito User
+
+module Pangea
+  module Resources
+    module AWS
+      # Cognito User attributes
+      type cognito_user_attributes = {
+        username: String,
+        user_pool_id: String,
+        attributes?: Hash[String, String]?,
+        temporary_password?: String?,
+        force_alias_creation?: bool?,
+        message_action?: ("RESEND" | "SUPPRESS")?,
+        desired_delivery_mediums?: Array[("SMS" | "EMAIL")]?
+      }
+
+      # Cognito User computed properties
+      type cognito_user_computed_properties = {
+        has_email: bool,
+        has_phone_number: bool,
+        has_custom_attributes: bool,
+        custom_attributes: Hash[String, String],
+        standard_attributes: Hash[String, String]
+      }
+
+      # AWS Cognito User resource function
+      def aws_cognito_user: (Symbol name, cognito_user_attributes attributes) -> ResourceReference
+
+      # Pre-configured user templates
+      module UserTemplates
+        def self.email_user: (String username, String user_pool_id, String email, ?String? name, ?String? temporary_password) -> Hash[Symbol, untyped]
+        def self.admin_user: (String username, String user_pool_id, String email, String name, ?String? temporary_password) -> Hash[Symbol, untyped]
+      end
+    end
+  end
+end

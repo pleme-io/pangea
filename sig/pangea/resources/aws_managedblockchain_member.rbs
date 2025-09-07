@@ -1,0 +1,73 @@
+# RBS type definitions for AWS Managed Blockchain Member resource
+
+module Pangea
+  module Resources
+    module AWS
+      # Member type enumeration
+      type member_type = :founding_member | :invited_member
+      
+      # Compliance level enumeration
+      type compliance_level = :high | :medium | :low
+      
+      # Member capability symbols
+      type member_capability = :certificate_authority | :peer_node_creation | :chaincode_deployment | :channel_creation | :ca_audit_logging
+      
+      # Security feature symbols
+      type security_feature = :x509_certificates | :msp_identity_management | :tls_encryption | :admin_credentials
+      
+      # Compliance feature symbols
+      type compliance_feature = :audit_trail | :cloudwatch_integration | :resource_tagging
+      
+      # Member Fabric configuration type
+      type member_fabric_config = {
+        admin_username: String,
+        admin_password: String
+      }
+      
+      # Member framework configuration type
+      type member_framework_config = {
+        member_fabric_configuration?: member_fabric_config?
+      }
+      
+      # CloudWatch configuration type
+      type member_cloudwatch_config = {
+        enabled?: bool?
+      }
+      
+      # CA logs configuration type
+      type member_ca_logs_config = {
+        cloudwatch?: member_cloudwatch_config?
+      }
+      
+      # Fabric logs configuration type
+      type member_fabric_logs_config = {
+        ca_logs?: member_ca_logs_config?
+      }
+      
+      # Member log publishing configuration type
+      type member_log_publishing_configuration = {
+        fabric?: member_fabric_logs_config?
+      }
+      
+      # Member configuration type
+      type member_config = {
+        name: String,
+        description?: String?,
+        framework_configuration: member_framework_config,
+        log_publishing_configuration?: member_log_publishing_configuration?,
+        tags?: Hash[String, String]?
+      }
+      
+      # Managed blockchain member attributes type
+      type managedblockchain_member_attributes = {
+        network_id: String,
+        member_configuration: member_config,
+        invitation_id?: String?,
+        tags?: Hash[String, String]?
+      }
+      
+      # Managed blockchain member resource function
+      def aws_managedblockchain_member: (Symbol name, managedblockchain_member_attributes attributes) -> ResourceReference
+    end
+  end
+end

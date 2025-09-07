@@ -1,0 +1,20 @@
+module Pangea
+  module Resources
+    module AWS
+      class MediaConvertQueueAttributes < Dry::Struct
+        def name: () -> String
+        def description: () -> String
+        def pricing_plan: () -> ("ON_DEMAND" | "RESERVED")
+        def reservation_plan_settings: () -> Hash[Symbol, untyped]
+        def status: () -> ("ACTIVE" | "PAUSED")
+        def tags: () -> Hash[String | Symbol, String]
+        def reserved_pricing?: () -> bool
+        def on_demand_pricing?: () -> bool
+        def active?: () -> bool
+        def paused?: () -> bool
+      end
+
+      def aws_media_convert_queue: (Symbol name, Hash[Symbol, untyped] attributes) -> ResourceReference
+    end
+  end
+end

@@ -1,0 +1,46 @@
+# frozen_string_literal: true
+
+module Pangea
+  module Resources
+    module AWS
+      class EmrStepAttributes < Dry::Struct
+        @attributes: Hash[Symbol, untyped]
+        
+        attr_reader name: String
+        attr_reader cluster_id: String
+        attr_reader action_on_failure: String
+        attr_reader hadoop_jar_step: Hash[Symbol, untyped]
+        attr_reader description: String?
+        attr_reader step_concurrency_level: Integer?
+        
+        def self.new: (Hash[Symbol, untyped] attributes) -> EmrStepAttributes
+        
+        # Configuration query methods
+        def uses_command_runner?: () -> bool
+        def uses_s3_jar?: () -> bool
+        def has_custom_main_class?: () -> bool
+        
+        # Step analysis methods
+        def step_type: () -> String
+        def argument_count: () -> Integer
+        def property_count: () -> Integer
+        def is_likely_long_running?: () -> bool
+        def complexity_score: () -> Float
+        def configuration_warnings: () -> Array[String]
+        
+        # Class methods for creating common step types
+        def self.spark_step: (String name, String spark_app_path, ?Hash[Symbol, untyped] options) -> Hash[Symbol, untyped]
+        def self.hive_step: (String name, String hive_script_path, ?Hash[Symbol, untyped] options) -> Hash[Symbol, untyped]
+        def self.pig_step: (String name, String pig_script_path, ?Hash[Symbol, untyped] options) -> Hash[Symbol, untyped]
+        def self.hadoop_streaming_step: (String name, String mapper, String reducer, String input_path, String output_path, ?Hash[Symbol, untyped] options) -> Hash[Symbol, untyped]
+        def self.custom_jar_step: (String name, String jar_path, ?String? main_class, ?Hash[Symbol, untyped] options) -> Hash[Symbol, untyped]
+        def self.debug_step: (String name, ?Hash[Symbol, untyped] options) -> Hash[Symbol, untyped]
+        def self.s3_copy_step: (String name, String source_path, String dest_path, ?Hash[Symbol, untyped] options) -> Hash[Symbol, untyped]
+        def self.distcp_step: (String name, String source_path, String dest_path, ?Hash[Symbol, untyped] options) -> Hash[Symbol, untyped]
+        def self.common_step_patterns: () -> Hash[Symbol, Hash[Symbol, String]]
+        
+        def to_h: () -> Hash[Symbol, untyped]
+      end
+    end
+  end
+end

@@ -1,0 +1,32 @@
+# RBS type definitions for AWS EventBridge Bus types
+
+module Pangea
+  module Resources
+    module AWS
+      class EventBridgeBusAttributes < Dry::Struct
+        attr_reader name: String
+        attr_reader event_source_name: String?
+        attr_reader kms_key_id: String?
+        attr_reader tags: Hash[Symbol, String]
+        
+        def is_default?: () -> bool
+        def is_custom?: () -> bool
+        def is_aws_service?: () -> bool
+        def is_partner?: () -> bool
+        def has_encryption?: () -> bool
+        def bus_type: () -> String
+        def estimated_monthly_cost: () -> String
+        def max_rules_per_bus: () -> (Integer | String)
+      end
+
+      module EventBridgeBusConfigs
+        def self.simple_custom_bus: (String) -> Hash[Symbol, untyped]
+        def self.encrypted_custom_bus: (String, kms_key_id: String) -> Hash[Symbol, untyped]
+        def self.partner_event_bus: (String, event_source_name: String) -> Hash[Symbol, untyped]
+        def self.application_event_bus: (String, application: String, ?environment: String) -> Hash[Symbol, untyped]
+        def self.tenant_event_bus: (String, ?environment: String) -> Hash[Symbol, untyped]
+        def self.service_mesh_event_bus: (String, ?version: String) -> Hash[Symbol, untyped]
+      end
+    end
+  end
+end

@@ -1,0 +1,29 @@
+module Pangea
+  module Resources
+    module AWS
+      class MediaPackageOriginEndpointAttributes < Dry::Struct
+        def channel_id: () -> String
+        def id: () -> String
+        def description: () -> String
+        def manifest_name: () -> String
+        def hls_package: () -> Hash[Symbol, untyped]
+        def dash_package: () -> Hash[Symbol, untyped]
+        def cmaf_package: () -> Hash[Symbol, untyped]
+        def mss_package: () -> Hash[Symbol, untyped]
+        def startover_window_seconds: () -> Integer?
+        def time_delay_seconds: () -> Integer?
+        def whitelist: () -> Array[String]
+        def authorization: () -> Hash[Symbol, untyped]
+        def tags: () -> Hash[String | Symbol, String]
+        def package_type: () -> (:hls | :dash | :cmaf | :mss | nil)
+        def has_authorization?: () -> bool
+        def has_whitelist?: () -> bool
+        def has_startover?: () -> bool
+        def has_time_delay?: () -> bool
+        def supports_ads?: () -> bool
+      end
+
+      def aws_media_package_origin_endpoint: (Symbol name, Hash[Symbol, untyped] attributes) -> ResourceReference
+    end
+  end
+end

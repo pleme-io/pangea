@@ -1,0 +1,27 @@
+# RBS type definitions for AWS CloudWatch Log Destination Policy
+
+module Pangea
+  module Resources
+    module AWS
+      # CloudWatch Log Destination Policy attributes
+      type cloudwatch_log_destination_policy_attributes = {
+        destination_name: String,
+        access_policy: String,
+        force_update?: bool?
+      }
+
+      # CloudWatch Log Destination Policy computed properties
+      type cloudwatch_log_destination_policy_computed_properties = {
+        policy_statements: Array[Hash[String, untyped]],
+        allowed_principals: Array[String],
+        denied_principals: Array[String],
+        allows_organization: bool,
+        allows_all_accounts: bool,
+        allowed_account_ids: Array[String]
+      }
+
+      # AWS CloudWatch Log Destination Policy resource function
+      def aws_cloudwatch_log_destination_policy: (Symbol name, cloudwatch_log_destination_policy_attributes attributes) -> ResourceReference
+    end
+  end
+end

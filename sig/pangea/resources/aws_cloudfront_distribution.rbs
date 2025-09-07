@@ -1,0 +1,124 @@
+# RBS type definitions for AWS CloudFront Distribution
+
+module Pangea
+  module Resources
+    module AWS
+      # Origin configuration types
+      type origin_config = {
+        domain_name: String,
+        origin_id: String,
+        origin_path?: String?,
+        connection_attempts?: Integer?,
+        connection_timeout?: Integer?,
+        s3_origin_config?: {
+          origin_access_identity?: String?,
+          origin_access_control_id?: String?
+        }?,
+        custom_origin_config?: {
+          http_port?: Integer?,
+          https_port?: Integer?,
+          origin_protocol_policy: String,
+          origin_ssl_protocols?: Array[String]?,
+          origin_keepalive_timeout?: Integer?,
+          origin_read_timeout?: Integer?
+        }?,
+        origin_shield?: {
+          enabled?: bool?,
+          origin_shield_region?: String?
+        }?,
+        custom_header?: Array[{
+          name: String,
+          value: String
+        }]?
+      }
+
+      # Cache behavior configuration
+      type cache_behavior_config = {
+        target_origin_id: String,
+        viewer_protocol_policy?: String?,
+        allowed_methods?: Array[String]?,
+        cached_methods?: Array[String]?,
+        cache_policy_id?: String?,
+        origin_request_policy_id?: String?,
+        response_headers_policy_id?: String?,
+        realtime_log_config_arn?: String?,
+        smooth_streaming?: bool?,
+        trusted_signers?: Array[String]?,
+        trusted_key_groups?: Array[String]?,
+        compress?: bool?,
+        field_level_encryption_id?: String?,
+        function_association?: Array[{
+          event_type: String,
+          function_arn: String
+        }]?,
+        lambda_function_association?: Array[{
+          event_type: String,
+          lambda_arn: String,
+          include_body?: bool?
+        }]?
+      }
+
+      # CloudFront Distribution attributes
+      type cloudfront_distribution_attributes = {
+        origin: Array[origin_config],
+        default_cache_behavior: cache_behavior_config,
+        ordered_cache_behavior?: Array[cache_behavior_config & { path_pattern: String }]?,
+        comment?: String?,
+        default_root_object?: String?,
+        enabled?: bool?,
+        http_version?: String?,
+        is_ipv6_enabled?: bool?,
+        price_class?: String?,
+        custom_error_response?: Array[{
+          error_code: Integer,
+          response_code?: Integer?,
+          response_page_path?: String?,
+          error_caching_min_ttl?: Integer?
+        }]?,
+        restrictions?: {
+          geo_restriction?: {
+            restriction_type?: String?,
+            locations?: Array[String]?
+          }?
+        }?,
+        viewer_certificate?: {
+          acm_certificate_arn?: String?,
+          iam_certificate_id?: String?,
+          cloudfront_default_certificate?: bool?,
+          ssl_support_method?: String?,
+          minimum_protocol_version?: String?,
+          certificate_source?: String?
+        }?,
+        aliases?: Array[String]?,
+        web_acl_id?: String?,
+        retain_on_delete?: bool?,
+        wait_for_deployment?: bool?,
+        tags?: Hash[String, String]?
+      }
+
+      # CloudFront Distribution computed properties
+      type cloudfront_distribution_computed_properties = {
+        total_origins_count: Integer,
+        total_behaviors_count: Integer,
+        has_custom_ssl: bool,
+        uses_cloudfront_ssl: bool,
+        has_custom_domain: bool,
+        has_geographic_restrictions: bool,
+        has_custom_error_pages: bool,
+        has_origin_shield: bool,
+        has_lambda_at_edge: bool,
+        has_cloudfront_functions: bool,
+        supports_http2: bool,
+        ipv6_enabled: bool,
+        estimated_cost_tier: String,
+        s3_origins_count: Integer,
+        custom_origins_count: Integer,
+        primary_domain: String,
+        security_profile: String
+      }
+
+      # AWS CloudFront Distribution resource function
+      def aws_cloudfront_distribution: (Symbol name, cloudfront_distribution_attributes attributes) -> ResourceReference
+    end
+  end
+end

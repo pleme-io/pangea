@@ -1,0 +1,18 @@
+module Pangea
+  module Resources
+    module AWS
+      class ElementalDataPlaneChannelAttributes < Dry::Struct
+        def name: () -> String
+        def description: () -> String
+        def channel_type: () -> ("LIVE" | "PLAYOUT")
+        def input_specifications: () -> Array[Hash[Symbol, untyped]]
+        def tags: () -> Hash[String | Symbol, String]
+        def live_channel?: () -> bool
+        def playout_channel?: () -> bool
+        def has_input_specs?: () -> bool
+      end
+
+      def aws_elemental_data_plane_channel: (Symbol name, Hash[Symbol, untyped] attributes) -> ResourceReference
+    end
+  end
+end

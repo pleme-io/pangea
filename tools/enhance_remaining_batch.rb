@@ -1,0 +1,47 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require_relative 'resource_enhancer'
+require_relative 'complete_resource_data'
+
+# Override the RESOURCE_DATA constant with our complete data
+ResourceEnhancer.const_set(:RESOURCE_DATA, COMPLETE_RESOURCE_DATA)
+
+# List of remaining resources to enhance
+REMAINING_RESOURCES = COMPLETE_RESOURCE_DATA.keys
+
+puts "🚀 Enhancing #{REMAINING_RESOURCES.size} remaining database resources..."
+puts "-" * 60
+
+successful = 0
+failed = []
+
+REMAINING_RESOURCES.each_with_index do |resource, index|
+  print "[#{index + 1}/#{REMAINING_RESOURCES.size}] Enhancing #{resource}... "
+  
+  begin
+    enhancer = ResourceEnhancer.new(resource)
+    if enhancer.enhance!
+      successful += 1
+      puts "✅"
+    else
+      failed << { resource: resource, error: "Enhancement returned false" }
+      puts "❌ (returned false)"
+    end
+  rescue => e
+    failed << { resource: resource, error: e.message }
+    puts "❌ (#{e.message})"
+  end
+end
+
+puts "-" * 60
+puts "\n📊 Summary:"
+puts "   ✅ Successful: #{successful}"
+puts "   ❌ Failed: #{failed.size}"
+
+if failed.any?
+  puts "\n❌ Failed resources:"
+  failed.each do |failure|
+    puts "   - #{failure[:resource]}: #{failure[:error]}"
+  end
+end

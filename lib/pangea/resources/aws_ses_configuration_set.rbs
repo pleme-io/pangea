@@ -1,0 +1,35 @@
+# RBS type definitions for AWS SES Configuration Set resource
+
+module Pangea
+  module Resources
+    module AWS
+      module Types
+        type ses_tls_policy = "Require" | "Optional"
+
+        interface _SesDeliveryOptions
+          def tls_policy?: () -> ses_tls_policy?
+        end
+
+        class SesConfigurationSetAttributes < Dry::Struct
+          def self.new: (Hash[Symbol, untyped] attributes) -> instance
+
+          def name: () -> String
+          def delivery_options?: () -> _SesDeliveryOptions?
+          def reputation_metrics_enabled?: () -> bool?
+          def sending_enabled?: () -> bool?
+        end
+      end
+
+      # Create an AWS SES Configuration Set
+      def aws_ses_configuration_set: (
+        Symbol name,
+        ?name: String,
+        ?delivery_options: {
+          ?tls_policy: Types::ses_tls_policy
+        },
+        ?reputation_metrics_enabled: bool,
+        ?sending_enabled: bool
+      ) -> ResourceReference
+    end
+  end
+end

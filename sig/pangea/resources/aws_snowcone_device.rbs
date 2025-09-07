@@ -1,0 +1,12 @@
+module Pangea
+  module Resources
+    module AWS
+      # Aws Snowcone Device resource function
+      #
+      # @param name [Symbol] The resource name
+      # @param attributes [Hash] Resource attributes
+      # @return [ResourceReference] Reference object with outputs
+      def aws_snowcone_device: (Symbol name, Hash[Symbol, untyped] attributes) -> ResourceReference
+    end
+  end
+end

@@ -1,0 +1,49 @@
+# RBS type definitions for AWS SNS Subscription
+
+module Pangea
+  module Resources
+    module AWS
+      # SNS subscription attributes type
+      type sns_subscription_attributes = {
+        topic_arn: String,
+        protocol: ("email" | "email-json" | "sms" | "sqs" | "lambda" | "http" | "https" | "application" | "firehose"),
+        endpoint: String,
+        ?filter_policy: String?,
+        ?filter_policy_scope: ("MessageAttributes" | "MessageBody"),
+        ?raw_message_delivery: bool,
+        ?redrive_policy: String?,
+        ?subscription_role_arn: String?,
+        ?delivery_policy: String?,
+        ?endpoint_auto_confirms: bool,
+        ?confirmation_timeout_in_minutes: Integer?
+      }
+
+      # AWS SNS Subscription resource function
+      def aws_sns_subscription: (Symbol name, sns_subscription_attributes attributes) -> ResourceReference
+
+      # SNS Subscription Attributes class
+      class SNSSubscriptionAttributes < Dry::Struct
+        attr_reader topic_arn: String
+        attr_reader protocol: String
+        attr_reader endpoint: String
+        attr_reader filter_policy: String?
+        attr_reader filter_policy_scope: String
+        attr_reader raw_message_delivery: bool
+        attr_reader redrive_policy: String?
+        attr_reader subscription_role_arn: String?
+        attr_reader delivery_policy: String?
+        attr_reader endpoint_auto_confirms: bool
+        attr_reader confirmation_timeout_in_minutes: Integer?
+
+        def requires_confirmation?: () -> bool
+        def supports_filter_policy?: () -> bool
+        def supports_raw_delivery?: () -> bool
+        def supports_dlq?: () -> bool
+        def is_email_subscription?: () -> bool
+        def is_webhook_subscription?: () -> bool
+        def filter_policy_attributes: () -> Array[String]
+        def has_numeric_filters?: () -> bool
+      end
+    end
+  end
+end

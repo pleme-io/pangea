@@ -1,0 +1,47 @@
+# RBS type definitions for AWS SSM Parameter types
+
+module Pangea
+  module Resources
+    module AWS
+      class SsmParameterAttributes < Dry::Struct
+        attr_reader name: String
+        attr_reader type: String
+        attr_reader value: String
+        attr_reader description: String?
+        attr_reader key_id: String?
+        attr_reader tier: String
+        attr_reader allowed_pattern: String?
+        attr_reader data_type: String?
+        attr_reader overwrite: bool
+        attr_reader tags: Hash[Symbol, String]
+        
+        def is_secure_string?: () -> bool
+        def is_string_list?: () -> bool
+        def is_string?: () -> bool
+        def uses_kms_key?: () -> bool
+        def is_advanced_tier?: () -> bool
+        def is_standard_tier?: () -> bool
+        def has_description?: () -> bool
+        def has_allowed_pattern?: () -> bool
+        def has_data_type?: () -> bool
+        def allows_overwrite?: () -> bool
+        def is_hierarchical?: () -> bool
+        def parameter_path: () -> String
+        def parameter_name_only: () -> String
+        def string_list_values: () -> Array[String]
+        def estimated_monthly_cost: () -> String
+      end
+
+      module SsmParameterConfigs
+        def self.string_parameter: (String, String, ?description: String?) -> Hash[Symbol, untyped]
+        def self.secure_parameter: (String, String, ?key_id: String?, ?description: String?) -> Hash[Symbol, untyped]
+        def self.string_list_parameter: (String, (Array[String] | String), ?description: String?) -> Hash[Symbol, untyped]
+        def self.config_parameter: (String, String, String, ?description: String?) -> Hash[Symbol, untyped]
+        def self.advanced_parameter: (String, String, ?description: String?) -> Hash[Symbol, untyped]
+        def self.database_config_parameter: (String, String, ?key_id: String?) -> Hash[Symbol, untyped]
+        def self.app_config_parameter: (String, String, ?description: String?) -> Hash[Symbol, untyped]
+        def self.ami_parameter: (String, String, ?description: String?) -> Hash[Symbol, untyped]
+      end
+    end
+  end
+end

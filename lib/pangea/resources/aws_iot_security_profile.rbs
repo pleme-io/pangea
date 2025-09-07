@@ -1,0 +1,14 @@
+module Pangea
+  module Resources
+    module AWS
+      class IotSecurityProfileAttributes < Dry::Struct
+        def behavior_count: () -> Integer
+        def has_alert_targets?: () -> bool
+        def metric_count: () -> Integer
+        def security_coverage_score: () -> Integer
+      end
+
+      def aws_iot_security_profile: (Symbol name, Hash[Symbol, untyped] attributes) -> ResourceReference
+    end
+  end
+end

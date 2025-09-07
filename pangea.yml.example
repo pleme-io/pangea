@@ -1,0 +1,76 @@
+# Example Pangea Configuration File
+# This file defines namespaces and their backend configurations
+
+# Default namespace used when --namespace is not specified
+default_namespace: development
+
+# Namespace definitions
+namespaces:
+  # Local development - uses local state storage
+  development:
+    description: "Local development environment"
+    state:
+      type: local
+      path: "terraform.tfstate"
+    tags:
+      environment: development
+      managed_by: pangea
+
+  # Staging environment - uses S3 backend
+  staging:
+    description: "Staging environment with S3 backend"
+    state:
+      type: s3
+      bucket: "mycompany-terraform-state-staging"
+      key: "pangea/staging/terraform.tfstate"
+      region: "us-east-1"
+      dynamodb_table: "terraform-state-lock-staging"
+      encrypt: true
+    tags:
+      environment: staging
+      managed_by: pangea
+      cost_center: engineering
+
+  # Production environment - enhanced security
+  production:
+    description: "Production environment with encryption"
+    state:
+      type: s3
+      bucket: "mycompany-terraform-state-prod"
+      key: "pangea/production/terraform.tfstate"
+      region: "us-east-1"
+      dynamodb_table: "terraform-state-lock-prod"
+      encrypt: true
+      kms_key_id: "arn:aws:kms:us-east-1:123456789012:key/12345678-1234-1234-1234-123456789012"
+    tags:
+      environment: production
+      managed_by: pangea
+      compliance: pci
+      
+  # Multi-region production
+  production_eu:
+    description: "EU Production environment"
+    state:
+      type: s3
+      bucket: "mycompany-terraform-state-prod-eu"
+      key: "pangea/production-eu/terraform.tfstate" 
+      region: "eu-west-1"
+      dynamodb_table: "terraform-state-lock-prod-eu"
+      encrypt: true
+    tags:
+      environment: production
+      region: eu
+      managed_by: pangea
+
+# Additional configuration options
+modules:
+  # Path to shared Terraform modules
+  path: "modules"
+
+cache:
+  # Directory for caching Terraform providers and modules
+  directory: "~/.pangea/cache"
+
+terraform:
+  # Binary to use (defaults to 'tofu' for OpenTofu)
+  binary: "tofu"

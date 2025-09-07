@@ -1,0 +1,67 @@
+# RBS type definitions for AWS SQS Queue
+
+module Pangea
+  module Resources
+    module AWS
+      # SQS queue attributes type
+      type sqs_queue_attributes = {
+        name: String,
+        ?fifo_queue: bool,
+        ?content_based_deduplication: bool,
+        ?visibility_timeout_seconds: Integer,
+        ?message_retention_seconds: Integer,
+        ?max_message_size: Integer,
+        ?delay_seconds: Integer,
+        ?receive_wait_time_seconds: Integer,
+        ?redrive_policy: {
+          deadLetterTargetArn: String,
+          ?maxReceiveCount: Integer
+        },
+        ?redrive_allow_policy: {
+          redrivePermission: ("allowAll" | "denyAll" | "byQueue"),
+          ?sourceQueueArns: Array[String]
+        },
+        ?kms_master_key_id: String?,
+        ?kms_data_key_reuse_period_seconds: Integer,
+        ?sqs_managed_sse_enabled: bool,
+        ?deduplication_scope: ("messageGroup" | "queue"),
+        ?fifo_throughput_limit: ("perMessageGroupId" | "perQueue"),
+        ?policy: String?,
+        ?tags: Hash[String, String]
+      }
+
+      # AWS SQS Queue resource function
+      def aws_sqs_queue: (Symbol name, sqs_queue_attributes attributes) -> ResourceReference
+
+      # SQS Queue Attributes class
+      class SQSQueueAttributes < Dry::Struct
+        attr_reader name: String
+        attr_reader fifo_queue: bool
+        attr_reader content_based_deduplication: bool
+        attr_reader visibility_timeout_seconds: Integer
+        attr_reader message_retention_seconds: Integer
+        attr_reader max_message_size: Integer
+        attr_reader delay_seconds: Integer
+        attr_reader receive_wait_time_seconds: Integer
+        attr_reader redrive_policy: Hash[Symbol, untyped]
+        attr_reader redrive_allow_policy: Hash[Symbol, untyped]
+        attr_reader kms_master_key_id: String?
+        attr_reader kms_data_key_reuse_period_seconds: Integer
+        attr_reader sqs_managed_sse_enabled: bool
+        attr_reader deduplication_scope: String
+        attr_reader fifo_throughput_limit: String
+        attr_reader policy: String?
+        attr_reader tags: Hash[String, String]
+
+        def is_fifo?: () -> bool
+        def is_encrypted?: () -> bool
+        def has_dlq?: () -> bool
+        def long_polling_enabled?: () -> bool
+        def is_delay_queue?: () -> bool
+        def allows_all_sources?: () -> bool
+        def queue_type: () -> String
+        def encryption_type: () -> String
+      end
+    end
+  end
+end

@@ -1,0 +1,12 @@
+module Pangea
+  module Resources
+    module AWS
+      # AWS Lightsail certificate resource function
+      #
+      # @param name [Symbol] The resource name
+      # @param attributes [Hash] Certificate attributes
+      # @return [ResourceReference] Reference object with outputs
+      def aws_lightsail_certificate: (Symbol name, Hash[Symbol, untyped] attributes) -> ResourceReference
+    end
+  end
+end

@@ -1,0 +1,41 @@
+# frozen_string_literal: true
+
+module Pangea
+  module Resources
+    module AWS
+      class RedshiftSnapshotScheduleAttributes < Dry::Struct
+        @attributes: Hash[Symbol, untyped]
+        
+        attr_reader identifier: String
+        attr_reader description: String?
+        attr_reader definitions: Array[String]
+        attr_reader force_destroy: bool
+        attr_reader tags: Hash[Symbol, String]
+        
+        def self.new: (Hash[Symbol, untyped] attributes) -> RedshiftSnapshotScheduleAttributes
+        
+        # Validation methods
+        def self.valid_schedule_definition?: (String definition) -> bool
+        def self.parse_rate_to_hours: (String rate_expr) -> Integer?
+        
+        # Query methods
+        def has_rate_schedules?: () -> bool
+        def has_cron_schedules?: () -> bool
+        def high_frequency?: () -> bool
+        
+        # Computed properties
+        def minimum_interval_hours: () -> Integer?
+        def maximum_interval_hours: () -> Integer?
+        def estimated_snapshots_per_day: () -> Integer
+        def estimated_monthly_storage_gb: (Integer cluster_size_gb, ?Float change_rate) -> Float
+        def generated_description: () -> String
+        
+        # Class methods for templates
+        def self.template_definitions: (String | Symbol template) -> Array[String]
+        def self.schedule_for_retention: (Integer retention_days) -> Hash[Symbol, untyped]
+        
+        def to_h: () -> Hash[Symbol, untyped]
+      end
+    end
+  end
+end

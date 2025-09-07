@@ -1,0 +1,10 @@
+# frozen_string_literal: true
+
+module Pangea
+  module Resources
+    module AWS
+      # Create AWS Organizations Organization resource
+      def aws_organizations_organization: (Symbol name, Hash[Symbol, untyped] attributes) -> ResourceReference
+    end
+  end
+end

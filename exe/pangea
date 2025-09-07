@@ -1,0 +1,23 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+# require 'bundler/setup'  # Commented out to avoid bundler dependency issues
+$LOAD_PATH.unshift File.expand_path('../../lib', __FILE__)
+require 'pangea'
+require 'pangea/cli/application'
+
+# Set up beautiful error handling
+begin
+  Pangea::CLI::Application.new.run
+rescue Interrupt
+  puts "\n\nInterrupted. Exiting gracefully..."
+  exit 0
+rescue StandardError => e
+  if ENV['DEBUG']
+    raise e
+  else
+    puts "\nError: #{e.message}"
+    puts "\nRun with DEBUG=1 for full backtrace"
+    exit 1
+  end
+end

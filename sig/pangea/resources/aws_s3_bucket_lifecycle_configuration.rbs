@@ -1,0 +1,94 @@
+# RBS type definitions for AWS S3 Bucket Lifecycle Configuration
+
+module Pangea
+  module Resources
+    module AWS
+      # Lifecycle rule expiration configuration
+      type lifecycle_expiration = {
+        date?: String?,
+        days?: Integer?,
+        expired_object_delete_marker?: bool?
+      }
+
+      # Lifecycle rule noncurrent version expiration configuration  
+      type lifecycle_noncurrent_version_expiration = {
+        noncurrent_days?: Integer?,
+        newer_noncurrent_versions?: Integer?
+      }
+
+      # Lifecycle rule transition configuration
+      type lifecycle_transition = {
+        date?: String?,
+        days?: Integer?, 
+        storage_class: ("STANDARD_IA" | "ONEZONE_IA" | "REDUCED_REDUNDANCY" | "GLACIER" | "DEEP_ARCHIVE" | "INTELLIGENT_TIERING" | "GLACIER_IR")
+      }
+
+      # Lifecycle rule noncurrent version transition configuration
+      type lifecycle_noncurrent_version_transition = {
+        noncurrent_days?: Integer?,
+        newer_noncurrent_versions?: Integer?,
+        storage_class: ("STANDARD_IA" | "ONEZONE_IA" | "REDUCED_REDUNDANCY" | "GLACIER" | "DEEP_ARCHIVE" | "INTELLIGENT_TIERING" | "GLACIER_IR")
+      }
+
+      # Lifecycle rule abort incomplete multipart upload configuration
+      type lifecycle_abort_incomplete_multipart_upload = {
+        days_after_initiation: Integer
+      }
+
+      # Lifecycle rule filter tag configuration
+      type lifecycle_filter_tag = {
+        key: String,
+        value: String
+      }
+
+      # Lifecycle rule filter and condition configuration
+      type lifecycle_filter_and = {
+        object_size_greater_than?: Integer?,
+        object_size_less_than?: Integer?,
+        prefix?: String?,
+        tags?: Array[lifecycle_filter_tag]?
+      }
+
+      # Lifecycle rule filter configuration
+      type lifecycle_filter = {
+        and_condition?: lifecycle_filter_and?,
+        object_size_greater_than?: Integer?,
+        object_size_less_than?: Integer?,
+        prefix?: String?,
+        tag?: lifecycle_filter_tag?
+      }
+
+      # Lifecycle rule configuration
+      type lifecycle_rule = {
+        id: String,
+        status: ("Enabled" | "Disabled"),
+        abort_incomplete_multipart_upload?: lifecycle_abort_incomplete_multipart_upload?,
+        expiration?: lifecycle_expiration?,
+        filter?: lifecycle_filter?,
+        noncurrent_version_expiration?: lifecycle_noncurrent_version_expiration?,
+        noncurrent_version_transition?: Array[lifecycle_noncurrent_version_transition]?,
+        prefix?: String?,
+        transition?: Array[lifecycle_transition]?
+      }
+
+      # S3 Bucket Lifecycle Configuration attributes
+      type s3_bucket_lifecycle_configuration_attributes = {
+        bucket: String,
+        expected_bucket_owner?: String?,
+        rule: Array[lifecycle_rule]
+      }
+
+      # S3 Bucket Lifecycle Configuration computed properties
+      type s3_bucket_lifecycle_configuration_computed_properties = {
+        total_rules_count: Integer,
+        enabled_rules_count: Integer,
+        disabled_rules_count: Integer,
+        rules_with_expiration_count: Integer,
+        rules_with_transitions_count: Integer
+      }
+
+      # AWS S3 Bucket Lifecycle Configuration resource function
+      def aws_s3_bucket_lifecycle_configuration: (Symbol name, s3_bucket_lifecycle_configuration_attributes attributes) -> ResourceReference
+    end
+  end
+end

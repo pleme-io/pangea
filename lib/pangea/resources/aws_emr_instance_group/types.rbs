@@ -1,0 +1,51 @@
+# frozen_string_literal: true
+
+module Pangea
+  module Resources
+    module AWS
+      class EmrInstanceGroupAttributes < Dry::Struct
+        @attributes: Hash[Symbol, untyped]
+        
+        attr_reader name: String?
+        attr_reader cluster_id: String
+        attr_reader instance_role: String
+        attr_reader instance_type: String
+        attr_reader instance_count: Integer
+        attr_reader bid_price: String?
+        attr_reader ebs_config: Hash[Symbol, untyped]?
+        attr_reader auto_scaling_policy: Hash[Symbol, untyped]?
+        attr_reader configurations: Array[Hash[Symbol, untyped]]
+        
+        def self.new: (Hash[Symbol, untyped] attributes) -> EmrInstanceGroupAttributes
+        
+        # Role query methods
+        def is_master?: () -> bool
+        def is_core?: () -> bool
+        def is_task?: () -> bool
+        
+        # Configuration query methods
+        def uses_spot_instances?: () -> bool
+        def has_auto_scaling?: () -> bool
+        def is_ebs_optimized?: () -> bool
+        
+        # Storage and capacity methods
+        def total_ebs_storage_gb_per_instance: () -> Integer
+        def scaling_capacity_range: () -> Hash[Symbol, Integer]
+        def scaling_rules_summary: () -> Hash[Symbol, untyped]
+        
+        # Cost and optimization
+        def estimated_hourly_cost_usd: () -> Float
+        def configuration_warnings: () -> Array[String]
+        
+        # Class methods for creating configurations
+        def self.create_scale_out_rule: (String name, String metric_name, Numeric threshold, ?Integer scaling_adjustment, ?Hash[Symbol, untyped] options) -> Hash[Symbol, untyped]
+        def self.create_scale_in_rule: (String name, String metric_name, Numeric threshold, ?Integer scaling_adjustment, ?Hash[Symbol, untyped] options) -> Hash[Symbol, untyped]
+        def self.create_ebs_config: (String volume_type, Integer size_gb, ?Hash[Symbol, untyped] options) -> Hash[Symbol, untyped]
+        def self.common_auto_scaling_configs: () -> Hash[Symbol, Hash[Symbol, untyped]]
+        def self.common_ebs_configs: () -> Hash[Symbol, Hash[Symbol, untyped]]
+        
+        def to_h: () -> Hash[Symbol, untyped]
+      end
+    end
+  end
+end

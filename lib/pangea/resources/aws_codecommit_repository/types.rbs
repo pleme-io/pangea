@@ -1,0 +1,55 @@
+# frozen_string_literal: true
+
+module Pangea
+  module Resources
+    module AWS
+      # Type definitions for CodeCommit Repository trigger configuration
+      type codecommit_trigger = {
+        name: String,
+        destination_arn: String,
+        custom_data?: String?,
+        branches?: Array[String]?,
+        events: Array[String]
+      }
+
+      # Type-safe attributes for AWS CodeCommit Repository
+      class CodeCommitRepositoryAttributes < Dry::Struct
+        # Repository name with constraints
+        attribute repository_name: String
+        
+        # Optional repository description
+        attribute? description: String?
+        
+        # Default branch name
+        attribute default_branch: String
+        
+        # Optional KMS key for encryption
+        attribute? kms_key_id: String?
+        
+        # Trigger configurations
+        attribute triggers: Array[codecommit_trigger]
+        
+        # Resource tags
+        attribute tags: Hash[String, String]
+        
+        # Helper method to check if repository is encrypted
+        def encrypted?: () -> bool
+        
+        # Check if repository has triggers
+        def has_triggers?: () -> bool
+        
+        # Get number of triggers
+        def trigger_count: () -> Integer
+        
+        # Get list of trigger names
+        def trigger_names: () -> Array[String]
+        
+        # Get all unique trigger events
+        def all_trigger_events: () -> Array[String]
+        
+        # Get triggers for a specific branch
+        def triggers_for_branch: (String branch_name) -> Array[codecommit_trigger]
+      end
+    end
+  end
+end

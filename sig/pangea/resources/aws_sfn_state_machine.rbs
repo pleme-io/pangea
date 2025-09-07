@@ -1,0 +1,54 @@
+# AWS Step Functions State Machine resource type signatures
+
+module Pangea
+  module Resources
+    module AWS
+      module Types
+        class SfnStateMachineAttributes < Dry::Struct
+          # Core attributes
+          attr_reader name: String
+          attr_reader definition: String
+          attr_reader role_arn: String
+          
+          # Optional attributes
+          attr_reader type: String?
+          attr_reader logging_configuration: Hash[Symbol, untyped]?
+          attr_reader tracing_configuration: Hash[Symbol, untyped]?
+          attr_reader tags: Hash[Symbol, String]?
+          
+          def self.new: (Hash[Symbol, untyped] attributes) -> SfnStateMachineAttributes
+          
+          # ASL validation methods
+          def self.validate_asl_definition: (Hash[String, untyped] definition) -> true
+          def self.validate_state_definition: (String state_name, Hash[String, untyped] state_def) -> true
+          def self.validate_logging_configuration: (Hash[Symbol, untyped] config) -> true
+          def self.validate_tracing_configuration: (Hash[Symbol, untyped] config) -> true
+          
+          # Computed properties
+          def is_express_type?: () -> bool
+          def is_standard_type?: () -> bool
+          def has_logging?: () -> bool
+          def has_tracing?: () -> bool
+          def parsed_definition: () -> Hash[String, untyped]
+          def start_state: () -> String
+          def states: () -> Hash[String, untyped]
+          def state_count: () -> Integer
+          
+          # Pattern generators
+          def self.simple_task_definition: (String task_arn, String? next_state) -> String
+          def self.sequential_tasks_definition: (Array[[String, String]] tasks) -> String
+          def self.parallel_tasks_definition: (Hash[String, Array[[String, String]]] branches) -> String
+          def self.choice_definition: (Array[Hash[Hash[Symbol, String], String]] choices, String default_state) -> String
+          
+          # Configuration helpers
+          def self.cloudwatch_logging: (String log_group_arn, String level, bool include_execution_data) -> Hash[Symbol, untyped]
+          def self.enable_xray_tracing: () -> Hash[Symbol, bool]
+          def self.disable_tracing: () -> Hash[Symbol, bool]
+        end
+      end
+      
+      # Resource function
+      def aws_sfn_state_machine: (Symbol name, Hash[Symbol, untyped] attributes) -> ResourceReference
+    end
+  end
+end

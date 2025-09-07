@@ -1,0 +1,59 @@
+module Pangea
+  module Resources
+    module AWS
+      class ExcludedMember < Dry::Struct
+        attribute :db_instance_identifier, Types::String
+        
+        def db_instance_identifier: () -> String
+      end
+
+      class StaticMember < Dry::Struct
+        attribute :db_instance_identifier, Types::String
+        
+        def db_instance_identifier: () -> String
+      end
+
+      class RdsClusterEndpointAttributes < Dry::Struct
+        attribute :cluster_identifier, Types::String
+        attribute :cluster_endpoint_identifier, Types::String
+        attribute :custom_endpoint_type, Types::String
+        attribute :static_members, Types::Array[StaticMember]
+        attribute :excluded_members, Types::Array[ExcludedMember]
+        attribute :tags, Types::AwsTags
+
+        def self.new: (Hash[Symbol, untyped] attributes) -> RdsClusterEndpointAttributes
+
+        def cluster_identifier: () -> String
+        def cluster_endpoint_identifier: () -> String
+        def custom_endpoint_type: () -> String
+        def static_members: () -> Array[StaticMember]
+        def excluded_members: () -> Array[ExcludedMember]
+        def tags: () -> Hash[Symbol, String]
+
+        def is_reader?: () -> bool
+        def is_writer?: () -> bool
+        def is_any?: () -> bool
+        def has_static_members?: () -> bool
+        def has_excluded_members?: () -> bool
+        def static_member_db_ids: () -> Array[String]
+        def excluded_member_db_ids: () -> Array[String]
+        def uses_custom_member_config?: () -> bool
+        def configuration_summary: () -> String
+        def validate_db_instances: (Array[Hash[Symbol, String]]) -> void
+        def endpoint_dns_name: (String) -> String
+        def estimated_monthly_cost: () -> String
+      end
+
+      module RdsClusterEndpointConfigs
+        def self.read_replica_endpoint: (cluster_id: String, ?endpoint_id: String) -> Hash[Symbol, untyped]
+        def self.analytics_endpoint: (cluster_id: String, ?excluded_db_instances: Array[String], ?endpoint_id: String) -> Hash[Symbol, untyped]
+        def self.dedicated_reader_endpoint: (cluster_id: String, static_db_instances: Array[String], ?endpoint_id: String) -> Hash[Symbol, untyped]
+        def self.pooled_endpoint: (cluster_id: String, ?endpoint_id: String) -> Hash[Symbol, untyped]
+        def self.development_endpoint: (cluster_id: String, ?endpoint_id: String) -> Hash[Symbol, untyped]
+        def self.failover_endpoint: (cluster_id: String, ?excluded_primary: String?, ?endpoint_id: String) -> Hash[Symbol, untyped]
+      end
+
+      def aws_rds_cluster_endpoint: (Symbol name, Hash[Symbol, untyped] attributes) -> ResourceReference
+    end
+  end
+end

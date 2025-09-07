@@ -1,0 +1,17 @@
+# RBS type definitions for AWS ElastiCache Subnet Group resource
+
+module Pangea
+  module Resources
+    module AWS
+      # ElastiCache subnet group attributes type
+      type elasticache_subnet_group_attributes = {
+        name: String,
+        description?: String?,
+        subnet_ids: Array[String],
+        tags?: Hash[Symbol, String]
+      }
+
+      # ElastiCache subnet group resource function
+      def aws_elasticache_subnet_group: (Symbol name, elasticache_subnet_group_attributes attributes) -> ResourceReference
+    end
+end

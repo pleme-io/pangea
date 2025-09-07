@@ -1,0 +1,15 @@
+{
+  "resource": {
+    "random_id": {
+      "test": {
+        "byte_length": 8
+      }
+    },
+    "local_file": {
+      "test": {
+        "content": "Hello from Pangea\\!",
+        "filename": "./test-output.txt"
+      }
+    }
+  }
+}

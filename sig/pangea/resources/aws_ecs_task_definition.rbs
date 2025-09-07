@@ -1,0 +1,334 @@
+# RBS type definitions for AWS ECS Task Definition
+
+module Pangea
+  module Resources
+    module AWS
+      # Container definition
+      type ecs_container_definition = {
+        name: String,
+        image: String,
+        ?cpu: Integer?,
+        ?memory: Integer?,
+        ?memory_reservation: Integer?,
+        ?port_mappings: Array[ecs_port_mapping],
+        ?environment: Array[ecs_environment_variable],
+        ?secrets: Array[ecs_secret],
+        ?log_configuration: ecs_log_configuration?,
+        ?health_check: ecs_health_check?,
+        ?essential: bool,
+        ?entry_point: Array[String],
+        ?command: Array[String],
+        ?working_directory: String?,
+        ?links: Array[String],
+        ?mount_points: Array[ecs_mount_point],
+        ?volumes_from: Array[ecs_volumes_from],
+        ?depends_on: Array[ecs_container_dependency],
+        ?linux_parameters: ecs_linux_parameters?,
+        ?ulimits: Array[ecs_ulimit],
+        ?user: String?,
+        ?privileged: bool,
+        ?readonly_root_filesystem: bool,
+        ?dns_servers: Array[String],
+        ?dns_search_domains: Array[String],
+        ?extra_hosts: Array[ecs_extra_host],
+        ?docker_security_options: Array[String],
+        ?docker_labels: Hash[String, String],
+        ?system_controls: Array[ecs_system_control],
+        ?firelens_configuration: ecs_firelens_configuration?
+      }
+
+      # Port mapping
+      type ecs_port_mapping = {
+        container_port: Integer,
+        ?host_port: Integer?,
+        ?protocol: ("tcp" | "udp")?,
+        ?name: String?,
+        ?app_protocol: ("http" | "http2" | "grpc")?
+      }
+
+      # Environment variable
+      type ecs_environment_variable = {
+        name: String,
+        value: String
+      }
+
+      # Secret
+      type ecs_secret = {
+        name: String,
+        value_from: String
+      }
+
+      # Log configuration
+      type ecs_log_configuration = {
+        log_driver: ("awslogs" | "fluentd" | "gelf" | "json-file" | "journald" | "logentries" | "splunk" | "syslog" | "awsfirelens"),
+        ?options: Hash[String, String]?,
+        ?secret_options: Array[ecs_secret]?
+      }
+
+      # Health check
+      type ecs_health_check = {
+        command: Array[String],
+        ?interval: Integer?,
+        ?timeout: Integer?,
+        ?retries: Integer?,
+        ?start_period: Integer?
+      }
+
+      # Mount point
+      type ecs_mount_point = {
+        source_volume: String,
+        container_path: String,
+        ?read_only: bool?
+      }
+
+      # Volumes from
+      type ecs_volumes_from = {
+        source_container: String,
+        ?read_only: bool?
+      }
+
+      # Container dependency
+      type ecs_container_dependency = {
+        container_name: String,
+        condition: ("START" | "COMPLETE" | "SUCCESS" | "HEALTHY")
+      }
+
+      # Linux parameters
+      type ecs_linux_parameters = {
+        ?capabilities: ecs_kernel_capabilities?,
+        ?devices: Array[ecs_device]?,
+        ?init_process_enabled: bool?,
+        ?max_swap: Integer?,
+        ?shared_memory_size: Integer?,
+        ?swappiness: Integer?,
+        ?tmpfs: Array[ecs_tmpfs]?
+      }
+
+      # Kernel capabilities
+      type ecs_kernel_capabilities = {
+        ?add: Array[String]?,
+        ?drop: Array[String]?
+      }
+
+      # Device
+      type ecs_device = {
+        host_path: String,
+        ?container_path: String?,
+        ?permissions: Array[("read" | "write" | "mknod")]?
+      }
+
+      # Tmpfs
+      type ecs_tmpfs = {
+        container_path: String,
+        size: Integer,
+        ?mount_options: Array[String]?
+      }
+
+      # Ulimit
+      type ecs_ulimit = {
+        name: ("core" | "cpu" | "data" | "fsize" | "locks" | "memlock" | "msgqueue" | "nice" | "nofile" | "nproc" | "rss" | "rtprio" | "rttime" | "sigpending" | "stack"),
+        soft_limit: Integer,
+        hard_limit: Integer
+      }
+
+      # Extra host
+      type ecs_extra_host = {
+        hostname: String,
+        ip_address: String
+      }
+
+      # System control
+      type ecs_system_control = {
+        namespace: String,
+        value: String
+      }
+
+      # FireLens configuration
+      type ecs_firelens_configuration = {
+        type: ("fluentd" | "fluentbit"),
+        ?options: Hash[String, String]?
+      }
+
+      # Task definition attributes
+      type ecs_task_definition_attributes = {
+        family: String,
+        container_definitions: Array[ecs_container_definition],
+        ?task_role_arn: String?,
+        ?execution_role_arn: String?,
+        ?network_mode: ("bridge" | "host" | "awsvpc" | "none"),
+        ?requires_compatibilities: Array[("EC2" | "FARGATE" | "EXTERNAL")],
+        ?cpu: String?,
+        ?memory: String?,
+        ?volumes: Array[ecs_volume],
+        ?placement_constraints: Array[ecs_task_placement_constraint],
+        ?ipc_mode: ("host" | "task" | "none")?,
+        ?pid_mode: ("host" | "task")?,
+        ?inference_accelerators: Array[ecs_inference_accelerator],
+        ?proxy_configuration: ecs_proxy_configuration?,
+        ?runtime_platform: ecs_runtime_platform?,
+        ?ephemeral_storage: ecs_ephemeral_storage?,
+        ?tags: Hash[String, String]
+      }
+
+      # Volume
+      type ecs_volume = {
+        name: String,
+        ?host: ecs_host_volume_properties?,
+        ?docker_volume_configuration: ecs_docker_volume_configuration?,
+        ?efs_volume_configuration: ecs_efs_volume_configuration?,
+        ?fsx_windows_file_server_volume_configuration: ecs_fsx_windows_file_server_volume_configuration?
+      }
+
+      # Host volume properties
+      type ecs_host_volume_properties = {
+        ?source_path: String?
+      }
+
+      # Docker volume configuration
+      type ecs_docker_volume_configuration = {
+        ?scope: ("task" | "shared")?,
+        ?autoprovision: bool?,
+        ?driver: String?,
+        ?driver_opts: Hash[String, String]?,
+        ?labels: Hash[String, String]?
+      }
+
+      # EFS volume configuration
+      type ecs_efs_volume_configuration = {
+        file_system_id: String,
+        ?root_directory: String?,
+        ?transit_encryption: ("ENABLED" | "DISABLED")?,
+        ?transit_encryption_port: Integer?,
+        ?authorization_config: ecs_efs_authorization_config?
+      }
+
+      # EFS authorization config
+      type ecs_efs_authorization_config = {
+        ?access_point_id: String?,
+        ?iam: ("ENABLED" | "DISABLED")?
+      }
+
+      # FSx Windows file server volume configuration
+      type ecs_fsx_windows_file_server_volume_configuration = {
+        file_system_id: String,
+        root_directory: String,
+        authorization_config: ecs_fsx_authorization_config
+      }
+
+      # FSx authorization config
+      type ecs_fsx_authorization_config = {
+        credentials_parameter: String,
+        domain: String
+      }
+
+      # Task placement constraint
+      type ecs_task_placement_constraint = {
+        type: "memberOf",
+        ?expression: String?
+      }
+
+      # Inference accelerator
+      type ecs_inference_accelerator = {
+        device_name: String,
+        device_type: String
+      }
+
+      # Proxy configuration
+      type ecs_proxy_configuration = {
+        ?type: "APPMESH"?,
+        container_name: String,
+        ?properties: Array[{ name: String, value: String }]?
+      }
+
+      # Runtime platform
+      type ecs_runtime_platform = {
+        ?operating_system_family: ("LINUX" | "WINDOWS_SERVER_2019_FULL" | "WINDOWS_SERVER_2019_CORE" | "WINDOWS_SERVER_2022_FULL" | "WINDOWS_SERVER_2022_CORE")?,
+        ?cpu_architecture: ("X86_64" | "ARM64")?
+      }
+
+      # Ephemeral storage
+      type ecs_ephemeral_storage = {
+        size_in_gib: Integer
+      }
+
+      # Task definition computed properties
+      type ecs_task_definition_computed_properties = {
+        fargate_compatible: bool,
+        uses_efs: bool,
+        total_memory_mb: Integer,
+        estimated_hourly_cost: Float,
+        main_container_name: String,
+        container_names: Array[String],
+        essential_container_count: Integer
+      }
+
+      # AWS ECS Task Definition resource function
+      def aws_ecs_task_definition: (Symbol name, ecs_task_definition_attributes attributes) -> ResourceReference
+
+      # Container Definition class
+      class EcsContainerDefinition < Dry::Struct
+        attr_reader name: String
+        attr_reader image: String
+        attr_reader cpu: Integer?
+        attr_reader memory: Integer?
+        attr_reader memory_reservation: Integer?
+        attr_reader port_mappings: Array[Hash[Symbol, untyped]]
+        attr_reader environment: Array[Hash[Symbol, String]]
+        attr_reader secrets: Array[Hash[Symbol, String]]
+        attr_reader log_configuration: Hash[Symbol, untyped]?
+        attr_reader health_check: Hash[Symbol, untyped]?
+        attr_reader essential: bool
+        attr_reader entry_point: Array[String]
+        attr_reader command: Array[String]
+        attr_reader working_directory: String?
+        attr_reader links: Array[String]
+        attr_reader mount_points: Array[Hash[Symbol, untyped]]
+        attr_reader volumes_from: Array[Hash[Symbol, untyped]]
+        attr_reader depends_on: Array[Hash[Symbol, String]]
+        attr_reader linux_parameters: Hash[Symbol, untyped]?
+        attr_reader ulimits: Array[Hash[Symbol, untyped]]
+        attr_reader user: String?
+        attr_reader privileged: bool
+        attr_reader readonly_root_filesystem: bool
+        attr_reader dns_servers: Array[String]
+        attr_reader dns_search_domains: Array[String]
+        attr_reader extra_hosts: Array[Hash[Symbol, String]]
+        attr_reader docker_security_options: Array[String]
+        attr_reader docker_labels: Hash[String, String]
+        attr_reader system_controls: Array[Hash[Symbol, String]]
+        attr_reader firelens_configuration: Hash[Symbol, untyped]?
+
+        def using_awslogs?: () -> bool
+        def is_essential?: () -> bool
+        def estimated_memory_mb: () -> Integer
+      end
+
+      # Task Definition Attributes class
+      class EcsTaskDefinitionAttributes < Dry::Struct
+        attr_reader family: String
+        attr_reader container_definitions: Array[EcsContainerDefinition]
+        attr_reader task_role_arn: String?
+        attr_reader execution_role_arn: String?
+        attr_reader network_mode: String
+        attr_reader requires_compatibilities: Array[String]
+        attr_reader cpu: String?
+        attr_reader memory: String?
+        attr_reader volumes: Array[Hash[Symbol, untyped]]
+        attr_reader placement_constraints: Array[Hash[Symbol, String]]
+        attr_reader ipc_mode: String?
+        attr_reader pid_mode: String?
+        attr_reader inference_accelerators: Array[Hash[Symbol, String]]
+        attr_reader proxy_configuration: Hash[Symbol, untyped]?
+        attr_reader runtime_platform: Hash[Symbol, String]?
+        attr_reader ephemeral_storage: Hash[Symbol, Integer]?
+        attr_reader tags: Hash[String, String]
+
+        def fargate_compatible?: () -> bool
+        def uses_efs?: () -> bool
+        def total_memory_mb: () -> Integer
+        def estimated_hourly_cost: () -> Float
+        def main_container: () -> EcsContainerDefinition
+      end
+    end
+  end
+end

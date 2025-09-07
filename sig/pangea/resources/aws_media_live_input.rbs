@@ -1,0 +1,68 @@
+module Pangea
+  module Resources
+    module AWS
+      # Type-safe attributes for AWS MediaLive Input resources
+      class MediaLiveInputAttributes < Dry::Struct
+        # Input name (required)
+        def name: () -> String
+
+        # Input type - determines the protocol and method
+        def type: () -> ("UDP_PUSH" | "RTP_PUSH" | "RTMP_PUSH" | "RTMP_PULL" | "URL_PULL" | "MP4_FILE" | "MEDIACONNECT" | "INPUT_DEVICE" | "AWS_CDI" | "TS_FILE")
+
+        # Input class for billing and performance
+        def input_class: () -> ("STANDARD" | "SINGLE_PIPELINE")
+
+        # Input destinations for redundancy
+        def destinations: () -> Array[Hash[Symbol, untyped]]
+
+        # Input devices for hardware inputs
+        def input_devices: () -> Array[Hash[Symbol, untyped]]
+
+        # MediaConnect flows for MediaConnect inputs
+        def media_connect_flows: () -> Array[Hash[Symbol, untyped]]
+
+        # Input security groups for access control
+        def input_security_groups: () -> Array[String]
+
+        # Role ARN for accessing input sources
+        def role_arn: () -> String?
+
+        # Sources for URL_PULL inputs
+        def sources: () -> Array[Hash[Symbol, untyped]]
+
+        # VPC configuration for enhanced security
+        def vpc: () -> Hash[Symbol, untyped]
+
+        # Tags
+        def tags: () -> Hash[String | Symbol, String]
+
+        # Helper methods
+        def push_input?: () -> bool
+        def pull_input?: () -> bool
+        def file_input?: () -> bool
+        def device_input?: () -> bool
+        def mediaconnect_input?: () -> bool
+        def cdi_input?: () -> bool
+        def single_pipeline?: () -> bool
+        def standard_input?: () -> bool
+        def has_redundancy?: () -> bool
+        def destination_count: () -> Integer
+        def source_count: () -> Integer
+        def device_count: () -> Integer
+        def mediaconnect_flow_count: () -> Integer
+        def has_vpc_config?: () -> bool
+        def has_security_groups?: () -> bool
+        def requires_role?: () -> bool
+        def supports_failover?: () -> bool
+        def is_live_input?: () -> bool
+      end
+
+      # Create an AWS MediaLive Input with type-safe attributes
+      #
+      # @param name The resource name
+      # @param attributes MediaLive input attributes
+      # @return Reference object with outputs and computed properties
+      def aws_media_live_input: (Symbol name, Hash[Symbol, untyped] attributes) -> ResourceReference
+    end
+  end
+end

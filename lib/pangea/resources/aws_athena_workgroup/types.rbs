@@ -1,0 +1,38 @@
+# frozen_string_literal: true
+
+module Pangea
+  module Resources
+    module AWS
+      class AthenaWorkgroupAttributes < Dry::Struct
+        @attributes: Hash[Symbol, untyped]
+        
+        attr_reader name: String
+        attr_reader description: String?
+        attr_reader state: String
+        attr_reader force_destroy: bool
+        attr_reader configuration: Hash[Symbol, untyped]?
+        attr_reader tags: Hash[Symbol, String]
+        
+        def self.new: (Hash[Symbol, untyped] attributes) -> AthenaWorkgroupAttributes
+        
+        # Query methods
+        def enabled?: () -> bool
+        def has_output_location?: () -> bool
+        def enforces_configuration?: () -> bool
+        def cloudwatch_metrics_enabled?: () -> bool
+        def encryption_type: () -> String?
+        def uses_kms?: () -> bool
+        def has_query_limits?: () -> bool
+        
+        # Computed properties
+        def query_limit_gb: () -> Float?
+        def estimated_monthly_cost_usd: () -> Float
+        
+        # Class methods for defaults
+        def self.default_configuration_for_type: (String | Symbol type, String s3_output_location) -> Hash[Symbol, untyped]
+        
+        def to_h: () -> Hash[Symbol, untyped]
+      end
+    end
+  end
+end

@@ -1,0 +1,29 @@
+module Pangea
+  module Resources
+    module AWS
+      module SecurityLake
+        class DataLake < Pangea::Resources::Base
+          class Attributes < BaseAttributes
+            attr_reader configuration: Array[Hash[Symbol, untyped]]?
+            attr_reader meta_store_manager_role_arn: String?
+            attr_reader tags: Hash[String, String]
+            attr_reader depends_on: Array[String]?
+          end
+
+          class DataLakeReference < Reference
+            def arn: () -> String
+            def id: () -> String
+            def s3_bucket_arns: () -> Array[String]
+            def create_status: () -> String
+            def update_status: () -> String
+          end
+
+          def reference_class: () -> singleton(DataLakeReference)
+        end
+      end
+
+      # Type-safe function for creating Security Lake data lakes
+      def aws_securitylake_data_lake: (Symbol name, ?Hash[Symbol, untyped] attributes) -> SecurityLake::DataLake::DataLakeReference
+    end
+  end
+end

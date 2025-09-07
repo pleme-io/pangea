@@ -1,0 +1,260 @@
+# frozen_string_literal: true
+
+module Pangea
+  module Architectures
+    # Base architecture reference returned by all architecture functions
+    class ArchitectureReference < Dry::Struct
+      attr_reader architecture_type: String
+      attr_reader name: Symbol
+      attr_reader attributes: Hash[Symbol, untyped]
+      attr_reader resources: Hash[Symbol, untyped]
+      attr_reader overrides: Hash[Symbol, bool]
+      attr_reader extensions: Array[Integer]
+
+      def network: () -> untyped
+      def network=: (untyped value) -> void
+      def compute: () -> untyped
+      def compute=: (untyped value) -> void
+      def database: () -> untyped  
+      def database=: (untyped value) -> void
+      def storage: () -> untyped
+      def storage=: (untyped value) -> void
+      def monitoring: () -> untyped
+      def monitoring=: (untyped value) -> void
+      def security: () -> untyped
+      def security=: (untyped value) -> void
+
+      def all_resources: () -> Array[untyped]
+      def all_resource_ids: () -> Array[String]
+      
+      def availability_zones: () -> Array[String]
+      def is_highly_available?: () -> bool
+      def is_multi_region?: () -> bool
+      def estimated_monthly_cost: () -> Float
+      def security_compliance_score: () -> Float
+
+      def override: (Symbol component_name) { (ArchitectureReference) -> untyped } -> ArchitectureReference
+      def extend: () { (ArchitectureReference) -> void } -> ArchitectureReference
+      def compose_with: () { (ArchitectureReference) -> void } -> ArchitectureReference
+
+      private
+
+      def estimate_instance_cost: (String? instance_type) -> Float
+      def estimate_rds_cost: (String? instance_class) -> Float
+      def has_security_groups?: () -> bool
+      def database_encrypted?: () -> bool
+      def has_monitoring?: () -> bool
+    end
+
+    # Base functionality for all architecture functions
+    module Base
+      protected
+
+      def create_architecture_reference: (String type, Symbol name, ?Hash[Symbol, untyped] attributes) -> ArchitectureReference
+      def merge_with_defaults: (Hash[Symbol, untyped] attributes, Hash[Symbol, untyped] defaults) -> Hash[Symbol, untyped]
+      def validate_architecture_attributes: (Class attributes_class, Hash[Symbol, untyped] attributes) -> untyped
+      def add_resource_to_architecture: (ArchitectureReference arch_ref, Symbol tier, untyped resource) -> ArchitectureReference
+      def architecture_tags: (ArchitectureReference arch_ref, ?Hash[Symbol, String] additional_tags) -> Hash[Symbol, String]
+      def architecture_resource_name: (Symbol arch_name, Symbol resource_type, ?Symbol resource_name) -> Symbol
+    end
+
+    module Patterns
+      # Web Application Architecture Types
+      module WebApplication
+        include Base
+
+        class WebApplicationAttributes < Dry::Struct
+          attribute domain: String
+          attribute environment: String
+          attribute vpc_cidr: String
+          attribute availability_zones: Array[String]
+          attribute high_availability: bool
+          attribute auto_scaling: Hash[Symbol, Integer]
+          attribute instance_type: String
+          attribute ami_id: String
+          attribute key_pair: String?
+          attribute database_enabled: bool
+          attribute database_engine: String
+          attribute database_instance_class: String
+          attribute database_allocated_storage: Integer
+          attribute database_backup_retention: Integer
+          attribute s3_bucket_enabled: bool
+          attribute cloudfront_enabled: bool
+          attribute waf_enabled: bool
+          attribute ssl_certificate_arn: String?
+          attribute monitoring_enabled: bool
+          attribute log_retention_days: Integer
+          attribute tags: Hash[Symbol, String]
+
+          def is_production?: () -> bool
+          def requires_https?: () -> bool
+          def subnet_count: () -> Integer
+        end
+
+        def web_application_architecture: (Symbol name, ?Hash[Symbol, untyped] attributes) -> ArchitectureReference
+
+        private
+
+        def create_security_tier: (Symbol name, ArchitectureReference arch_ref, WebApplicationAttributes arch_attrs, Hash[Symbol, String] base_tags) -> Hash[Symbol, untyped]
+        def create_storage_tier: (Symbol name, ArchitectureReference arch_ref, WebApplicationAttributes arch_attrs, Hash[Symbol, String] base_tags) -> Hash[Symbol, untyped]
+        def create_database_tier: (Symbol name, ArchitectureReference arch_ref, WebApplicationAttributes arch_attrs, Hash[Symbol, String] base_tags) -> Hash[Symbol, untyped]
+        def create_compute_tier: (Symbol name, ArchitectureReference arch_ref, WebApplicationAttributes arch_attrs, Hash[Symbol, String] base_tags) -> Hash[Symbol, untyped]
+        def create_load_balancer_tier: (Symbol name, ArchitectureReference arch_ref, WebApplicationAttributes arch_attrs, Hash[Symbol, String] base_tags) -> Hash[Symbol, untyped]
+        def create_monitoring_tier: (Symbol name, ArchitectureReference arch_ref, WebApplicationAttributes arch_attrs, Hash[Symbol, String] base_tags) -> Hash[Symbol, untyped]
+        
+        def generate_user_data: (Symbol name, ArchitectureReference arch_ref, WebApplicationAttributes arch_attrs) -> String
+        def generate_dashboard_body: (Symbol name, ArchitectureReference arch_ref, WebApplicationAttributes arch_attrs) -> String
+      end
+
+      # Microservices Architecture Types
+      module Microservices
+        include Base
+
+        class MicroservicesPlatformAttributes < Dry::Struct
+          attribute platform_name: String
+          attribute environment: String
+          attribute vpc_cidr: String
+          attribute availability_zones: Array[String]
+          attribute service_mesh: String
+          attribute service_discovery: bool
+          attribute circuit_breaker: bool
+          attribute distributed_tracing: bool
+          attribute orchestrator: String
+          attribute container_registry: String
+          attribute api_gateway: bool
+          attribute shared_database: bool
+          attribute message_queue: String
+          attribute shared_cache: bool
+          attribute centralized_logging: bool
+          attribute metrics_collection: bool
+          attribute log_retention_days: Integer
+          attribute mutual_tls: bool
+          attribute rbac_enabled: bool
+          attribute secrets_management: bool
+          attribute tags: Hash[Symbol, String]
+        end
+
+        class MicroserviceAttributes < Dry::Struct
+          attribute service_name: String
+          attribute runtime: String
+          attribute port: Integer
+          attribute health_check_path: String
+          attribute min_instances: Integer
+          attribute max_instances: Integer
+          attribute desired_instances: Integer
+          attribute cpu_threshold: Integer
+          attribute memory_threshold: Integer
+          attribute database_type: String
+          attribute database_size: String
+          attribute cache_enabled: bool
+          attribute security_level: String
+          attribute expose_publicly: bool
+          attribute depends_on: Array[String]
+          attribute external_apis: Array[String]
+          attribute tags: Hash[Symbol, String]
+        end
+
+        def microservices_platform_architecture: (Symbol name, ?Hash[Symbol, untyped] attributes) -> ArchitectureReference
+        def microservice_architecture: (Symbol name, platform_ref: ArchitectureReference, ?attributes: Hash[Symbol, untyped]) -> ArchitectureReference
+
+        private
+
+        def create_orchestration_platform: (Symbol name, ArchitectureReference arch_ref, MicroservicesPlatformAttributes platform_attrs, Hash[Symbol, String] base_tags) -> Hash[Symbol, untyped]
+        def create_shared_services: (Symbol name, ArchitectureReference arch_ref, MicroservicesPlatformAttributes platform_attrs, Hash[Symbol, String] base_tags) -> Hash[Symbol, untyped]
+        def create_service_mesh: (Symbol name, ArchitectureReference arch_ref, MicroservicesPlatformAttributes platform_attrs, Hash[Symbol, String] base_tags) -> Hash[Symbol, untyped]
+        def create_observability_stack: (Symbol name, ArchitectureReference arch_ref, MicroservicesPlatformAttributes platform_attrs, Hash[Symbol, String] base_tags) -> Hash[Symbol, untyped]
+        def create_security_services: (Symbol name, ArchitectureReference arch_ref, MicroservicesPlatformAttributes platform_attrs, Hash[Symbol, String] base_tags) -> Hash[Symbol, untyped]
+        
+        def create_service_database: (Symbol name, ArchitectureReference arch_ref, ArchitectureReference platform_ref, MicroserviceAttributes service_attrs, Hash[Symbol, String] base_tags) -> untyped
+        def create_service_compute: (Symbol name, ArchitectureReference arch_ref, ArchitectureReference platform_ref, MicroserviceAttributes service_attrs, Hash[Symbol, String] base_tags) -> Hash[Symbol, untyped]
+        def create_service_security: (Symbol name, ArchitectureReference arch_ref, ArchitectureReference platform_ref, MicroserviceAttributes service_attrs, Hash[Symbol, String] base_tags) -> Hash[Symbol, untyped]
+        def create_service_monitoring: (Symbol name, ArchitectureReference arch_ref, ArchitectureReference platform_ref, MicroserviceAttributes service_attrs, Hash[Symbol, String] base_tags) -> Hash[Symbol, untyped]
+        
+        def create_db_subnet_group: (Symbol name, ArchitectureReference platform_ref, Hash[Symbol, String] base_tags) -> untyped
+        def create_task_execution_role: (Symbol name, Hash[Symbol, String] base_tags) -> untyped
+        def generate_container_definition: (Symbol name, ArchitectureReference arch_ref, MicroserviceAttributes service_attrs) -> String
+        def generate_platform_dashboard_body: (Symbol name, ArchitectureReference arch_ref, MicroservicesPlatformAttributes platform_attrs) -> String
+      end
+
+      # Data Processing Architecture Types
+      module DataProcessing
+        include Base
+
+        class DataLakeAttributes < Dry::Struct
+          attribute data_lake_name: String
+          attribute environment: String
+          attribute vpc_cidr: String
+          attribute availability_zones: Array[String]
+          attribute data_sources: Array[String]
+          attribute real_time_processing: bool
+          attribute batch_processing: bool
+          attribute raw_data_retention_days: Integer
+          attribute processed_data_retention_days: Integer
+          attribute data_encryption: bool
+          attribute cross_region_replication: bool
+          attribute batch_processing_schedule: String
+          attribute streaming_buffer_size: Integer
+          attribute streaming_buffer_interval: Integer
+          attribute data_warehouse: String
+          attribute machine_learning: bool
+          attribute business_intelligence: bool
+          attribute emr_enabled: bool
+          attribute glue_enabled: bool
+          attribute lambda_enabled: bool
+          attribute tags: Hash[Symbol, String]
+        end
+
+        class StreamingArchitectureAttributes < Dry::Struct
+          attribute stream_name: String
+          attribute stream_type: String
+          attribute shard_count: Integer
+          attribute retention_hours: Integer
+          attribute stream_processing_framework: String
+          attribute windowing_strategy: String
+          attribute window_size_minutes: Integer
+          attribute output_destinations: Array[String]
+          attribute error_handling: String
+          attribute monitoring_enabled: bool
+          attribute alerting_enabled: bool
+          attribute tags: Hash[Symbol, String]
+        end
+
+        def data_lake_architecture: (Symbol name, ?Hash[Symbol, untyped] attributes) -> ArchitectureReference
+        def streaming_data_architecture: (Symbol name, ?Hash[Symbol, untyped] attributes) -> ArchitectureReference
+
+        private
+
+        def create_data_storage_tier: (Symbol name, ArchitectureReference arch_ref, DataLakeAttributes data_attrs, Hash[Symbol, String] base_tags) -> Hash[Symbol, untyped]
+        def create_data_ingestion_tier: (Symbol name, ArchitectureReference arch_ref, DataLakeAttributes data_attrs, Hash[Symbol, String] base_tags) -> Hash[Symbol, untyped]
+        def create_data_processing_tier: (Symbol name, ArchitectureReference arch_ref, DataLakeAttributes data_attrs, Hash[Symbol, String] base_tags) -> Hash[Symbol, untyped]
+        def create_analytics_tier: (Symbol name, ArchitectureReference arch_ref, DataLakeAttributes data_attrs, Hash[Symbol, String] base_tags) -> Hash[Symbol, untyped]
+        def create_data_security_tier: (Symbol name, ArchitectureReference arch_ref, DataLakeAttributes data_attrs, Hash[Symbol, String] base_tags) -> Hash[Symbol, untyped]
+        def create_data_monitoring_tier: (Symbol name, ArchitectureReference arch_ref, DataLakeAttributes data_attrs, Hash[Symbol, String] base_tags) -> Hash[Symbol, untyped]
+        
+        def create_streaming_ingestion: (Symbol name, ArchitectureReference arch_ref, StreamingArchitectureAttributes stream_attrs, Hash[Symbol, String] base_tags) -> Hash[Symbol, untyped]
+        def create_stream_processing: (Symbol name, ArchitectureReference arch_ref, StreamingArchitectureAttributes stream_attrs, Hash[Symbol, String] base_tags) -> Hash[Symbol, untyped]
+        def create_streaming_outputs: (Symbol name, ArchitectureReference arch_ref, StreamingArchitectureAttributes stream_attrs, Hash[Symbol, String] base_tags) -> Hash[Symbol, untyped]
+        def create_streaming_monitoring: (Symbol name, ArchitectureReference arch_ref, StreamingArchitectureAttributes stream_attrs, Hash[Symbol, String] base_tags) -> Hash[Symbol, untyped]
+        
+        def create_firehose_role: (Symbol name, ArchitectureReference arch_ref, Hash[Symbol, String] base_tags) -> untyped
+        def generate_data_dashboard_body: (Symbol name, ArchitectureReference arch_ref, DataLakeAttributes data_attrs) -> String
+        def generate_streaming_dashboard_body: (Symbol name, ArchitectureReference arch_ref, StreamingArchitectureAttributes stream_attrs) -> String
+      end
+    end
+
+    # Example architecture compositions
+    module Examples
+      include Patterns::WebApplication
+      include Patterns::Microservices
+      include Patterns::DataProcessing
+
+      def ecommerce_platform_architecture: (Symbol name, ?Hash[Symbol, untyped] attributes) -> ArchitectureReference
+      def multi_region_saas_architecture: (Symbol name, ?Hash[Symbol, untyped] attributes) -> ArchitectureReference
+      def ml_platform_architecture: (Symbol name, ?Hash[Symbol, untyped] attributes) -> ArchitectureReference
+      def devops_platform_architecture: (Symbol name, ?Hash[Symbol, untyped] attributes) -> ArchitectureReference
+
+      def composite_resource_name: (Symbol platform_name, Symbol architecture_type, Symbol resource_name) -> Symbol
+      def share_resources_between_architectures: (ArchitectureReference source_arch, ArchitectureReference target_arch, ?Array[Symbol] shared_resources) -> void
+    end
+  end
+end

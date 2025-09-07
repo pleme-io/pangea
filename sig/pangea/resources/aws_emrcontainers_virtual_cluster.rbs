@@ -1,0 +1,39 @@
+# EMR Containers Virtual Cluster resource type definitions
+
+module Pangea
+  module Resources
+    module AWS
+      module EMRContainers
+        module VirtualCluster
+          # AWS EMR Containers Virtual Cluster for running big data workloads on Amazon EKS
+          #
+          # @example Basic virtual cluster
+          #   aws_emrcontainers_virtual_cluster(:data_cluster, {
+          #     name: "data-processing-cluster",
+          #     container_provider: {
+          #       id: "data-eks-cluster",
+          #       type: "EKS",
+          #       info: { eks_info: { namespace: "emr-data" } }
+          #     }
+          #   })
+          def aws_emrcontainers_virtual_cluster: (
+            Symbol name,
+            {
+              name: String,
+              container_provider: {
+                id: String,
+                type: String,
+                info: {
+                  eks_info: {
+                    namespace: String
+                  }
+                }
+              },
+              ?tags: Hash[String, String]
+            } attributes
+          ) -> ResourceReference
+        end
+      end
+    end
+  end
+end

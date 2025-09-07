@@ -1,0 +1,10 @@
+# frozen_string_literal: true
+
+module Pangea
+  module Resources
+    module AWS
+      # Create AWS CodeCommit Repository resource
+      def aws_codecommit_repository: (Symbol name, Hash[Symbol, untyped] attributes) -> ResourceReference
+    end
+  end
+end

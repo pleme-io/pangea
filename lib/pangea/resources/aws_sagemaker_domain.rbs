@@ -1,0 +1,39 @@
+module Pangea
+  module Resources
+    module AWS
+      module Types
+        class SageMakerDomainAttributes < Dry::Struct
+          def domain_name: () -> String
+          def auth_mode: () -> String
+          def default_user_settings: () -> Hash[Symbol, untyped]
+          def subnet_ids: () -> Array[String]
+          def vpc_id: () -> String
+          def app_network_access_type: () -> String
+          def app_security_group_management: () -> String
+          def domain_settings: () -> Hash[Symbol, untyped]?
+          def kms_key_id: () -> String?
+          def tags: () -> Hash[Symbol, String]
+          def default_space_settings: () -> Hash[Symbol, untyped]?
+          def retention_policy: () -> Hash[Symbol, untyped]?
+          
+          def estimated_monthly_cost: () -> Float
+          def supports_vpc_only?: () -> bool
+          def uses_sso_auth?: () -> bool
+          def uses_custom_kms_key?: () -> bool
+          def has_custom_security_groups?: () -> bool
+          def supports_r_studio?: () -> bool
+          def subnet_count: () -> Integer
+          def security_score: () -> Integer
+          def compliance_status: () -> Hash[Symbol, untyped]
+        end
+      end
+      
+      class SageMakerDomain < Base
+        def self.resource_type: () -> String
+        def self.attribute_struct: () -> class
+      end
+      
+      def aws_sagemaker_domain: (Symbol name, Hash[Symbol, untyped] attributes) -> ResourceReference
+    end
+  end
+end

@@ -1,0 +1,65 @@
+# frozen_string_literal: true
+
+module Pangea
+  module Resources
+    module AWS
+      class RedshiftClusterAttributes < Dry::Struct
+        @attributes: Hash[Symbol, untyped]
+        
+        attr_reader cluster_identifier: String
+        attr_reader database_name: String
+        attr_reader master_username: String
+        attr_reader master_password: String?
+        attr_reader node_type: String
+        attr_reader cluster_type: String
+        attr_reader number_of_nodes: Integer
+        attr_reader port: Integer
+        attr_reader cluster_subnet_group_name: String?
+        attr_reader cluster_parameter_group_name: String?
+        attr_reader vpc_security_group_ids: Array[String]
+        attr_reader availability_zone: String?
+        attr_reader preferred_maintenance_window: String
+        attr_reader automated_snapshot_retention_period: Integer
+        attr_reader manual_snapshot_retention_period: Integer
+        attr_reader encrypted: bool
+        attr_reader kms_key_id: String?
+        attr_reader enhanced_vpc_routing: bool
+        attr_reader publicly_accessible: bool
+        attr_reader elastic_ip: String?
+        attr_reader skip_final_snapshot: bool
+        attr_reader final_snapshot_identifier: String?
+        attr_reader snapshot_identifier: String?
+        attr_reader snapshot_cluster_identifier: String?
+        attr_reader owner_account: String?
+        attr_reader allow_version_upgrade: bool
+        attr_reader cluster_version: String
+        attr_reader logging: Hash[Symbol, untyped]?
+        attr_reader snapshot_copy: Hash[Symbol, untyped]?
+        attr_reader iam_roles: Array[String]
+        attr_reader tags: Hash[Symbol, String]
+        
+        def self.new: (Hash[Symbol, untyped] attributes) -> RedshiftClusterAttributes
+        
+        # Query methods
+        def multi_node?: () -> bool
+        def uses_ra3_nodes?: () -> bool
+        def uses_dc2_nodes?: () -> bool
+        def high_availability?: () -> bool
+        def audit_logging_enabled?: () -> bool
+        def cross_region_backup?: () -> bool
+        
+        # Computed properties
+        def total_storage_capacity_gb: () -> Integer?
+        def total_vcpus: () -> Integer
+        def total_memory_gb: () -> Integer
+        def estimated_monthly_cost_usd: () -> Float
+        def jdbc_connection_string: () -> String
+        
+        # Class methods for defaults
+        def self.default_parameters_for_workload: (String | Symbol workload) -> Hash[String, String]
+        
+        def to_h: () -> Hash[Symbol, untyped]
+      end
+    end
+  end
+end

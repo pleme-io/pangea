@@ -1,0 +1,32 @@
+{
+  "resource": {
+    "random_id": {
+      "vpc_suffix": {
+        "byte_length": 4
+      }
+    },
+    "local_file": {
+      "vpc_config": {
+        "content": "VPC Configuration\nRegion: us-east-1\nVPC ID: ${random_id.vpc_suffix.hex}",
+        "filename": "./networking-config.txt"
+      }
+    },
+    "random_pet": {
+      "vpc_name": {
+        "length": 2,
+        "separator": "-",
+        "prefix": "vpc"
+      }
+    }
+  },
+  "output": {
+    "vpc_identifier": {
+      "value": "${random_id.vpc_suffix.hex}",
+      "description": "Unique VPC identifier"
+    },
+    "vpc_name": {
+      "value": "${random_pet.vpc_name.id}",
+      "description": "Generated VPC name"
+    }
+  }
+}

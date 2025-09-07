@@ -1,0 +1,84 @@
+module Pangea
+  module Resources
+    module AWS
+      class GlobalClusterBackupConfiguration < Dry::Struct
+        attribute :backup_retention_period, Types::Integer
+        attribute :preferred_backup_window, Types::String?
+        attribute :copy_tags_to_snapshot, Types::Bool
+
+        def self.new: (Hash[Symbol, untyped] attributes) -> GlobalClusterBackupConfiguration
+        def self.valid_backup_window?: (String window) -> bool
+
+        def backup_retention_period: () -> Integer
+        def preferred_backup_window: () -> String?
+        def copy_tags_to_snapshot: () -> bool
+        def spans_midnight?: () -> bool
+        def window_duration_minutes: () -> Integer?
+      end
+
+      class RdsGlobalClusterAttributes < Dry::Struct
+        attribute :global_cluster_identifier, Types::String?
+        attribute :engine, Types::String
+        attribute :engine_version, Types::String?
+        attribute :database_name, Types::String?
+        attribute :master_username, Types::String?
+        attribute :master_password, Types::String?
+        attribute :manage_master_user_password, Types::Bool
+        attribute :master_user_secret_kms_key_id, Types::String?
+        attribute :storage_encrypted, Types::Bool
+        attribute :kms_key_id, Types::String?
+        attribute :force_destroy, Types::Bool
+        attribute :source_db_cluster_identifier, Types::String?
+        attribute :engine_lifecycle_support, Types::String?
+        attribute :backup_configuration, GlobalClusterBackupConfiguration?
+        attribute :tags, Types::AwsTags
+
+        def self.new: (Hash[Symbol, untyped] attributes) -> RdsGlobalClusterAttributes
+        def self.valid_engine_version?: (String engine, String version) -> bool
+
+        def global_cluster_identifier: () -> String?
+        def engine: () -> String
+        def engine_version: () -> String?
+        def database_name: () -> String?
+        def master_username: () -> String?
+        def master_password: () -> String?
+        def manage_master_user_password: () -> bool
+        def master_user_secret_kms_key_id: () -> String?
+        def storage_encrypted: () -> bool
+        def kms_key_id: () -> String?
+        def force_destroy: () -> bool
+        def source_db_cluster_identifier: () -> String?
+        def engine_lifecycle_support: () -> String?
+        def backup_configuration: () -> GlobalClusterBackupConfiguration?
+        def tags: () -> Hash[Symbol, String]
+
+        def engine_family: () -> String
+        def is_mysql?: () -> bool
+        def is_postgresql?: () -> bool
+        def uses_managed_password?: () -> bool
+        def created_from_source?: () -> bool
+        def is_encrypted?: () -> bool
+        def allows_force_destroy?: () -> bool
+        def has_backup_configuration?: () -> bool
+        def effective_backup_retention_period: () -> Integer
+        def effective_backup_window: () -> String
+        def engine_major_version: () -> String
+        def supported_regions: () -> Array[String]
+        def supports_region?: (String region) -> bool
+        def estimated_monthly_cost: () -> String
+        def configuration_summary: () -> String
+        def recommended_secondary_regions: (String primary_region) -> Array[String]
+      end
+
+      module RdsGlobalClusterConfigs
+        def self.production_mysql: (?identifier: String?) -> Hash[Symbol, untyped]
+        def self.production_postgresql: (?identifier: String?) -> Hash[Symbol, untyped]
+        def self.development: (?engine: String, ?identifier: String?) -> Hash[Symbol, untyped]
+        def self.disaster_recovery: (primary_region: String, ?engine: String) -> Hash[Symbol, untyped]
+        def self.from_existing_cluster: (source_cluster_identifier: String, ?engine: String) -> Hash[Symbol, untyped]
+      end
+
+      def aws_rds_global_cluster: (Symbol name, Hash[Symbol, untyped] attributes) -> ResourceReference
+    end
+  end
+end

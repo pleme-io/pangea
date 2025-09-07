@@ -1,0 +1,40 @@
+module Pangea
+  module Resources
+    module AWS
+      module Types
+        class SageMakerUserProfileAttributes < Dry::Struct
+          def domain_id: () -> String
+          def user_profile_name: () -> String
+          def single_sign_on_user_identifier: () -> String?
+          def single_sign_on_user_value: () -> String?
+          def user_settings: () -> Hash[Symbol, untyped]?
+          def tags: () -> Hash[Symbol, String]
+          
+          def estimated_monthly_cost: () -> Float
+          def get_storage_cost: () -> Float
+          def has_sso_integration?: () -> bool
+          def has_custom_execution_role?: () -> bool
+          def has_custom_posix_config?: () -> bool
+          def has_efs_integration?: () -> bool
+          def canvas_enabled?: () -> bool
+          def r_studio_enabled?: () -> bool
+          def notebook_sharing_disabled?: () -> bool
+          def uses_custom_storage?: () -> bool
+          def default_storage_size_gb: () -> Integer
+          def max_storage_size_gb: () -> Integer
+          def security_score: () -> Integer
+          def compliance_status: () -> Hash[Symbol, untyped]
+          def enabled_applications: () -> Array[String]
+          def profile_summary: () -> Hash[Symbol, untyped]
+        end
+      end
+      
+      class SageMakerUserProfile < Base
+        def self.resource_type: () -> String
+        def self.attribute_struct: () -> class
+      end
+      
+      def aws_sagemaker_user_profile: (Symbol name, Hash[Symbol, untyped] attributes) -> ResourceReference
+    end
+  end
+end

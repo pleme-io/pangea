@@ -1,0 +1,81 @@
+# RBS type definitions for AWS DB Parameter Group resources
+
+module Pangea
+  module Resources
+    module AWS
+      # DB Parameter definition
+      type db_parameter = {
+        name: String,
+        value: String,
+        apply_method?: ("immediate" | "pending-reboot")?
+      }
+
+      # DB Parameter Group attributes type
+      type db_parameter_group_attributes = {
+        name: String,
+        family: ("mysql5.7" | "mysql8.0" | "postgres11" | "postgres12" | "postgres13" | "postgres14" | "postgres15" | "postgres16" | "mariadb10.4" | "mariadb10.5" | "mariadb10.6" | "mariadb10.11" | "oracle-ee-11.2" | "oracle-ee-12.1" | "oracle-ee-12.2" | "oracle-ee-19" | "oracle-ee-21" | "oracle-se2-11.2" | "oracle-se2-12.1" | "oracle-se2-12.2" | "oracle-se2-19" | "oracle-se2-21" | "sqlserver-ee-11.0" | "sqlserver-ee-12.0" | "sqlserver-ee-13.0" | "sqlserver-ee-14.0" | "sqlserver-ee-15.0" | "sqlserver-ee-16.0" | "sqlserver-ex-11.0" | "sqlserver-ex-12.0" | "sqlserver-ex-13.0" | "sqlserver-ex-14.0" | "sqlserver-ex-15.0" | "sqlserver-ex-16.0" | "sqlserver-se-11.0" | "sqlserver-se-12.0" | "sqlserver-se-13.0" | "sqlserver-se-14.0" | "sqlserver-se-15.0" | "sqlserver-se-16.0" | "sqlserver-web-11.0" | "sqlserver-web-12.0" | "sqlserver-web-13.0" | "sqlserver-web-14.0" | "sqlserver-web-15.0" | "sqlserver-web-16.0" | "aurora-mysql5.7" | "aurora-mysql8.0" | "aurora-postgresql11" | "aurora-postgresql12" | "aurora-postgresql13" | "aurora-postgresql14" | "aurora-postgresql15" | "aurora-postgresql16"),
+        description?: String?,
+        parameters?: Array[db_parameter]?,
+        tags?: Hash[Symbol, String]?
+      }
+
+      # DB Parameter Group computed attributes
+      class DbParameterGroupComputedAttributes < BaseComputedAttributes
+        def engine: () -> String
+        def engine_version: () -> String
+        def is_aurora?: () -> bool
+        def parameter_count: () -> Integer
+        def requires_reboot?: () -> bool
+        def reboot_required_parameters: () -> Array[String]
+        def immediate_parameters: () -> Array[String]
+        def effective_description: () -> String
+        def estimated_monthly_cost: () -> String
+      end
+
+      # DB Parameter Group resource function
+      def aws_db_parameter_group: (Symbol name, db_parameter_group_attributes attributes) -> ResourceReference
+
+      # DB Parameter struct
+      class DbParameter < Dry::Struct
+        attribute :name, String
+        attribute :value, String
+        attribute? :apply_method, String?
+
+        def self.new: (Hash[Symbol, untyped] attributes) -> DbParameter
+
+        def requires_reboot?: () -> bool
+        def applies_immediately?: () -> bool
+      end
+
+      # DB Parameter Group attributes struct
+      class DbParameterGroupAttributes < Dry::Struct
+        attribute :name, String
+        attribute :family, String
+        attribute? :description, String?
+        attribute :parameters, Array[DbParameter]
+        attribute :tags, Hash[Symbol, String]
+
+        def self.new: (Hash[Symbol, untyped] attributes) -> DbParameterGroupAttributes
+
+        def engine: () -> String
+        def is_aurora?: () -> bool
+        def engine_version: () -> String
+        def effective_description: () -> String
+        def reboot_required_parameters: () -> Array[DbParameter]
+        def immediate_parameters: () -> Array[DbParameter]
+        def requires_reboot?: () -> bool
+        def parameter_count: () -> Integer
+        def validate_parameters_for_family: () -> untyped
+        def estimated_monthly_cost: () -> String
+      end
+
+      # Common parameter configurations module
+      module DbParameterConfigs
+        def self.mysql_performance: (?instance_class: String) -> Array[Hash[Symbol, untyped]]
+        def self.postgresql_performance: (?instance_class: String) -> Array[Hash[Symbol, untyped]]
+        def self.aurora_mysql_performance: () -> Array[Hash[Symbol, untyped]]
+        def self.aurora_postgresql_performance: () -> Array[Hash[Symbol, untyped]]
+      end
+    end
+  end
+end

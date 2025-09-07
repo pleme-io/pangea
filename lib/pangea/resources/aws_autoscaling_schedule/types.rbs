@@ -1,0 +1,45 @@
+# frozen_string_literal: true
+
+module Pangea
+  module Resources
+    module AWS
+      module Types
+        class AutoScalingScheduleAttributes < Dry::Struct
+          @attributes: Hash[Symbol, untyped]
+          
+          attr_reader scheduled_action_name: String
+          attr_reader auto_scaling_group_name: String
+          attr_reader start_time: String?
+          attr_reader end_time: String?
+          attr_reader recurrence: String?
+          attr_reader min_size: Integer?
+          attr_reader max_size: Integer?
+          attr_reader desired_capacity: Integer?
+          attr_reader time_zone: String?
+          
+          def self.new: (Hash[Symbol, untyped] attributes) -> AutoScalingScheduleAttributes
+          
+          # Validation methods
+          def self.valid_cron_expression?: (String cron) -> bool
+          def self.valid_minute?: (String field) -> bool
+          def self.valid_hour?: (String field) -> bool
+          def self.valid_day_of_month?: (String field) -> bool
+          def self.valid_month?: (String field) -> bool
+          def self.valid_day_of_week?: (String field) -> bool
+          def self.validate_cron_field: (String field, Integer min_val, Integer max_val) -> bool
+          def self.valid_time_zone?: (String tz) -> bool
+          def self.valid_iso8601_datetime?: (String datetime) -> bool
+          
+          # Query methods
+          def uses_recurrence?: () -> bool
+          def uses_fixed_schedule?: () -> bool
+          def modifies_min_size?: () -> bool
+          def modifies_max_size?: () -> bool
+          def modifies_desired_capacity?: () -> bool
+          
+          def to_h: () -> Hash[Symbol, (String | Integer | nil)]
+        end
+      end
+    end
+  end
+end

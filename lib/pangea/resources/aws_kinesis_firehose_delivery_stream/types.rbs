@@ -1,0 +1,44 @@
+# frozen_string_literal: true
+
+module Pangea
+  module Resources
+    module AWS
+      module Types
+        class KinesisFirehoseDeliveryStreamAttributes < Dry::Struct
+          @attributes: Hash[Symbol, untyped]
+          
+          attr_reader name: String
+          attr_reader destination: String
+          attr_reader s3_configuration: Hash[Symbol, untyped]?
+          attr_reader extended_s3_configuration: Hash[Symbol, untyped]?
+          attr_reader redshift_configuration: Hash[Symbol, untyped]?
+          attr_reader elasticsearch_configuration: Hash[Symbol, untyped]?
+          attr_reader amazonopensearch_configuration: Hash[Symbol, untyped]?
+          attr_reader splunk_configuration: Hash[Symbol, untyped]?
+          attr_reader http_endpoint_configuration: Hash[Symbol, untyped]?
+          attr_reader kinesis_source_configuration: Hash[Symbol, String]?
+          attr_reader server_side_encryption: Hash[Symbol, untyped]?
+          attr_reader tags: Hash[Symbol, String]
+          
+          def self.new: (Hash[Symbol, untyped] attributes) -> KinesisFirehoseDeliveryStreamAttributes
+          
+          # Validation methods
+          def self.validate_arn!: (String arn, String service) -> void
+          
+          # Query methods
+          def has_data_transformation?: () -> bool
+          def has_format_conversion?: () -> bool
+          def backup_enabled?: () -> bool
+          def is_encrypted?: () -> bool
+          def uses_customer_managed_key?: () -> bool
+          def has_kinesis_source?: () -> bool
+          
+          # Cost estimation
+          def estimated_monthly_cost_usd: () -> String
+          
+          def to_h: () -> Hash[Symbol, untyped]
+        end
+      end
+    end
+  end
+end

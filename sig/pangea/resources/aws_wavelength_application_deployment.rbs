@@ -1,0 +1,12 @@
+module Pangea
+  module Resources
+    module AWS
+      # Aws Wavelength Application Deployment resource function
+      #
+      # @param name [Symbol] The resource name
+      # @param attributes [Hash] Resource attributes
+      # @return [ResourceReference] Reference object with outputs
+      def aws_wavelength_application_deployment: (Symbol name, Hash[Symbol, untyped] attributes) -> ResourceReference
+    end
+  end
+end

@@ -1,0 +1,45 @@
+# frozen_string_literal: true
+
+module Pangea
+  module Resources
+    module AWS
+      module Types
+        class KinesisAnalyticsApplicationAttributes < Dry::Struct
+          @attributes: Hash[Symbol, untyped]
+          
+          attr_reader name: String
+          attr_reader description: String?
+          attr_reader application_configuration: Hash[Symbol, untyped]?
+          attr_reader service_execution_role: String
+          attr_reader runtime_environment: String
+          attr_reader start_application: bool
+          attr_reader tags: Hash[Symbol, String]
+          
+          def self.new: (Hash[Symbol, untyped] attributes) -> KinesisAnalyticsApplicationAttributes
+          
+          # Validation methods
+          def self.valid_iam_role_arn?: (String arn) -> bool
+          
+          # Query methods
+          def is_sql_application?: () -> bool
+          def is_flink_application?: () -> bool
+          def has_vpc_configuration?: () -> bool
+          def has_code_from_s3?: () -> bool
+          def has_monitoring_enabled?: () -> bool
+          def has_checkpointing_enabled?: () -> bool
+          def auto_scaling_enabled?: () -> bool
+          
+          # Computed properties
+          def parallelism_level: () -> Integer?
+          def input_count: () -> Integer
+          def output_count: () -> Integer
+          def reference_data_source_count: () -> Integer
+          def estimated_kpu_usage: () -> Integer
+          def estimated_monthly_cost_usd: () -> Float
+          
+          def to_h: () -> Hash[Symbol, untyped]
+        end
+      end
+    end
+  end
+end

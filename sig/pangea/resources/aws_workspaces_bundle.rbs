@@ -1,0 +1,50 @@
+# RBS type definitions for AWS WorkSpaces Bundle
+
+module Pangea
+  module Resources
+    module AWS
+      # Compute type configuration
+      type compute_type_configuration = {
+        name: ("VALUE" | "STANDARD" | "PERFORMANCE" | "POWER" | "POWERPRO" | "GRAPHICS" | "GRAPHICSPRO")
+      }
+
+      # User storage configuration
+      type user_storage_configuration = {
+        capacity: String
+      }
+
+      # Root storage configuration
+      type root_storage_configuration = {
+        capacity: String
+      }
+
+      # WorkSpaces Bundle attributes
+      type workspaces_bundle_attributes = {
+        bundle_name: String,
+        bundle_description: String,
+        image_id: String,
+        compute_type: compute_type_configuration,
+        user_storage: user_storage_configuration,
+        root_storage?: root_storage_configuration?,
+        tags?: Hash[String, String]?
+      }
+
+      # WorkSpaces Bundle computed properties
+      type workspaces_bundle_computed_properties = {
+        total_storage_gb: Integer,
+        is_graphics_bundle: bool,
+        is_high_performance: bool,
+        estimated_monthly_cost: Float,
+        vcpus: Integer,
+        memory_gb: Integer,
+        gpu_enabled: bool,
+        gpu_memory_gb: Integer,
+        user_storage_gb: Integer,
+        root_storage_gb: Integer?
+      }
+
+      # AWS WorkSpaces Bundle resource function
+      def aws_workspaces_bundle: (Symbol name, workspaces_bundle_attributes attributes) -> ResourceReference
+    end
+  end
+end

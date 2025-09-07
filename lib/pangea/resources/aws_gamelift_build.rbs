@@ -1,0 +1,45 @@
+# TypeProf 0.21.2
+
+module Pangea
+  module Resources
+    module AwsGameliftBuild
+      module Types
+        class StorageLocation
+          attr_reader bucket: String
+          attr_reader key: String
+          attr_reader role_arn: String
+          attr_reader object_version: String?
+        end
+
+        class Attributes
+          attr_reader name: String
+          attr_reader operating_system: "AMAZON_LINUX" | "AMAZON_LINUX_2" | "WINDOWS_2012" | "WINDOWS_2016"
+          attr_reader storage_location: StorageLocation
+          attr_reader version: String?
+          attr_reader tags: Hash[String, String]?
+
+          def self.from_dynamic: (Hash[Symbol, untyped] d) -> Attributes
+        end
+
+        class Reference
+          attr_reader id: String
+          attr_reader arn: String
+          attr_reader creation_time: String
+          attr_reader size_on_disk: Integer
+          attr_reader status: String
+        end
+      end
+
+      module Resource
+        def self.validate: (Hash[Symbol, untyped] definition) -> Types::Attributes
+        def self.defaults: () -> Hash[Symbol, untyped]
+        def self.required_attributes: () -> Array[Symbol]
+        def self.compute_attributes: (Hash[Symbol, untyped] definition) -> Types::Reference
+        
+        private
+        
+        def self.ref: (String | Symbol name, Symbol attribute) -> String
+      end
+    end
+  end
+end

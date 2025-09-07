@@ -1,0 +1,50 @@
+module Pangea
+  module Resources
+    module AWS
+      module Types
+        class EksAddonAttributes < Dry::Struct
+          SUPPORTED_ADDONS: Hash[String, Hash[Symbol, untyped]]
+          RESOLVE_CONFLICTS_OPTIONS: Array[String]
+          
+          attr_reader cluster_name: String
+          attr_reader addon_name: String
+          attr_reader addon_version: String?
+          attr_reader service_account_role_arn: String?
+          attr_reader resolve_conflicts: String
+          attr_reader resolve_conflicts_on_create: String?
+          attr_reader resolve_conflicts_on_update: String?
+          attr_reader configuration_values: String?
+          attr_reader preserve: bool
+          attr_reader tags: Hash[Symbol, String]
+          
+          def self.new: (Hash[Symbol, untyped] attributes) -> EksAddonAttributes
+          def addon_info: () -> Hash[Symbol, untyped]
+          def service_account_name: () -> String
+          def namespace: () -> String
+          def requires_iam_role?: () -> bool
+          def is_compute_addon?: () -> bool
+          def is_storage_addon?: () -> bool
+          def is_networking_addon?: () -> bool
+          def is_observability_addon?: () -> bool
+          def to_h: () -> Hash[Symbol, untyped]
+        end
+      end
+      
+      interface _EksAddonAttributes
+        def cluster_name: () -> String
+        def addon_name: () -> String
+        def addon_version: () -> String?
+        def service_account_role_arn: () -> String?
+        def resolve_conflicts: () -> String?
+        def resolve_conflicts_on_create: () -> String?
+        def resolve_conflicts_on_update: () -> String?
+        def configuration_values: () -> String?
+        def preserve: () -> bool?
+        def tags: () -> Hash[Symbol, String]?
+      end
+      
+      # Create an AWS EKS Add-on with type-safe attributes
+      def aws_eks_addon: (Symbol name, ?_EksAddonAttributes attributes) -> ResourceReference
+    end
+  end
+end

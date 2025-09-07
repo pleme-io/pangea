@@ -1,0 +1,60 @@
+# frozen_string_literal: true
+
+module Pangea
+  module Resources
+    module AWS
+      module Types
+        class AutoScalingTagAttributes < Dry::Struct
+          @attributes: Hash[Symbol, untyped]
+          
+          attr_reader autoscaling_group_name: String
+          attr_reader tags: Array[TagSpecification]
+          
+          def self.new: (Hash[Symbol, untyped] attributes) -> AutoScalingTagAttributes
+          
+          # Validation methods
+          def self.validate_tags: (Array[untyped] tags) -> void
+          
+          # Query methods
+          def tag_count: () -> Integer
+          def has_propagated_tags?: () -> bool
+          def has_non_propagated_tags?: () -> bool
+          def all_tags_propagated?: () -> bool
+          def no_tags_propagated?: () -> bool
+          def propagated_tag_count: () -> Integer
+          def non_propagated_tag_count: () -> Integer
+          def tag_keys: () -> Array[String]
+          def propagated_tag_keys: () -> Array[String]
+          def non_propagated_tag_keys: () -> Array[String]
+          def has_tag?: (String key) -> bool
+          def tag_value: (String key) -> String?
+          def tag_propagated?: (String key) -> bool
+          
+          # Standard tag queries
+          def has_environment_tag?: () -> bool
+          def has_name_tag?: () -> bool
+          def has_cost_center_tag?: () -> bool
+          def has_owner_tag?: () -> bool
+          def has_project_tag?: () -> bool
+          def environment: () -> String?
+          def name: () -> String?
+          def cost_center: () -> String?
+          def owner: () -> String?
+          def project: () -> String?
+          
+          def to_h: () -> Hash[Symbol, (String | Array[Hash[Symbol, (String | bool)]])]
+          
+          class TagSpecification < Dry::Struct
+            @attributes: Hash[Symbol, untyped]
+            
+            attr_reader key: String
+            attr_reader value: String
+            attr_reader propagate_at_launch: bool
+            
+            def to_h: () -> Hash[Symbol, (String | bool)]
+          end
+        end
+      end
+    end
+  end
+end

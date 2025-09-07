@@ -1,0 +1,130 @@
+# RBS type definitions for AWS MQ Broker resource
+
+module Pangea
+  module Resources
+    module AWS
+      module Types
+        type mq_engine_type = "ActiveMQ" | "RabbitMQ"
+        type mq_deployment_mode = "SINGLE_INSTANCE" | "ACTIVE_STANDBY_MULTI_AZ" | "CLUSTER_MULTI_AZ"
+        type mq_storage_type = "ebs" | "efs"
+        type mq_authentication_strategy = "simple" | "ldap"
+        type mq_day_of_week = "MONDAY" | "TUESDAY" | "WEDNESDAY" | "THURSDAY" | "FRIDAY" | "SATURDAY" | "SUNDAY"
+
+        interface _MqUser
+          def username: () -> String
+          def password?: () -> String?
+          def console_access?: () -> bool?
+          def groups?: () -> Array[String]?
+        end
+
+        interface _MqEncryptionOptions
+          def kms_key_id?: () -> String?
+          def use_aws_owned_key?: () -> bool?
+        end
+
+        interface _MqMaintenanceWindowStartTime
+          def day_of_week: () -> mq_day_of_week
+          def time_of_day: () -> String
+          def time_zone?: () -> String?
+        end
+
+        interface _MqLogs
+          def general?: () -> bool?
+          def audit?: () -> bool?
+        end
+
+        interface _MqLdapServerMetadata
+          def hosts: () -> Array[String]
+          def role_base: () -> String
+          def role_name?: () -> String?
+          def role_search_matching?: () -> String?
+          def role_search_subtree?: () -> bool?
+          def service_account_password: () -> String
+          def service_account_username: () -> String
+          def user_base: () -> String
+          def user_role_name?: () -> String?
+          def user_search_matching?: () -> String?
+          def user_search_subtree?: () -> bool?
+        end
+
+        class MqBrokerAttributes < Dry::Struct
+          def self.new: (Hash[Symbol, untyped] attributes) -> instance
+
+          def broker_name: () -> String
+          def engine_type: () -> mq_engine_type
+          def engine_version: () -> String
+          def host_instance_type: () -> String
+          def users: () -> Array[_MqUser]
+          def apply_immediately?: () -> bool?
+          def authentication_strategy?: () -> mq_authentication_strategy?
+          def auto_minor_version_upgrade?: () -> bool?
+          def configuration?: () -> { id?: String?, revision?: Integer? }?
+          def deployment_mode?: () -> mq_deployment_mode?
+          def encryption_options?: () -> _MqEncryptionOptions?
+          def ldap_server_metadata?: () -> _MqLdapServerMetadata?
+          def logs?: () -> _MqLogs?
+          def maintenance_window_start_time?: () -> _MqMaintenanceWindowStartTime?
+          def publicly_accessible?: () -> bool?
+          def security_groups?: () -> Array[String]?
+          def storage_type?: () -> mq_storage_type?
+          def subnet_ids?: () -> Array[String]?
+          def tags?: () -> Hash[Symbol, String]?
+        end
+      end
+
+      # Create an AWS MQ Broker
+      def aws_mq_broker: (
+        Symbol name,
+        ?broker_name: String,
+        ?engine_type: Types::mq_engine_type,
+        ?engine_version: String,
+        ?host_instance_type: String,
+        ?users: Array[{
+          username: String,
+          ?password: String,
+          ?console_access: bool,
+          ?groups: Array[String]
+        }],
+        ?apply_immediately: bool,
+        ?authentication_strategy: Types::mq_authentication_strategy,
+        ?auto_minor_version_upgrade: bool,
+        ?configuration: {
+          ?id: String,
+          ?revision: Integer
+        },
+        ?deployment_mode: Types::mq_deployment_mode,
+        ?encryption_options: {
+          ?kms_key_id: String,
+          ?use_aws_owned_key: bool
+        },
+        ?ldap_server_metadata: {
+          hosts: Array[String],
+          role_base: String,
+          ?role_name: String,
+          ?role_search_matching: String,
+          ?role_search_subtree: bool,
+          service_account_password: String,
+          service_account_username: String,
+          user_base: String,
+          ?user_role_name: String,
+          ?user_search_matching: String,
+          ?user_search_subtree: bool
+        },
+        ?logs: {
+          ?general: bool,
+          ?audit: bool
+        },
+        ?maintenance_window_start_time: {
+          day_of_week: Types::mq_day_of_week,
+          time_of_day: String,
+          ?time_zone: String
+        },
+        ?publicly_accessible: bool,
+        ?security_groups: Array[String],
+        ?storage_type: Types::mq_storage_type,
+        ?subnet_ids: Array[String],
+        ?tags: Hash[Symbol, String]
+      ) -> ResourceReference
+    end
+  end
+end

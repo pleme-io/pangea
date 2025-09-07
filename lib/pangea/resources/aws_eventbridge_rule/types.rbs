@@ -1,0 +1,41 @@
+# RBS type definitions for AWS EventBridge Rule types
+
+module Pangea
+  module Resources
+    module AWS
+      class EventBridgeRuleAttributes < Dry::Struct
+        attr_reader name: String
+        attr_reader description: String?
+        attr_reader event_bus_name: String
+        attr_reader state: String
+        attr_reader event_pattern: String?
+        attr_reader schedule_expression: String?
+        attr_reader role_arn: String?
+        attr_reader tags: Hash[Symbol, String]
+        
+        def is_enabled?: () -> bool
+        def is_disabled?: () -> bool
+        def is_scheduled?: () -> bool
+        def is_event_driven?: () -> bool
+        def rule_type: () -> String
+        def uses_default_bus?: () -> bool
+        def uses_custom_bus?: () -> bool
+        def has_role?: () -> bool
+        def parsed_event_pattern: () -> Hash[String, untyped]?
+        def schedule_frequency: () -> String?
+        def estimated_monthly_cost: () -> String
+      end
+
+      module EventBridgeRuleConfigs
+        def self.scheduled_rule: (String, schedule_expression: String, ?description: String?) -> Hash[Symbol, untyped]
+        def self.event_pattern_rule: (String, source: String, ?detail_type: String?, ?description: String?) -> Hash[Symbol, untyped]
+        def self.custom_bus_rule: (String, event_bus_name: String, event_pattern: String, ?description: String?) -> Hash[Symbol, untyped]
+        def self.frequent_schedule_rule: (String, ?minutes: Integer, ?description: String) -> Hash[Symbol, untyped]
+        def self.daily_batch_rule: (String, ?hour: Integer, ?minute: Integer, ?description: String) -> Hash[Symbol, untyped]
+        def self.aws_service_rule: (String, service: String, detail_type: String, ?description: String?) -> Hash[Symbol, untyped]
+        def self.multi_source_rule: (String, sources: Array[String], ?detail_types: Array[String]?, ?description: String?) -> Hash[Symbol, untyped]
+        def self.disaster_recovery_rule: (String, primary_region: String, ?description: String) -> Hash[Symbol, untyped]
+      end
+    end
+  end
+end

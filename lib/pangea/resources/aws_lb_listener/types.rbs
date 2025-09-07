@@ -1,0 +1,23 @@
+# Type definitions for AWS Load Balancer Listener resources
+
+module Pangea
+  module Resources
+    module AWS
+      class LoadBalancerListenerAttributes < Dry::Struct
+        attribute :load_balancer_arn, String
+        attribute :port, Integer
+        attribute :protocol, String
+        attribute? :ssl_policy, String?
+        attribute? :certificate_arn, String?  
+        attribute? :alpn_policy, String?
+        attribute :default_action, Array[Hash[Symbol, untyped]]
+        attribute :tags, Hash[Symbol, String]
+        
+        def self.new: (Hash[Symbol, untyped] attributes) -> LoadBalancerListenerAttributes
+      end
+      
+      # Load balancer listener function signature
+      def aws_lb_listener: (Symbol name, Hash[Symbol, untyped] attributes) -> ResourceReference
+    end
+  end
+end

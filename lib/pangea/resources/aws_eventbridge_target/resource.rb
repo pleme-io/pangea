@@ -1,0 +1,206 @@
+# frozen_string_literal: true
+
+require 'pangea/resources/base'
+require 'pangea/resources/reference'
+require 'pangea/resources/aws_eventbridge_target/types'
+require 'pangea/resource_registry'
+
+module Pangea
+  module Resources
+    module AWS
+      # Create an AWS EventBridge Target with type-safe attributes
+      #
+      # @param name [Symbol] The resource name
+      # @param attributes [Hash] EventBridge target attributes
+      # @return [ResourceReference] Reference object with outputs and computed properties
+      def aws_eventbridge_target(name, attributes = {})
+        # Validate attributes using dry-struct
+        target_attrs = Types::EventBridgeTargetAttributes.new(attributes)
+        
+        # Generate terraform resource block via terraform-synthesizer
+        resource(:aws_cloudwatch_event_target, name) do
+          rule target_attrs.rule
+          event_bus_name target_attrs.event_bus_name
+          target_id target_attrs.target_id
+          arn target_attrs.arn
+          
+          # Role ARN for target invocation
+          role_arn target_attrs.role_arn if target_attrs.role_arn
+          
+          # Input configuration (mutually exclusive)
+          input target_attrs.input if target_attrs.input
+          input_path target_attrs.input_path if target_attrs.input_path
+          
+          # Input transformer
+          if target_attrs.input_transformer
+            input_transformer do
+              input_paths target_attrs.input_transformer[:input_paths] if target_attrs.input_transformer[:input_paths]
+              input_template target_attrs.input_transformer[:input_template]
+            end
+          end
+          
+          # Retry policy
+          if target_attrs.retry_policy
+            retry_policy do
+              maximum_retry_attempts target_attrs.retry_policy[:maximum_retry_attempts] if target_attrs.retry_policy[:maximum_retry_attempts]
+              maximum_event_age_in_seconds target_attrs.retry_policy[:maximum_event_age_in_seconds] if target_attrs.retry_policy[:maximum_event_age_in_seconds]
+            end
+          end
+          
+          # Dead letter config
+          if target_attrs.dead_letter_config
+            dead_letter_config do
+              arn target_attrs.dead_letter_config[:arn] if target_attrs.dead_letter_config[:arn]
+            end
+          end
+          
+          # HTTP parameters (for API destinations)
+          if target_attrs.http_parameters
+            http_parameters do
+              path_parameter_values target_attrs.http_parameters[:path_parameter_values] if target_attrs.http_parameters[:path_parameter_values]
+              header_parameters target_attrs.http_parameters[:header_parameters] if target_attrs.http_parameters[:header_parameters]
+              query_string_parameters target_attrs.http_parameters[:query_string_parameters] if target_attrs.http_parameters[:query_string_parameters]
+            end
+          end
+          
+          # Kinesis parameters
+          if target_attrs.kinesis_parameters
+            kinesis_parameters do
+              partition_key_path target_attrs.kinesis_parameters[:partition_key_path] if target_attrs.kinesis_parameters[:partition_key_path]
+            end
+          end
+          
+          # SQS parameters
+          if target_attrs.sqs_parameters
+            sqs_parameters do
+              message_group_id target_attrs.sqs_parameters[:message_group_id] if target_attrs.sqs_parameters[:message_group_id]
+            end
+          end
+          
+          # ECS parameters
+          if target_attrs.ecs_parameters
+            ecs_parameters do
+              task_definition_arn target_attrs.ecs_parameters[:task_definition_arn]
+              task_count target_attrs.ecs_parameters[:task_count] if target_attrs.ecs_parameters[:task_count]
+              launch_type target_attrs.ecs_parameters[:launch_type] if target_attrs.ecs_parameters[:launch_type]
+              platform_version target_attrs.ecs_parameters[:platform_version] if target_attrs.ecs_parameters[:platform_version]
+              group target_attrs.ecs_parameters[:group] if target_attrs.ecs_parameters[:group]
+              
+              # Network configuration
+              if target_attrs.ecs_parameters[:network_configuration]
+                network_configuration do
+                  awsvpc_configuration do
+                    subnets target_attrs.ecs_parameters[:network_configuration][:awsvpc_configuration][:subnets]
+                    security_groups target_attrs.ecs_parameters[:network_configuration][:awsvpc_configuration][:security_groups] if target_attrs.ecs_parameters[:network_configuration][:awsvpc_configuration][:security_groups]
+                    assign_public_ip target_attrs.ecs_parameters[:network_configuration][:awsvpc_configuration][:assign_public_ip] if target_attrs.ecs_parameters[:network_configuration][:awsvpc_configuration][:assign_public_ip]
+                  end
+                end
+              end
+              
+              # Capacity provider strategy
+              if target_attrs.ecs_parameters[:capacity_provider_strategy]
+                target_attrs.ecs_parameters[:capacity_provider_strategy].each do |strategy|
+                  capacity_provider_strategy do
+                    capacity_provider strategy[:capacity_provider]
+                    weight strategy[:weight] if strategy[:weight]
+                    base strategy[:base] if strategy[:base]
+                  end
+                end
+              end
+              
+              # Placement constraints
+              if target_attrs.ecs_parameters[:placement_constraint]
+                target_attrs.ecs_parameters[:placement_constraint].each do |constraint|
+                  placement_constraint do
+                    type constraint[:type] if constraint[:type]
+                    expression constraint[:expression] if constraint[:expression]
+                  end
+                end
+              end
+              
+              # Placement strategy
+              if target_attrs.ecs_parameters[:placement_strategy]
+                target_attrs.ecs_parameters[:placement_strategy].each do |strategy|
+                  placement_strategy do
+                    type strategy[:type] if strategy[:type]
+                    field strategy[:field] if strategy[:field]
+                  end
+                end
+              end
+              
+              # Tags
+              if target_attrs.ecs_parameters[:tags]
+                tags do
+                  target_attrs.ecs_parameters[:tags].each do |key, value|
+                    public_send(key, value)
+                  end
+                end
+              end
+            end
+          end
+          
+          # Batch parameters
+          if target_attrs.batch_parameters
+            batch_parameters do
+              job_definition target_attrs.batch_parameters[:job_definition]
+              job_name target_attrs.batch_parameters[:job_name]
+              
+              # Array properties
+              if target_attrs.batch_parameters[:array_properties]
+                array_properties do
+                  size target_attrs.batch_parameters[:array_properties][:size] if target_attrs.batch_parameters[:array_properties][:size]
+                end
+              end
+              
+              # Retry strategy
+              if target_attrs.batch_parameters[:retry_strategy]
+                retry_strategy do
+                  attempts target_attrs.batch_parameters[:retry_strategy][:attempts] if target_attrs.batch_parameters[:retry_strategy][:attempts]
+                end
+              end
+            end
+          end
+        end
+        
+        # Return resource reference with available outputs
+        ResourceReference.new(
+          type: 'aws_cloudwatch_event_target',
+          name: name,
+          resource_attributes: target_attrs.to_h,
+          outputs: {
+            id: "${aws_cloudwatch_event_target.#{name}.id}",
+            rule: "${aws_cloudwatch_event_target.#{name}.rule}",
+            target_id: "${aws_cloudwatch_event_target.#{name}.target_id}",
+            arn: "${aws_cloudwatch_event_target.#{name}.arn}",
+            event_bus_name: "${aws_cloudwatch_event_target.#{name}.event_bus_name}"
+          },
+          computed_properties: {
+            target_type: target_attrs.target_type,
+            is_lambda_target: target_attrs.is_lambda_target?,
+            is_sqs_target: target_attrs.is_sqs_target?,
+            is_sns_target: target_attrs.is_sns_target?,
+            is_kinesis_target: target_attrs.is_kinesis_target?,
+            is_ecs_target: target_attrs.is_ecs_target?,
+            is_batch_target: target_attrs.is_batch_target?,
+            is_api_gateway_target: target_attrs.is_api_gateway_target?,
+            is_fifo_sqs: target_attrs.is_fifo_sqs?,
+            has_role: target_attrs.has_role?,
+            has_input_transformation: target_attrs.has_input_transformation?,
+            has_retry_policy: target_attrs.has_retry_policy?,
+            has_dead_letter_queue: target_attrs.has_dead_letter_queue?,
+            uses_default_bus: target_attrs.uses_default_bus?,
+            uses_custom_bus: target_attrs.uses_custom_bus?,
+            max_retry_attempts: target_attrs.max_retry_attempts,
+            max_event_age_hours: target_attrs.max_event_age_hours,
+            estimated_monthly_cost: target_attrs.estimated_monthly_cost,
+            target_service: target_attrs.target_service,
+            reliability_features: target_attrs.reliability_features
+          }
+        )
+      end
+    end
+  end
+end
+
+# Auto-register this module when it's loaded
+Pangea::ResourceRegistry.register(:aws, Pangea::Resources::AWS)

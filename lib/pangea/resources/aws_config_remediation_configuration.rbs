@@ -1,0 +1,10 @@
+# frozen_string_literal: true
+
+module Pangea
+  module Resources
+    module AWS
+      # Create AWS Config Remediation Configuration resource
+      def aws_config_remediation_configuration: (Symbol name, Hash[Symbol, untyped] attributes) -> ResourceReference
+    end
+  end
+end

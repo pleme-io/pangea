@@ -1,0 +1,56 @@
+# RBS type definitions for AWS IAM User
+
+module Pangea
+  module Resources
+    module AWS
+      # IAM User attributes
+      type iam_user_attributes = {
+        name: String,
+        path?: String?,
+        permissions_boundary?: String?,
+        force_destroy?: bool?,
+        tags?: Hash[String, String]?
+      }
+
+      # IAM User computed properties
+      type iam_user_computed_properties = {
+        administrative_user: bool,
+        service_user: bool,
+        human_user: bool,
+        organizational_path: bool,
+        organizational_unit: String?,
+        user_category: (:administrative | :service_account | :human_user | :generic),
+        security_risk_level: (:low | :medium | :high),
+        has_permissions_boundary: bool,
+        permissions_boundary_policy_name: String?
+      }
+
+      # AWS IAM User resource function
+      def aws_iam_user: (Symbol name, iam_user_attributes attributes) -> ResourceReference
+
+      # User Patterns Module
+      module UserPatterns
+        def self.developer_user: (String name, ?String organizational_unit) -> iam_user_attributes
+        def self.service_account_user: (String service_name, ?String environment) -> iam_user_attributes
+        def self.cicd_user: (String pipeline_name, ?String? repository) -> iam_user_attributes
+        def self.admin_user: (String name, ?String department) -> iam_user_attributes
+        def self.readonly_user: (String name, ?String purpose) -> iam_user_attributes
+        def self.emergency_user: (String name) -> iam_user_attributes
+        def self.cross_account_user: (String name, String target_account_id) -> iam_user_attributes
+      end
+
+      # Permissions Boundaries Module
+      module PermissionsBoundaries
+        DEVELOPER_BOUNDARY: String
+        SERVICE_ACCOUNT_BOUNDARY: String
+        CICD_BOUNDARY: String
+        ADMIN_BOUNDARY: String
+        READONLY_BOUNDARY: String
+        CROSS_ACCOUNT_BOUNDARY: String
+
+        def self.all_boundaries: () -> Array[String]
+        def self.boundary_for_user_type: (Symbol user_type) -> String?
+      end
+    end
+  end
+end

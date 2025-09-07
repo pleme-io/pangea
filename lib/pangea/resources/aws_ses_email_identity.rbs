@@ -1,0 +1,24 @@
+# RBS type definitions for AWS SES Email Identity resource
+
+module Pangea
+  module Resources
+    module AWS
+      module Types
+        class SesEmailIdentityAttributes < Dry::Struct
+          def self.new: (Hash[Symbol, untyped] attributes) -> instance
+
+          def email: () -> String
+          def domain_part: () -> String
+          def local_part: () -> String
+          def common_provider?: () -> bool
+        end
+      end
+
+      # Create an AWS SES Email Identity
+      def aws_ses_email_identity: (
+        Symbol name,
+        ?email: String
+      ) -> ResourceReference
+    end
+  end
+end

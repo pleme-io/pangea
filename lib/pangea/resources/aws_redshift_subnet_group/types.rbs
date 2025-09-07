@@ -1,0 +1,33 @@
+# frozen_string_literal: true
+
+module Pangea
+  module Resources
+    module AWS
+      class RedshiftSubnetGroupAttributes < Dry::Struct
+        @attributes: Hash[Symbol, untyped]
+        
+        attr_reader name: String
+        attr_reader description: String?
+        attr_reader subnet_ids: Array[String]
+        attr_reader tags: Hash[Symbol, String]
+        
+        def self.new: (Hash[Symbol, untyped] attributes) -> RedshiftSubnetGroupAttributes
+        
+        # Query methods
+        def multi_az_capable?: () -> bool
+        def has_redundancy?: () -> bool
+        def production_grade?: () -> bool
+        
+        # Computed properties
+        def subnet_count: () -> Integer
+        def estimated_az_count: () -> Integer
+        def generated_description: () -> String
+        
+        # Class methods for configurations
+        def self.configuration_for_environment: (String | Symbol env_type, Array[String] subnet_ids) -> Hash[Symbol, untyped]
+        
+        def to_h: () -> Hash[Symbol, untyped]
+      end
+    end
+  end
+end

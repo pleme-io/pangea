@@ -1,0 +1,48 @@
+# frozen_string_literal: true
+
+module Pangea
+  module Resources
+    module AWS
+      module Types
+        class KinesisVideoStreamAttributes < Dry::Struct
+          @attributes: Hash[Symbol, untyped]
+          
+          attr_reader name: String
+          attr_reader data_retention_in_hours: Integer
+          attr_reader device_name: String?
+          attr_reader media_type: String
+          attr_reader kms_key_id: String?
+          attr_reader tags: Hash[Symbol, String]
+          
+          def self.new: (Hash[Symbol, untyped] attributes) -> KinesisVideoStreamAttributes
+          
+          # Validation methods
+          def self.valid_kms_key_id?: (String key_id) -> bool
+          def self.media_types: () -> Hash[Symbol, String]
+          
+          # Query methods
+          def is_encrypted?: () -> bool
+          def has_retention_configured?: () -> bool
+          def is_real_time_only?: () -> bool
+          def is_h264_video?: () -> bool
+          def is_h265_video?: () -> bool
+          def is_audio_stream?: () -> bool
+          def is_video_stream?: () -> bool
+          def has_device_name?: () -> bool
+          
+          # Computed properties
+          def retention_period_days: () -> Float
+          def retention_period_years: () -> Float
+          def estimated_storage_gb_per_hour: () -> Float
+          def estimated_monthly_storage_gb: () -> Float
+          def estimated_monthly_cost_usd: () -> Float
+          def max_retention_years: () -> Integer
+          def streaming_endpoint_format: () -> String
+          def webrtc_signaling_endpoint_format: () -> String
+          
+          def to_h: () -> Hash[Symbol, (String | Integer | nil)]
+        end
+      end
+    end
+  end
+end

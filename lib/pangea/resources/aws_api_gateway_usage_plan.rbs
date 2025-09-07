@@ -1,0 +1,60 @@
+# RBS type definitions for AWS API Gateway Usage Plan resource
+
+module Pangea
+  module Resources
+    module AWS
+      module Types
+        type api_gateway_throttle_settings = {
+          burst_limit?: Integer?,
+          rate_limit?: Float?
+        }
+
+        type api_gateway_quota_settings = {
+          limit: Integer,
+          offset?: Integer?,
+          period: String
+        }
+
+        type api_gateway_api_stage = {
+          api_id: String,
+          stage: String,
+          throttle?: {
+            path?: String?,
+            burst_limit?: Integer?,
+            rate_limit?: Float?
+          }?
+        }
+
+        class ApiGatewayUsagePlanAttributes < Dry::Struct
+          def self.new: (Hash[Symbol, untyped] attributes) -> instance
+
+          def name: () -> String
+          def description?: () -> String?
+          def api_stages: () -> Array[api_gateway_api_stage]
+          def throttle_settings?: () -> api_gateway_throttle_settings?
+          def quota_settings?: () -> api_gateway_quota_settings?
+          def product_code?: () -> String?
+          def tags: () -> Hash[Symbol, String]
+
+          def api_count: () -> Integer
+          def has_throttling?: () -> bool
+          def has_quota?: () -> bool
+          def strictness_level: () -> String
+          def production_ready?: () -> bool
+        end
+      end
+
+      # Create an AWS API Gateway Usage Plan
+      def aws_api_gateway_usage_plan: (
+        Symbol name,
+        name: String,
+        ?description: String,
+        ?api_stages: Array[Types::api_gateway_api_stage],
+        ?throttle_settings: Types::api_gateway_throttle_settings,
+        ?quota_settings: Types::api_gateway_quota_settings,
+        ?product_code: String,
+        ?tags: Hash[Symbol, String]
+      ) -> ResourceReference
+    end
+  end
+end

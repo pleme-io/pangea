@@ -1,0 +1,10 @@
+# frozen_string_literal: true
+
+module Pangea
+  module Resources
+    module AWS
+      # Create AWS CodeDeploy Application resource
+      def aws_codedeploy_application: (Symbol name, Hash[Symbol, untyped] attributes) -> ResourceReference
+    end
+  end
+end

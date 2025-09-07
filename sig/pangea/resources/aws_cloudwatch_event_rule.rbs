@@ -1,0 +1,34 @@
+# RBS type definitions for AWS CloudWatch Event Rule
+
+module Pangea
+  module Resources
+    module AWS
+      # CloudWatch Event Rule attributes
+      type cloudwatch_event_rule_attributes = {
+        name?: String?,
+        name_prefix?: String?,
+        description?: String?,
+        event_bus_name?: String?,
+        event_pattern?: String?,
+        schedule_expression?: String?,
+        state?: ("ENABLED" | "DISABLED")?,
+        role_arn?: String?,
+        is_enabled?: bool?,
+        tags?: Hash[String, String]?
+      }
+
+      # CloudWatch Event Rule computed properties
+      type cloudwatch_event_rule_computed_properties = {
+        rule_type: Symbol,
+        schedule_type: Symbol?,
+        event_sources: Array[String],
+        event_detail_types: Array[String],
+        is_custom_event_bus: bool,
+        requires_role: bool
+      }
+
+      # AWS CloudWatch Event Rule resource function
+      def aws_cloudwatch_event_rule: (Symbol name, cloudwatch_event_rule_attributes attributes) -> ResourceReference
+    end
+  end
+end

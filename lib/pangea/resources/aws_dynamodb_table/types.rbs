@@ -1,0 +1,55 @@
+# RBS type definitions for AWS DynamoDB Table types
+
+module Pangea
+  module Resources
+    module AWS
+      class DynamoDbTableAttributes < Dry::Struct
+        attr_reader name: String
+        attr_reader billing_mode: String
+        attr_reader attribute: Array[Hash[Symbol, String]]
+        attr_reader hash_key: String
+        attr_reader range_key: String?
+        attr_reader read_capacity: Integer?
+        attr_reader write_capacity: Integer?
+        attr_reader global_secondary_index: Array[Hash[Symbol, untyped]]
+        attr_reader local_secondary_index: Array[Hash[Symbol, untyped]]
+        attr_reader ttl: Hash[Symbol, untyped]?
+        attr_reader stream_enabled: bool?
+        attr_reader stream_view_type: String?
+        attr_reader point_in_time_recovery_enabled: bool
+        attr_reader server_side_encryption: Hash[Symbol, untyped]?
+        attr_reader deletion_protection_enabled: bool
+        attr_reader table_class: String
+        attr_reader restore_source_name: String?
+        attr_reader restore_source_table_arn: String?
+        attr_reader restore_to_time: String?
+        attr_reader restore_date_time: String?
+        attr_reader import_table: Hash[Symbol, untyped]?
+        attr_reader replica: Array[Hash[Symbol, untyped]]
+        attr_reader tags: Hash[Symbol, String]
+        
+        def is_pay_per_request?: () -> bool
+        def is_provisioned?: () -> bool
+        def has_range_key?: () -> bool
+        def has_gsi?: () -> bool
+        def has_lsi?: () -> bool
+        def has_stream?: () -> bool
+        def has_ttl?: () -> bool
+        def has_encryption?: () -> bool
+        def has_pitr?: () -> bool
+        def is_global_table?: () -> bool
+        def total_indexes: () -> Integer
+        def estimated_monthly_cost: () -> String
+      end
+
+      module DynamoDbConfigs
+        def self.simple_table: (String, ?hash_key_name: String, ?hash_key_type: String) -> Hash[Symbol, untyped]
+        def self.hash_range_table: (String, ?hash_key_name: String, ?range_key_name: String, ?hash_key_type: String, ?range_key_type: String) -> Hash[Symbol, untyped]
+        def self.high_throughput_table: (String, ?read_capacity: Integer, ?write_capacity: Integer) -> Hash[Symbol, untyped]
+        def self.table_with_gsi: (String, ?gsi_name: String) -> Hash[Symbol, untyped]
+        def self.streaming_table: (String, ?stream_view_type: String) -> Hash[Symbol, untyped]
+        def self.ttl_table: (String, ?ttl_attribute: String) -> Hash[Symbol, untyped]
+      end
+    end
+  end
+end

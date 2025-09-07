@@ -1,0 +1,140 @@
+# frozen_string_literal: true
+
+module Pangea
+  module Resources
+    module AWS
+      # Type definitions for CodeBuild source configuration
+      type codebuild_source = {
+        type: String,
+        location?: String?,
+        git_clone_depth?: Integer?,
+        buildspec?: String?,
+        report_build_status?: bool?,
+        insecure_ssl?: bool?,
+        git_submodules_config?: { fetch_submodules: bool }?,
+        auth?: { type: String, resource?: String? }?
+      }
+
+      # Type definitions for CodeBuild artifacts
+      type codebuild_artifacts = {
+        type: String,
+        location?: String?,
+        name?: String?,
+        namespace_type?: String?,
+        packaging?: String?,
+        path?: String?,
+        encryption_disabled?: bool?,
+        artifact_identifier?: String?,
+        override_artifact_name?: bool?
+      }
+
+      # Type definitions for CodeBuild environment
+      type codebuild_environment_variable = {
+        name: String,
+        value: String,
+        type?: String?
+      }
+
+      type codebuild_environment = {
+        type: String,
+        image: String,
+        compute_type: String,
+        environment_variables?: Array[codebuild_environment_variable]?,
+        privileged_mode?: bool?,
+        certificate?: String?,
+        registry_credential?: { credential: String, credential_provider: String }?,
+        image_pull_credentials_type?: String?
+      }
+
+      # Type definitions for CodeBuild cache
+      type codebuild_cache = {
+        type: String,
+        location?: String?,
+        modes?: Array[String]?
+      }
+
+      # Type definitions for CodeBuild VPC config
+      type codebuild_vpc_config = {
+        vpc_id: String,
+        subnets: Array[String],
+        security_group_ids: Array[String]
+      }
+
+      # Type definitions for CodeBuild logs
+      type codebuild_logs_config = {
+        cloudwatch_logs?: { status?: String?, group_name?: String?, stream_name?: String? }?,
+        s3_logs?: { status?: String?, location?: String?, encryption_disabled?: bool? }?
+      }
+
+      # Type-safe attributes for AWS CodeBuild Project
+      class CodeBuildProjectAttributes < Dry::Struct
+        # Project name
+        attribute name: String
+        
+        # Optional description
+        attribute? description: String?
+        
+        # Service role ARN
+        attribute service_role: String
+        
+        # Build and queue timeouts
+        attribute build_timeout: Integer
+        attribute queued_timeout: Integer
+        
+        # Optional concurrent build limit
+        attribute? concurrent_build_limit: Integer?
+        
+        # Source configuration
+        attribute source: codebuild_source
+        
+        # Artifacts configuration
+        attribute artifacts: codebuild_artifacts
+        
+        # Secondary sources and artifacts
+        attribute secondary_sources: Array[codebuild_source]
+        attribute secondary_artifacts: Array[codebuild_artifacts]
+        
+        # Environment configuration
+        attribute environment: codebuild_environment
+        
+        # Cache configuration
+        attribute cache: codebuild_cache
+        
+        # Optional VPC configuration
+        attribute? vpc_config: codebuild_vpc_config?
+        
+        # Logs configuration
+        attribute logs_config: codebuild_logs_config
+        
+        # Build batch configuration
+        attribute? build_batch_config: Hash[Symbol, untyped]?
+        
+        # File system locations
+        attribute file_system_locations: Array[Hash[Symbol, untyped]]
+        
+        # Badge enabled
+        attribute badge_enabled: bool
+        
+        # Optional encryption key
+        attribute? encryption_key: String?
+        
+        # Optional resource access role
+        attribute? resource_access_role: String?
+        
+        # Resource tags
+        attribute tags: Hash[String, String]
+        
+        # Helper methods
+        def uses_vpc?: () -> bool
+        def has_secondary_sources?: () -> bool
+        def has_secondary_artifacts?: () -> bool
+        def cache_enabled?: () -> bool
+        def cloudwatch_logs_enabled?: () -> bool
+        def s3_logs_enabled?: () -> bool
+        def environment_variable_count: () -> Integer
+        def uses_secrets?: () -> bool
+        def compute_size: () -> String
+      end
+    end
+  end
+end

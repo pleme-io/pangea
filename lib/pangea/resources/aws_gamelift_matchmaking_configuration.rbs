@@ -1,0 +1,52 @@
+# TypeProf 0.21.2
+
+module Pangea
+  module Resources
+    module AwsGameliftMatchmakingConfiguration
+      module Types
+        class GameProperty
+          attr_reader key: String
+          attr_reader value: String
+        end
+
+        class Attributes
+          attr_reader name: String
+          attr_reader game_session_queue_arns: Array[String]
+          attr_reader request_timeout_seconds: Integer
+          attr_reader rule_set_name: String
+          attr_reader acceptance_required: bool?
+          attr_reader acceptance_timeout_seconds: Integer?
+          attr_reader additional_player_count: Integer?
+          attr_reader backfill_mode: ("AUTOMATIC" | "MANUAL")?
+          attr_reader custom_event_data: String?
+          attr_reader description: String?
+          attr_reader flex_match_mode: ("STANDALONE" | "WITH_QUEUE")?
+          attr_reader game_properties: Array[GameProperty]?
+          attr_reader game_session_data: String?
+          attr_reader notification_target: String?
+          attr_reader tags: Hash[String, String]?
+
+          def self.from_dynamic: (Hash[Symbol, untyped] d) -> Attributes
+        end
+
+        class Reference
+          attr_reader arn: String
+          attr_reader name: String
+          attr_reader creation_time: String
+          attr_reader rule_set_arn: String
+        end
+      end
+
+      module Resource
+        def self.validate: (Hash[Symbol, untyped] definition) -> Types::Attributes
+        def self.defaults: () -> Hash[Symbol, untyped]
+        def self.required_attributes: () -> Array[Symbol]
+        def self.compute_attributes: (Hash[Symbol, untyped] definition) -> Types::Reference
+        
+        private
+        
+        def self.ref: (String | Symbol name, Symbol attribute) -> String
+      end
+    end
+  end
+end

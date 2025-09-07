@@ -1,0 +1,42 @@
+# frozen_string_literal: true
+
+module Pangea
+  module Resources
+    module AWS
+      class AthenaNamedQueryAttributes < Dry::Struct
+        @attributes: Hash[Symbol, untyped]
+        
+        attr_reader name: String
+        attr_reader database: String
+        attr_reader query: String
+        attr_reader description: String?
+        attr_reader workgroup: String
+        
+        def self.new: (Hash[Symbol, untyped] attributes) -> AthenaNamedQueryAttributes
+        
+        # Query type methods
+        def is_select_query?: () -> bool
+        def is_ddl_query?: () -> bool
+        def is_insert_query?: () -> bool
+        def is_maintenance_query?: () -> bool
+        def query_type: () -> String
+        
+        # Query analysis methods
+        def referenced_tables: () -> Array[String]
+        def uses_partitions?: () -> bool
+        def uses_aggregations?: () -> bool
+        def uses_window_functions?: () -> bool
+        def query_complexity_score: () -> Float
+        
+        # Utility methods
+        def parameterized_query: () -> String
+        def generate_documentation: () -> String
+        
+        # Class methods for templates
+        def self.template_for_type: (String | Symbol type, ?Hash[Symbol, untyped] options) -> String
+        
+        def to_h: () -> Hash[Symbol, untyped]
+      end
+    end
+  end
+end

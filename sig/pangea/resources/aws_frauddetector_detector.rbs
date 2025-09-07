@@ -1,0 +1,76 @@
+# Fraud Detector resource type definitions
+
+module Pangea
+  module Resources
+    module AWS
+      module FraudDetector
+        module Detector
+          # AWS Fraud Detector for real-time fraud detection
+          #
+          # @example Basic fraud detector
+          #   aws_frauddetector_detector(:payment_fraud, {
+          #     detector_id: "payment_fraud_detector",
+          #     event_type_name: "payment_event",
+          #     description: "Detects fraudulent payment transactions"
+          #   })
+          def aws_frauddetector_detector: (
+            Symbol name,
+            {
+              detector_id: String,
+              event_type_name: String,
+              ?description: String,
+              ?tags: Hash[String, String]
+            } attributes
+          ) -> ResourceReference
+
+          # AWS Fraud Detector Entity Type
+          def aws_frauddetector_entity_type: (
+            Symbol name,
+            {
+              name: String,
+              ?description: String,
+              ?tags: Hash[String, String]
+            } attributes
+          ) -> ResourceReference
+
+          # AWS Fraud Detector Event Type
+          def aws_frauddetector_event_type: (
+            Symbol name,
+            {
+              name: String,
+              entity_types: Array[String],
+              event_variables: Array[String],
+              labels: Array[String],
+              ?description: String,
+              ?tags: Hash[String, String]
+            } attributes
+          ) -> ResourceReference
+
+          # AWS Fraud Detector Variable
+          def aws_frauddetector_variable: (
+            Symbol name,
+            {
+              name: String,
+              data_type: String,
+              data_source: String,
+              ?default_value: String,
+              ?description: String,
+              ?variable_type: String,
+              ?tags: Hash[String, String]
+            } attributes
+          ) -> ResourceReference
+
+          # AWS Fraud Detector Outcome
+          def aws_frauddetector_outcome: (
+            Symbol name,
+            {
+              name: String,
+              ?description: String,
+              ?tags: Hash[String, String]
+            } attributes
+          ) -> ResourceReference
+        end
+      end
+    end
+  end
+end

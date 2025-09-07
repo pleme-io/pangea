@@ -1,0 +1,28 @@
+# sig/pangea/structures/namespace.rbs
+
+module Pangea
+  module Structures
+    class Namespace < Dry::Struct
+      # State configuration
+      class StateConfig < Dry::Struct
+        attr_reader bucket: String?
+        attr_reader region: String
+        attr_reader lock: String?
+      end
+      
+      class State < Dry::Struct
+        attr_reader type: :s3 | :local
+        attr_reader config: StateConfig
+      end
+      
+      # Attributes
+      attr_reader name: String
+      attr_reader state: State
+      
+      # Methods
+      def s3_backend?: () -> bool
+      def local_backend?: () -> bool
+      def state_config: () -> Hash[Symbol, String | Symbol | nil]
+    end
+  end
+end

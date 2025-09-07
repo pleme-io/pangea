@@ -1,0 +1,63 @@
+# RBS type definitions for AWS Route53 Record resource
+
+module Pangea
+  module Resources
+    module AWS
+      # Route53 record routing policy types
+      type weighted_routing_policy = {
+        weight: Integer
+      }
+
+      type latency_routing_policy = {
+        region: String
+      }
+
+      type failover_routing_policy = {
+        type: ("PRIMARY" | "SECONDARY")
+      }
+
+      type geolocation_routing_policy = {
+        continent?: String?,
+        country?: String?,
+        subdivision?: String?
+      }
+
+      type geoproximity_routing_policy = {
+        aws_region?: String?,
+        bias?: Integer?,
+        coordinates?: {
+          latitude: String,
+          longitude: String
+        }?
+      }
+
+      # Route53 record alias configuration type
+      type route53_alias_config = {
+        name: String,
+        zone_id: String,
+        evaluate_target_health?: bool
+      }
+
+      # Route53 record attributes type
+      type route53_record_attributes = {
+        zone_id: String,
+        name: String,
+        type: ("A" | "AAAA" | "CNAME" | "MX" | "NS" | "PTR" | "SOA" | "SPF" | "SRV" | "TXT"),
+        ttl?: Integer?,
+        records?: Array[String],
+        set_identifier?: String?,
+        health_check_id?: String?,
+        multivalue_answer?: bool,
+        allow_overwrite?: bool,
+        weighted_routing_policy?: weighted_routing_policy?,
+        latency_routing_policy?: latency_routing_policy?,
+        failover_routing_policy?: failover_routing_policy?,
+        geolocation_routing_policy?: geolocation_routing_policy?,
+        geoproximity_routing_policy?: geoproximity_routing_policy?,
+        alias?: route53_alias_config?
+      }
+
+      # Route53 record resource function
+      def aws_route53_record: (Symbol name, route53_record_attributes attributes) -> ResourceReference
+    end
+end

@@ -1,0 +1,67 @@
+# frozen_string_literal: true
+
+module Pangea
+  module Resources
+    module AWS
+      class EmrClusterAttributes < Dry::Struct
+        @attributes: Hash[Symbol, untyped]
+        
+        attr_reader name: String
+        attr_reader release_label: String
+        attr_reader applications: Array[String]
+        attr_reader service_role: String
+        attr_reader configurations: Array[Hash[Symbol, untyped]]
+        attr_reader ec2_attributes: Hash[Symbol, untyped]
+        attr_reader master_instance_group: Hash[Symbol, untyped]
+        attr_reader core_instance_group: Hash[Symbol, untyped]?
+        attr_reader task_instance_groups: Array[Hash[Symbol, untyped]]
+        attr_reader bootstrap_action: Array[Hash[Symbol, untyped]]
+        attr_reader log_uri: String?
+        attr_reader log_encryption_kms_key_id: String?
+        attr_reader termination_protection: bool
+        attr_reader keep_job_flow_alive_when_no_steps: bool
+        attr_reader visible_to_all_users: bool
+        attr_reader auto_termination_policy: Hash[Symbol, Integer?]?
+        attr_reader custom_ami_id: String?
+        attr_reader ebs_root_volume_size: Integer?
+        attr_reader kerberos_attributes: Hash[Symbol, String?]?
+        attr_reader step_concurrency_level: Integer?
+        attr_reader placement_group_configs: Array[Hash[Symbol, String?]]
+        attr_reader tags: Hash[Symbol, String]
+        
+        def self.new: (Hash[Symbol, untyped] attributes) -> EmrClusterAttributes
+        
+        # Application query methods
+        def uses_spark?: () -> bool
+        def uses_hive?: () -> bool
+        def uses_presto?: () -> bool
+        def uses_ml_frameworks?: () -> bool
+        def uses_notebooks?: () -> bool
+        
+        # Configuration query methods
+        def is_multi_az?: () -> bool
+        def uses_spot_instances?: () -> bool
+        def has_auto_scaling?: () -> bool
+        
+        # Instance counting methods
+        def total_core_instances: () -> Integer
+        def total_task_instances: () -> Integer
+        def total_cluster_instances: () -> Integer
+        
+        # Cost and optimization
+        def estimated_hourly_cost_usd: () -> Float
+        def configuration_warnings: () -> Array[String]
+        
+        # Class methods for configuration helpers
+        def self.spark_configuration: (?Hash[Symbol, untyped] options) -> Hash[Symbol, untyped]
+        def self.hadoop_configuration: (?Hash[Symbol, untyped] options) -> Hash[Symbol, untyped]
+        def self.hive_configuration: (?Hash[Symbol, untyped] options) -> Hash[Symbol, untyped]
+        def self.instance_group_config: (String role, String instance_type, Integer count, ?Hash[Symbol, untyped] options) -> Hash[Symbol, untyped]
+        def self.bootstrap_action: (String name, String script_path, ?Array[String] args) -> Hash[Symbol, untyped]
+        def self.workload_configurations: () -> Hash[Symbol, Hash[Symbol, untyped]]
+        
+        def to_h: () -> Hash[Symbol, untyped]
+      end
+    end
+  end
+end

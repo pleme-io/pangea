@@ -1,0 +1,26 @@
+# RBS type definitions for AWS CloudWatch Log Destination
+
+module Pangea
+  module Resources
+    module AWS
+      # CloudWatch Log Destination attributes
+      type cloudwatch_log_destination_attributes = {
+        name: String,
+        role_arn: String,
+        target_arn: String,
+        tags?: Hash[String, String]?
+      }
+
+      # CloudWatch Log Destination computed properties
+      type cloudwatch_log_destination_computed_properties = {
+        cross_account_capable: bool,
+        target_service: Symbol?,
+        region: String?,
+        account_id: String?
+      }
+
+      # AWS CloudWatch Log Destination resource function
+      def aws_cloudwatch_log_destination: (Symbol name, cloudwatch_log_destination_attributes attributes) -> ResourceReference
+    end
+  end
+end

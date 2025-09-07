@@ -1,2 +1,0 @@
-class NoInfraTargetError < StandardError
-end

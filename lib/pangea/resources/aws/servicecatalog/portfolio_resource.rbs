@@ -1,0 +1,15 @@
+# TypeProf 0.21.9
+
+module Pangea
+  module Resources
+    module AWS
+      module ServiceCatalog
+        class PortfolioResource < Pangea::Resources::Base
+          def validate: () -> void
+          def arn: () -> String
+          def portfolio_id: () -> String
+        end
+      end
+    end
+  end
+end

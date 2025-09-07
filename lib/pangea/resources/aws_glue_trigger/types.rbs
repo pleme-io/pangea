@@ -1,0 +1,53 @@
+# frozen_string_literal: true
+
+module Pangea
+  module Resources
+    module AWS
+      class GlueTriggerAttributes < Dry::Struct
+        @attributes: Hash[Symbol, untyped]
+        
+        attr_reader name: String
+        attr_reader type: String
+        attr_reader description: String?
+        attr_reader enabled: bool
+        attr_reader schedule: String?
+        attr_reader start_on_creation: bool?
+        attr_reader workflow_name: String?
+        attr_reader actions: Array[Hash[Symbol, untyped]]
+        attr_reader predicate: Hash[Symbol, untyped]?
+        attr_reader event_batching_condition: Hash[Symbol, Integer]?
+        attr_reader tags: Hash[Symbol, String]
+        
+        def self.new: (Hash[Symbol, untyped] attributes) -> GlueTriggerAttributes
+        
+        # Query methods
+        def is_scheduled?: () -> bool
+        def is_conditional?: () -> bool
+        def is_on_demand?: () -> bool
+        def is_workflow_trigger?: () -> bool
+        
+        # Action methods
+        def job_actions: () -> Array[Hash[Symbol, untyped]]
+        def crawler_actions: () -> Array[Hash[Symbol, untyped]]
+        def total_actions: () -> Integer
+        def condition_count: () -> Integer
+        
+        # Schedule analysis
+        def schedule_frequency: () -> Hash[Symbol, untyped]?
+        def estimated_executions_per_day: () -> Float
+        
+        # Configuration analysis
+        def configuration_warnings: () -> Array[String]
+        
+        # Class methods for common patterns
+        def self.schedule_expressions: () -> Hash[Symbol, String]
+        def self.predicate_for_job_success: (String | Array[String] job_names) -> Hash[Symbol, untyped]
+        def self.predicate_for_crawler_success: (String | Array[String] crawler_names) -> Hash[Symbol, untyped]
+        def self.action_for_job: (String job_name, ?Hash[Symbol, untyped] options) -> Hash[Symbol, untyped]
+        def self.action_for_crawler: (String crawler_name, ?Hash[Symbol, untyped] options) -> Hash[Symbol, untyped]
+        
+        def to_h: () -> Hash[Symbol, untyped]
+      end
+    end
+  end
+end

@@ -1,0 +1,107 @@
+# RBS type definitions for AWS S3 Bucket Replication Configuration
+
+module Pangea
+  module Resources
+    module AWS
+      # Replication rule filter configuration
+      type replication_filter = {
+        prefix?: String?,
+        tag?: {
+          key: String,
+          value: String
+        }?,
+        and?: {
+          prefix?: String?,
+          tags?: Hash[String, String]?
+        }?
+      }
+
+      # Replication destination metrics configuration
+      type replication_metrics = {
+        status: ("Enabled" | "Disabled"),
+        event_threshold?: {
+          minutes: Integer
+        }?
+      }
+
+      # Replication time control configuration
+      type replication_time_control = {
+        status: ("Enabled" | "Disabled"),
+        time?: {
+          minutes: Integer
+        }?
+      }
+
+      # Replication destination configuration
+      type replication_destination = {
+        bucket: String,
+        storage_class?: ("STANDARD" | "REDUCED_REDUNDANCY" | "STANDARD_IA" | "ONEZONE_IA" | 
+                        "INTELLIGENT_TIERING" | "GLACIER" | "DEEP_ARCHIVE" | "OUTPOSTS" | "GLACIER_IR")?,
+        account_id?: String?,
+        access_control_translation?: {
+          owner: ("Destination")
+        }?,
+        encryption_configuration?: {
+          replica_kms_key_id: String
+        }?,
+        metrics?: replication_metrics?,
+        replication_time?: replication_time_control?
+      }
+
+      # Source selection criteria for replication
+      type source_selection_criteria = {
+        replica_modifications?: {
+          status: ("Enabled" | "Disabled")
+        }?,
+        sse_kms_encrypted_objects?: {
+          status: ("Enabled" | "Disabled")
+        }?
+      }
+
+      # Individual replication rule
+      type replication_rule = {
+        id?: String?,
+        priority?: Integer?,
+        status: ("Enabled" | "Disabled"),
+        filter?: replication_filter?,
+        destination: replication_destination,
+        delete_marker_replication?: {
+          status: ("Enabled" | "Disabled")
+        }?,
+        existing_object_replication?: {
+          status: ("Enabled" | "Disabled")
+        }?,
+        source_selection_criteria?: source_selection_criteria?
+      }
+
+      # S3 Bucket Replication Configuration attributes
+      type s3_bucket_replication_configuration_attributes = {
+        bucket: String,
+        role: String,
+        rule: Array[replication_rule]
+      }
+
+      # S3 Bucket Replication Configuration computed properties
+      type s3_bucket_replication_configuration_computed_properties = {
+        total_rules_count: Integer,
+        enabled_rules_count: Integer,
+        disabled_rules_count: Integer,
+        cross_region_rules_count: Integer,
+        cross_account_rules_count: Integer,
+        has_delete_marker_replication: bool,
+        has_existing_object_replication: bool,
+        has_rtc_enabled: bool,
+        has_metrics_enabled: bool,
+        has_encryption_in_transit: bool,
+        has_kms_replication: bool,
+        replicates_to_storage_classes: Array[String],
+        has_filtered_replication: bool,
+        max_rtc_minutes: Integer,
+        estimated_replication_cost_category: ("low" | "medium" | "high")
+      }
+
+      # AWS S3 Bucket Replication Configuration resource function
+      def aws_s3_bucket_replication_configuration: (Symbol name, s3_bucket_replication_configuration_attributes attributes) -> ResourceReference
+    end
+  end
+end

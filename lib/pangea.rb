@@ -1,23 +1,29 @@
-require 'pangea/config'
-require 'pangea/state'
-require 'pangea/utils'
-require 'pangea/cli'
-require 'json'
+# frozen_string_literal: true
+
+require 'pangea/version'
+require 'pangea/configuration'
+require 'pangea/types'
+require 'pangea/entities'
+require 'pangea/utilities'
 
 module Pangea
-  autoload :Module, File.join(__dir__, 'pangea', 'module')
-
-  module App
-    class << self
-      def cfg
-        @cfg ||= Pangea::Utils.symbolize(
-          Pangea::Config.config
-        )
-      end
-
-      def run
-        Pangea::Cli.start(ARGV)
-      end
+  class << self
+    def configuration
+      @configuration ||= Configuration.new
+    end
+    
+    def config
+      configuration
+    end
+    
+    def configure
+      yield(configuration) if block_given?
+      configuration
+    end
+    
+    # Add utilities access
+    def utilities
+      Utilities
     end
   end
 end

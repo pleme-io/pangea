@@ -1,0 +1,23 @@
+# RBS type definitions for AWS KMS Key resource
+
+module Pangea
+  module Resources
+    module AWS
+      # KMS Key attributes type
+      type kms_key_attributes = {
+        description: String,
+        key_usage?: ("SIGN_VERIFY" | "ENCRYPT_DECRYPT"),
+        key_spec?: ("SYMMETRIC_DEFAULT" | "RSA_2048" | "RSA_3072" | "RSA_4096" | "ECC_NIST_P256" | "ECC_NIST_P384" | "ECC_NIST_P521" | "ECC_SECG_P256K1"),
+        policy?: String?,
+        bypass_policy_lockout_safety_check?: bool?,
+        deletion_window_in_days?: Integer?,
+        enable_key_rotation?: bool?,
+        multi_region?: bool?,
+        tags?: Hash[Symbol, String]
+      }
+      
+      # KMS Key resource function
+      def aws_kms_key: (Symbol name, kms_key_attributes attributes) -> ResourceReference
+    end
+  end
+end

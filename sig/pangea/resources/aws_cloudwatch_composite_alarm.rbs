@@ -1,0 +1,34 @@
+# RBS type definitions for AWS CloudWatch Composite Alarm
+
+module Pangea
+  module Resources
+    module AWS
+      # CloudWatch Composite Alarm attributes
+      type cloudwatch_composite_alarm_attributes = {
+        alarm_name: String,
+        alarm_rule: String,
+        alarm_description?: String?,
+        actions_enabled?: bool?,
+        actions_suppressor?: {
+          alarm: String,
+          extension_period?: Integer?,
+          wait_period?: Integer?
+        }?,
+        alarm_actions?: Array[String]?,
+        ok_actions?: Array[String]?,
+        insufficient_data_actions?: Array[String]?,
+        tags?: Hash[String, String]?
+      }
+
+      # CloudWatch Composite Alarm computed properties
+      type cloudwatch_composite_alarm_computed_properties = {
+        referenced_alarms: Array[String],
+        rule_complexity: Symbol,
+        has_actions_suppressor: bool
+      }
+
+      # AWS CloudWatch Composite Alarm resource function
+      def aws_cloudwatch_composite_alarm: (Symbol name, cloudwatch_composite_alarm_attributes attributes) -> ResourceReference
+    end
+  end
+end

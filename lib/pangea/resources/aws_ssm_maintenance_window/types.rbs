@@ -1,0 +1,49 @@
+# RBS type definitions for AWS SSM Maintenance Window types
+
+module Pangea
+  module Resources
+    module AWS
+      class SsmMaintenanceWindowAttributes < Dry::Struct
+        attr_reader name: String
+        attr_reader schedule: String
+        attr_reader duration: Integer
+        attr_reader cutoff: Integer
+        attr_reader allow_unassociated_targets: bool
+        attr_reader enabled: bool
+        attr_reader end_date: String?
+        attr_reader start_date: String?
+        attr_reader schedule_timezone: String?
+        attr_reader schedule_offset: Integer?
+        attr_reader description: String?
+        attr_reader tags: Hash[Symbol, String]
+        
+        def is_enabled?: () -> bool
+        def is_disabled?: () -> bool
+        def uses_cron_schedule?: () -> bool
+        def uses_rate_schedule?: () -> bool
+        def has_start_date?: () -> bool
+        def has_end_date?: () -> bool
+        def has_timezone?: () -> bool
+        def has_schedule_offset?: () -> bool
+        def has_description?: () -> bool
+        def allows_unassociated_targets?: () -> bool
+        def duration_hours: () -> Integer
+        def cutoff_hours: () -> Integer
+        def effective_execution_time_hours: () -> Integer
+        def schedule_type: () -> String
+        def parsed_schedule_info: () -> Hash[Symbol, untyped]
+        def estimated_monthly_executions: () -> (Integer | String)
+      end
+
+      module SsmMaintenanceWindowConfigs
+        def self.daily_maintenance_window: (String, ?hour: Integer, ?duration: Integer, ?cutoff: Integer) -> Hash[Symbol, untyped]
+        def self.weekly_maintenance_window: (String, ?day_of_week: String, ?hour: Integer, ?duration: Integer, ?cutoff: Integer) -> Hash[Symbol, untyped]
+        def self.monthly_maintenance_window: (String, ?day_of_month: Integer, ?hour: Integer, ?duration: Integer, ?cutoff: Integer) -> Hash[Symbol, untyped]
+        def self.business_hours_maintenance_window: (String, ?day_of_week: String, ?hour: Integer, ?timezone: String) -> Hash[Symbol, untyped]
+        def self.off_hours_maintenance_window: (String, ?timezone: String) -> Hash[Symbol, untyped]
+        def self.emergency_maintenance_window: (String) -> Hash[Symbol, untyped]
+        def self.patch_maintenance_window: (String, ?day_of_week: String, ?hour: Integer) -> Hash[Symbol, untyped]
+      end
+    end
+  end
+end

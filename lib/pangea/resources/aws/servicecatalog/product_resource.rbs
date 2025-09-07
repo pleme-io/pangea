@@ -1,0 +1,16 @@
+# TypeProf 0.21.9
+
+module Pangea
+  module Resources
+    module AWS
+      module ServiceCatalog
+        class ProductResource < Pangea::Resources::Base
+          def validate: () -> void
+          def arn: () -> String
+          def product_id: () -> String
+          def status: () -> String
+        end
+      end
+    end
+  end
+end

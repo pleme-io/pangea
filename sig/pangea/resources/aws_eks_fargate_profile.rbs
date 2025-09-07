@@ -1,0 +1,43 @@
+module Pangea
+  module Resources
+    module AWS
+      module Types
+        class FargateSelector < Dry::Struct
+          attr_reader namespace: String
+          attr_reader labels: Hash[Symbol, String]
+          
+          def self.new: (Hash[Symbol, untyped] attributes) -> FargateSelector
+          def to_h: () -> Hash[Symbol, untyped]
+        end
+        
+        class EksFargateProfileAttributes < Dry::Struct
+          attr_reader cluster_name: String
+          attr_reader fargate_profile_name: String?
+          attr_reader pod_execution_role_arn: String
+          attr_reader selectors: Array[FargateSelector]
+          attr_reader subnet_ids: Array[String]?
+          attr_reader tags: Hash[Symbol, String]
+          
+          def self.new: (Hash[Symbol, untyped] attributes) -> EksFargateProfileAttributes
+          def namespaces: () -> Array[String]
+          def has_labels?: () -> bool
+          def selector_count: () -> Integer
+          def covers_namespace?: (String namespace) -> bool
+          def to_h: () -> Hash[Symbol, untyped]
+        end
+      end
+      
+      interface _EksFargateProfileAttributes
+        def cluster_name: () -> String
+        def fargate_profile_name: () -> String?
+        def pod_execution_role_arn: () -> String
+        def selectors: () -> Array[Hash[Symbol, untyped]]
+        def subnet_ids: () -> Array[String]?
+        def tags: () -> Hash[Symbol, String]?
+      end
+      
+      # Create an AWS EKS Fargate Profile with type-safe attributes
+      def aws_eks_fargate_profile: (Symbol name, ?_EksFargateProfileAttributes attributes) -> ResourceReference
+    end
+  end
+end

@@ -1,0 +1,29 @@
+module Pangea
+  module Resources
+    module AWS
+      module Types
+        class TransitGatewayAttributes < Dry::Struct
+          def self.new: (Hash[Symbol, untyped] attributes) -> TransitGatewayAttributes
+          def supports_cross_region_peering?: () -> bool
+          def supports_dx_gateway_attachment?: () -> bool
+          def estimated_monthly_cost: () -> Hash[Symbol, untyped]
+          def security_considerations: () -> Array[String]
+          def is_hub_and_spoke_optimized?: () -> bool
+          def to_h: () -> Hash[Symbol, untyped]
+          
+          def amazon_side_asn: () -> Integer?
+          def auto_accept_shared_attachments: () -> String?
+          def default_route_table_association: () -> String?
+          def default_route_table_propagation: () -> String?
+          def description: () -> String?
+          def dns_support: () -> String?
+          def multicast_support: () -> String?
+          def vpn_ecmp_support: () -> String?
+          def tags: () -> Hash[Symbol, String]
+        end
+      end
+      
+      def aws_ec2_transit_gateway: (Symbol name, ?Hash[Symbol, untyped] attributes) -> ResourceReference
+    end
+  end
+end

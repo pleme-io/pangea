@@ -1,0 +1,41 @@
+# frozen_string_literal: true
+
+module Pangea
+  module Resources
+    module AWS
+      module Types
+        class AutoScalingNotificationAttributes < Dry::Struct
+          @attributes: Hash[Symbol, untyped]
+          
+          attr_reader group_names: Array[String]
+          attr_reader notifications: Array[String]
+          attr_reader topic_arn: String
+          
+          def self.new: (Hash[Symbol, untyped] attributes) -> AutoScalingNotificationAttributes
+          
+          # Validation methods
+          def self.valid_sns_topic_arn?: (String arn) -> bool
+          def self.validate_notification_combinations: (Array[String] notifications) -> void
+          
+          # Query methods
+          def monitors_launch_events?: () -> bool
+          def monitors_terminate_events?: () -> bool
+          def monitors_launch_errors?: () -> bool
+          def monitors_terminate_errors?: () -> bool
+          def monitors_all_launch_events?: () -> bool
+          def monitors_all_terminate_events?: () -> bool
+          def monitors_all_lifecycle_events?: () -> bool
+          def includes_test_notification?: () -> bool
+          def monitors_errors_only?: () -> bool
+          def monitors_success_only?: () -> bool
+          def single_group?: () -> bool
+          def multiple_groups?: () -> bool
+          def notification_count: () -> Integer
+          def group_count: () -> Integer
+          
+          def to_h: () -> Hash[Symbol, (Array[String] | String)]
+        end
+      end
+    end
+  end
+end

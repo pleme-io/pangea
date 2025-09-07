@@ -1,0 +1,12 @@
+module Pangea
+  module Resources
+    module AWS
+      # Aws Snowball Job resource function
+      #
+      # @param name [Symbol] The resource name
+      # @param attributes [Hash] Resource attributes
+      # @return [ResourceReference] Reference object with outputs
+      def aws_snowball_job: (Symbol name, Hash[Symbol, untyped] attributes) -> ResourceReference
+    end
+  end
+end

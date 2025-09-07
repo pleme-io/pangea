@@ -1,0 +1,46 @@
+# RBS type definitions for AWS Cognito Identity Provider
+
+module Pangea
+  module Resources
+    module AWS
+      # Cognito Identity Provider attributes
+      type cognito_identity_provider_attributes = {
+        provider_name: String,
+        provider_type: ("SAML" | "OIDC" | "Facebook" | "Google" | "LoginWithAmazon" | "Apple" | "Twitter"),
+        user_pool_id: String,
+        provider_details?: Hash[String, String]?,
+        attribute_mapping?: Hash[String, String]?,
+        idp_identifiers?: Array[String]?
+      }
+
+      # Cognito Identity Provider computed properties
+      type cognito_identity_provider_computed_properties = {
+        social_provider: bool,
+        enterprise_provider: bool,
+        oauth_provider: bool,
+        saml_provider: bool,
+        oidc_provider: bool,
+        provider_category: (:social | :enterprise | :other),
+        supports_attribute_mapping: bool,
+        supports_multiple_identifiers: bool,
+        provider_details_complete: bool
+      }
+
+      # AWS Cognito Identity Provider resource function
+      def aws_cognito_identity_provider: (Symbol name, cognito_identity_provider_attributes attributes) -> ResourceReference
+
+      # Pre-configured identity provider templates
+      module IdentityProviderTemplates
+        def self.google: (String provider_name, String user_pool_id, String client_id, String client_secret, ?String scopes) -> Hash[Symbol, untyped]
+        def self.facebook: (String provider_name, String user_pool_id, String app_id, String app_secret, ?String api_version) -> Hash[Symbol, untyped]
+        def self.apple: (String provider_name, String user_pool_id, String client_id, String team_id, String key_id, String private_key) -> Hash[Symbol, untyped]
+        def self.amazon: (String provider_name, String user_pool_id, String client_id, String client_secret) -> Hash[Symbol, untyped]
+        def self.saml: (String provider_name, String user_pool_id, String metadata_url, ?Array[String] identifiers) -> Hash[Symbol, untyped]
+        def self.oidc: (String provider_name, String user_pool_id, String client_id, String client_secret, String issuer_url, ?String scopes) -> Hash[Symbol, untyped]
+        def self.azure_ad: (String provider_name, String user_pool_id, String client_id, String client_secret, String tenant_id) -> Hash[Symbol, untyped]
+        def self.okta_saml: (String provider_name, String user_pool_id, String okta_domain, String app_name) -> Hash[Symbol, untyped]
+        def self.development_oidc: (String provider_name, String user_pool_id, String issuer_url) -> Hash[Symbol, untyped]
+      end
+    end
+  end
+end

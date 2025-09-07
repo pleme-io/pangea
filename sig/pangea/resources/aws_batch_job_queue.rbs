@@ -1,0 +1,65 @@
+# AWS Batch Job Queue resource type signatures
+
+module Pangea
+  module Resources
+    module AWS
+      module Types
+        class BatchJobQueueAttributes < Dry::Struct
+          # Core attributes
+          attr_reader name: String
+          attr_reader state: String
+          attr_reader priority: Integer
+          attr_reader compute_environment_order: Array[Hash[Symbol, untyped]]
+          
+          # Optional attributes
+          attr_reader tags: Hash[Symbol, String]?
+          
+          def self.new: (Hash[Symbol, untyped] attributes) -> BatchJobQueueAttributes
+          
+          # Validation methods
+          def self.validate_job_queue_name: (String name) -> true
+          def self.validate_priority: (Integer priority) -> true
+          def self.validate_compute_environment_order: (Array[Hash[Symbol, untyped]] compute_envs) -> true
+          
+          # Computed properties
+          def is_enabled?: () -> bool
+          def is_disabled?: () -> bool
+          def high_priority?: () -> bool
+          def medium_priority?: () -> bool
+          def low_priority?: () -> bool
+          def compute_environment_count: () -> Integer
+          def primary_compute_environment: () -> Hash[Symbol, untyped]
+          def ordered_compute_environments: () -> Array[Hash[Symbol, untyped]]
+          
+          # Configuration templates
+          def self.high_priority_queue: (String name, untyped compute_environments, Hash[Symbol, untyped] options) -> Hash[Symbol, untyped]
+          def self.medium_priority_queue: (String name, untyped compute_environments, Hash[Symbol, untyped] options) -> Hash[Symbol, untyped]
+          def self.low_priority_queue: (String name, untyped compute_environments, Hash[Symbol, untyped] options) -> Hash[Symbol, untyped]
+          def self.mixed_compute_queue: (String name, Array[Hash[Symbol, untyped]] compute_env_configs, Hash[Symbol, untyped] options) -> Hash[Symbol, untyped]
+          def self.build_compute_environment_order: (untyped compute_environments) -> Array[Hash[Symbol, untyped]]
+          
+          # Priority helpers
+          def self.priority_levels: () -> Hash[Symbol, Integer]
+          def self.critical_priority: () -> Integer
+          def self.high_priority: () -> Integer
+          def self.medium_priority: () -> Integer
+          def self.low_priority: () -> Integer
+          def self.background_priority: () -> Integer
+          
+          # Naming patterns
+          def self.queue_naming_patterns: () -> Hash[Symbol, Proc]
+          
+          # Workload-specific templates
+          def self.data_processing_queue: (String name, untyped compute_environments, Symbol priority, Hash[Symbol, untyped] options) -> Hash[Symbol, untyped]
+          def self.ml_training_queue: (String name, untyped compute_environments, Hash[Symbol, untyped] options) -> Hash[Symbol, untyped]
+          def self.batch_processing_queue: (String name, untyped compute_environments, Hash[Symbol, untyped] options) -> Hash[Symbol, untyped]
+          def self.real_time_queue: (String name, untyped compute_environments, Hash[Symbol, untyped] options) -> Hash[Symbol, untyped]
+          def self.environment_queue_set: (String base_name, Hash[Symbol, untyped] compute_environments_by_env, Hash[Symbol, untyped] options) -> Hash[Symbol, Hash[Symbol, untyped]]
+        end
+      end
+      
+      # Resource function
+      def aws_batch_job_queue: (Symbol name, Hash[Symbol, untyped] attributes) -> ResourceReference
+    end
+  end
+end

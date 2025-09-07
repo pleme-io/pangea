@@ -1,0 +1,36 @@
+# RBS type definitions for AWS MQ Configuration resource
+
+module Pangea
+  module Resources
+    module AWS
+      module Types
+        class MqConfigurationAttributes < Dry::Struct
+          def self.new: (Hash[Symbol, untyped] attributes) -> instance
+
+          def name: () -> String
+          def engine_type: () -> mq_engine_type
+          def engine_version: () -> String
+          def data: () -> String
+          def authentication_strategy?: () -> mq_authentication_strategy?
+          def description?: () -> String?
+          def tags?: () -> Hash[Symbol, String]?
+          def xml_configuration?: () -> bool
+          def json_configuration?: () -> bool
+          def configuration_size_bytes: () -> Integer
+        end
+      end
+
+      # Create an AWS MQ Configuration
+      def aws_mq_configuration: (
+        Symbol name,
+        ?name: String,
+        ?engine_type: Types::mq_engine_type,
+        ?engine_version: String,
+        ?data: String,
+        ?authentication_strategy: Types::mq_authentication_strategy,
+        ?description: String,
+        ?tags: Hash[Symbol, String]
+      ) -> ResourceReference
+    end
+  end
+end

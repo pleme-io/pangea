@@ -1,0 +1,28 @@
+# RBS type definitions for AWS CloudWatch Log Group
+
+module Pangea
+  module Resources
+    module AWS
+      # CloudWatch Log Group attributes
+      type cloudwatch_log_group_attributes = {
+        name: String,
+        retention_in_days?: (1 | 3 | 5 | 7 | 14 | 30 | 60 | 90 | 120 | 150 | 180 | 365 | 400 | 545 | 731 | 1827 | 3653)?,
+        kms_key_id?: String?,
+        log_group_class?: ("STANDARD" | "INFREQUENT_ACCESS")?,
+        skip_destroy?: bool?,
+        tags?: Hash[String, String]?
+      }
+
+      # CloudWatch Log Group computed properties
+      type cloudwatch_log_group_computed_properties = {
+        has_retention: bool,
+        has_encryption: bool,
+        is_infrequent_access: bool,
+        estimated_monthly_cost_usd: Float
+      }
+
+      # AWS CloudWatch Log Group resource function
+      def aws_cloudwatch_log_group: (Symbol name, cloudwatch_log_group_attributes attributes) -> ResourceReference
+    end
+  end
+end

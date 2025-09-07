@@ -1,0 +1,46 @@
+# RBS type definitions for AWS Cognito User Pool Domain
+
+module Pangea
+  module Resources
+    module AWS
+      # Cognito User Pool Domain attributes
+      type cognito_user_pool_domain_attributes = {
+        domain: String,
+        user_pool_id: String,
+        certificate_arn?: String?
+      }
+
+      # Cognito User Pool Domain computed properties
+      type cognito_user_pool_domain_computed_properties = {
+        custom_domain: bool,
+        cognito_domain: bool,
+        domain_type: (:custom | :cognito),
+        ssl_required: bool,
+        certificate_arn_valid: bool,
+        certificate_region: (String | nil),
+        certificate_in_us_east_1: bool
+      }
+
+      # AWS Cognito User Pool Domain resource function
+      def aws_cognito_user_pool_domain: (Symbol name, cognito_user_pool_domain_attributes attributes) -> ResourceReference
+
+      # Pre-configured user pool domain templates
+      module UserPoolDomainTemplates
+        def self.cognito_domain: (String domain_prefix, String user_pool_id) -> Hash[Symbol, untyped]
+        def self.custom_domain: (String custom_domain_name, String user_pool_id, String certificate_arn) -> Hash[Symbol, untyped]
+        def self.development_domain: (String app_name, String user_pool_id, ?String stage) -> Hash[Symbol, untyped]
+        def self.production_custom_domain: (String base_domain, String user_pool_id, String certificate_arn) -> Hash[Symbol, untyped]
+        def self.staging_domain: (String base_domain, String user_pool_id, ?String? certificate_arn) -> Hash[Symbol, untyped]
+        def self.environment_domain: (String base_domain, (String | Symbol) environment, String user_pool_id, ?String? certificate_arn) -> Hash[Symbol, untyped]
+      end
+
+      # Domain validation helpers
+      module DomainValidation
+        def self.domain_available?: (String domain) -> bool
+        def self.suggest_domains: (String base_name, ?Integer count) -> Array[String]
+        def self.certificate_compatible?: (String certificate_arn, String domain) -> bool
+        def self.parse_domain: (String domain) -> Hash[Symbol, untyped]
+      end
+    end
+  end
+end

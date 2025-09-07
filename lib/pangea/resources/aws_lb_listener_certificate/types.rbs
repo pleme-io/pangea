@@ -1,0 +1,17 @@
+# Type definitions for AWS Load Balancer Listener Certificate resources
+
+module Pangea
+  module Resources
+    module AWS
+      class LoadBalancerListenerCertificateAttributes < Dry::Struct
+        attribute :listener_arn, String
+        attribute :certificate_arn, String
+        
+        def self.new: (Hash[Symbol, untyped] attributes) -> LoadBalancerListenerCertificateAttributes
+      end
+      
+      # Load balancer listener certificate function signature
+      def aws_lb_listener_certificate: (Symbol name, Hash[Symbol, untyped] attributes) -> ResourceReference
+    end
+  end
+end

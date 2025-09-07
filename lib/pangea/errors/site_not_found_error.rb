@@ -1,2 +1,0 @@
-class SiteNotFoundError < StandardError
-end

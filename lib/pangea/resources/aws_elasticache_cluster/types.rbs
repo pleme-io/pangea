@@ -1,0 +1,41 @@
+# RBS type definitions for AWS ElastiCache Cluster types
+
+module Pangea
+  module Resources
+    module AWS
+      class ElastiCacheClusterAttributes < Dry::Struct
+        attr_reader cluster_id: String
+        attr_reader engine: String
+        attr_reader node_type: String
+        attr_reader num_cache_nodes: Integer
+        attr_reader engine_version: String?
+        attr_reader parameter_group_name: String?
+        attr_reader port: Integer?
+        attr_reader subnet_group_name: String?
+        attr_reader security_group_ids: Array[String]
+        attr_reader preferred_availability_zones: Array[String]
+        attr_reader auto_minor_version_upgrade: bool
+        attr_reader snapshot_retention_limit: Integer
+        attr_reader log_delivery_configuration: Array[Hash[Symbol, untyped]]
+        attr_reader apply_immediately: bool
+        attr_reader tags: Hash[Symbol, String]
+        
+        def is_redis?: () -> bool
+        def is_memcached?: () -> bool
+        def default_port: () -> Integer
+        def supports_encryption?: () -> bool
+        def supports_backup?: () -> bool
+        def supports_auth?: () -> bool
+        def engine_supports_encryption?: () -> bool
+        def is_cluster_mode?: () -> bool
+        def estimated_monthly_cost: () -> String
+      end
+
+      module ElastiCacheConfigs
+        def self.redis: (?version: String, ?node_type: String) -> Hash[Symbol, untyped]
+        def self.memcached: (?version: String, ?node_type: String, ?num_nodes: Integer) -> Hash[Symbol, untyped]
+        def self.redis_high_performance: (?node_type: String) -> Hash[Symbol, untyped]
+      end
+    end
+  end
+end

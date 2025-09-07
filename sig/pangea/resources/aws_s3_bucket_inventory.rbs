@@ -1,0 +1,78 @@
+# RBS type definitions for AWS S3 Bucket Inventory Configuration
+
+module Pangea
+  module Resources
+    module AWS
+      # Inventory destination encryption configuration
+      type inventory_destination_encryption = {
+        sse_s3?: {
+          enabled?: bool?
+        }?,
+        sse_kms?: {
+          key_id: String
+        }?
+      }
+
+      # Inventory destination configuration
+      type inventory_destination = {
+        bucket: String,
+        prefix?: String?,
+        account_id?: String?,
+        format?: ("CSV" | "ORC" | "Parquet")?,
+        encryption?: inventory_destination_encryption?
+      }
+
+      # Inventory schedule configuration
+      type inventory_schedule = {
+        frequency: ("Daily" | "Weekly"),
+        day_of_week?: ("Sunday" | "Monday" | "Tuesday" | "Wednesday" | "Thursday" | "Friday" | "Saturday")?
+      }
+
+      # S3 Bucket Inventory Configuration attributes
+      type s3_bucket_inventory_attributes = {
+        bucket: String,
+        name: String,
+        enabled?: bool?,
+        format?: ("CSV" | "ORC" | "Parquet")?,
+        frequency?: ("Daily" | "Weekly")?,
+        included_object_versions?: ("All" | "Current")?,
+        prefix?: String?,
+        destination: inventory_destination,
+        optional_fields?: Array[
+          ("Size" | "LastModifiedDate" | "StorageClass" | "ETag" | 
+           "IsMultipartUploaded" | "ReplicationStatus" | "EncryptionStatus" |
+           "ObjectLockRetainUntilDate" | "ObjectLockMode" | "ObjectLockLegalHoldStatus" |
+           "IntelligentTieringAccessTier" | "BucketKeyStatus" | "ChecksumAlgorithm")
+        ]?,
+        schedule?: inventory_schedule?
+      }
+
+      # S3 Bucket Inventory Configuration computed properties
+      type s3_bucket_inventory_computed_properties = {
+        daily_frequency: bool,
+        weekly_frequency: bool,
+        includes_current_versions_only: bool,
+        includes_all_versions: bool,
+        has_prefix_filter: bool,
+        csv_format: bool,
+        orc_format: bool,
+        parquet_format: bool,
+        encrypted_destination: bool,
+        kms_encrypted_destination: bool,
+        s3_encrypted_destination: bool,
+        cross_account_destination: bool,
+        has_optional_fields: bool,
+        includes_size_field: bool,
+        includes_encryption_status: bool,
+        includes_object_lock_fields: bool,
+        includes_replication_status: bool,
+        estimated_report_size_category: ("small" | "medium" | "large"),
+        destination_bucket_name: String,
+        source_bucket_name: String
+      }
+
+      # AWS S3 Bucket Inventory Configuration resource function
+      def aws_s3_bucket_inventory: (Symbol name, s3_bucket_inventory_attributes attributes) -> ResourceReference
+    end
+  end
+end

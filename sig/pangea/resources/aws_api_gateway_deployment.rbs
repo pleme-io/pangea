@@ -1,0 +1,49 @@
+# RBS type definitions for AWS API Gateway Deployment
+
+module Pangea
+  module Resources
+    module AWS
+      # API Gateway Deployment attributes type
+      type api_gateway_deployment_attributes = {
+        rest_api_id: String,
+        ?stage_name: String?,
+        ?description: String?,
+        ?stage_description: String?,
+        ?variables: Hash[String, String],
+        ?canary_settings: api_gateway_canary_settings?,
+        ?triggers: Hash[String, String]
+      }
+
+      # API Gateway canary settings
+      type api_gateway_canary_settings = {
+        ?percent_traffic: Float?,
+        ?stage_variable_overrides: Hash[String, String]?,
+        ?use_stage_cache: bool?
+      }
+
+      # AWS API Gateway Deployment function
+      def aws_api_gateway_deployment: (Symbol name, api_gateway_deployment_attributes attributes) -> ResourceReference
+
+      # API Gateway Deployment Attributes class
+      class ApiGatewayDeploymentAttributes < Dry::Struct
+        attr_reader rest_api_id: String
+        attr_reader stage_name: String?
+        attr_reader description: String?
+        attr_reader stage_description: String?
+        attr_reader variables: Hash[String, String]
+        attr_reader canary_settings: Hash[Symbol, untyped]?
+        attr_reader triggers: Hash[String, String]
+
+        def creates_stage?: () -> bool
+        def has_canary?: () -> bool
+        def canary_percentage: () -> Float
+        def has_stage_variables?: () -> bool
+        def build_description_with_metadata: (?Hash[Symbol, String] metadata) -> String
+
+        def self.common_stage_names: () -> Hash[Symbol, String]
+        def self.common_stage_variables: () -> Hash[Symbol, String]
+        def self.common_triggers: () -> Hash[Symbol, String]
+      end
+    end
+  end
+end

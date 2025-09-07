@@ -1,0 +1,86 @@
+# RBS type definitions for AWS ECS Cluster
+
+module Pangea
+  module Resources
+    module AWS
+      # ECS Cluster attributes
+      type ecs_cluster_attributes = {
+        name: String,
+        ?capacity_providers: Array[String],
+        ?container_insights_enabled: bool?,
+        ?setting: Array[ecs_cluster_setting],
+        ?configuration: ecs_cluster_configuration?,
+        ?service_connect_defaults: ecs_service_connect_defaults?,
+        ?tags: Hash[String, String]
+      }
+
+      # Cluster setting
+      type ecs_cluster_setting = {
+        name: ("containerInsights"),
+        value: ("enabled" | "disabled")
+      }
+
+      # Cluster configuration
+      type ecs_cluster_configuration = {
+        ?execute_command_configuration: ecs_execute_command_configuration?
+      }
+
+      # Execute command configuration
+      type ecs_execute_command_configuration = {
+        ?kms_key_id: String?,
+        ?logging: ("DEFAULT" | "NONE" | "OVERRIDE")?,
+        ?log_configuration: ecs_execute_command_log_configuration?
+      }
+
+      # Execute command log configuration
+      type ecs_execute_command_log_configuration = {
+        ?cloud_watch_encryption_enabled: bool?,
+        ?cloud_watch_log_group_name: String?,
+        ?s3_bucket_name: String?,
+        ?s3_bucket_encryption_enabled: bool?,
+        ?s3_key_prefix: String?
+      }
+
+      # Service Connect defaults
+      type ecs_service_connect_defaults = {
+        namespace: String
+      }
+
+      # ECS Cluster computed properties
+      type ecs_cluster_computed_properties = {
+        using_fargate: bool,
+        using_ec2: bool,
+        insights_enabled: bool,
+        estimated_monthly_cost: Float,
+        arn_pattern: String
+      }
+
+      # AWS ECS Cluster resource function
+      def aws_ecs_cluster: (Symbol name, ecs_cluster_attributes attributes) -> ResourceReference
+
+      # ECS Cluster Attributes class
+      class EcsClusterAttributes < Dry::Struct
+        attr_reader name: String
+        attr_reader capacity_providers: Array[String]
+        attr_reader container_insights_enabled: bool?
+        attr_reader setting: Array[Hash[Symbol, String]]
+        attr_reader configuration: Hash[Symbol, untyped]?
+        attr_reader service_connect_defaults: Hash[Symbol, String]?
+        attr_reader tags: Hash[String, String]
+
+        def using_fargate?: () -> bool
+        def using_ec2?: () -> bool
+        def insights_enabled?: () -> bool
+        def estimated_monthly_cost: () -> Float
+        def arn_pattern: (?String region, ?String account_id) -> String
+      end
+
+      # ECS Capacity Provider Strategy class
+      class EcsCapacityProviderStrategy < Dry::Struct
+        attr_reader capacity_provider: String
+        attr_reader weight: Integer
+        attr_reader base: Integer
+      end
+    end
+  end
+end

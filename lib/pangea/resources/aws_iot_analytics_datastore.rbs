@@ -1,0 +1,16 @@
+module Pangea
+  module Resources
+    module AWS
+      class IotAnalyticsDatastoreAttributes < Dry::Struct
+        def has_parquet_format?: () -> bool
+        def has_json_format?: () -> bool
+        def format_type: () -> String
+        def storage_optimization_level: () -> String
+        def retention_days: () -> Integer
+        def query_performance_tier: () -> String
+      end
+
+      def aws_iot_analytics_datastore: (Symbol name, Hash[Symbol, untyped] attributes) -> ResourceReference
+    end
+  end
+end

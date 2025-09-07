@@ -1,0 +1,62 @@
+# RBS type definitions for AWS IAM Policy
+
+module Pangea
+  module Resources
+    module AWS
+      # IAM policy document statement
+      type iam_policy_statement = {
+        Sid?: String?,
+        Effect: ("Allow" | "Deny"),
+        Action: (String | Array[String]),
+        Resource: (String | Array[String]),
+        Condition?: Hash[String, untyped]?,
+        Principal?: Hash[String, untyped]?,
+        NotAction?: (String | Array[String])?,
+        NotResource?: (String | Array[String])?,
+        NotPrincipal?: Hash[String, untyped]?
+      }
+
+      # IAM policy document structure
+      type iam_policy_document = {
+        Version: String,
+        Statement: Array[iam_policy_statement]
+      }
+
+      # IAM Policy attributes
+      type iam_policy_attributes = {
+        name: String,
+        path?: String?,
+        description?: String?,
+        policy: iam_policy_document,
+        tags?: Hash[String, String]?
+      }
+
+      # IAM Policy computed properties
+      type iam_policy_computed_properties = {
+        all_actions: Array[String],
+        all_resources: Array[String],
+        security_level: (:low_risk | :medium_risk | :high_risk),
+        complexity_score: Integer,
+        has_wildcard_permissions: bool,
+        uses_reserved_name: bool,
+        service_role_policy: bool
+      }
+
+      # AWS IAM Policy resource function
+      def aws_iam_policy: (Symbol name, iam_policy_attributes attributes) -> ResourceReference
+
+      # Policy Templates Module
+      module PolicyTemplates
+        def self.s3_bucket_readonly: (String bucket_name) -> iam_policy_document
+        def self.s3_bucket_fullaccess: (String bucket_name) -> iam_policy_document
+        def self.cloudwatch_logs_write: () -> iam_policy_document
+        def self.ec2_basic_access: () -> iam_policy_document
+        def self.rds_readonly: () -> iam_policy_document
+        def self.lambda_basic_execution: () -> iam_policy_document
+        def self.kms_decrypt: (String key_arn) -> iam_policy_document
+        def self.ssm_parameter_read: (String parameter_path) -> iam_policy_document
+        def self.secrets_manager_read: (String secret_arn) -> iam_policy_document
+      end
+    end
+  end
+end

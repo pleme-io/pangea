@@ -1,0 +1,42 @@
+# frozen_string_literal: true
+
+module Pangea
+  module Resources
+    module AWS
+      class RedshiftParameterGroupAttributes < Dry::Struct
+        @attributes: Hash[Symbol, untyped]
+        
+        attr_reader name: String
+        attr_reader family: String
+        attr_reader description: String?
+        attr_reader parameters: Array[Hash[Symbol, String]]
+        attr_reader tags: Hash[Symbol, String]
+        
+        def self.new: (Hash[Symbol, untyped] attributes) -> RedshiftParameterGroupAttributes
+        
+        # Parameter access methods
+        def parameter_value: (String name) -> String?
+        def has_parameter?: (String name) -> bool
+        
+        # Query methods
+        def has_wlm_configuration?: () -> bool
+        def query_monitoring_enabled?: () -> bool
+        def result_caching_enabled?: () -> bool
+        def concurrency_scaling_enabled?: () -> bool
+        def auto_analyze_enabled?: () -> bool
+        
+        # Computed properties
+        def concurrency_scaling_limit: () -> Integer
+        def generated_description: () -> String
+        def performance_impact_score: () -> Float
+        
+        # Class methods for configurations
+        def self.parameters_for_workload: (String | Symbol workload) -> Array[Hash[Symbol, String]]
+        def self.wlm_configuration: (Array[Hash[Symbol, untyped]] queues) -> Hash[Symbol, String]
+        def self.query_monitoring_rules: (Array[Hash[Symbol, untyped]] rules) -> Hash[Symbol, String]
+        
+        def to_h: () -> Hash[Symbol, untyped]
+      end
+    end
+  end
+end

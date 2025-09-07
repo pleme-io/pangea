@@ -1,0 +1,58 @@
+# RBS type definitions for AWS AppStream Fleet
+
+module Pangea
+  module Resources
+    module AWS
+      # Compute capacity configuration
+      type compute_capacity = {
+        desired_instances: Integer
+      }
+
+      # VPC configuration
+      type vpc_config = {
+        subnet_ids: Array[String],
+        security_group_ids?: Array[String]?
+      }
+
+      # Domain join configuration
+      type domain_join_info = {
+        directory_name: String,
+        organizational_unit_distinguished_name?: String?
+      }
+
+      # AppStream Fleet attributes
+      type appstream_fleet_attributes = {
+        name: String,
+        instance_type: String,
+        compute_capacity: compute_capacity,
+        description?: String?,
+        display_name?: String?,
+        fleet_type?: ("ALWAYS_ON" | "ON_DEMAND")?,
+        vpc_config?: vpc_config?,
+        domain_join_info?: domain_join_info?,
+        enable_default_internet_access?: bool?,
+        image_name?: String?,
+        image_arn?: String?,
+        idle_disconnect_timeout_in_seconds?: Integer?,
+        disconnect_timeout_in_seconds?: Integer?,
+        max_user_duration_in_seconds?: Integer?,
+        stream_view?: ("APP" | "DESKTOP")?,
+        tags?: Hash[String, String]?
+      }
+
+      # AppStream Fleet computed properties
+      type appstream_fleet_computed_properties = {
+        always_on: bool,
+        on_demand: bool,
+        max_concurrent_sessions: Integer,
+        estimated_monthly_cost: Float,
+        multi_az: bool?,
+        domain_joined: bool,
+        internet_enabled: bool
+      }
+
+      # AWS AppStream Fleet resource function
+      def aws_appstream_fleet: (Symbol name, appstream_fleet_attributes attributes) -> ResourceReference
+    end
+  end
+end

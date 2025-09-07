@@ -1,0 +1,47 @@
+# frozen_string_literal: true
+
+require 'pangea/resources/types'
+
+module Pangea
+  module Resources
+    module AWS
+      module Types
+      # Type-safe attributes for AwsDocdbClusterInstance resources
+      # Provides a DocumentDB Cluster Instance resource. A Cluster Instance is an isolated database instance within a DocumentDB Cluster.
+      class DocdbClusterInstanceAttributes < Dry::Struct
+        attribute :identifier, Resources::Types::String
+        attribute :cluster_identifier, Resources::Types::String
+        attribute :instance_class, Resources::Types::String
+        attribute :engine, Resources::Types::String.optional
+        attribute :availability_zone, Resources::Types::String.optional
+        attribute :preferred_maintenance_window, Resources::Types::String.optional
+        attribute :apply_immediately, Resources::Types::Bool.optional
+        attribute :auto_minor_version_upgrade, Resources::Types::Bool.optional
+        attribute :promotion_tier, Resources::Types::Integer.optional
+        attribute :enable_performance_insights, Resources::Types::Bool.optional
+        attribute :performance_insights_kms_key_id, Resources::Types::String.optional
+        attribute :performance_insights_retention_period, Resources::Types::Integer.optional
+        attribute :copy_tags_to_snapshot, Resources::Types::Bool.optional
+        attribute :ca_cert_identifier, Resources::Types::String.optional
+        
+        # Tags to apply to the resource
+        attribute :tags, Resources::Types::AwsTags.default({})
+
+        # Custom validation
+        def self.new(attributes = {})
+          attrs = super(attributes)
+          
+          
+          
+          
+          attrs
+        end
+        
+        # TODO: Add computed properties specific to aws_docdb_cluster_instance
+
+      end
+    end
+      end
+    end
+  end
+end

@@ -1,0 +1,42 @@
+# frozen_string_literal: true
+
+module Pangea
+  module Resources
+    module AWS
+      module Types
+        class AutoScalingLifecycleHookAttributes < Dry::Struct
+          @attributes: Hash[Symbol, untyped]
+          
+          attr_reader name: String
+          attr_reader auto_scaling_group_name: String
+          attr_reader lifecycle_transition: String
+          attr_reader default_result: String
+          attr_reader heartbeat_timeout: Integer
+          attr_reader notification_metadata: String?
+          attr_reader notification_target_arn: String?
+          attr_reader role_arn: String?
+          
+          def self.new: (Hash[Symbol, untyped] attributes) -> AutoScalingLifecycleHookAttributes
+          
+          # Validation methods
+          def self.valid_arn?: (String arn) -> bool
+          def self.valid_notification_target?: (String arn) -> bool
+          def self.valid_iam_role_arn?: (String arn) -> bool
+          
+          # Query methods
+          def is_launching_hook?: () -> bool
+          def is_terminating_hook?: () -> bool
+          def has_notifications?: () -> bool
+          def continues_by_default?: () -> bool
+          def abandons_by_default?: () -> bool
+          def uses_sns_notification?: () -> bool
+          def uses_sqs_notification?: () -> bool
+          def short_timeout?: () -> bool
+          def long_timeout?: () -> bool
+          
+          def to_h: () -> Hash[Symbol, (String | Integer | nil)]
+        end
+      end
+    end
+  end
+end

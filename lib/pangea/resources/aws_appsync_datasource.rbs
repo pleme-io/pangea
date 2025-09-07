@@ -1,0 +1,129 @@
+# RBS type definitions for AWS AppSync DataSource resource
+
+module Pangea
+  module Resources
+    module AWS
+      module Types
+        type appsync_datasource_type = "AWS_LAMBDA" | "AMAZON_DYNAMODB" | "AMAZON_ELASTICSEARCH" | "AMAZON_OPENSEARCH_SERVICE" | "NONE" | "HTTP" | "RELATIONAL_DATABASE" | "AMAZON_EVENTBRIDGE"
+        type rds_source_type = "RDS_HTTP_ENDPOINT"
+        type http_authorization_type = "AWS_IAM"
+
+        interface _AppSyncDynamodbConfig
+          def table_name: () -> String
+          def region?: () -> String?
+          def use_caller_credentials?: () -> bool?
+          def versioned?: () -> bool?
+          def delta_sync_config?: () -> {
+            base_table_ttl?: Integer?,
+            delta_sync_table_name?: String?,
+            delta_sync_table_ttl?: Integer?
+          }?
+        end
+
+        interface _AppSyncLambdaConfig
+          def function_arn: () -> String
+        end
+
+        interface _AppSyncElasticsearchConfig
+          def endpoint: () -> String
+          def region?: () -> String?
+        end
+
+        interface _AppSyncHttpConfig
+          def endpoint: () -> String
+          def authorization_config?: () -> {
+            authorization_type: http_authorization_type,
+            aws_iam_config?: {
+              signing_region?: String?,
+              signing_service_name?: String?
+            }?
+          }?
+        end
+
+        interface _AppSyncRelationalDatabaseConfig
+          def database_name?: () -> String?
+          def rds_http_endpoint_config?: () -> {
+            aws_secret_store_arn: String,
+            database_name?: String?,
+            db_cluster_identifier: String,
+            region?: String?,
+            schema?: String?
+          }?
+          def source_type?: () -> rds_source_type?
+        end
+
+        interface _AppSyncEventBridgeConfig
+          def event_bus_arn: () -> String
+        end
+
+        class AppSyncDatasourceAttributes < Dry::Struct
+          def self.new: (Hash[Symbol, untyped] attributes) -> instance
+
+          def api_id: () -> String
+          def name: () -> String
+          def type: () -> appsync_datasource_type
+          def description?: () -> String?
+          def dynamodb_config?: () -> _AppSyncDynamodbConfig?
+          def elasticsearch_config?: () -> _AppSyncElasticsearchConfig?
+          def event_bridge_config?: () -> _AppSyncEventBridgeConfig?
+          def http_config?: () -> _AppSyncHttpConfig?
+          def lambda_config?: () -> _AppSyncLambdaConfig?
+          def relational_database_config?: () -> _AppSyncRelationalDatabaseConfig?
+          def service_role_arn?: () -> String?
+        end
+      end
+
+      # Create an AWS AppSync DataSource
+      def aws_appsync_datasource: (
+        Symbol name,
+        ?api_id: String,
+        ?name: String,
+        ?type: Types::appsync_datasource_type,
+        ?description: String,
+        ?dynamodb_config: {
+          table_name: String,
+          ?region: String,
+          ?use_caller_credentials: bool,
+          ?versioned: bool,
+          ?delta_sync_config: {
+            ?base_table_ttl: Integer,
+            ?delta_sync_table_name: String,
+            ?delta_sync_table_ttl: Integer
+          }
+        },
+        ?elasticsearch_config: {
+          endpoint: String,
+          ?region: String
+        },
+        ?event_bridge_config: {
+          event_bus_arn: String
+        },
+        ?http_config: {
+          endpoint: String,
+          ?authorization_config: {
+            authorization_type: Types::http_authorization_type,
+            ?aws_iam_config: {
+              ?signing_region: String,
+              ?signing_service_name: String
+            }
+          }
+        },
+        ?lambda_config: {
+          function_arn: String
+        },
+        ?relational_database_config: {
+          ?database_name: String,
+          ?rds_http_endpoint_config: {
+            aws_secret_store_arn: String,
+            ?database_name: String,
+            db_cluster_identifier: String,
+            ?region: String,
+            ?schema: String
+          },
+          ?source_type: Types::rds_source_type
+        },
+        ?service_role_arn: String
+      ) -> ResourceReference
+    end
+  end
+end

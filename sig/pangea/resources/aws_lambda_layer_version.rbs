@@ -1,0 +1,48 @@
+# RBS type definitions for AWS Lambda Layer Version
+
+module Pangea
+  module Resources
+    module AWS
+      # Lambda layer version attributes type
+      type lambda_layer_version_attributes = {
+        layer_name: String,
+        ?filename: String?,
+        ?s3_bucket: String?,
+        ?s3_key: String?,
+        ?s3_object_version: String?,
+        ?compatible_runtimes: Array[String],
+        ?compatible_architectures: Array[String],
+        ?description: String?,
+        ?license_info: String?,
+        ?source_code_hash: String?,
+        ?skip_destroy: bool
+      }
+
+      # AWS Lambda Layer Version resource function
+      def aws_lambda_layer_version: (Symbol name, lambda_layer_version_attributes attributes) -> ResourceReference
+
+      # Lambda Layer Version Attributes class
+      class LambdaLayerVersionAttributes < Dry::Struct
+        attr_reader layer_name: String
+        attr_reader filename: String?
+        attr_reader s3_bucket: String?
+        attr_reader s3_key: String?
+        attr_reader s3_object_version: String?
+        attr_reader compatible_runtimes: Array[String]
+        attr_reader compatible_architectures: Array[String]
+        attr_reader description: String?
+        attr_reader license_info: String?
+        attr_reader source_code_hash: String?
+        attr_reader skip_destroy: bool
+
+        def self.validate_runtime_architecture_compatibility: (Array[String] runtimes, Array[String] architectures) -> void
+        def estimated_size_mb: () -> Integer
+        def supports_all_architectures?: () -> bool
+        def runtime_families: () -> Array[String]
+        def is_architecture_specific?: () -> bool
+        def is_runtime_specific?: () -> bool
+        def layer_type: () -> String
+      end
+    end
+  end
+end

@@ -1,0 +1,41 @@
+# RBS type definitions for AWS WorkSpaces IP Group
+
+module Pangea
+  module Resources
+    module AWS
+      # IP rule configuration
+      type ip_rule = {
+        ip_rule: String,
+        rule_desc?: String?
+      }
+
+      # WorkSpaces IP Group attributes
+      type workspaces_ip_group_attributes = {
+        group_name: String,
+        group_desc?: String?,
+        user_rules?: Array[ip_rule]?,
+        tags?: Hash[String, String]?
+      }
+
+      # WorkSpaces IP Group computed properties
+      type workspaces_ip_group_computed_properties = {
+        total_rules: Integer,
+        has_public_ips: bool,
+        has_private_ips: bool,
+        ip_ranges: Array[String],
+        rule_details: Array[{
+          ip_rule: String,
+          rule_desc: String,
+          is_single_host: bool,
+          is_broad_range: bool,
+          estimated_hosts: Integer,
+          network_address: String,
+          cidr_prefix: Integer
+        }]
+      }
+
+      # AWS WorkSpaces IP Group resource function
+      def aws_workspaces_ip_group: (Symbol name, workspaces_ip_group_attributes attributes) -> ResourceReference
+    end
+  end
+end

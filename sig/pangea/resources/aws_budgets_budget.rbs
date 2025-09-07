@@ -1,0 +1,130 @@
+# RBS type definitions for AWS Budgets Budget
+
+module Pangea
+  module Resources
+    module AWS
+      # Budget time unit types
+      type budget_time_unit = "DAILY" | "MONTHLY" | "QUARTERLY" | "ANNUALLY"
+      
+      # Budget type enumeration
+      type budget_type = "USAGE" | "COST" | "RI_UTILIZATION" | "RI_COVERAGE" | "SAVINGS_PLANS_UTILIZATION" | "SAVINGS_PLANS_COVERAGE"
+      
+      # Budget currency types
+      type budget_currency = "USD" | "EUR" | "GBP" | "JPY" | "CNY" | "CAD" | "AUD" | "BRL" | "INR"
+      
+      # Budget comparison operator
+      type budget_comparison_operator = "GREATER_THAN" | "LESS_THAN" | "EQUAL_TO"
+      
+      # Threshold type for budget notifications
+      type budget_threshold_type = "PERCENTAGE" | "ABSOLUTE_VALUE"
+      
+      # Budget notification type
+      type budget_notification_type = "ACTUAL" | "FORECASTED"
+      
+      # Budget subscriber protocol
+      type budget_subscriber_protocol = "EMAIL" | "SNS"
+      
+      # Cost dimension key types
+      type cost_dimension_key = "AZ" | "INSTANCE_TYPE" | "LINKED_ACCOUNT" | "OPERATION" | "PURCHASE_TYPE" | "REGION" | "SERVICE" | "USAGE_TYPE" | "USAGE_TYPE_GROUP" | "RECORD_TYPE" | "OPERATING_SYSTEM" | "TENANCY" | "SCOPE" | "PLATFORM" | "SUBSCRIPTION_ID" | "LEGAL_ENTITY_NAME" | "DEPLOYMENT_OPTION" | "DATABASE_ENGINE" | "CACHE_ENGINE" | "INSTANCE_TYPE_FAMILY" | "BILLING_ENTITY" | "RESERVATION_ID" | "RESOURCE_ID" | "RIGHTSIZING_TYPE" | "SAVINGS_PLANS_TYPE" | "SAVINGS_PLAN_ARN" | "PAYMENT_OPTION" | "AGREEMENT_END_DATE_TIME_AFTER" | "AGREEMENT_END_DATE_TIME_BEFORE"
+      
+      # Budget spend definition
+      type budget_spend = {
+        amount: String,
+        unit: budget_currency
+      }
+      
+      # Time period for budget
+      type budget_time_period = {
+        start?: String?,
+        end?: String?
+      }
+      
+      # Cost filter for budget
+      type budget_cost_filter = {
+        dimension_key: cost_dimension_key,
+        values: Array[String],
+        match_options?: Array[String]?
+      }
+      
+      # Tag filter for budget costs
+      type budget_tag_filter = {
+        key: String,
+        values?: Array[String]?,
+        match_options?: Array[String]?
+      }
+      
+      # Cost filters for budget
+      type budget_cost_filters = {
+        and?: Array[Hash[Symbol, untyped]]?,
+        dimensions?: Hash[cost_dimension_key, Array[String]]?,
+        tags?: Hash[String, Array[String]]?,
+        cost_categories?: Hash[String, Array[String]]?,
+        not?: {
+          dimensions?: Hash[cost_dimension_key, Array[String]]?,
+          tags?: Hash[String, Array[String]]?,
+          cost_categories?: Hash[String, Array[String]]?
+        }?
+      }
+      
+      # Budget notification subscriber
+      type budget_subscriber = {
+        subscription_type: budget_subscriber_protocol,
+        address: String
+      }
+      
+      # Budget notification configuration
+      type budget_notification = {
+        notification_type: budget_notification_type,
+        comparison_operator: budget_comparison_operator,
+        threshold: Numeric,
+        threshold_type?: budget_threshold_type?,
+        subscribers?: Array[budget_subscriber]?
+      }
+      
+      # Planned budget limits for cost budgets
+      type budget_planned_budget_limits = Hash[String, budget_spend]
+      
+      # Auto-adjust data configuration
+      type budget_auto_adjust_data = {
+        auto_adjust_type: ("HISTORICAL" | "FORECAST"),
+        historical_options?: {
+          budget_adjustment_period: Integer,
+          lookback_available_periods?: Integer?
+        }?
+      }
+      
+      # Budget resource attributes
+      type budget_attributes = {
+        budget_name: String,
+        budget_type: budget_type,
+        time_unit: budget_time_unit,
+        limit_amount: String,
+        limit_unit: budget_currency,
+        time_period?: budget_time_period?,
+        cost_filters?: budget_cost_filters?,
+        planned_budget_limits?: budget_planned_budget_limits?,
+        auto_adjust_data?: budget_auto_adjust_data?,
+        notifications?: Array[budget_notification]?,
+        tags?: Hash[Symbol, String]?
+      }
+      
+      # Budget computed properties
+      type budget_computed_properties = {
+        monthly_budget_estimate: Float,
+        annual_budget_estimate: Float,
+        has_cost_tracking: bool,
+        has_usage_tracking: bool,
+        has_ri_tracking: bool,
+        has_savings_plans_tracking: bool,
+        notification_count: Integer,
+        has_email_notifications: bool,
+        has_sns_notifications: bool,
+        cost_optimization_score: Integer,
+        governance_compliance_level: ("POOR" | "BASIC" | "GOOD" | "EXCELLENT")
+      }
+      
+      # AWS Budgets Budget resource function
+      def aws_budgets_budget: (Symbol name, budget_attributes attributes) -> ResourceReference
+    end
+  end
+end

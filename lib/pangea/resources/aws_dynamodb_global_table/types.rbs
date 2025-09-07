@@ -1,0 +1,39 @@
+# RBS type definitions for AWS DynamoDB Global Table types
+
+module Pangea
+  module Resources
+    module AWS
+      class DynamoDbGlobalTableAttributes < Dry::Struct
+        attr_reader name: String
+        attr_reader billing_mode: String
+        attr_reader replica: Array[Hash[Symbol, untyped]]
+        attr_reader stream_enabled: bool?
+        attr_reader stream_view_type: String?
+        attr_reader server_side_encryption: Hash[Symbol, untyped]?
+        attr_reader point_in_time_recovery: Hash[Symbol, untyped]?
+        attr_reader tags: Hash[Symbol, String]
+        
+        def is_pay_per_request?: () -> bool
+        def is_provisioned?: () -> bool
+        def has_stream?: () -> bool
+        def has_encryption?: () -> bool
+        def has_pitr?: () -> bool
+        def region_count: () -> Integer
+        def regions: () -> Array[String]
+        def has_gsi?: () -> bool
+        def total_gsi_count: () -> Integer
+        def estimated_monthly_cost: () -> String
+        def multi_region_strategy: () -> String
+      end
+
+      module DynamoDbGlobalTableConfigs
+        def self.simple_global_table: (String, ?primary_region: String, ?secondary_region: String) -> Hash[Symbol, untyped]
+        def self.encrypted_global_table: (String, ?regions: Array[String]) -> Hash[Symbol, untyped]
+        def self.streaming_global_table: (String, ?regions: Array[String], ?stream_view_type: String) -> Hash[Symbol, untyped]
+        def self.high_performance_global_table: (String, ?regions: Array[String]) -> Hash[Symbol, untyped]
+        def self.global_table_with_gsi: (String, ?regions: Array[String], ?gsi_name: String) -> Hash[Symbol, untyped]
+        def self.disaster_recovery_global_table: (String, ?primary_region: String, ?dr_regions: Array[String]) -> Hash[Symbol, untyped]
+      end
+    end
+  end
+end

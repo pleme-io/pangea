@@ -1,0 +1,137 @@
+# RBS type definitions for AWS Lambda Function
+
+module Pangea
+  module Resources
+    module AWS
+      # Lambda function attributes type
+      type lambda_function_attributes = {
+        function_name: String,
+        role: String,
+        handler: String,
+        runtime: String,
+        ?filename: String?,
+        ?s3_bucket: String?,
+        ?s3_key: String?,
+        ?s3_object_version: String?,
+        ?image_uri: String?,
+        ?description: String?,
+        ?timeout: Integer,
+        ?memory_size: Integer,
+        ?publish: bool,
+        ?reserved_concurrent_executions: Integer?,
+        ?layers: Array[String],
+        ?architectures: Array[String],
+        ?package_type: String,
+        ?environment: lambda_environment?,
+        ?vpc_config: lambda_vpc_config?,
+        ?dead_letter_config: lambda_dead_letter_config?,
+        ?file_system_config: Array[lambda_file_system_config],
+        ?tracing_config: lambda_tracing_config?,
+        ?kms_key_arn: String?,
+        ?image_config: lambda_image_config?,
+        ?code_signing_config_arn: String?,
+        ?ephemeral_storage: lambda_ephemeral_storage?,
+        ?snap_start: lambda_snap_start?,
+        ?logging_config: lambda_logging_config?,
+        ?tags: Hash[String, String]
+      }
+
+      # Lambda environment configuration
+      type lambda_environment = {
+        ?variables: Hash[String, String]?
+      }
+
+      # Lambda VPC configuration
+      type lambda_vpc_config = {
+        subnet_ids: Array[String],
+        security_group_ids: Array[String]
+      }
+
+      # Lambda dead letter queue configuration
+      type lambda_dead_letter_config = {
+        target_arn: String
+      }
+
+      # Lambda file system configuration
+      type lambda_file_system_config = {
+        arn: String,
+        local_mount_path: String
+      }
+
+      # Lambda tracing configuration
+      type lambda_tracing_config = {
+        mode: ("Active" | "PassThrough")
+      }
+
+      # Lambda image configuration
+      type lambda_image_config = {
+        ?entry_point: Array[String]?,
+        ?command: Array[String]?,
+        ?working_directory: String?
+      }
+
+      # Lambda ephemeral storage configuration
+      type lambda_ephemeral_storage = {
+        size: Integer
+      }
+
+      # Lambda snap start configuration
+      type lambda_snap_start = {
+        apply_on: ("PublishedVersions" | "None")
+      }
+
+      # Lambda logging configuration
+      type lambda_logging_config = {
+        ?log_format: ("JSON" | "Text")?,
+        ?log_group: String?,
+        ?system_log_level: ("DEBUG" | "INFO" | "WARN")?,
+        ?application_log_level: ("TRACE" | "DEBUG" | "INFO" | "WARN" | "ERROR" | "FATAL")?
+      }
+
+      # AWS Lambda Function resource function
+      def aws_lambda_function: (Symbol name, lambda_function_attributes attributes) -> ResourceReference
+
+      # Lambda Function Attributes class
+      class LambdaFunctionAttributes < Dry::Struct
+        attr_reader function_name: String
+        attr_reader role: String
+        attr_reader handler: String
+        attr_reader runtime: String
+        attr_reader filename: String?
+        attr_reader s3_bucket: String?
+        attr_reader s3_key: String?
+        attr_reader s3_object_version: String?
+        attr_reader image_uri: String?
+        attr_reader description: String?
+        attr_reader timeout: Integer
+        attr_reader memory_size: Integer
+        attr_reader publish: bool
+        attr_reader reserved_concurrent_executions: Integer?
+        attr_reader layers: Array[String]
+        attr_reader architectures: Array[String]
+        attr_reader package_type: String
+        attr_reader environment: Hash[Symbol, Hash[Symbol, String]]?
+        attr_reader vpc_config: Hash[Symbol, Array[String]]?
+        attr_reader dead_letter_config: Hash[Symbol, String]?
+        attr_reader file_system_config: Array[Hash[Symbol, String]]
+        attr_reader tracing_config: Hash[Symbol, String]?
+        attr_reader kms_key_arn: String?
+        attr_reader image_config: Hash[Symbol, untyped]?
+        attr_reader code_signing_config_arn: String?
+        attr_reader ephemeral_storage: Hash[Symbol, Integer]?
+        attr_reader snap_start: Hash[Symbol, String]?
+        attr_reader logging_config: Hash[Symbol, String]?
+        attr_reader tags: Hash[String, String]
+
+        def self.validate_handler_format: (String handler, String runtime) -> void
+        def estimated_monthly_cost: () -> Float
+        def requires_vpc?: () -> bool
+        def has_dlq?: () -> bool
+        def uses_efs?: () -> bool
+        def is_container_based?: () -> bool
+        def supports_snap_start?: () -> bool
+        def architecture: () -> String
+      end
+    end
+  end
+end

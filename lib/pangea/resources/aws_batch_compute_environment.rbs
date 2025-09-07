@@ -1,0 +1,33 @@
+module Pangea
+  module Resources
+    module AWS
+      module Batch
+        class ComputeEnvironment < Pangea::Resources::Base
+          class Attributes < BaseAttributes
+            attr_reader compute_environment_name: String
+            attr_reader type: String
+            attr_reader state: String?
+            attr_reader compute_resources: Hash[Symbol, untyped]?
+            attr_reader service_role: String?
+            attr_reader eks_configuration: Hash[Symbol, String]?
+            attr_reader tags: Hash[String, String]
+            attr_reader depends_on: Array[String]?
+          end
+
+          class ComputeEnvironmentReference < Reference
+            def arn: () -> String
+            def id: () -> String
+            def ecs_cluster_arn: () -> String
+            def status: () -> String
+            def status_reason: () -> String
+          end
+
+          def reference_class: () -> singleton(ComputeEnvironmentReference)
+        end
+      end
+
+      # Type-safe function for creating Batch compute environments
+      def aws_batch_compute_environment: (Symbol name, ?Hash[Symbol, untyped] attributes) -> Batch::ComputeEnvironment::ComputeEnvironmentReference
+    end
+  end
+end

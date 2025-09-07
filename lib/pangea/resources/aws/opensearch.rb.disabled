@@ -1,0 +1,36 @@
+# frozen_string_literal: true
+
+require_relative 'opensearch/domain'
+require_relative 'opensearch/domain_endpoint'
+require_relative 'opensearch/domain_saml_options'
+require_relative 'opensearch/outbound_connection'
+require_relative 'opensearch/inbound_connection'
+require_relative 'opensearch/domain_policy'
+require_relative 'opensearch/package'
+require_relative 'opensearch/package_association'
+require_relative 'opensearch/vpc_endpoint'
+require_relative 'opensearch/serverless_collection'
+require_relative 'opensearch/serverless_security_policy'
+require_relative 'opensearch/serverless_access_policy'
+
+module Pangea
+  module Resources
+    module AWS
+      # OpenSearch Service resources for enterprise search and analytics
+      module OpenSearch
+        include Domain
+        include DomainEndpoint
+        include DomainSamlOptions
+        include OutboundConnection
+        include InboundConnection
+        include DomainPolicy
+        include Package
+        include PackageAssociation
+        include VpcEndpoint
+        include ServerlessCollection
+        include ServerlessSecurityPolicy
+        include ServerlessAccessPolicy
+      end
+    end
+  end
+end

@@ -1,0 +1,58 @@
+# SageMaker Feature Group resource type definitions
+
+module Pangea
+  module Resources
+    module AWS
+      module SageMaker
+        module FeatureGroup
+          # AWS SageMaker Feature Group for machine learning feature management
+          #
+          # @example Basic feature group
+          #   aws_sagemaker_feature_group(:customer_features, {
+          #     feature_group_name: "customer-features",
+          #     record_identifier_feature_name: "customer_id",
+          #     event_time_feature_name: "event_time",
+          #     role_arn: "arn:aws:iam::account:role/SageMakerRole",
+          #     feature_definitions: [
+          #       { feature_name: "customer_id", feature_type: "String" },
+          #       { feature_name: "age", feature_type: "Integral" }
+          #     ]
+          #   })
+          def aws_sagemaker_feature_group: (
+            Symbol name,
+            {
+              feature_group_name: String,
+              record_identifier_feature_name: String,
+              event_time_feature_name: String,
+              role_arn: String,
+              feature_definitions: Array[{
+                feature_name: String,
+                feature_type: ("Integral" | "Fractional" | "String")
+              }],
+              ?description: String,
+              ?online_store_config: {
+                enable_online_store: bool,
+                ?security_config: {
+                  kms_key_id: String
+                }
+              },
+              ?offline_store_config: {
+                s3_storage_config: {
+                  s3_uri: String,
+                  ?kms_key_id: String
+                },
+                ?disable_glue_table_creation: bool,
+                ?data_catalog_config: {
+                  table_name: String,
+                  catalog: String,
+                  database: String
+                }
+              },
+              ?tags: Hash[String, String]
+            } attributes
+          ) -> ResourceReference
+        end
+      end
+    end
+  end
+end

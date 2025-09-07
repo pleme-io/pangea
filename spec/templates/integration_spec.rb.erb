@@ -1,0 +1,29 @@
+require 'spec_helper'
+
+RSpec.describe "<%= resource_method %> integration" do
+  include Pangea::Resources::AWS
+  include Pangea::Testing::IntegrationHelpers
+  
+  let(:test_data) { TestDataRegistry.instance.for_resource(:<%= resource_type %>) }
+  
+  describe "end-to-end functionality" do
+    it "integrates with template system" do
+      template_result = create_test_template do
+        <%= resource_method %>(:integration_test, test_data[:valid])
+      end
+      
+      expect(template_result).to be_valid
+      expect(template_result.resources).to include(:integration_test)
+    end
+    
+    it "supports cross-resource references" do
+      template_result = create_test_template do
+        vpc_ref = aws_vpc(:test_vpc, { cidr_block: "10.0.0.0/16" })
+        <%= resource_method %>(:test, test_data[:valid].merge(vpc_id: vpc_ref.id))
+      end
+      
+      expect(template_result).to be_valid
+      expect(template_result.has_dependency?(:test, :test_vpc)).to be true
+    end
+  end
+end

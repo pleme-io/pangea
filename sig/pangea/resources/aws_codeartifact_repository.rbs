@@ -1,0 +1,46 @@
+# RBS type definitions for AWS CodeArtifact Repository
+
+module Pangea
+  module Resources
+    module AWS
+      # CodeArtifact Repository upstream configuration
+      type codeartifact_upstream = {
+        repository_name: String
+      }
+
+      # CodeArtifact Repository external connection configuration  
+      type codeartifact_external_connections = {
+        external_connection_name?: String?
+      }
+
+      # CodeArtifact Repository attributes
+      type codeartifact_repository_attributes = {
+        repository: String,
+        domain: String,
+        format: ("npm" | "pypi" | "maven" | "nuget"),
+        domain_owner?: String?,
+        description?: String?,
+        upstream?: Array[codeartifact_upstream]?,
+        external_connections?: codeartifact_external_connections?,
+        tags?: Hash[String, String]?
+      }
+
+      # CodeArtifact Repository computed properties
+      type codeartifact_repository_computed_properties = {
+        has_upstream_repositories: bool,
+        upstream_count: Integer,
+        has_external_connection: bool,
+        external_connection_type: Symbol?,
+        supports_external_connection: bool,
+        is_private_repository: bool,
+        is_public_proxy_repository: bool,
+        package_manager_config_command: String,
+        estimated_monthly_cost_per_gb: Float,
+        repository_endpoint_template: String
+      }
+
+      # AWS CodeArtifact Repository resource function
+      def aws_codeartifact_repository: (Symbol name, codeartifact_repository_attributes attributes) -> ResourceReference
+    end
+  end
+end

@@ -1,0 +1,36 @@
+# frozen_string_literal: true
+
+module Pangea
+  module Resources
+    module AWS
+      class GlueCatalogDatabaseAttributes < Dry::Struct
+        @attributes: Hash[Symbol, untyped]
+        
+        attr_reader name: String
+        attr_reader catalog_id: String?
+        attr_reader description: String?
+        attr_reader location_uri: String?
+        attr_reader parameters: Hash[String, String]
+        attr_reader database_input: Hash[Symbol, untyped]?
+        attr_reader create_table_default_permission: Array[Hash[Symbol, untyped]]
+        attr_reader tags: Hash[Symbol, String]
+        
+        def self.new: (Hash[Symbol, untyped] attributes) -> GlueCatalogDatabaseAttributes
+        
+        # Query methods
+        def is_external?: () -> bool
+        def has_custom_permissions?: () -> bool
+        
+        # Computed properties
+        def database_type: () -> String
+        def s3_path: () -> String?
+        def estimated_catalog_size_kb: () -> Float
+        
+        # Class methods for defaults
+        def self.default_parameters_for_type: (String | Symbol type) -> Hash[String, String]
+        
+        def to_h: () -> Hash[Symbol, untyped]
+      end
+    end
+  end
+end

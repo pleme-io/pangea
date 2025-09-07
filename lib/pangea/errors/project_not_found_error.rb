@@ -1,2 +1,0 @@
-class ProjectNotFoundError < StandardError
-end

@@ -1,0 +1,38 @@
+# frozen_string_literal: true
+
+module Pangea
+  module Resources
+    module AWS
+      class AthenaDatabaseAttributes < Dry::Struct
+        @attributes: Hash[Symbol, untyped]
+        
+        attr_reader name: String
+        attr_reader bucket: String
+        attr_reader comment: String?
+        attr_reader properties: Hash[String, String]
+        attr_reader encryption_configuration: Hash[Symbol, untyped]?
+        attr_reader expected_bucket_owner: String?
+        attr_reader force_destroy: bool
+        attr_reader acl_configuration: Hash[Symbol, untyped]?
+        attr_reader tags: Hash[Symbol, String]
+        
+        def self.new: (Hash[Symbol, untyped] attributes) -> AthenaDatabaseAttributes
+        
+        # Query methods
+        def encrypted?: () -> bool
+        def encryption_type: () -> String?
+        def uses_kms?: () -> bool
+        
+        # Computed properties
+        def location_uri: () -> String
+        def estimated_monthly_storage_gb: () -> Float
+        
+        # Class methods for defaults
+        def self.default_properties_for_type: (String | Symbol type) -> Hash[String, String]
+        def self.partition_projection_properties: (String | Symbol type, ?Hash[Symbol, untyped] options) -> Hash[String, String]
+        
+        def to_h: () -> Hash[Symbol, untyped]
+      end
+    end
+  end
+end

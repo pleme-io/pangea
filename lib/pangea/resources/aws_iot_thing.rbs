@@ -1,0 +1,27 @@
+module Pangea
+  module Resources
+    module AWS
+      # AWS IoT Thing type definitions
+      class IotThingAttributes < Dry::Struct
+        attr_reader thing_name: String
+        attr_reader thing_type_name: String?
+        attr_reader attribute_payload: Hash[Symbol, untyped]
+
+        def self.new: (Hash[Symbol, untyped] attributes) -> IotThingAttributes
+
+        def attribute_count: () -> Integer
+        def has_attribute?: (String | Symbol key) -> bool
+        def get_attribute: (String | Symbol key) -> String?
+        def has_type?: () -> bool
+        def thing_arn_pattern: (String region, String account_id) -> String
+        def estimated_storage_bytes: () -> Integer
+        def fleet_indexing_ready?: () -> bool
+        def security_recommendations: () -> Array[String]
+        def required_permissions: () -> Array[String]
+      end
+
+      # AWS IoT Thing resource function
+      def aws_iot_thing: (Symbol name, Hash[Symbol, untyped] attributes) -> ResourceReference
+    end
+  end
+end

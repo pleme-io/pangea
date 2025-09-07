@@ -1,0 +1,76 @@
+# sig/pangea/types.rbs - Type definitions for Pangea::Types
+
+module Pangea
+  module Types
+    # Basic types
+    type identifier = String
+    type namespace_string = String
+    type project_string = String  
+    type site_string = String
+    type module_name = String
+    type file_path = String
+    type directory_path = String
+    type file_name = String
+    
+    # AWS types
+    type aws_region = "us-east-1" | "us-east-2" | "us-west-1" | "us-west-2" | 
+                     "eu-west-1" | "eu-west-2" | "eu-west-3" | "eu-central-1" | 
+                     "eu-north-1" | "ap-southeast-1" | "ap-southeast-2" |
+                     "ap-northeast-1" | "ap-northeast-2" | "ap-northeast-3" |
+                     "ap-south-1" | "ap-east-1" | "ca-central-1" | "sa-east-1"
+    type s3_bucket_name = String
+    type dynamo_table_name = String
+    
+    # Backend types
+    type state_backend_type = :s3 | :local
+    type terraform_action = :plan | :apply | :destroy | :init
+    type terraform_version = String
+    
+    # Config types
+    type config_format = :yaml | :yml | :json | :toml | :rb
+    type terraform_json = Hash[String, untyped]
+    type resource_type = String
+    type resource_name = String
+    
+    # Other types
+    type environment_variable = String
+    type version = String
+    type http_url = String
+    type git_url = String
+    
+    # Type constants (Dry::Types instances)
+    StrippedString: Dry::Types::Type
+    SymbolizedString: Dry::Types::Type
+    Path: Dry::Types::Type
+    JSONHash: Dry::Types::Type
+    SymbolizedHash: Dry::Types::Type
+    Identifier: Dry::Types::Type
+    NamespaceString: Dry::Types::Type
+    ProjectString: Dry::Types::Type
+    SiteString: Dry::Types::Type
+    ModuleName: Dry::Types::Type
+    FilePath: Dry::Types::Type
+    DirectoryPath: Dry::Types::Type
+    FileName: Dry::Types::Type
+    AwsRegion: Dry::Types::Type
+    S3BucketName: Dry::Types::Type
+    DynamoTableName: Dry::Types::Type
+    StateBackendType: Dry::Types::Type
+    TerraformAction: Dry::Types::Type
+    TerraformVersion: Dry::Types::Type
+    ConfigFormat: Dry::Types::Type
+    TerraformJSON: Dry::Types::Type
+    ResourceType: Dry::Types::Type
+    ResourceName: Dry::Types::Type
+    EnvironmentVariable: Dry::Types::Type
+    Version: Dry::Types::Type
+    HttpUrl: Dry::Types::Type
+    GitUrl: Dry::Types::Type
+    StringArray: Dry::Types::Type
+    IdentifierArray: Dry::Types::Type
+    ModuleArray: Dry::Types::Type
+    OptionalString: Dry::Types::Type
+    OptionalIdentifier: Dry::Types::Type
+    OptionalPath: Dry::Types::Type
+  end
+end

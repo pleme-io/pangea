@@ -1,0 +1,116 @@
+# RBS type definitions for AWS Lambda Event Source Mapping
+
+module Pangea
+  module Resources
+    module AWS
+      # Lambda destination on failure configuration
+      type lambda_destination_on_failure = {
+        destination: String
+      }
+
+      # Lambda destination configuration
+      type lambda_destination_config = {
+        ?on_failure: lambda_destination_on_failure?
+      }
+
+      # Lambda self managed event source
+      type lambda_self_managed_event_source = {
+        endpoints: Hash[String, Array[String]]
+      }
+
+      # Lambda source access configuration
+      type lambda_source_access_configuration = {
+        type: ("BASIC_AUTH" | "VPC_SUBNET" | "VPC_SECURITY_GROUP" | "SASL_SCRAM_256_AUTH" | "SASL_SCRAM_512_AUTH"),
+        uri: String
+      }
+
+      # Lambda filter
+      type lambda_filter = {
+        ?pattern: String?
+      }
+
+      # Lambda filter criteria
+      type lambda_filter_criteria = {
+        ?filters: Array[lambda_filter]?
+      }
+
+      # Lambda scaling configuration
+      type lambda_scaling_config = {
+        ?maximum_concurrency: Integer?
+      }
+
+      # Amazon managed kafka event source config
+      type lambda_amazon_managed_kafka_event_source_config = {
+        ?consumer_group_id: String?
+      }
+
+      # Self managed kafka event source config
+      type lambda_self_managed_kafka_event_source_config = {
+        ?consumer_group_id: String?
+      }
+
+      # Lambda event source mapping attributes type
+      type lambda_event_source_mapping_attributes = {
+        event_source_arn: String,
+        function_name: String,
+        ?enabled: bool,
+        ?batch_size: Integer,
+        ?maximum_batching_window_in_seconds: Integer?,
+        ?parallelization_factor: Integer?,
+        ?starting_position: ("TRIM_HORIZON" | "LATEST" | "AT_TIMESTAMP")?,
+        ?starting_position_timestamp: String?,
+        ?maximum_record_age_in_seconds: Integer?,
+        ?bisect_batch_on_function_error: bool,
+        ?maximum_retry_attempts: Integer?,
+        ?tumbling_window_in_seconds: Integer?,
+        ?destination_config: lambda_destination_config?,
+        ?self_managed_event_source: lambda_self_managed_event_source?,
+        ?source_access_configuration: Array[lambda_source_access_configuration],
+        ?topics: Array[String]?,
+        ?queues: Array[String]?,
+        ?filter_criteria: lambda_filter_criteria?,
+        ?scaling_config: lambda_scaling_config?,
+        ?amazon_managed_kafka_event_source_config: lambda_amazon_managed_kafka_event_source_config?,
+        ?self_managed_kafka_event_source_config: lambda_self_managed_kafka_event_source_config?
+      }
+
+      # AWS Lambda Event Source Mapping resource function
+      def aws_lambda_event_source_mapping: (Symbol name, lambda_event_source_mapping_attributes attributes) -> ResourceReference
+
+      # Lambda Event Source Mapping Attributes class
+      class LambdaEventSourceMappingAttributes < Dry::Struct
+        attr_reader event_source_arn: String
+        attr_reader function_name: String
+        attr_reader enabled: bool
+        attr_reader batch_size: Integer
+        attr_reader maximum_batching_window_in_seconds: Integer?
+        attr_reader parallelization_factor: Integer?
+        attr_reader starting_position: String?
+        attr_reader starting_position_timestamp: String?
+        attr_reader maximum_record_age_in_seconds: Integer?
+        attr_reader bisect_batch_on_function_error: bool
+        attr_reader maximum_retry_attempts: Integer?
+        attr_reader tumbling_window_in_seconds: Integer?
+        attr_reader destination_config: Hash[Symbol, Hash[Symbol, Hash[Symbol, String]]]?
+        attr_reader self_managed_event_source: Hash[Symbol, Hash[String, Array[String]]]?
+        attr_reader source_access_configuration: Array[Hash[Symbol, String]]
+        attr_reader topics: Array[String]?
+        attr_reader queues: Array[String]?
+        attr_reader filter_criteria: Hash[Symbol, Array[Hash[Symbol, String?]]]?
+        attr_reader scaling_config: Hash[Symbol, Integer?]?
+        attr_reader amazon_managed_kafka_event_source_config: Hash[Symbol, String?]?
+        attr_reader self_managed_kafka_event_source_config: Hash[Symbol, String?]?
+
+        def self.detect_source_type: (String arn) -> String
+        def self.validate_batch_size: (Integer batch_size, String source_type) -> void
+        def source_type: () -> String
+        def is_stream_source?: () -> bool
+        def is_queue_source?: () -> bool
+        def is_kafka_source?: () -> bool
+        def supports_batching_window?: () -> bool
+        def supports_parallelization?: () -> bool
+        def supports_error_handling?: () -> bool
+      end
+    end
+  end
+end

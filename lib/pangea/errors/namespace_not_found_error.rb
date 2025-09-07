@@ -1,2 +1,0 @@
-class NamespaceNotFoundError < StandardError
-end

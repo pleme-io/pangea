@@ -1,0 +1,30 @@
+# TypeProf 0.21.2
+
+module Pangea
+  module Resources
+    module AwsMobileAnalyticsApp
+      module Types
+        class Attributes
+          attr_reader name: String
+
+          def self.from_dynamic: (Hash[Symbol, untyped] d) -> Attributes
+        end
+
+        class Reference
+          attr_reader id: String
+        end
+      end
+
+      module Resource
+        def self.validate: (Hash[Symbol, untyped] definition) -> Types::Attributes
+        def self.defaults: () -> Hash[Symbol, untyped]
+        def self.required_attributes: () -> Array[Symbol]
+        def self.compute_attributes: (Hash[Symbol, untyped] definition) -> Types::Reference
+        
+        private
+        
+        def self.ref: (String | Symbol name, Symbol attribute) -> String
+      end
+    end
+  end
+end

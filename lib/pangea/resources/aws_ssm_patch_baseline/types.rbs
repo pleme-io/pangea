@@ -1,0 +1,51 @@
+# RBS type definitions for AWS SSM Patch Baseline types
+
+module Pangea
+  module Resources
+    module AWS
+      class SsmPatchBaselineAttributes < Dry::Struct
+        attr_reader name: String
+        attr_reader operating_system: String
+        attr_reader description: String?
+        attr_reader approved_patches: Array[String]
+        attr_reader rejected_patches: Array[String]
+        attr_reader approved_patches_compliance_level: String
+        attr_reader approved_patches_enable_non_security: bool
+        attr_reader rejected_patches_action: String
+        attr_reader global_filter: Array[Hash[Symbol, untyped]]
+        attr_reader approval_rule: Array[Hash[Symbol, untyped]]
+        attr_reader source: Array[Hash[Symbol, untyped]]
+        attr_reader tags: Hash[Symbol, String]
+        
+        def is_windows?: () -> bool
+        def is_amazon_linux?: () -> bool
+        def is_redhat_family?: () -> bool
+        def is_debian_family?: () -> bool
+        def is_suse?: () -> bool
+        def is_macos?: () -> bool
+        def has_description?: () -> bool
+        def has_approved_patches?: () -> bool
+        def has_rejected_patches?: () -> bool
+        def has_global_filters?: () -> bool
+        def has_approval_rules?: () -> bool
+        def has_custom_sources?: () -> bool
+        def enables_non_security_patches?: () -> bool
+        def blocks_rejected_patches?: () -> bool
+        def allows_rejected_as_dependency?: () -> bool
+        def compliance_level_priority: () -> Integer
+        def total_patch_count: () -> Integer
+        def filter_summary: () -> Hash[String, Array[String]]
+        def approval_rule_summary: () -> Array[Hash[Symbol, untyped]]
+      end
+
+      module SsmPatchBaselineConfigs
+        def self.critical_patches_baseline: (String, String) -> Hash[Symbol, untyped]
+        def self.security_patches_baseline: (String, String, ?approve_after_days: Integer) -> Hash[Symbol, untyped]
+        def self.all_patches_baseline: (String, String, ?approve_after_days: Integer) -> Hash[Symbol, untyped]
+        def self.custom_patches_baseline: (String, String, ?approved_patches: Array[String], ?rejected_patches: Array[String]) -> Hash[Symbol, untyped]
+        def self.development_baseline: (String, String) -> Hash[Symbol, untyped]
+        def self.production_baseline: (String, String, ?approve_after_days: Integer) -> Hash[Symbol, untyped]
+      end
+    end
+  end
+end

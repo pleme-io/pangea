@@ -1,0 +1,41 @@
+{
+  "resource": {
+    "random_id": {
+      "test": {
+        "byte_length": 8
+      }
+    },
+    "random_string": {
+      "password": {
+        "length": 16,
+        "special": true
+      }
+    },
+    "random_pet": {
+      "server": {
+        "length": 2,
+        "separator": "-"
+      }
+    },
+    "local_file": {
+      "test": {
+        "content": "Hello from Pangea!\nRandom ID: ${random_id.test.hex}\nPet Name: ${random_pet.server.id}\n",
+        "filename": "./pangea-test-output.txt"
+      }
+    }
+  },
+  "output": {
+    "random_hex": {
+      "value": "${random_id.test.hex}",
+      "description": "Random hex value for unique identification"
+    },
+    "pet_name": {
+      "value": "${random_pet.server.id}",
+      "description": "Random pet name"
+    },
+    "file_path": {
+      "value": "${local_file.test.filename}",
+      "description": "Path to generated file"
+    }
+  }
+}

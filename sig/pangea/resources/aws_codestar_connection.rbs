@@ -1,0 +1,36 @@
+# RBS type definitions for AWS CodeStar Connection
+
+module Pangea
+  module Resources
+    module AWS
+      # CodeStar Connection attributes
+      type codestar_connection_attributes = {
+        name: String,
+        provider_type: ("Bitbucket" | "GitHub" | "GitHubEnterpriseServer" | "GitLab"),
+        host_arn?: String?,
+        tags?: Hash[String, String]?
+      }
+
+      # CodeStar Connection computed properties
+      type codestar_connection_computed_properties = {
+        is_github_cloud: bool,
+        is_github_enterprise: bool,
+        is_bitbucket_cloud: bool,
+        is_gitlab: bool,
+        is_cloud_provider: bool,
+        is_self_hosted_provider: bool,
+        requires_host_arn: bool,
+        supports_webhooks: bool,
+        supports_pull_requests: bool,
+        webhook_filter_types: Array[String],
+        default_branch_patterns: Array[String],
+        oauth_scopes: Array[String],
+        estimated_monthly_cost: Float,
+        connection_url_template: String
+      }
+
+      # AWS CodeStar Connection resource function
+      def aws_codestar_connection: (Symbol name, codestar_connection_attributes attributes) -> ResourceReference
+    end
+  end
+end

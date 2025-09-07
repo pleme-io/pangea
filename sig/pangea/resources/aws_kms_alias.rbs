@@ -1,0 +1,16 @@
+# RBS type definitions for AWS KMS Alias resource
+
+module Pangea
+  module Resources
+    module AWS
+      # KMS Alias attributes type
+      type kms_alias_attributes = {
+        name: String,
+        target_key_id: String
+      }
+      
+      # KMS Alias resource function
+      def aws_kms_alias: (Symbol name, kms_alias_attributes attributes) -> ResourceReference
+    end
+  end
+end

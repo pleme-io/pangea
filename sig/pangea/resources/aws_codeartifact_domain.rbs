@@ -1,0 +1,29 @@
+# RBS type definitions for AWS CodeArtifact Domain
+
+module Pangea
+  module Resources
+    module AWS
+      # CodeArtifact Domain attributes
+      type codeartifact_domain_attributes = {
+        domain: String,
+        encryption_key?: String?,
+        tags?: Hash[String, String]?
+      }
+
+      # CodeArtifact Domain computed properties
+      type codeartifact_domain_computed_properties = {
+        domain_owner_template: String,
+        domain_url_template: String,
+        uses_custom_encryption: bool,
+        uses_default_encryption: bool,
+        is_kms_arn: bool,
+        is_kms_alias: bool,
+        estimated_monthly_base_cost: Float,
+        supports_package_formats: Array[String]
+      }
+
+      # AWS CodeArtifact Domain resource function
+      def aws_codeartifact_domain: (Symbol name, codeartifact_domain_attributes attributes) -> ResourceReference
+    end
+  end
+end

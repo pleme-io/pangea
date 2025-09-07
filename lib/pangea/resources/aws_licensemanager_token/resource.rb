@@ -1,0 +1,57 @@
+# frozen_string_literal: true
+
+require 'pangea/resources/base'
+require 'pangea/resources/reference'
+require 'pangea/resources/aws_licensemanager_token/types'
+require 'pangea/resource_registry'
+
+module Pangea
+  module Resources
+    module AWS
+      # Provides a License Manager token resource.
+      #
+      # @param name [Symbol] The resource name
+      # @param attributes [Hash] Resource attributes
+      # @return [ResourceReference] Reference object with outputs and computed properties
+      def aws_licensemanager_token(name, attributes = {})
+        # Validate attributes using dry-struct
+        attrs = Types::LicensemanagerTokenAttributes.new(attributes)
+        
+        # Generate terraform resource block via terraform-synthesizer
+        resource(:aws_licensemanager_token, name) do
+          license_arn attrs.license_arn if attrs.license_arn
+          role_arns attrs.role_arns if attrs.role_arns
+          token_properties attrs.token_properties if attrs.token_properties
+          
+          # Apply tags if present
+          if attrs.tags.any?
+            tags do
+              attrs.tags.each do |key, value|
+                public_send(key, value)
+              end
+            end
+          end
+        end
+        
+        # Return resource reference with available outputs
+        ResourceReference.new(
+          type: 'aws_licensemanager_token',
+          name: name,
+          resource_attributes: attrs.to_h,
+          outputs: {
+            id: "${aws_licensemanager_token.#{name}.id}",
+            token: "${aws_licensemanager_token.#{name}.token}",
+            token_type: "${aws_licensemanager_token.#{name}.token_type}"
+          },
+          computed_properties: {
+            # Computed properties from type definitions
+          }
+        )
+      end
+    end
+  end
+end
+
+
+# Auto-register this module when it's loaded
+Pangea::ResourceRegistry.register(:aws, Pangea::Resources::AWS)

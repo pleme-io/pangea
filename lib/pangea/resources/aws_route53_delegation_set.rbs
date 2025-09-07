@@ -1,0 +1,28 @@
+# RBS type definitions for AWS Route53 Delegation Set resource
+
+module Pangea
+  module Resources
+    module AWS
+      module Types
+        class Route53DelegationSetAttributes < Dry::Struct
+          def self.new: (Hash[Symbol, untyped] attributes) -> instance
+
+          def reference_name?: () -> String?
+          def reusable_delegation_set: () -> bool
+          def tags: () -> Hash[Symbol, String]
+
+          def custom_delegation_set?: () -> bool
+          def delegation_set_type: () -> String
+        end
+      end
+
+      # Create an AWS Route53 Delegation Set
+      def aws_route53_delegation_set: (
+        Symbol name,
+        ?reference_name: String,
+        ?reusable_delegation_set: bool,
+        ?tags: Hash[Symbol, String]
+      ) -> ResourceReference
+    end
+  end
+end

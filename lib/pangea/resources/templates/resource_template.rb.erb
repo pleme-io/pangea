@@ -1,0 +1,56 @@
+# frozen_string_literal: true
+
+module Pangea
+  module Resources
+    module AWS<%= service_name %>
+      # <%= description %>
+      #
+      # @example Basic usage
+      #   aws_<%= service_lower %>_<%= resource_lower %>(:<%= example_name %>,
+      #     <%= example_attributes %>
+      #   )
+      #
+      # @param name [Symbol] Resource identifier
+      # @param attributes [Hash] Resource configuration
+      # @return [ResourceReference] Reference to the created resource
+      def aws_<%= service_lower %>_<%= resource_lower %>(name, attributes = {})
+        validate_name!(name)
+        
+        # Use centralized types
+        attrs = Types::AWS<%= service_name %><%= resource_name %>.new(
+          apply_defaults(attributes)
+        )
+        
+        # Validate business rules
+        validate_<%= resource_lower %>_attributes(attrs)
+        
+        # Create resource
+        resource(:"aws_<%= service_lower %>_<%= resource_lower %>", name) do
+          attrs.to_h.each do |key, value|
+            case key
+            when :tags
+              tags value.merge(default_tags)
+            else
+              send(key, value)
+            end
+          end
+        end
+        
+        # Return typed reference
+        ResourceReference.new(
+          "aws_<%= service_lower %>_<%= resource_lower %>",
+          name,
+          attrs,
+          outputs: %i[id arn tags] + <%= resource_outputs %>
+        )
+      end
+      
+      private
+      
+      def validate_<%= resource_lower %>_attributes(attrs)
+        # Resource-specific validation
+        <%= validations %>
+      end
+    end
+  end
+end

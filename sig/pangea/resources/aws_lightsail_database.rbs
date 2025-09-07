@@ -1,0 +1,12 @@
+module Pangea
+  module Resources
+    module AWS
+      # AWS Lightsail database resource function
+      #
+      # @param name [Symbol] The resource name
+      # @param attributes [Hash] Database attributes
+      # @return [ResourceReference] Reference object with outputs
+      def aws_lightsail_database: (Symbol name, Hash[Symbol, untyped] attributes) -> ResourceReference
+    end
+  end
+end

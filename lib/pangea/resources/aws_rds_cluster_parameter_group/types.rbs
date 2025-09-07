@@ -1,0 +1,65 @@
+module Pangea
+  module Resources
+    module AWS
+      class DbParameter < Dry::Struct
+        attribute :name, Types::String
+        attribute :value, Types::String | Types::Integer | Types::Float | Types::Bool
+        attribute :apply_method, Types::String
+
+        def self.new: (Hash[Symbol, untyped] attributes) -> DbParameter
+
+        def name: () -> String
+        def value: () -> (String | Integer | Float | bool)
+        def apply_method: () -> String
+        def terraform_value: () -> String
+        def requires_immediate_application?: () -> bool
+        def requires_reboot?: () -> bool
+      end
+
+      class RdsClusterParameterGroupAttributes < Dry::Struct
+        attribute :name, Types::String?
+        attribute :name_prefix, Types::String?  
+        attribute :family, Types::String
+        attribute :description, Types::String
+        attribute :parameter, Types::Array[DbParameter]
+        attribute :tags, Types::AwsTags
+
+        def self.new: (Hash[Symbol, untyped] attributes) -> RdsClusterParameterGroupAttributes
+        def self.validate_parameters_for_family: (String family, Array[DbParameter] parameters) -> Array[String]
+
+        def name: () -> String?
+        def name_prefix: () -> String?
+        def family: () -> String
+        def description: () -> String
+        def parameter: () -> Array[DbParameter]
+        def tags: () -> Hash[Symbol, String]
+
+        def engine_type: () -> String
+        def engine_version: () -> String
+        def is_mysql_family?: () -> bool
+        def is_postgresql_family?: () -> bool
+        def immediate_parameters: () -> Array[DbParameter]
+        def reboot_parameters: () -> Array[DbParameter]
+        def has_immediate_parameters?: () -> bool
+        def has_reboot_parameters?: () -> bool
+        def get_parameter: (String name) -> DbParameter?
+        def has_parameter?: (String name) -> bool
+        def parameter_names: () -> Array[String]
+        def configuration_summary: () -> String
+
+        AURORA_MYSQL_PARAMETERS: Set[String]
+        AURORA_POSTGRESQL_PARAMETERS: Set[String]
+      end
+
+      module RdsClusterParameterGroupConfigs
+        def self.aurora_mysql_performance: (?family: String) -> Hash[Symbol, untyped]
+        def self.aurora_postgresql_performance: (?family: String) -> Hash[Symbol, untyped]
+        def self.development_logging: (family: String, engine_type: String) -> Hash[Symbol, untyped]
+        def self.security_hardened: (family: String, engine_type: String) -> Hash[Symbol, untyped]
+        def self.high_connections: (family: String, engine_type: String) -> Hash[Symbol, untyped]
+      end
+
+      def aws_rds_cluster_parameter_group: (Symbol name, Hash[Symbol, untyped] attributes) -> ResourceReference
+    end
+  end
+end

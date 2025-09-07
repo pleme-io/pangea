@@ -1,0 +1,80 @@
+# HealthLake FHIR Datastore resource type definitions
+
+module Pangea
+  module Resources
+    module AWS
+      module HealthLake
+        module FHIRDatastore
+          # AWS HealthLake FHIR Datastore for healthcare data management
+          #
+          # @example Basic FHIR datastore
+          #   aws_healthlake_fhir_datastore(:clinical_data, {
+          #     datastore_name: "clinical-data-store",
+          #     datastore_type_version: "R4"
+          #   })
+          def aws_healthlake_fhir_datastore: (
+            Symbol name,
+            {
+              datastore_type_version: String,
+              ?datastore_name: String,
+              ?description: String,
+              ?preload_data_config: {
+                preload_data_type: String
+              },
+              ?sse_configuration: {
+                kms_encryption_config: {
+                  cmk_type: String,
+                  ?kms_key_id: String
+                }
+              },
+              ?identity_provider_configuration: {
+                authorization_strategy: String,
+                ?fine_grained_authorization_enabled: bool,
+                ?metadata: String,
+                ?idp_lambda_arn: String
+              },
+              ?tags: Hash[String, String]
+            } attributes
+          ) -> ResourceReference
+
+          # AWS HealthLake FHIR Export Job
+          def aws_healthlake_fhir_export_job: (
+            Symbol name,
+            {
+              datastore_id: String,
+              data_access_role_arn: String,
+              output_data_config: {
+                s3_configuration: {
+                  s3_uri: String,
+                  ?kms_key_id: String
+                }
+              },
+              ?job_name: String,
+              ?client_token: String
+            } attributes
+          ) -> ResourceReference
+
+          # AWS HealthLake FHIR Import Job
+          def aws_healthlake_fhir_import_job: (
+            Symbol name,
+            {
+              datastore_id: String,
+              data_access_role_arn: String,
+              input_data_config: {
+                s3_uri: String
+              },
+              ?job_name: String,
+              ?job_output_data_config: {
+                s3_configuration: {
+                  s3_uri: String,
+                  ?kms_key_id: String
+                }
+              },
+              ?client_token: String
+            } attributes
+          ) -> ResourceReference
+        end
+      end
+    end
+  end
+end

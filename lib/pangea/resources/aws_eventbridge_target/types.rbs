@@ -1,0 +1,58 @@
+# RBS type definitions for AWS EventBridge Target types
+
+module Pangea
+  module Resources
+    module AWS
+      class EventBridgeTargetAttributes < Dry::Struct
+        attr_reader rule: String
+        attr_reader event_bus_name: String
+        attr_reader target_id: String
+        attr_reader arn: String
+        attr_reader role_arn: String?
+        attr_reader input: String?
+        attr_reader input_path: String?
+        attr_reader input_transformer: Hash[Symbol, untyped]?
+        attr_reader retry_policy: Hash[Symbol, untyped]?
+        attr_reader dead_letter_config: Hash[Symbol, untyped]?
+        attr_reader http_parameters: Hash[Symbol, untyped]?
+        attr_reader kinesis_parameters: Hash[Symbol, untyped]?
+        attr_reader sqs_parameters: Hash[Symbol, untyped]?
+        attr_reader ecs_parameters: Hash[Symbol, untyped]?
+        attr_reader batch_parameters: Hash[Symbol, untyped]?
+        
+        def target_type: () -> String
+        def is_lambda_target?: () -> bool
+        def is_sqs_target?: () -> bool
+        def is_sns_target?: () -> bool
+        def is_kinesis_target?: () -> bool
+        def is_ecs_target?: () -> bool
+        def is_batch_target?: () -> bool
+        def is_api_gateway_target?: () -> bool
+        def is_fifo_sqs?: () -> bool
+        def has_role?: () -> bool
+        def has_input_transformation?: () -> bool
+        def has_retry_policy?: () -> bool
+        def has_dead_letter_queue?: () -> bool
+        def uses_default_bus?: () -> bool
+        def uses_custom_bus?: () -> bool
+        def max_retry_attempts: () -> Integer
+        def max_event_age_hours: () -> Float?
+        def estimated_monthly_cost: () -> String
+        def target_service: () -> String
+        def reliability_features: () -> String
+      end
+
+      module EventBridgeTargetConfigs
+        def self.lambda_target: (rule: String, target_id: String, function_arn: String, ?input: String?) -> Hash[Symbol, untyped]
+        def self.sqs_target: (rule: String, target_id: String, queue_arn: String, ?message_group_id: String?) -> Hash[Symbol, untyped]
+        def self.sns_target: (rule: String, target_id: String, topic_arn: String, ?role_arn: String?) -> Hash[Symbol, untyped]
+        def self.kinesis_target: (rule: String, target_id: String, stream_arn: String, role_arn: String, ?partition_key_path: String?) -> Hash[Symbol, untyped]
+        def self.ecs_target: (rule: String, target_id: String, task_definition_arn: String, role_arn: String, ?cluster_arn: String?, ?launch_type: String, ?task_count: Integer, ?subnets: Array[String], ?security_groups: Array[String]) -> Hash[Symbol, untyped]
+        def self.reliable_target: (rule: String, target_id: String, arn: String, ?role_arn: String?, ?max_retry_attempts: Integer, ?max_event_age_hours: Integer) -> Hash[Symbol, untyped]
+        def self.target_with_dlq: (rule: String, target_id: String, arn: String, dlq_arn: String, ?role_arn: String?) -> Hash[Symbol, untyped]
+        def self.transformed_target: (rule: String, target_id: String, arn: String, input_template: String, ?input_paths: Hash[String, String]?, ?role_arn: String?) -> Hash[Symbol, untyped]
+        def self.batch_target: (rule: String, target_id: String, job_queue_arn: String, job_definition: String, job_name: String, role_arn: String, ?array_size: Integer?) -> Hash[Symbol, untyped]
+      end
+    end
+  end
+end

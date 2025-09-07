@@ -1,0 +1,44 @@
+# frozen_string_literal: true
+
+module Pangea
+  module Resources
+    module AWS
+      class GlueCatalogTableAttributes < Dry::Struct
+        @attributes: Hash[Symbol, untyped]
+        
+        attr_reader name: String
+        attr_reader database_name: String
+        attr_reader catalog_id: String?
+        attr_reader owner: String?
+        attr_reader description: String?
+        attr_reader table_type: String?
+        attr_reader parameters: Hash[String, String]
+        attr_reader storage_descriptor: Hash[Symbol, untyped]?
+        attr_reader partition_keys: Array[Hash[Symbol, untyped]]
+        attr_reader retention: Integer?
+        attr_reader view_original_text: String?
+        attr_reader view_expanded_text: String?
+        attr_reader target_table: Hash[Symbol, String?]
+        
+        def self.new: (Hash[Symbol, untyped] attributes) -> GlueCatalogTableAttributes
+        
+        # Query methods
+        def is_partitioned?: () -> bool
+        def is_external?: () -> bool
+        def is_view?: () -> bool
+        
+        # Computed properties
+        def table_format: () -> String
+        def compression_type: () -> String?
+        def estimated_size_gb: () -> Float
+        def column_summary: () -> Hash[Symbol, Integer]
+        
+        # Helper class methods
+        def self.serde_info_for_format: (String | Symbol format) -> Hash[Symbol, untyped]
+        def self.input_output_format_for_type: (String | Symbol format) -> Hash[Symbol, String]
+        
+        def to_h: () -> Hash[Symbol, untyped]
+      end
+    end
+  end
+end

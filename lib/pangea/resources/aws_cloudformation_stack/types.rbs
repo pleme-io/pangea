@@ -1,0 +1,46 @@
+# RBS type definitions for AWS CloudFormation Stack types
+
+module Pangea
+  module Resources
+    module AWS
+      class CloudFormationStackAttributes < Dry::Struct
+        attr_reader name: String
+        attr_reader template_body: String?
+        attr_reader template_url: String?
+        attr_reader parameters: Hash[String, String]
+        attr_reader capabilities: Array[String]
+        attr_reader notification_arns: Array[String]
+        attr_reader policy_body: String?
+        attr_reader policy_url: String?
+        attr_reader timeout_in_minutes: Integer?
+        attr_reader disable_rollback: bool
+        attr_reader enable_termination_protection: bool
+        attr_reader iam_role_arn: String?
+        attr_reader on_failure: String
+        attr_reader tags: Hash[Symbol, String]
+        
+        def uses_template_body?: () -> bool
+        def uses_template_url?: () -> bool
+        def has_parameters?: () -> bool
+        def has_capabilities?: () -> bool
+        def has_notifications?: () -> bool
+        def has_policy?: () -> bool
+        def has_timeout?: () -> bool
+        def has_iam_role?: () -> bool
+        def rollback_disabled?: () -> bool
+        def termination_protected?: () -> bool
+        def requires_iam_capabilities?: () -> bool
+        def template_source: () -> Symbol
+      end
+
+      module CloudFormationStackConfigs
+        def self.simple_stack: (String, String) -> Hash[Symbol, untyped]
+        def self.s3_template_stack: (String, String, ?parameters: Hash[String, String]) -> Hash[Symbol, untyped]
+        def self.iam_stack: (String, String, ?iam_role_arn: String?) -> Hash[Symbol, untyped]
+        def self.monitored_stack: (String, String, Array[String]) -> Hash[Symbol, untyped]
+        def self.production_stack: (String, String, ?parameters: Hash[String, String]) -> Hash[Symbol, untyped]
+        def self.protected_stack: (String, String, String) -> Hash[Symbol, untyped]
+      end
+    end
+  end
+end

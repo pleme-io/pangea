@@ -1,0 +1,36 @@
+# AWS Step Functions Activity resource type signatures
+
+module Pangea
+  module Resources
+    module AWS
+      module Types
+        class SfnActivityAttributes < Dry::Struct
+          # Core attributes
+          attr_reader name: String
+          
+          # Optional attributes
+          attr_reader tags: Hash[Symbol, String]?
+          
+          def self.new: (Hash[Symbol, untyped] attributes) -> SfnActivityAttributes
+          
+          # Validation methods
+          def self.validate_activity_name: (String name) -> true
+          
+          # Computed properties
+          def is_valid_name?: () -> bool
+          def estimated_arn: (String region, String account_id) -> String
+          
+          # Pattern generators
+          def self.activity_name_patterns: () -> Hash[Symbol, String]
+          def self.data_processing_activity: (String name_suffix) -> String
+          def self.worker_activity: (String worker_type, String? environment) -> String
+          def self.batch_activity: (String batch_type) -> String
+          def self.integration_activity: (String service_name, String action) -> String
+        end
+      end
+      
+      # Resource function
+      def aws_sfn_activity: (Symbol name, Hash[Symbol, untyped] attributes) -> ResourceReference
+    end
+  end
+end

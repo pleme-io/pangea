@@ -1,0 +1,57 @@
+# TypeProf 0.21.2
+
+module Pangea
+  module Resources
+    module AwsGameliftGameSessionQueue
+      module Types
+        class PlayerLatencyPolicy
+          attr_reader maximum_individual_player_latency_milliseconds: Integer
+          attr_reader policy_duration_seconds: Integer?
+        end
+
+        class Destination
+          attr_reader destination_arn: String
+        end
+
+        class FilterConfiguration
+          attr_reader allowed_locations: Array[String]?
+        end
+
+        class PriorityConfiguration
+          attr_reader location_order: Array[String]?
+          attr_reader priority_order: Array["COST" | "DESTINATION" | "LATENCY" | "LOCATION"]?
+        end
+
+        class Attributes
+          attr_reader name: String
+          attr_reader timeout_in_seconds: Integer?
+          attr_reader destinations: Array[Destination]?
+          attr_reader player_latency_policies: Array[PlayerLatencyPolicy]?
+          attr_reader custom_event_data: String?
+          attr_reader notification_target: String?
+          attr_reader filter_configuration: FilterConfiguration?
+          attr_reader priority_configuration: PriorityConfiguration?
+          attr_reader tags: Hash[String, String]?
+
+          def self.from_dynamic: (Hash[Symbol, untyped] d) -> Attributes
+        end
+
+        class Reference
+          attr_reader arn: String
+          attr_reader name: String
+        end
+      end
+
+      module Resource
+        def self.validate: (Hash[Symbol, untyped] definition) -> Types::Attributes
+        def self.defaults: () -> Hash[Symbol, untyped]
+        def self.required_attributes: () -> Array[Symbol]
+        def self.compute_attributes: (Hash[Symbol, untyped] definition) -> Types::Reference
+        
+        private
+        
+        def self.ref: (String | Symbol name, Symbol attribute) -> String
+      end
+    end
+  end
+end

@@ -1,0 +1,24 @@
+module Pangea
+  module Resources
+    module AWS
+      module Types
+        class TransitGatewayRouteTableAttributes < Dry::Struct
+          def self.new: (Hash[Symbol, untyped] attributes) -> TransitGatewayRouteTableAttributes
+          def supports_route_propagation?: () -> bool
+          def supports_route_association?: () -> bool
+          def estimated_monthly_cost: () -> Hash[Symbol, untyped]
+          def route_table_purpose_analysis: () -> Array[String]
+          def security_considerations: () -> Array[String]
+          def routing_capabilities: () -> Hash[Symbol, untyped]
+          def best_practices: () -> Array[String]
+          def to_h: () -> Hash[Symbol, untyped]
+          
+          def transit_gateway_id: () -> String
+          def tags: () -> Hash[Symbol, String]
+        end
+      end
+      
+      def aws_ec2_transit_gateway_route_table: (Symbol name, ?Hash[Symbol, untyped] attributes) -> ResourceReference
+    end
+  end
+end

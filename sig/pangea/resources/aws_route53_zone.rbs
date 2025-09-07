@@ -1,0 +1,26 @@
+# RBS type definitions for AWS Route53 Hosted Zone resource
+
+module Pangea
+  module Resources
+    module AWS
+      # Route53 hosted zone VPC configuration type
+      type route53_vpc_config = {
+        vpc_id: String,
+        vpc_region?: String?
+      }
+
+      # Route53 hosted zone attributes type
+      type route53_zone_attributes = {
+        name: String,
+        comment?: String?,
+        delegation_set_id?: String?,
+        force_destroy?: bool,
+        vpc?: Array[route53_vpc_config],
+        tags?: Hash[Symbol, String]
+      }
+
+      # Route53 hosted zone resource function
+      def aws_route53_zone: (Symbol name, route53_zone_attributes attributes) -> ResourceReference
+                          | (Symbol name) -> ResourceReference
+    end
+end
