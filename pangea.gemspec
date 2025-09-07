@@ -37,6 +37,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "simplecov-lcov", "~> 0.8"
 
   spec.add_dependency "tty-config", "~> 0.5"
+  spec.add_dependency "tty-option", "~> 0.3"
   spec.add_dependency "tty-table", "~> 0.12"
   spec.add_dependency "tty-spinner", "~> 0.9"
   spec.add_dependency "tty-progressbar", "~> 0.18"

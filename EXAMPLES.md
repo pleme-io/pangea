@@ -14,19 +14,33 @@ This directory contains comprehensive examples demonstrating Pangea's power for 
 pangea apply examples/simple.rb
 ```
 
-### [basic-web-app.rb](examples/basic-web-app.rb) ⭐ **New**
+### [basic-web-app/](examples/basic-web-app/) ⭐ **New**
 **Complete web application in one template**
 - VPC with public/private subnets
 - EC2 instance with security groups
 - Application load balancer
 - Shows cross-resource references
+- Includes `pangea.yaml` for multi-environment management
 
-### [multi-tier-architecture.rb](examples/multi-tier-architecture.rb) ⭐ **New**
+```bash
+cd examples/basic-web-app
+pangea apply infrastructure.rb
+```
+
+### [multi-tier-architecture/](examples/multi-tier-architecture/) ⭐ **New**
 **Three-tier application with database**
 - Web tier with load balancer
 - Application tier with auto-scaling
 - Database tier with RDS
 - Demonstrates template isolation benefits
+- Three separate templates with cross-template communication
+
+```bash
+cd examples/multi-tier-architecture
+pangea apply infrastructure.rb --template networking
+pangea apply infrastructure.rb --template database
+pangea apply infrastructure.rb --template application
+```
 
 ## 🏢 Enterprise Examples
 
@@ -37,12 +51,19 @@ pangea apply examples/simple.rb
 - Database template for persistent storage
 - Shows incremental deployment patterns
 
-### [microservices-platform.rb](examples/microservices-platform.rb) ⭐ **New**
+### [microservices-platform/](examples/microservices-platform/) ⭐ **New**
 **Complete microservices platform**
 - Container orchestration with ECS
 - Service discovery and mesh
 - API Gateway integration
 - Event-driven architecture patterns
+- Includes complete Pangea repository structure
+
+```bash
+cd examples/microservices-platform
+pangea apply infrastructure.rb --template platform
+pangea apply infrastructure.rb --template services
+```
 
 ### [advanced_global_infrastructure.rb](examples/advanced_global_infrastructure.rb)
 **Global multi-region deployment**
@@ -67,7 +88,7 @@ pangea apply examples/simple.rb
 - Compliance-ready security
 - HIPAA-compliant architecture
 
-### [ml-platform.rb](examples/ml-platform.rb) ⭐ **New**
+### [ml-platform/](examples/ml-platform/) ⭐ **New**
 **Production ML platform**
 - Data lake infrastructure
 - Feature store implementation
@@ -97,7 +118,7 @@ pangea apply examples/simple.rb
 - Rate limiting and caching
 - Multi-stage deployment
 
-### [cicd-pipeline-infrastructure.rb](examples/cicd-pipeline-infrastructure.rb) ⭐ **New**
+### [cicd-pipeline/](examples/cicd-pipeline/) ⭐ **New**
 **CI/CD pipeline infrastructure**
 - CodeBuild projects
 - CodePipeline setup
@@ -111,7 +132,7 @@ pangea apply examples/simple.rb
 - Event processing patterns
 - Scalable message handling
 
-### [data-processing-pipeline.rb](examples/data-processing-pipeline.rb) ⭐ **New**
+### [data-processing/](examples/data-processing/) ⭐ **New**
 **Big data processing pipeline**
 - Kinesis streaming
 - EMR clusters for batch processing
@@ -120,21 +141,21 @@ pangea apply examples/simple.rb
 
 ## 🌍 Multi-Environment Examples
 
-### [multi-environment-deployment.rb](examples/multi-environment-deployment.rb) ⭐ **New**
+### [multi-environment/](examples/multi-environment/) ⭐ **New**
 **Environment-aware templates**
 - Development/staging/production configs
 - Environment-specific resource sizing
 - Namespace-driven customization
 - Promotion workflow patterns
 
-### [security-focused-infrastructure.rb](examples/security-focused-infrastructure.rb) ⭐ **New**
+### [security-focused/](examples/security-focused/) ⭐ **New**
 **Security-first architecture**
 - Zero-trust networking
 - VPC Flow Logs
 - GuardDuty integration
 - Compliance automation
 
-### [global-multi-region.rb](examples/global-multi-region.rb) ⭐ **New**
+### [global-multi-region/](examples/global-multi-region/) ⭐ **New**
 **Global application deployment**
 - Multi-region active-active
 - Cross-region data replication
@@ -150,7 +171,7 @@ pangea apply examples/simple.rb
 - Log aggregation
 - Automated alerting
 
-### [disaster-recovery-architecture.rb](examples/disaster-recovery-architecture.rb) ⭐ **New**
+### [disaster-recovery/](examples/disaster-recovery/) ⭐ **New**
 **Enterprise disaster recovery**
 - Cross-region backup automation
 - RTO/RPO optimization
@@ -179,47 +200,47 @@ pangea apply examples/simple.rb
 
 **🟢 Beginner (1-2 templates)**
 - [simple.rb](examples/simple.rb)
-- [basic-web-app.rb](examples/basic-web-app.rb)
-- [multi-tier-architecture.rb](examples/multi-tier-architecture.rb)
+- [basic-web-app/](examples/basic-web-app/)
+- [multi-tier-architecture/](examples/multi-tier-architecture/)
 
 **🟡 Intermediate (3-5 templates)**
 - [scalable_infrastructure.rb](examples/scalable_infrastructure.rb)
-- [microservices-platform.rb](examples/microservices-platform.rb)
-- [cicd-pipeline-infrastructure.rb](examples/cicd-pipeline-infrastructure.rb)
-- [multi-environment-deployment.rb](examples/multi-environment-deployment.rb)
+- [microservices-platform/](examples/microservices-platform/)
+- [cicd-pipeline/](examples/cicd-pipeline/)
+- [multi-environment/](examples/multi-environment/)
 
 **🔴 Advanced (5+ templates)**
 - [advanced_global_infrastructure.rb](examples/advanced_global_infrastructure.rb)
 - [advanced_ml_healthcare_infrastructure.rb](examples/advanced_ml_healthcare_infrastructure.rb)
-- [ml-platform.rb](examples/ml-platform.rb)
-- [global-multi-region.rb](examples/global-multi-region.rb)
-- [disaster-recovery-architecture.rb](examples/disaster-recovery-architecture.rb)
+- [ml-platform/](examples/ml-platform/)
+- [global-multi-region/](examples/global-multi-region/)
+- [disaster-recovery/](examples/disaster-recovery/)
 
 ### By Use Case
 
 **🌐 Web Applications**
-- [basic-web-app.rb](examples/basic-web-app.rb) - Simple web server
-- [multi-tier-architecture.rb](examples/multi-tier-architecture.rb) - Full-stack application
+- [basic-web-app/](examples/basic-web-app/) - Simple web server
+- [multi-tier-architecture/](examples/multi-tier-architecture/) - Full-stack application
 - [scalable_infrastructure.rb](examples/scalable_infrastructure.rb) - Scalable web platform
 
 **📱 Microservices**
-- [microservices-platform.rb](examples/microservices-platform.rb) - Container platform
+- [microservices-platform/](examples/microservices-platform/) - Container platform
 - [messaging_example.rb](examples/messaging_example.rb) - Event-driven services
 - [api_gateway_complete.rb](examples/api_gateway_complete.rb) - API management
 
 **🤖 Machine Learning**
-- [ml-platform.rb](examples/ml-platform.rb) - Production ML platform  
+- [ml-platform/](examples/ml-platform/) - Production ML platform  
 - [advanced_ml_healthcare_infrastructure.rb](examples/advanced_ml_healthcare_infrastructure.rb) - Healthcare ML
 
 **🏗️ Platform Engineering**
-- [cicd-pipeline-infrastructure.rb](examples/cicd-pipeline-infrastructure.rb) - Build/deploy automation
-- [security-focused-infrastructure.rb](examples/security-focused-infrastructure.rb) - Security platform
-- [data-processing-pipeline.rb](examples/data-processing-pipeline.rb) - Big data platform
+- [cicd-pipeline/](examples/cicd-pipeline/) - Build/deploy automation
+- [security-focused/](examples/security-focused/) - Security platform
+- [data-processing/](examples/data-processing/) - Big data platform
 
 **🌍 Enterprise Architecture**
-- [global-multi-region.rb](examples/global-multi-region.rb) - Global deployment
-- [disaster-recovery-architecture.rb](examples/disaster-recovery-architecture.rb) - Business continuity
-- [multi-environment-deployment.rb](examples/multi-environment-deployment.rb) - Environment management
+- [global-multi-region/](examples/global-multi-region/) - Global deployment
+- [disaster-recovery/](examples/disaster-recovery/) - Business continuity
+- [multi-environment/](examples/multi-environment/) - Environment management
 
 ## 🚀 Running the Examples
 
@@ -228,7 +249,7 @@ pangea apply examples/simple.rb
 ```bash
 # Simple examples
 pangea apply examples/simple.rb
-pangea apply examples/basic-web-app.rb
+cd examples/basic-web-app && pangea apply infrastructure.rb
 
 # Multi-template examples (deploy in order)
 pangea apply examples/scalable_infrastructure.rb --template foundation
