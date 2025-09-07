@@ -1,0 +1,62 @@
+# Disaster Recovery Namespace Configuration
+# This configuration manages primary and DR infrastructure across regions
+
+default_namespace: primary
+
+namespaces:
+  # Primary production region
+  primary:
+    description: "Primary production region (US-EAST-1)"
+    state:
+      type: s3
+      bucket: "dr-terraform-state-primary"
+      key: "pangea/disaster-recovery/primary/terraform.tfstate"
+      region: "us-east-1"
+      dynamodb_table: "dr-terraform-lock-primary"
+      encrypt: true
+      kms_key_id: "arn:aws:kms:us-east-1:123456789012:key/dr-primary-state-key"
+  
+  # DR region (standby)
+  dr_standby:
+    description: "Disaster recovery standby region (US-WEST-2)"
+    state:
+      type: s3
+      bucket: "dr-terraform-state-standby"
+      key: "pangea/disaster-recovery/standby/terraform.tfstate"
+      region: "us-west-2"
+      dynamodb_table: "dr-terraform-lock-standby"
+      encrypt: true
+      kms_key_id: "arn:aws:kms:us-west-2:123456789012:key/dr-standby-state-key"
+  
+  # Shared DR resources
+  dr_shared:
+    description: "Shared disaster recovery resources (global)"
+    state:
+      type: s3
+      bucket: "dr-terraform-state-shared"
+      key: "pangea/disaster-recovery/shared/terraform.tfstate"
+      region: "us-east-1"
+      dynamodb_table: "dr-terraform-lock-shared"
+      encrypt: true
+  
+  # DR testing environment
+  dr_test:
+    description: "DR testing and validation environment"
+    state:
+      type: s3
+      bucket: "dr-terraform-state-test"
+      key: "pangea/disaster-recovery/test/terraform.tfstate"
+      region: "us-west-2"
+      dynamodb_table: "dr-terraform-lock-test"
+      encrypt: true
+  
+  # Recovery orchestration
+  recovery:
+    description: "Recovery orchestration and automation"
+    state:
+      type: s3
+      bucket: "dr-terraform-state-recovery"
+      key: "pangea/disaster-recovery/recovery/terraform.tfstate"
+      region: "us-east-1"
+      dynamodb_table: "dr-terraform-lock-recovery"
+      encrypt: true

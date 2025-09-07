@@ -1,0 +1,35 @@
+# CI/CD Pipeline Namespace Configuration
+# This configuration manages state backends for CI/CD infrastructure across environments
+
+default_namespace: development
+
+namespaces:
+  # Development environment for testing CI/CD changes
+  development:
+    description: "Development CI/CD pipeline infrastructure"
+    state:
+      type: local
+      path: "terraform.tfstate"
+  
+  # Shared CI/CD infrastructure for all non-production environments
+  shared:
+    description: "Shared CI/CD infrastructure for development and staging"
+    state:
+      type: s3
+      bucket: "cicd-terraform-state-shared"
+      key: "pangea/cicd/shared/terraform.tfstate"
+      region: "us-east-1"
+      dynamodb_table: "cicd-terraform-lock-shared"
+      encrypt: true
+  
+  # Production CI/CD infrastructure
+  production:
+    description: "Production CI/CD pipeline infrastructure"
+    state:
+      type: s3
+      bucket: "cicd-terraform-state-prod"
+      key: "pangea/cicd/production/terraform.tfstate"
+      region: "us-east-1"
+      dynamodb_table: "cicd-terraform-lock-prod"
+      encrypt: true
+      kms_key_id: "arn:aws:kms:us-east-1:123456789012:key/prod-cicd-state-key"

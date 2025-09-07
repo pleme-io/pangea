@@ -1,0 +1,36 @@
+# Basic Web Application Infrastructure
+# This configuration defines a simple web application deployment strategy
+# with local development and cloud environments
+
+default_namespace: development
+
+namespaces:
+  # Local development - for testing infrastructure code locally
+  development:
+    description: "Local development environment with local state"
+    state:
+      type: local
+      path: ".terraform/development/terraform.tfstate"
+  
+  # Staging environment - testing before production
+  staging:
+    description: "Staging environment for pre-production testing"
+    state:
+      type: s3
+      bucket: "myapp-terraform-state-staging"
+      key: "basic-web-app/staging/terraform.tfstate"
+      region: "us-east-1"
+      dynamodb_table: "terraform-state-lock-staging"
+      encrypt: true
+  
+  # Production environment - live application
+  production:
+    description: "Production environment"
+    state:
+      type: s3
+      bucket: "myapp-terraform-state-prod"
+      key: "basic-web-app/production/terraform.tfstate"
+      region: "us-east-1"
+      dynamodb_table: "terraform-state-lock-prod"
+      encrypt: true
+      kms_key_id: "alias/terraform-state"

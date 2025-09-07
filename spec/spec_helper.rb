@@ -13,6 +13,28 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# Coverage reporting
+require 'simplecov'
+SimpleCov.start do
+  add_filter '/spec/'
+  add_filter '/vendor/'
+  
+  track_files 'lib/**/*.rb'
+  
+  minimum_coverage 80
+  
+  if ENV['CI']
+    require 'simplecov-lcov'
+    SimpleCov::Formatter::LcovFormatter.config do |c|
+      c.report_with_single_file = true
+      c.single_report_path = 'coverage/lcov.info'
+    end
+    SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter.new([
+      SimpleCov::Formatter::HTMLFormatter,
+      SimpleCov::Formatter::LcovFormatter
+    ])
+  end
+end
 
 # Spec helper for Pangea testing framework
 lib_path = File.expand_path('../lib', __dir__)

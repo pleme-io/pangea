@@ -1,0 +1,60 @@
+# Security-Focused Infrastructure Namespace Configuration
+# This configuration uses enhanced security features for state management
+
+default_namespace: development
+
+namespaces:
+  # Development environment with basic security
+  development:
+    description: "Development environment with security testing"
+    state:
+      type: local
+      path: "terraform.tfstate"
+  
+  # Security testing environment
+  security_test:
+    description: "Dedicated security testing environment"
+    state:
+      type: s3
+      bucket: "security-terraform-state-test"
+      key: "pangea/security/test/terraform.tfstate"
+      region: "us-east-1"
+      dynamodb_table: "security-terraform-lock-test"
+      encrypt: true
+      kms_key_id: "arn:aws:kms:us-east-1:123456789012:key/security-test-state-key"
+  
+  # Staging with production-like security
+  staging:
+    description: "Staging environment with full security features"
+    state:
+      type: s3
+      bucket: "security-terraform-state-staging"
+      key: "pangea/security/staging/terraform.tfstate"
+      region: "us-east-1"
+      dynamodb_table: "security-terraform-lock-staging"
+      encrypt: true
+      kms_key_id: "arn:aws:kms:us-east-1:123456789012:key/security-staging-state-key"
+  
+  # Production with maximum security
+  production:
+    description: "Production environment with comprehensive security controls"
+    state:
+      type: s3
+      bucket: "security-terraform-state-prod"
+      key: "pangea/security/production/terraform.tfstate"
+      region: "us-east-1"
+      dynamodb_table: "security-terraform-lock-prod"
+      encrypt: true
+      kms_key_id: "arn:aws:kms:us-east-1:123456789012:key/security-prod-state-key"
+      
+  # Compliance environment for audits
+  compliance:
+    description: "Compliance environment for security audits and testing"
+    state:
+      type: s3
+      bucket: "security-terraform-state-compliance"
+      key: "pangea/security/compliance/terraform.tfstate"
+      region: "us-east-1"
+      dynamodb_table: "security-terraform-lock-compliance"
+      encrypt: true
+      kms_key_id: "arn:aws:kms:us-east-1:123456789012:key/security-compliance-state-key"

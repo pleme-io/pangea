@@ -1,0 +1,71 @@
+# Multi-Environment Namespace Configuration
+# This configuration demonstrates how to manage the same infrastructure
+# across multiple environments with different state backends and settings
+
+default_namespace: development
+
+namespaces:
+  # Local development environment
+  development:
+    description: "Local development with minimal resources"
+    state:
+      type: local
+      path: "terraform.tfstate"
+  
+  # Feature branch testing
+  feature:
+    description: "Feature branch testing environment"
+    state:
+      type: s3
+      bucket: "multi-env-terraform-state-feature"
+      key: "pangea/multi-env/feature/terraform.tfstate"
+      region: "us-east-1"
+      dynamodb_table: "multi-env-terraform-lock-feature"
+      encrypt: true
+  
+  # Integration testing environment
+  integration:
+    description: "Integration testing with production-like data"
+    state:
+      type: s3
+      bucket: "multi-env-terraform-state-integration"
+      key: "pangea/multi-env/integration/terraform.tfstate"
+      region: "us-east-1"
+      dynamodb_table: "multi-env-terraform-lock-integration"
+      encrypt: true
+  
+  # QA/Staging environment
+  staging:
+    description: "Pre-production staging environment"
+    state:
+      type: s3
+      bucket: "multi-env-terraform-state-staging"
+      key: "pangea/multi-env/staging/terraform.tfstate"
+      region: "us-east-1"
+      dynamodb_table: "multi-env-terraform-lock-staging"
+      encrypt: true
+      kms_key_id: "arn:aws:kms:us-east-1:123456789012:key/staging-state-key"
+  
+  # Production environment
+  production:
+    description: "Production environment with full features"
+    state:
+      type: s3
+      bucket: "multi-env-terraform-state-prod"
+      key: "pangea/multi-env/production/terraform.tfstate"
+      region: "us-east-1"
+      dynamodb_table: "multi-env-terraform-lock-prod"
+      encrypt: true
+      kms_key_id: "arn:aws:kms:us-east-1:123456789012:key/prod-state-key"
+      
+  # Production EU region
+  production_eu:
+    description: "Production environment for EU region"
+    state:
+      type: s3
+      bucket: "multi-env-terraform-state-prod-eu"
+      key: "pangea/multi-env/production-eu/terraform.tfstate"
+      region: "eu-west-1"
+      dynamodb_table: "multi-env-terraform-lock-prod-eu"
+      encrypt: true
+      kms_key_id: "arn:aws:kms:eu-west-1:123456789012:key/prod-eu-state-key"
