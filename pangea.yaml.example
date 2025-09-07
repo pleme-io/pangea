@@ -1,0 +1,87 @@
+# Pangea Configuration Example
+#
+# This file demonstrates Pangea's namespace-based configuration system
+# for managing multiple environments with different state backends.
+#
+# Copy this file to pangea.yaml and customize for your infrastructure.
+
+# Default namespace when --namespace flag is not provided
+default_namespace: development
+
+# Namespace definitions for different environments
+namespaces:
+  # Local development environment
+  development:
+    description: "Local development environment with local state storage"
+    state:
+      type: local
+      path: ".terraform/development/terraform.tfstate"
+  
+  # Testing/QA environment with basic S3 backend
+  testing:
+    description: "Testing environment for QA and integration testing"
+    state:
+      type: s3
+      bucket: "my-terraform-state-testing"
+      key: "pangea/testing/terraform.tfstate"
+      region: "us-east-1"
+      # DynamoDB table for state locking (recommended)
+      dynamodb_table: "terraform-state-lock-testing"
+      encrypt: true
+  
+  # Staging environment with additional security
+  staging:
+    description: "Staging environment - production mirror"
+    state:
+      type: s3
+      bucket: "my-terraform-state-staging"
+      key: "pangea/staging/terraform.tfstate"
+      region: "us-east-1"
+      dynamodb_table: "terraform-state-lock-staging"
+      encrypt: true
+      # Optional: Use specific IAM role for state access
+      iam_role: "arn:aws:iam::123456789012:role/TerraformStateAccess"
+  
+  # Production environment with maximum security
+  production:
+    description: "Production environment with enhanced security controls"
+    state:
+      type: s3
+      bucket: "my-terraform-state-prod"
+      key: "pangea/production/terraform.tfstate"
+      region: "us-east-1"
+      dynamodb_table: "terraform-state-lock-prod"
+      encrypt: true
+      # KMS key for state encryption
+      kms_key_id: "arn:aws:kms:us-east-1:123456789012:key/12345678-1234-1234-1234-123456789012"
+      # Cross-account role for production access
+      iam_role: "arn:aws:iam::987654321098:role/CrossAccountTerraformRole"
+  
+  # Disaster Recovery environment
+  disaster_recovery:
+    description: "DR environment in secondary region"
+    state:
+      type: s3
+      bucket: "my-terraform-state-dr"
+      key: "pangea/dr/terraform.tfstate"
+      region: "us-west-2"  # Different region for DR
+      dynamodb_table: "terraform-state-lock-dr"
+      encrypt: true
+      kms_key_id: "alias/terraform-state-dr"
+
+# Additional configuration options (future use)
+settings:
+  # Terraform/OpenTofu binary selection
+  terraform:
+    binary: "terraform"  # or "tofu" for OpenTofu
+    version: "~> 1.5"
+  
+  # Global tags applied to all resources (future feature)
+  global_tags:
+    ManagedBy: "pangea"
+    CostCenter: "engineering"
+  
+  # Hooks for custom scripts (future feature)
+  hooks:
+    pre_plan: "scripts/validate.sh"
+    post_apply: "scripts/notify.sh"
