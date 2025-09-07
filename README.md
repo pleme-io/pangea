@@ -87,7 +87,7 @@ end
 
 ### Configuration
 
-Create `pangea.yml` in your project or `~/.config/pangea/pangea.yml`:
+Create `pangea.yaml` in your project root (see `pangea.yaml.example` for a complete example):
 
 ```yaml
 default_namespace: development

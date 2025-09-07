@@ -263,7 +263,7 @@ pangea apply examples/multi-environment-deployment.rb --namespace production
 
 ### Configuration
 
-Most examples require a `pangea.yml` configuration file. See [examples/pangea.yml](examples/pangea.yml) for a comprehensive configuration template.
+Most examples require a `pangea.yaml` configuration file. See [pangea.yaml.example](../pangea.yaml.example) in the root directory for a comprehensive configuration template.
 
 ### Prerequisites
 
