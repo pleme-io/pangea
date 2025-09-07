@@ -1,0 +1,43 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Ruby
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: '3.3'
+        bundler-cache: true
+    
+    - name: Run tests
+      run: bundle exec rake spec
+    
+    - name: Build gem
+      run: gem build pangea.gemspec
+    
+    - name: Create Release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ github.ref }}
+        release_name: Release ${{ github.ref }}
+        draft: false
+        prerelease: false
+    
+    - name: Publish to RubyGems
+      run: |
+        mkdir -p $HOME/.gem
+        echo "---" > $HOME/.gem/credentials
+        echo ":rubygems_api_key: ${{ secrets.RUBYGEMS_API_KEY }}" >> $HOME/.gem/credentials
+        chmod 0600 $HOME/.gem/credentials
+        gem push *.gem
