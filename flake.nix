@@ -44,6 +44,8 @@
             # Create a wrapper script that sets up the Ruby environment
             cat > $out/bin/pangea <<EOF
             #!${ruby}/bin/ruby
+            # Suppress dry-types warnings about mutable defaults
+            ENV['DRY_TYPES_WARNINGS'] = 'false'
             \$LOAD_PATH.unshift(File.expand_path('../lib', __dir__))
             require 'pangea/cli/application'
             Pangea::CLI::Application.new.run
