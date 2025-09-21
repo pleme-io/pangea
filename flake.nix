@@ -33,12 +33,23 @@
           buildInputs = [env ruby];
           installPhase = ''
             mkdir -p $out/bin
-            cp -r ${env}/lib $out
-            cp -r ${env}/bin $out
-            cp -r $src/lib $out/ext
-            cp $src/bin/pangea $out/bin/pangea
+            mkdir -p $out/lib
+            
+            # Copy gem environment
+            cp -r ${env}/lib/* $out/lib/
+            
+            # Copy pangea source code to lib
+            cp -r $src/lib/* $out/lib/
+            
+            # Create a wrapper script that sets up the Ruby environment
+            cat > $out/bin/pangea <<EOF
+            #!${ruby}/bin/ruby
+            \$LOAD_PATH.unshift(File.expand_path('../lib', __dir__))
+            require 'pangea/cli/application'
+            Pangea::CLI::Application.new.run
+            EOF
+            
             chmod +x $out/bin/pangea
-            rm -rf $out/bin/ruby-lsp
           '';
         };
       };
