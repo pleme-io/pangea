@@ -111,12 +111,9 @@ module Pangea
         end
         
         begin
-          # Pre-process content to handle special function calls before synthesis
-          processed_content = preprocess_template_content(content)
-          
           # The content is already extracted from inside the template block
           # so we can directly evaluate it in the synthesizer context
-          @synthesizer.instance_eval(processed_content, source_file, 1)
+          @synthesizer.instance_eval(content, source_file, 1)
           
           # Inject backend configuration
           inject_backend_config(name)
@@ -362,30 +359,6 @@ module Pangea
         end
       end
       
-      def preprocess_template_content(content)
-        # Handle discover_public_ip calls before synthesis
-        content.gsub(/discover_public_ip(?:\([^)]*\))?/) do |match|
-          begin
-            # Extract timeout parameter if present
-            timeout = 5
-            if match.include?('(')
-              # Parse timeout: 5 parameter if present
-              match.scan(/timeout:\s*(\d+)/) do |t|
-                timeout = t[0].to_i
-              end
-            end
-            
-            # Discover the IP
-            discovery = Utilities::IpDiscovery.new(timeout: timeout)
-            ip = discovery.discover
-            "\"#{ip}\""
-          rescue StandardError => e
-            puts "[WARN] Failed to discover public IP: #{e.message}"
-            # Fallback to a placeholder
-            '"AUTO_DISCOVERED_IP_FAILED"'
-          end
-        end
-      end
       
       def handle_syntax_error(error, template_name, source_file)
         line_number = error.message[/.*:(\d+):/, 1]

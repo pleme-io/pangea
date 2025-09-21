@@ -20,10 +20,15 @@ module Pangea
   module Resources
     # Network helpers for templates
     module NetworkHelpers
-      # Discover public IP address
+      # Discover public IP address - available in template context
       def discover_public_ip(timeout: 5)
-        discovery = Utilities::IpDiscovery.new(timeout: timeout)
-        discovery.discover
+        # Cache the IP discovery result to avoid multiple calls
+        @_discovered_ip ||= begin
+          discovery = Utilities::IpDiscovery.new(timeout: timeout)
+          ip = discovery.discover
+          puts "[Pangea] Discovered public IP: #{ip}"
+          ip
+        end
       end
       
       # Create CIDR block from IP and mask
