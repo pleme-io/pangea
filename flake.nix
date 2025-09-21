@@ -23,13 +23,6 @@
       };
       env = rnix-env.env;
       ruby = rnix-env.ruby;
-      pangea-script = pkgs.writeText "pangea" ''
-        #!${ruby}/bin/ruby
-        ext = File.expand_path('../ext', __dir__)
-        $LOAD_PATH.unshift(ext) unless $LOAD_PATH.include?(ext)
-        require 'pangea/cli/application'
-        Pangea::CLI::Application.new.run
-      '';
     in {
       packages = {
         inherit env ruby;
@@ -43,7 +36,7 @@
             cp -r ${env}/lib $out
             cp -r ${env}/bin $out
             cp -r $src/lib $out/ext
-            cp -r ${pangea-script} $out/bin/pangea
+            cp $src/bin/pangea $out/bin/pangea
             chmod +x $out/bin/pangea
             rm -rf $out/bin/ruby-lsp
           '';
@@ -55,6 +48,7 @@
           buildInputs = with pkgs; [env ruby opentofu];
           shellHook = ''
             PATH=$PWD/bin:$PATH
+            export RUBYLIB=$PWD/lib:$RUBYLIB
           '';
         };
       };
