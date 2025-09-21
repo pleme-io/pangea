@@ -99,6 +99,11 @@ module Pangea
         desc 'Output results in JSON format (agent-friendly)'
       end
       
+      option :show_compiled do
+        long '--show-compiled'
+        desc 'Show the compiled Terraform JSON'
+      end
+      
       option :type do
         long '--type string'
         desc 'Type for inspect command (all|templates|resources|architectures|components|namespaces|config|state|render)'
@@ -135,7 +140,7 @@ module Pangea
         
         case params[:command]
         when 'plan'
-          Commands::Plan.new.run(params[:file], namespace: namespace, template: params[:template])
+          Commands::Plan.new.run(params[:file], namespace: namespace, template: params[:template], show_compiled: params[:show_compiled])
         when 'apply'
           Commands::Apply.new.run(params[:file], namespace: namespace, template: params[:template], auto_approve: !params[:no_auto_approve])
         when 'destroy'

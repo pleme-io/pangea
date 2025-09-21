@@ -168,6 +168,11 @@ module Pangea
             end
           end
         end
+        
+        # Expose pastel for advanced formatting
+        def pastel
+          @pastel
+        end
       end
     end
   end
