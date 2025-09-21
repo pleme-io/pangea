@@ -61,7 +61,13 @@ module Pangea
           if init_result[:success]
             true
           else
-            ui.error "Initialization failed: #{init_result[:error]}"
+            ui.error "Initialization failed: #{init_result[:error] || 'Unknown error'}"
+            if init_result[:output] && !init_result[:output].empty?
+              ui.error "Details:"
+              init_result[:output].lines.last(10).each do |line|
+                ui.error "  #{line.chomp}"
+              end
+            end
             false
           end
         end
