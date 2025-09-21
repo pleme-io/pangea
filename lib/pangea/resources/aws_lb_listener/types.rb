@@ -57,7 +57,7 @@ module Pangea
           ).constrained(min_size: 1)
         
           # Tags to apply to the listener
-          attribute :tags, Pangea::Resources::Types::Hash.default({})
+          attribute :tags, Pangea::Resources::Types::Hash.default({}.freeze)
 
           # Custom validation for protocol-specific requirements
           def self.new(attributes = {})

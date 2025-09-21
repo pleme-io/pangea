@@ -88,7 +88,7 @@ module Pangea
         ).default([].freeze)
 
         # Tags
-        attribute :tags, Resources::Types::AwsTags.default({})
+        attribute :tags, Resources::Types::AwsTags.default({}.freeze)
 
         # Custom validation
         def self.new(attributes = {})

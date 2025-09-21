@@ -59,7 +59,7 @@ module Pangea
           # Required attributes
           attribute :details, Hash.schema({
             name: MultiRegionAccessPointName,
-            public_access_block_configuration?: PublicAccessBlockConfiguration.default({}),
+            public_access_block_configuration?: PublicAccessBlockConfiguration.default({}.freeze),
             region: Array.of(RegionConfiguration).constrained(min_size: 1, max_size: 20)
           })
           

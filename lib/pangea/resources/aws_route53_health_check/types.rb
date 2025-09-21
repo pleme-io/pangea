@@ -82,7 +82,7 @@ module Pangea
         attribute? :reference_name, Pangea::Resources::Types::String.optional
 
         # Tags to apply to the health check
-        attribute :tags, Pangea::Resources::Types::AwsTags.default({})
+        attribute :tags, Pangea::Resources::Types::AwsTags.default({}.freeze)
 
         # Custom validation
         def self.new(attributes = {})

@@ -30,7 +30,7 @@ module Pangea
         attribute :availability_zone, Resources::Types::AwsAvailabilityZone.optional
         attribute :type, Resources::Types::VpnGatewayType.default('ipsec.1')
         attribute :amazon_side_asn, Resources::Types::BgpAsn.optional
-        attribute :tags, Resources::Types::AwsTags.default({})
+        attribute :tags, Resources::Types::AwsTags.default({}.freeze)
 
         # Custom validation
         def self.new(attributes = {})

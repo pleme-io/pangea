@@ -29,7 +29,7 @@ module Pangea
         attribute :policy, Resources::Types::IotPolicyDocument
         
         # Tags (optional)
-        attribute :tags, Resources::Types::AwsTags.default({})
+        attribute :tags, Resources::Types::AwsTags.default({}.freeze)
         
         # Parse policy document for analysis
         def parsed_policy

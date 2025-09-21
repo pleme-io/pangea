@@ -81,7 +81,7 @@ module Pangea
               days: Resources::Types::Integer
             ).optional
           )
-        ).default([])
+        ).default([].freeze)
 
         # CORS configuration
         attribute :cors_rule, Resources::Types::Array.of(
@@ -92,7 +92,7 @@ module Pangea
             expose_headers?: Resources::Types::Array.of(Resources::Types::String).optional,
             max_age_seconds?: Resources::Types::Integer.optional
           )
-        ).default([])
+        ).default([].freeze)
 
         # Website configuration
         attribute :website, Resources::Types::Hash.schema(
@@ -103,13 +103,13 @@ module Pangea
             protocol?: Resources::Types::String.enum('http', 'https').optional
           ).optional,
           routing_rules?: Resources::Types::String.optional
-        ).default({})
+        ).default({}.freeze)
 
         # Logging configuration
         attribute :logging, Resources::Types::Hash.schema(
           target_bucket?: Resources::Types::String.optional,
           target_prefix?: Resources::Types::String.optional
-        ).default({})
+        ).default({}.freeze)
 
         # Object lock configuration
         attribute :object_lock_configuration, Resources::Types::Hash.schema(
@@ -121,7 +121,7 @@ module Pangea
               years?: Resources::Types::Integer.optional
             )
           ).optional
-        ).default({})
+        ).default({}.freeze)
 
         # Public access block configuration
         attribute :public_access_block_configuration, Resources::Types::Hash.schema(
@@ -129,13 +129,13 @@ module Pangea
           block_public_policy?: Resources::Types::Bool.optional,
           ignore_public_acls?: Resources::Types::Bool.optional,
           restrict_public_buckets?: Resources::Types::Bool.optional
-        ).default({})
+        ).default({}.freeze)
 
         # Bucket policy (as JSON string)
         attribute? :policy, Resources::Types::String.optional
 
         # Tags
-        attribute :tags, Resources::Types::AwsTags.default({})
+        attribute :tags, Resources::Types::AwsTags.default({}.freeze)
 
         # Custom validation
         def self.new(attributes = {})

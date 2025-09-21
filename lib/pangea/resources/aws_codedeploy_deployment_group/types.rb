@@ -48,7 +48,7 @@ module Pangea
             key?: Resources::Types::String.optional,
             value?: Resources::Types::String.optional
           )
-        ).default([])
+        ).default([].freeze)
 
         # On-premises instance tag filters
         attribute :on_premises_instance_tag_filters, Resources::Types::Array.of(
@@ -57,10 +57,10 @@ module Pangea
             key?: Resources::Types::String.optional,
             value?: Resources::Types::String.optional
           )
-        ).default([])
+        ).default([].freeze)
 
         # Auto Scaling Groups
-        attribute :auto_scaling_groups, Resources::Types::Array.of(Resources::Types::String).default([])
+        attribute :auto_scaling_groups, Resources::Types::Array.of(Resources::Types::String).default([].freeze)
 
         # Trigger configurations
         attribute :trigger_configurations, Resources::Types::Array.of(
@@ -76,7 +76,7 @@ module Pangea
               )
             )
           )
-        ).default([])
+        ).default([].freeze)
 
         # Auto rollback configuration
         attribute :auto_rollback_configuration, Resources::Types::Hash.schema(
@@ -84,14 +84,14 @@ module Pangea
           events?: Resources::Types::Array.of(
             Resources::Types::String.enum('DEPLOYMENT_FAILURE', 'DEPLOYMENT_STOP_ON_ALARM', 'DEPLOYMENT_STOP_ON_REQUEST')
           ).optional
-        ).default({})
+        ).default({}.freeze)
 
         # Alarm configuration
         attribute :alarm_configuration, Resources::Types::Hash.schema(
           alarms?: Resources::Types::Array.of(Resources::Types::String).optional,
           enabled?: Resources::Types::Bool.optional,
           ignore_poll_alarm_failure?: Resources::Types::Bool.optional
-        ).default({})
+        ).default({}.freeze)
 
         # Blue-green deployment configuration
         attribute :blue_green_deployment_config, Resources::Types::Hash.schema(
@@ -105,7 +105,7 @@ module Pangea
           green_fleet_provisioning_option?: Resources::Types::Hash.schema(
             action?: Resources::Types::String.enum('DISCOVER_EXISTING', 'COPY_AUTO_SCALING_GROUP').optional
           ).optional
-        ).default({})
+        ).default({}.freeze)
 
         # Load balancer info
         attribute :load_balancer_info, Resources::Types::Hash.schema(
@@ -128,22 +128,22 @@ module Pangea
               ).optional
             )
           ).optional
-        ).default({})
+        ).default({}.freeze)
 
         # ECS service configuration
         attribute :ecs_service, Resources::Types::Hash.schema(
           cluster_name?: Resources::Types::String.optional,
           service_name?: Resources::Types::String.optional
-        ).default({})
+        ).default({}.freeze)
 
         # Deployment style
         attribute :deployment_style, Resources::Types::Hash.schema(
           deployment_type?: Resources::Types::String.enum('IN_PLACE', 'BLUE_GREEN').optional,
           deployment_option?: Resources::Types::String.enum('WITH_TRAFFIC_CONTROL', 'WITHOUT_TRAFFIC_CONTROL').optional
-        ).default({})
+        ).default({}.freeze)
 
         # Tags
-        attribute :tags, Resources::Types::AwsTags.default({})
+        attribute :tags, Resources::Types::AwsTags.default({}.freeze)
 
         # Custom validation
         def self.new(attributes = {})

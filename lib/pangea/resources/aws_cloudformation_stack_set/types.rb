@@ -33,7 +33,7 @@ module Pangea
         attribute :description, Resources::Types::String.optional
 
         # Stack set parameters
-        attribute :parameters, Resources::Types::Hash.map(Types::String, Types::String).default({})
+        attribute :parameters, Resources::Types::Hash.map(Types::String, Types::String).default({}.freeze)
 
         # Stack set capabilities (for IAM resources)
         attribute :capabilities, Resources::Types::Array.of(
@@ -72,7 +72,7 @@ module Pangea
         attribute :call_as, Resources::Types::String.enum("SELF", "DELEGATED_ADMIN").default("SELF")
 
         # Stack set tags
-        attribute :tags, Resources::Types::AwsTags.default({})
+        attribute :tags, Resources::Types::AwsTags.default({}.freeze)
 
         # Custom validation
         def self.new(attributes = {})

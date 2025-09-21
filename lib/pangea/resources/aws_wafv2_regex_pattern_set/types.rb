@@ -39,7 +39,7 @@ module Pangea
         )
 
         # Tags to apply to the regex pattern set
-        attribute :tags, Resources::Types::AwsTags.default({})
+        attribute :tags, Resources::Types::AwsTags.default({}.freeze)
 
         # Custom validation
         def self.new(attributes = {})

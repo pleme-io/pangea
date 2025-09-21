@@ -55,7 +55,7 @@ module Pangea
           attribute? :kubernetes_groups, Array.of(KubernetesGroup).optional
           attribute? :type, AccessEntryType.optional
           attribute? :user_name, String.optional
-          attribute? :tags, Hash.map(String, String).default({})
+          attribute? :tags, Hash.map(String, String).default({}.freeze)
           
           # Computed properties
           def principal_name

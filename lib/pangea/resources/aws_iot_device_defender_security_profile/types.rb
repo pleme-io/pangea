@@ -22,10 +22,10 @@ module Pangea
       class IotDeviceDefenderSecurityProfileAttributes < Dry::Struct
         attribute :security_profile_name, Resources::Types::IotSecurityProfileName
         attribute :security_profile_description, Resources::Types::String.optional
-        attribute :behaviors, Resources::Types::Array.of(Types::Hash).default([])
+        attribute :behaviors, Resources::Types::Array.of(Types::Hash).default([].freeze)
         attribute :alert_targets, Resources::Types::Hash.optional
-        attribute :target_arns, Resources::Types::Array.of(Types::String).default([])
-        attribute :tags, Resources::Types::AwsTags.default({})
+        attribute :target_arns, Resources::Types::Array.of(Types::String).default([].freeze)
+        attribute :tags, Resources::Types::AwsTags.default({}.freeze)
         
         def target_count
           target_arns.length

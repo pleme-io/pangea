@@ -41,15 +41,15 @@ module Pangea
           end
 
           attribute :kms_key_id, Types::String.optional
-          attribute :security_group_ids, Types::Array.of(Types::String).default([])
-          attribute :subnet_ids, Types::Array.of(Types::String).default([])
+          attribute :security_group_ids, Types::Array.of(Types::String).default([].freeze)
+          attribute :subnet_ids, Types::Array.of(Types::String).default([].freeze)
           attribute :user_group_id, Types::String.optional
           
           attribute? :daily_snapshot_time, Types::String
           attribute? :snapshot_retention_limit, Types::Integer.default(1)
           attribute? :final_snapshot_name, Types::String
 
-          attribute :tags, Types::Hash.default({})
+          attribute :tags, Types::Hash.default({}.freeze)
         end
 
         # ElastiCache Serverless cache reference

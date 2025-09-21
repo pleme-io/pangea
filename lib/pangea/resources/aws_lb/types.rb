@@ -54,7 +54,7 @@ module Pangea
         ).optional
 
         # Tags to apply to the load balancer
-        attribute :tags, Resources::Types::AwsTags.default({})
+        attribute :tags, Resources::Types::AwsTags.default({}.freeze)
 
         # Custom validation for type-specific attributes
         def self.new(attributes = {})

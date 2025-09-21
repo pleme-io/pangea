@@ -100,7 +100,7 @@ module Pangea
         attribute :promotion_tier, Resources::Types::Integer.default(1).constrained(gteq: 0, lteq: 15)
 
         # Tags to apply to the instance
-        attribute :tags, Resources::Types::AwsTags.default({})
+        attribute :tags, Resources::Types::AwsTags.default({}.freeze)
 
         # Custom validation
         def self.new(attributes = {})

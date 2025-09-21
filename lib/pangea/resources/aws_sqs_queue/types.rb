@@ -80,7 +80,7 @@ module Pangea
         attribute? :policy, Pangea::Resources::Types::String.optional
 
         # Tags
-        attribute :tags, Pangea::Resources::Types::AwsTags.default({})
+        attribute :tags, Pangea::Resources::Types::AwsTags.default({}.freeze)
 
         # Custom validation
         def self.new(attributes = {})

@@ -61,7 +61,7 @@ module Pangea
         attributetunnel2_inside_cidr :, Resources::Types::CidrBlock.optional
         attributetunnel1_preshared_key :, Resources::Types::String.optional
         attributetunnel2_preshared_key :, Resources::Types::String.optional
-        attribute :tags, Resources::Types::AwsTags.default({})
+        attribute :tags, Resources::Types::AwsTags.default({}.freeze)
 
         # Custom validation
         def self.new(attributes = {})

@@ -25,10 +25,10 @@ module Pangea
       class MemorydbUserAttributes < Dry::Struct
         attribute :user_name, Resources::Types::String
         attribute :access_string, Resources::Types::String
-        attribute :authentication_mode, Resources::Types::Hash.default({})
+        attribute :authentication_mode, Resources::Types::Hash.default({}.freeze)
         
         # Tags to apply to the resource
-        attribute :tags, Resources::Types::AwsTags.default({})
+        attribute :tags, Resources::Types::AwsTags.default({}.freeze)
 
         # Custom validation
         def self.new(attributes = {})

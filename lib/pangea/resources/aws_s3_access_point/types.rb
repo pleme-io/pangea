@@ -61,7 +61,7 @@ module Pangea
           attribute? :network_origin, NetworkOrigin.default('Internet')
           attribute? :policy, String.optional
           attribute? :vpc_configuration, VpcConfiguration.optional
-          attribute? :public_access_block_configuration, PublicAccessBlockConfiguration.default({})
+          attribute? :public_access_block_configuration, PublicAccessBlockConfiguration.default({}.freeze)
           
           # Computed properties
           def vpc_access_point?

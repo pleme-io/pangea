@@ -28,7 +28,7 @@ module Pangea
         attribute :connection_events, Resources::Types::Array.of(Types::String.enum('Accept', 'Connect', 'Delete', 'Reject'))
         
         # Tags to apply to the resource
-        attribute :tags, Resources::Types::AwsTags.default({})
+        attribute :tags, Resources::Types::AwsTags.default({}.freeze)
 
         # Custom validation
         def self.new(attributes = {})

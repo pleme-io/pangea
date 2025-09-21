@@ -88,7 +88,7 @@ module Pangea
             report_build_status?: Resources::Types::Bool.optional,
             insecure_ssl?: Resources::Types::Bool.optional
           )
-        ).default([])
+        ).default([].freeze)
 
         # Secondary artifacts
         attribute :secondary_artifacts, Resources::Types::Array.of(
@@ -103,7 +103,7 @@ module Pangea
             encryption_disabled?: Resources::Types::Bool.optional,
             override_artifact_name?: Resources::Types::Bool.optional
           )
-        ).default([])
+        ).default([].freeze)
 
         # Environment configuration
         attribute :environment, Resources::Types::Hash.schema(
@@ -154,7 +154,7 @@ module Pangea
             location?: Resources::Types::String.optional,
             encryption_disabled?: Resources::Types::Bool.optional
           ).optional
-        ).default({})
+        ).default({}.freeze)
 
         # Build batch configuration
         attribute? :build_batch_config, Resources::Types::Hash.schema(
@@ -176,7 +176,7 @@ module Pangea
             identifier: Resources::Types::String,
             mount_options?: Resources::Types::String.optional
           )
-        ).default([])
+        ).default([].freeze)
 
         # Badge enabled
         attribute :badge_enabled, Resources::Types::Bool.default(false)
@@ -188,7 +188,7 @@ module Pangea
         attribute? :resource_access_role, Resources::Types::String.optional
 
         # Tags
-        attribute :tags, Resources::Types::AwsTags.default({})
+        attribute :tags, Resources::Types::AwsTags.default({}.freeze)
 
         # Custom validation
         def self.new(attributes = {})

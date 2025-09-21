@@ -23,7 +23,7 @@ module Pangea
         attribute :channel_name, Resources::Types::IotAnalyticsChannelName
         attribute :channel_storage, Resources::Types::Hash.optional
         attribute :retention_period, Resources::Types::Hash.optional
-        attribute :tags, Resources::Types::AwsTags.default({})
+        attribute :tags, Resources::Types::AwsTags.default({}.freeze)
         
         def has_custom_storage?
           channel_storage && channel_storage[:service_managed_s3].nil?

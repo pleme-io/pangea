@@ -64,7 +64,7 @@ module Pangea
                   name: Pangea::Resources::Types::String,
                   value: Pangea::Resources::Types::String
                 )
-              ).default([])
+              ).default([].freeze)
             )
           ).constrained(min_size: 1)
 
@@ -85,8 +85,8 @@ module Pangea
             response_headers_policy_id?: Pangea::Resources::Types::String.optional,
             realtime_log_config_arn?: Pangea::Resources::Types::String.optional,
             smooth_streaming?: Pangea::Resources::Types::Bool.default(false),
-            trusted_signers?: Pangea::Resources::Types::Array.of(Pangea::Resources::Types::String).default([]),
-            trusted_key_groups?: Pangea::Resources::Types::Array.of(Pangea::Resources::Types::String).default([]),
+            trusted_signers?: Pangea::Resources::Types::Array.of(Pangea::Resources::Types::String).default([].freeze),
+            trusted_key_groups?: Pangea::Resources::Types::Array.of(Pangea::Resources::Types::String).default([].freeze),
             compress?: Pangea::Resources::Types::Bool.default(false),
             field_level_encryption_id?: Pangea::Resources::Types::String.optional,
             
@@ -98,7 +98,7 @@ module Pangea
                 ]),
                 function_arn: Pangea::Resources::Types::String
               )
-            ).default([]),
+            ).default([].freeze),
             
             # Lambda@Edge associations
             lambda_function_association?: Pangea::Resources::Types::Array.of(
@@ -109,7 +109,7 @@ module Pangea
                 lambda_arn: Pangea::Resources::Types::String,
                 include_body?: Pangea::Resources::Types::Bool.default(false)
               )
-            ).default([])
+            ).default([].freeze)
           )
 
           # Additional cache behaviors (ordered)
@@ -130,8 +130,8 @@ module Pangea
               origin_request_policy_id?: Pangea::Resources::Types::String.optional,
               response_headers_policy_id?: Pangea::Resources::Types::String.optional,
               smooth_streaming?: Pangea::Resources::Types::Bool.default(false),
-              trusted_signers?: Pangea::Resources::Types::Array.of(Pangea::Resources::Types::String).default([]),
-              trusted_key_groups?: Pangea::Resources::Types::Array.of(Pangea::Resources::Types::String).default([]),
+              trusted_signers?: Pangea::Resources::Types::Array.of(Pangea::Resources::Types::String).default([].freeze),
+              trusted_key_groups?: Pangea::Resources::Types::Array.of(Pangea::Resources::Types::String).default([].freeze),
               compress?: Pangea::Resources::Types::Bool.default(false),
               field_level_encryption_id?: Pangea::Resources::Types::String.optional,
               function_association?: Pangea::Resources::Types::Array.of(
@@ -141,7 +141,7 @@ module Pangea
                   ]),
                   function_arn: Pangea::Resources::Types::String
                 )
-              ).default([]),
+              ).default([].freeze),
               lambda_function_association?: Pangea::Resources::Types::Array.of(
                 Pangea::Resources::Types::Hash.schema(
                   event_type: Pangea::Resources::Types::String.constrained(included_in: [
@@ -150,9 +150,9 @@ module Pangea
                   lambda_arn: Pangea::Resources::Types::String,
                   include_body?: Pangea::Resources::Types::Bool.default(false)
                 )
-              ).default([])
+              ).default([].freeze)
             )
-          ).default([])
+          ).default([].freeze)
 
           # Comment for the distribution
           attribute :comment, Pangea::Resources::Types::String.default('')
@@ -182,13 +182,13 @@ module Pangea
               response_page_path?: Pangea::Resources::Types::String.optional,
               error_caching_min_ttl?: Pangea::Resources::Types::Integer.constrained(gteq: 0).optional
             )
-          ).default([])
+          ).default([].freeze)
 
           # Geographic restrictions
           attribute :restrictions, Pangea::Resources::Types::Hash.schema(
             geo_restriction: Pangea::Resources::Types::Hash.schema(
               restriction_type: Pangea::Resources::Types::String.constrained(included_in: ['blacklist', 'whitelist', 'none']).default('none'),
-              locations?: Pangea::Resources::Types::Array.of(Pangea::Resources::Types::String).default([])
+              locations?: Pangea::Resources::Types::Array.of(Pangea::Resources::Types::String).default([].freeze)
             ).default({ restriction_type: 'none', locations: [] })
           ).default({ geo_restriction: { restriction_type: 'none', locations: [] } })
 
@@ -202,10 +202,10 @@ module Pangea
               'SSLv3', 'TLSv1', 'TLSv1_2016', 'TLSv1.1_2016', 'TLSv1.2_2018', 'TLSv1.2_2019', 'TLSv1.2_2021'
             ]).optional,
             certificate_source?: Pangea::Resources::Types::String.constrained(included_in: ['cloudfront', 'acm', 'iam']).optional
-          ).default({})
+          ).default({}.freeze)
 
           # Aliases/CNAMEs for the distribution
-          attribute :aliases, Pangea::Resources::Types::Array.of(Pangea::Resources::Types::String).default([])
+          attribute :aliases, Pangea::Resources::Types::Array.of(Pangea::Resources::Types::String).default([].freeze)
 
           # Web ACL association
           attribute? :web_acl_id, Pangea::Resources::Types::String.optional
@@ -217,7 +217,7 @@ module Pangea
           attribute :wait_for_deployment, Pangea::Resources::Types::Bool.default(true)
 
           # Tags
-          attribute :tags, Pangea::Resources::Types::AwsTags.default({})
+          attribute :tags, Pangea::Resources::Types::AwsTags.default({}.freeze)
 
           # Custom validation
           def self.new(attributes = {})

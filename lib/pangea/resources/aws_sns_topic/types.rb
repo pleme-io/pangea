@@ -74,7 +74,7 @@ module Pangea
         attribute :tracing_config, Pangea::Resources::Types::String.constrained(included_in: ['Active', 'PassThrough']).optional
 
         # Tags
-        attribute :tags, Pangea::Resources::Types::AwsTags.default({})
+        attribute :tags, Pangea::Resources::Types::AwsTags.default({}.freeze)
 
         # Custom validation
         def self.new(attributes = {})

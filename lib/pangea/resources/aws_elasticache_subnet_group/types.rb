@@ -32,7 +32,7 @@ module Pangea
         attribute :subnet_ids, Resources::Types::Array.of(Types::String).constrained(min_size: 1)
 
         # Tags to apply to the subnet group
-        attribute :tags, Resources::Types::AwsTags.default({})
+        attribute :tags, Resources::Types::AwsTags.default({}.freeze)
 
         # Custom validation
         def self.new(attributes = {})

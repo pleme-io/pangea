@@ -27,7 +27,7 @@ module Pangea
           vpc_id: Types::String,
           role_arn: Types::String
         )
-        attribute :tags, Resources::Types::AwsTags.default({})
+        attribute :tags, Resources::Types::AwsTags.default({}.freeze)
         
         def vpc_subnet_count
           vpc_configuration[:subnet_ids].length

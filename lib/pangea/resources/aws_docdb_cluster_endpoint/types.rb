@@ -30,7 +30,7 @@ module Pangea
         attribute :excluded_members, Resources::Types::Array.of(Types::String).default([].freeze).optional
         
         # Tags to apply to the resource
-        attribute :tags, Resources::Types::AwsTags.default({})
+        attribute :tags, Resources::Types::AwsTags.default({}.freeze)
 
         # Custom validation
         def self.new(attributes = {})

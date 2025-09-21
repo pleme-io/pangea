@@ -35,15 +35,15 @@ module Pangea
       # Accepter configuration block
       attribute :accepter, Resources::Types::Hash.schema(
         allow_remote_vpc_dns_resolution?: Types::Bool.optional.default(false)
-      ).default({})
+      ).default({}.freeze)
       
       # Requester configuration block
       attribute :requester, Resources::Types::Hash.schema(
         allow_remote_vpc_dns_resolution?: Types::Bool.optional.default(false)
-      ).default({})
+      ).default({}.freeze)
       
       # Tags to apply to the resource
-      attribute :tags, Resources::Types::AwsTags.default({})
+      attribute :tags, Resources::Types::AwsTags.default({}.freeze)
 
       # Custom validation
       def self.new(attributes = {})

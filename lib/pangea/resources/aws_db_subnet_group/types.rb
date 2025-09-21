@@ -32,7 +32,7 @@ module Pangea
         attribute :description, Resources::Types::String.optional.default("Managed by Pangea")
 
         # Tags to apply to the subnet group
-        attribute :tags, Resources::Types::AwsTags.default({})
+        attribute :tags, Resources::Types::AwsTags.default({}.freeze)
 
         # Custom validation
         def self.new(attributes = {})

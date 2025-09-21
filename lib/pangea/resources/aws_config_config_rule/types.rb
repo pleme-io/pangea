@@ -34,7 +34,7 @@ module Pangea
           attribute :input_parameters, Resources::Types::String.optional.default(nil)
           attribute :maximum_execution_frequency, Resources::Types::String.optional.default(nil)
           attribute :scope, Resources::Types::Hash.optional.default(nil)
-          attribute :depends_on, Resources::Types::Array.optional.default([])
+          attribute :depends_on, Resources::Types::Array.optional.default([].freeze)
           
           # Tags
           attribute :tags, Resources::Types::AwsTags

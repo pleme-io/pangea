@@ -122,7 +122,7 @@ module Pangea
           attribute? :role_arn, Pangea::Resources::Types::String.optional.constrained(format: /\Aarn:aws:iam::/)
 
           # Tagging support
-          attribute :tags, Pangea::Resources::Types::AwsTags.default({})
+          attribute :tags, Pangea::Resources::Types::AwsTags.default({}.freeze)
 
           # Custom validation
           def self.new(attributes = {})

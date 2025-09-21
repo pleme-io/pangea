@@ -39,7 +39,7 @@ module Pangea
         
         # Optional attributes with defaults
         attribute :map_public_ip_on_launch, Resources::Types::Bool.default(false)
-        attribute :tags, Resources::Types::AwsTags.default({})
+        attribute :tags, Resources::Types::AwsTags.default({}.freeze)
         
         # Custom validation
         def self.new(attributes)

@@ -75,10 +75,10 @@ module Pangea
         attribute? :kms_key_id, Resources::Types::String.optional
 
         # Metadata (optional)
-        attribute :metadata, Resources::Types::Hash.map(Resources::Types::String, Resources::Types::String).default({})
+        attribute :metadata, Resources::Types::Hash.map(Resources::Types::String, Resources::Types::String).default({}.freeze)
 
         # Tags (optional)
-        attribute :tags, Resources::Types::AwsTags.default({})
+        attribute :tags, Resources::Types::AwsTags.default({}.freeze)
 
         # Website redirect location (optional)
         attribute? :website_redirect, Resources::Types::String.optional

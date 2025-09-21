@@ -32,7 +32,7 @@ module Pangea
         attribute :kms_key_id, Resources::Types::String.optional
 
         # Tagging support
-        attribute :tags, Resources::Types::AwsTags.default({})
+        attribute :tags, Resources::Types::AwsTags.default({}.freeze)
 
         # Custom validation
         def self.new(attributes = {})

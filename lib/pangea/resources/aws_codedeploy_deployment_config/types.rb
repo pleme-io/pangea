@@ -52,7 +52,7 @@ module Pangea
             linear_percentage: Resources::Types::Integer.constrained(gteq: 0, lteq: 100),
             linear_interval: Resources::Types::Integer.constrained(gteq: 0)
           ).optional
-        ).default({})
+        ).default({}.freeze)
 
         # Custom validation
         def self.new(attributes = {})

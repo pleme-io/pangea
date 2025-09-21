@@ -179,7 +179,7 @@ module Pangea
           attribute :docker_security_options, Pangea::Resources::Types::Array.of(Pangea::Resources::Types::String).default([].freeze)
           
           # Docker labels
-          attribute :docker_labels, Pangea::Resources::Types::Hash.default({})
+          attribute :docker_labels, Pangea::Resources::Types::Hash.default({}.freeze)
           
           # System controls
           attribute :system_controls, Pangea::Resources::Types::Array.of(
@@ -334,7 +334,7 @@ module Pangea
           ).optional
           
           # Tags
-          attribute :tags, Pangea::Resources::Types::AwsTags.default({})
+          attribute :tags, Pangea::Resources::Types::AwsTags.default({}.freeze)
           
           # Custom validation
           def self.new(attributes = {})

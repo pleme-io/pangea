@@ -25,16 +25,16 @@ module Pangea
       class TimestreamScheduledQueryAttributes < Dry::Struct
         attribute :name, Resources::Types::String
         attribute :query_string, Resources::Types::String
-        attribute :schedule_configuration, Resources::Types::Hash.default({})
-        attribute :notification_configuration, Resources::Types::Hash.default({})
-        attribute :target_configuration, Resources::Types::Hash.default({}).optional
+        attribute :schedule_configuration, Resources::Types::Hash.default({}.freeze)
+        attribute :notification_configuration, Resources::Types::Hash.default({}.freeze)
+        attribute :target_configuration, Resources::Types::Hash.default({}.freeze).optional
         attribute :client_token, Resources::Types::String.optional
         attribute :scheduled_query_execution_role_arn, Resources::Types::String
-        attribute :error_report_configuration, Resources::Types::Hash.default({}).optional
+        attribute :error_report_configuration, Resources::Types::Hash.default({}.freeze).optional
         attribute :kms_key_id, Resources::Types::String.optional
         
         # Tags to apply to the resource
-        attribute :tags, Resources::Types::AwsTags.default({})
+        attribute :tags, Resources::Types::AwsTags.default({}.freeze)
 
         # Custom validation
         def self.new(attributes = {})

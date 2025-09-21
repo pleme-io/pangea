@@ -31,7 +31,7 @@ module Pangea
           
           attribute? :standby_replicas, Types::String.default('ENABLED') # 'ENABLED', 'DISABLED'
           
-          attribute :tags, Types::Hash.default({})
+          attribute :tags, Types::Hash.default({}.freeze)
         end
 
         # OpenSearch Serverless collection reference

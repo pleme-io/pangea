@@ -24,7 +24,7 @@ module Pangea
         attribute :datastore_storage, Resources::Types::Hash.optional
         attribute :retention_period, Resources::Types::Hash.optional
         attribute :file_format_configuration, Resources::Types::Hash.optional
-        attribute :tags, Resources::Types::AwsTags.default({})
+        attribute :tags, Resources::Types::AwsTags.default({}.freeze)
         
         def has_parquet_format?
           file_format_configuration&.key?(:parquet_configuration) == true

@@ -168,7 +168,7 @@ module Pangea
         attribute :debug_logging, Resources::Types::Bool.default(false)
 
         # Tags to apply to the proxy
-        attribute :tags, Resources::Types::AwsTags.default({})
+        attribute :tags, Resources::Types::AwsTags.default({}.freeze)
 
         # Custom validation
         def self.new(attributes = {})

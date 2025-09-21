@@ -33,7 +33,7 @@ module Pangea
           attribute :target_version, Resources::Types::String
           
           # Optional attributes
-          attribute :parameters, Resources::Types::Hash.optional.default({})
+          attribute :parameters, Resources::Types::Hash.optional.default({}.freeze)
           attribute :automatic, Resources::Types::Bool.default(false)
           attribute :maximum_automatic_attempts, Resources::Types::Integer.optional.default(nil)
           

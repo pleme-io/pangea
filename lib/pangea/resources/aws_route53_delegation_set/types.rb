@@ -29,7 +29,7 @@ module Pangea
         attribute :reusable_delegation_set, Resources::Types::Bool.default(true)
 
         # Tags to apply to the delegation set
-        attribute :tags, Resources::Types::AwsTags.default({})
+        attribute :tags, Resources::Types::AwsTags.default({}.freeze)
 
         # Custom validation
         def self.new(attributes = {})

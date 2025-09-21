@@ -57,7 +57,7 @@ module Pangea
         ).constrained(min_size: 1)
         
         # Tags to apply to the listener rule
-        attribute :tags, Resources::Types::AwsTags.default({})
+        attribute :tags, Resources::Types::AwsTags.default({}.freeze)
 
         # Custom validation for condition and action completeness
         def self.new(attributes = {})

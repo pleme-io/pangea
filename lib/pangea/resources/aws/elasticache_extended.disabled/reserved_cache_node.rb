@@ -27,7 +27,7 @@ module Pangea
           attribute :reserved_cache_nodes_offering_id, Types::String
           attribute :reserved_cache_node_id, Types::String.optional
           attribute :cache_node_count, Types::Integer.default(1)
-          attribute :tags, Types::Hash.default({})
+          attribute :tags, Types::Hash.default({}.freeze)
         end
 
         class ReservedCacheNodeReference < ::Pangea::Resources::ResourceReference

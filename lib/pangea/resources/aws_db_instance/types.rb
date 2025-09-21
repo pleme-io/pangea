@@ -94,7 +94,7 @@ module Pangea
         attribute :final_snapshot_identifier, Resources::Types::String.optional
 
         # Tags to apply to the database
-        attribute :tags, Resources::Types::AwsTags.default({})
+        attribute :tags, Resources::Types::AwsTags.default({}.freeze)
 
         # Custom validation
         def self.new(attributes = {})

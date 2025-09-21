@@ -29,7 +29,7 @@ module Pangea
         attribute :name, Resources::Types::String
 
         # Tags
-        attribute :tags, Resources::Types::AwsTags.default({})
+        attribute :tags, Resources::Types::AwsTags.default({}.freeze)
 
         # Custom validation
         def self.new(attributes = {})

@@ -134,7 +134,7 @@ module Pangea
         attribute? :backup_configuration, GlobalClusterBackupConfiguration.optional
 
         # Tags to apply to the global cluster
-        attribute :tags, Resources::Types::AwsTags.default({})
+        attribute :tags, Resources::Types::AwsTags.default({}.freeze)
 
         # Custom validation
         def self.new(attributes = {})

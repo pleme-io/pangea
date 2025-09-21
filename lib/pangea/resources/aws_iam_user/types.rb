@@ -37,7 +37,7 @@ module Pangea
         attribute :force_destroy, Resources::Types::Bool.default(false)
 
         # Tags to apply to the user
-        attribute :tags, Resources::Types::AwsTags.default({})
+        attribute :tags, Resources::Types::AwsTags.default({}.freeze)
 
         # Custom validation
         def self.new(attributes = {})

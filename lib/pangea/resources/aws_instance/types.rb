@@ -74,7 +74,7 @@ module Pangea
         attribute :disable_api_termination, Resources::Types::Bool.default(false)
 
         # Tags
-        attribute :tags, Resources::Types::AwsTags.default({})
+        attribute :tags, Resources::Types::AwsTags.default({}.freeze)
 
         # Custom validation
         def self.new(attributes = {})

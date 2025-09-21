@@ -58,7 +58,7 @@ module Pangea
         attribute :product_code, Resources::Types::String.optional
 
         # Tags to apply to the usage plan
-        attribute :tags, Resources::Types::AwsTags.default({})
+        attribute :tags, Resources::Types::AwsTags.default({}.freeze)
 
         # Custom validation
         def self.new(attributes = {})

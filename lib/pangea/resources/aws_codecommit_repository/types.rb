@@ -51,10 +51,10 @@ module Pangea
               Resources::Types::String.enum('all', 'updateReference', 'createReference', 'deleteReference')
             )
           )
-        ).default([])
+        ).default([].freeze)
 
         # Tags
-        attribute :tags, Resources::Types::AwsTags.default({})
+        attribute :tags, Resources::Types::AwsTags.default({}.freeze)
 
         # Custom validation
         def self.new(attributes = {})

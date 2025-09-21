@@ -32,7 +32,7 @@ module Pangea
           attribute :image_tag_mutability, Pangea::Resources::Types::String.default('MUTABLE').constrained(included_in: ['MUTABLE', 'IMMUTABLE'])
           attribute :image_scanning_configuration, Pangea::Resources::Types::Hash.schema(
             scan_on_push: Pangea::Resources::Types::Bool.default(false)
-          ).default({})
+          ).default({}.freeze)
           attribute :encryption_configuration, Pangea::Resources::Types::Hash.schema(
             encryption_type?: Pangea::Resources::Types::String.constrained(included_in: ['AES256', 'KMS']),
             kms_key?: Pangea::Resources::Types::String

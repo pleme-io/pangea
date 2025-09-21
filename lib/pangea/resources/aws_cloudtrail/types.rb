@@ -110,7 +110,7 @@ module Pangea
         attribute :insight_selector, Resources::Types::Array.of(InsightSelector).default([].freeze)
         
         # Tags to apply to the trail
-        attribute :tags, Resources::Types::AwsTags.default({})
+        attribute :tags, Resources::Types::AwsTags.default({}.freeze)
 
         # Custom validation
         def self.new(attributes = {})

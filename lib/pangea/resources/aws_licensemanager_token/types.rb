@@ -25,10 +25,10 @@ module Pangea
       class LicensemanagerTokenAttributes < Dry::Struct
         attribute :license_arn, Resources::Types::String
         attribute :role_arns, Resources::Types::Array.of(Types::String).default([].freeze).optional
-        attribute :token_properties, Resources::Types::Hash.default({}).optional
+        attribute :token_properties, Resources::Types::Hash.default({}.freeze).optional
         
         # Tags to apply to the resource
-        attribute :tags, Resources::Types::AwsTags.default({})
+        attribute :tags, Resources::Types::AwsTags.default({}.freeze)
 
         # Custom validation
         def self.new(attributes = {})

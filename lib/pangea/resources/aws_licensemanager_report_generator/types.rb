@@ -25,13 +25,13 @@ module Pangea
       class LicensemanagerReportGeneratorAttributes < Dry::Struct
         attribute :license_manager_report_generator_name, Resources::Types::String
         attribute :type, Resources::Types::Array.of(Types::String).default([].freeze)
-        attribute :report_context, Resources::Types::Hash.default({})
+        attribute :report_context, Resources::Types::Hash.default({}.freeze)
         attribute :report_frequency, Resources::Types::String
         attributes3_bucket_name :, Resources::Types::String
         attribute :description, Resources::Types::String.optional
         
         # Tags to apply to the resource
-        attribute :tags, Resources::Types::AwsTags.default({})
+        attribute :tags, Resources::Types::AwsTags.default({}.freeze)
 
         # Custom validation
         def self.new(attributes = {})

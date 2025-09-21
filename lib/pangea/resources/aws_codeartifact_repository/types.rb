@@ -37,7 +37,7 @@ module Pangea
             Resources::Types::Hash.schema(
               repository_name: Resources::Types::String
             )
-          ).default([])
+          ).default([].freeze)
           attribute :external_connections, Resources::Types::Hash.schema(
             external_connection_name?: Resources::Types::String.optional
           ).optional.default(nil)

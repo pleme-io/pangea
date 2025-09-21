@@ -48,7 +48,7 @@ module Pangea
             days?: Resources::Types::Integer.constrained(gteq: 1, lteq: 36500).optional, # Max ~100 years
             years?: Resources::Types::Integer.constrained(gteq: 1, lteq: 100).optional
           )
-        ).default({})
+        ).default({}.freeze)
 
         # Custom validation
         def self.new(attributes = {})

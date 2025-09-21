@@ -35,7 +35,7 @@ module Pangea
         attribute :ca_certificate_pem, Resources::Types::String.optional
         
         # Tags (optional)
-        attribute :tags, Resources::Types::AwsTags.default({})
+        attribute :tags, Resources::Types::AwsTags.default({}.freeze)
         
         # Custom validation
         def self.new(attributes = {})

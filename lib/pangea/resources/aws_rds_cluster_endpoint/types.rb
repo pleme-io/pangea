@@ -52,7 +52,7 @@ module Pangea
         attribute :excluded_members, Resources::Types::Array.of(ExcludedMember).default([].freeze)
 
         # Tags to apply to the cluster endpoint
-        attribute :tags, Resources::Types::AwsTags.default({})
+        attribute :tags, Resources::Types::AwsTags.default({}.freeze)
 
         # Custom validation
         def self.new(attributes = {})

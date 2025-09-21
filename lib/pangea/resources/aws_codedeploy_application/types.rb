@@ -36,7 +36,7 @@ module Pangea
         attribute :compute_platform, Resources::Types::String.enum('Server', 'Lambda', 'ECS').default('Server')
 
         # Tags
-        attribute :tags, Resources::Types::AwsTags.default({})
+        attribute :tags, Resources::Types::AwsTags.default({}.freeze)
 
         # Custom validation
         def self.new(attributes = {})

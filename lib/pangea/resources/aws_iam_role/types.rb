@@ -64,10 +64,10 @@ module Pangea
         attribute :permissions_boundary, Resources::Types::String.optional
 
         # Inline policies (policy name => policy document)
-        attribute :inline_policies, Resources::Types::Hash.default({})
+        attribute :inline_policies, Resources::Types::Hash.default({}.freeze)
 
         # Tags to apply to the role
-        attribute :tags, Resources::Types::AwsTags.default({})
+        attribute :tags, Resources::Types::AwsTags.default({}.freeze)
 
         # Custom validation
         def self.new(attributes = {})

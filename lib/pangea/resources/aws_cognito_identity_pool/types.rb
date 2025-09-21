@@ -72,7 +72,7 @@ module Pangea
         attribute :developer_provider_name, Resources::Types::String.optional
 
         # Tags for the identity pool
-        attribute :tags, Resources::Types::AwsTags.default({})
+        attribute :tags, Resources::Types::AwsTags.default({}.freeze)
 
         # Custom validation
         def self.new(attributes = {})

@@ -29,7 +29,7 @@ module Pangea
         attribute :memory_store_retention_period_in_hours, Resources::Types::Integer.optional
         
         # Tags to apply to the resource
-        attribute :tags, Resources::Types::AwsTags.default({})
+        attribute :tags, Resources::Types::AwsTags.default({}.freeze)
 
         # Custom validation
         def self.new(attributes = {})

@@ -45,10 +45,10 @@ module Pangea
         attribute :availability_zones, Resources::Types::Array.of(Types::String).default([].freeze).optional
         attribute :copy_tags_to_snapshot, Resources::Types::Bool.optional
         attribute :enable_global_write_forwarding, Resources::Types::Bool.optional
-        attributeserverless_v2_scaling_configuration :, Resources::Types::Hash.default({}).optional
+        attributeserverless_v2_scaling_configuration :, Resources::Types::Hash.default({}.freeze).optional
         
         # Tags to apply to the resource
-        attribute :tags, Resources::Types::AwsTags.default({})
+        attribute :tags, Resources::Types::AwsTags.default({}.freeze)
 
         # Custom validation
         def self.new(attributes = {})

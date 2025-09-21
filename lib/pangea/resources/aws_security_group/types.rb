@@ -41,9 +41,9 @@ module Pangea
           attribute :name_prefix, Resources::Types::String.optional.default(nil)
           attribute :vpc_id, Resources::Types::String.optional.default(nil)
           attribute :description, Resources::Types::String.optional.default(nil)
-          attribute :ingress_rules, Resources::Types::Array.of(Resources::Types::SecurityGroupRule).default([])
-          attribute :egress_rules, Resources::Types::Array.of(Resources::Types::SecurityGroupRule).default([])
-          attribute :tags, Resources::Types::AwsTags.default({})
+          attribute :ingress_rules, Resources::Types::Array.of(Resources::Types::SecurityGroupRule).default([].freeze)
+          attribute :egress_rules, Resources::Types::Array.of(Resources::Types::SecurityGroupRule).default([].freeze)
+          attribute :tags, Resources::Types::AwsTags.default({}.freeze)
         
         # Custom validation
         def self.new(attributes)

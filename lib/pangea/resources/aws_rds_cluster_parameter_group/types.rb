@@ -84,7 +84,7 @@ module Pangea
         attribute :parameter, Resources::Types::Array.of(DbParameter).default([].freeze)
 
         # Tags to apply to the parameter group
-        attribute :tags, Resources::Types::AwsTags.default({})
+        attribute :tags, Resources::Types::AwsTags.default({}.freeze)
 
         # Custom validation
         def self.new(attributes = {})

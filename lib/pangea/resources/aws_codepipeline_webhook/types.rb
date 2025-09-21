@@ -45,7 +45,7 @@ module Pangea
         attribute :authentication_configuration, Resources::Types::Hash.schema(
           secret_token?: Resources::Types::String.optional,
           allowed_ip_range?: Resources::Types::String.optional
-        ).default({})
+        ).default({}.freeze)
 
         # Filters
         attribute :filters, Resources::Types::Array.of(
@@ -56,7 +56,7 @@ module Pangea
         ).constrained(min_size: 1)
 
         # Tags
-        attribute :tags, Resources::Types::AwsTags.default({})
+        attribute :tags, Resources::Types::AwsTags.default({}.freeze)
 
         # Custom validation
         def self.new(attributes = {})

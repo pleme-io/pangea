@@ -50,7 +50,7 @@ module Pangea
         attribute :overwrite, Resources::Types::Bool.default(false)
 
         # Tags for the parameter
-        attribute :tags, Resources::Types::AwsTags.default({})
+        attribute :tags, Resources::Types::AwsTags.default({}.freeze)
 
         # Custom validation
         def self.new(attributes = {})

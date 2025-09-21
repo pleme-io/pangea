@@ -79,7 +79,7 @@ module Pangea
             'BucketKeyStatus',
             'ChecksumAlgorithm'
           )
-        ).default([])
+        ).default([].freeze)
 
         # Schedule configuration for inventory generation
         attribute :schedule, Resources::Types::Hash.schema(

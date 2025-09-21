@@ -72,7 +72,7 @@ module Pangea
         attribute :egress, Resources::Types::Array.of(NetworkAclRule).default([].freeze)
         
         # Tags to apply to the resource
-        attribute :tags, Resources::Types::AwsTags.default({})
+        attribute :tags, Resources::Types::AwsTags.default({}.freeze)
 
         # Custom validation
         def self.new(attributes = {})

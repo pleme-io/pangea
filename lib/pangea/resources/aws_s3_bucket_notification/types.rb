@@ -56,7 +56,7 @@ module Pangea
             filter_prefix?: Resources::Types::String.optional,
             filter_suffix?: Resources::Types::String.optional
           )
-        ).default([])
+        ).default([].freeze)
 
         # Lambda function configurations for event processing
         attribute :lambda_function, Resources::Types::Array.of(
@@ -86,7 +86,7 @@ module Pangea
             filter_prefix?: Resources::Types::String.optional,
             filter_suffix?: Resources::Types::String.optional
           )
-        ).default([])
+        ).default([].freeze)
 
         # SQS queue configurations for event queuing
         attribute :queue, Resources::Types::Array.of(
@@ -116,7 +116,7 @@ module Pangea
             filter_prefix?: Resources::Types::String.optional,
             filter_suffix?: Resources::Types::String.optional
           )
-        ).default([])
+        ).default([].freeze)
 
         # EventBridge configuration for advanced event routing
         attribute :eventbridge, Resources::Types::Bool.default(false)

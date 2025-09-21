@@ -66,7 +66,7 @@ module Pangea
           attribute :custom_domain_name, Pangea::Resources::Types::String.optional
           
           # Tags
-          attribute :tags, Pangea::Resources::Types::Hash.default({})
+          attribute :tags, Pangea::Resources::Types::Hash.default({}.freeze)
           
           # Custom validation
           def self.new(attributes)

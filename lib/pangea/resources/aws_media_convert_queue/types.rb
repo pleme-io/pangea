@@ -39,13 +39,13 @@ module Pangea
           commitment: Resources::Types::String.enum('ONE_YEAR'),
           renewal_type: Resources::Types::String.enum('AUTO_RENEW', 'EXPIRE'),
           reserved_slots: Resources::Types::Integer
-        ).default({})
+        ).default({}.freeze)
 
         # Status
         attribute :status, Resources::Types::String.enum('ACTIVE', 'PAUSED').default('ACTIVE')
 
         # Tags
-        attribute :tags, Resources::Types::AwsTags.default({})
+        attribute :tags, Resources::Types::AwsTags.default({}.freeze)
 
         # Helper methods
         def reserved_pricing?

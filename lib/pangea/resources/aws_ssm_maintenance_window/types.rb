@@ -56,7 +56,7 @@ module Pangea
         attribute :description, Resources::Types::String.optional
 
         # Tags for the maintenance window
-        attribute :tags, Resources::Types::AwsTags.default({})
+        attribute :tags, Resources::Types::AwsTags.default({}.freeze)
 
         # Custom validation
         def self.new(attributes = {})

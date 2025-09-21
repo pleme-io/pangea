@@ -103,7 +103,7 @@ module Pangea
           attribute :apply_immediately, Pangea::Resources::Types::Bool.default(false)
 
           # Tags to apply to the cluster
-          attribute :tags, Pangea::Resources::Types::Hash.default({})
+          attribute :tags, Pangea::Resources::Types::Hash.default({}.freeze)
 
           # Final snapshot identifier (Redis only)
           attribute? :final_snapshot_identifier, Pangea::Resources::Types::String.optional

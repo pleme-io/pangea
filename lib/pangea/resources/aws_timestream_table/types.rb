@@ -25,12 +25,12 @@ module Pangea
       class TimestreamTableAttributes < Dry::Struct
         attribute :database_name, Resources::Types::String
         attribute :table_name, Resources::Types::String
-        attribute :retention_properties, Resources::Types::Hash.default({}).optional
-        attribute :magnetic_store_write_properties, Resources::Types::Hash.default({}).optional
-        attribute :schema, Resources::Types::Hash.default({}).optional
+        attribute :retention_properties, Resources::Types::Hash.default({}.freeze).optional
+        attribute :magnetic_store_write_properties, Resources::Types::Hash.default({}.freeze).optional
+        attribute :schema, Resources::Types::Hash.default({}.freeze).optional
         
         # Tags to apply to the resource
-        attribute :tags, Resources::Types::AwsTags.default({})
+        attribute :tags, Resources::Types::AwsTags.default({}.freeze)
 
         # Custom validation
         def self.new(attributes = {})

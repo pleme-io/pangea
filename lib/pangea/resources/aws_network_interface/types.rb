@@ -41,10 +41,10 @@ module Pangea
         attributeipv6_prefixes :, Resources::Types::Array.of(Types::String).default([].freeze)
         
         # Attachment configuration (for attaching at creation)
-        attribute :attachment, Resources::Types::Hash.default({})
+        attribute :attachment, Resources::Types::Hash.default({}.freeze)
         
         # Tags to apply to the resource
-        attribute :tags, Resources::Types::AwsTags.default({})
+        attribute :tags, Resources::Types::AwsTags.default({}.freeze)
 
         # Custom validation
         def self.new(attributes = {})

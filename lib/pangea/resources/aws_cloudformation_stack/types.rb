@@ -30,7 +30,7 @@ module Pangea
         attribute :template_url, Resources::Types::String.optional
 
         # Stack parameters
-        attribute :parameters, Resources::Types::Hash.map(Types::String, Types::String).default({})
+        attribute :parameters, Resources::Types::Hash.map(Types::String, Types::String).default({}.freeze)
 
         # Stack capabilities (for IAM resources)
         attribute :capabilities, Resources::Types::Array.of(
@@ -64,7 +64,7 @@ module Pangea
         attribute :on_failure, Resources::Types::String.enum("DO_NOTHING", "ROLLBACK", "DELETE").default("ROLLBACK")
 
         # Stack tags
-        attribute :tags, Resources::Types::AwsTags.default({})
+        attribute :tags, Resources::Types::AwsTags.default({}.freeze)
 
         # Custom validation
         def self.new(attributes = {})

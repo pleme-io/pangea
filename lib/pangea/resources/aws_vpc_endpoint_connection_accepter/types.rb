@@ -26,7 +26,7 @@ module Pangea
         # TODO: Define specific attributes for aws_vpc_endpoint_connection_accepter
         
         # Tags to apply to the resource
-        attribute :tags, Resources::Types::AwsTags.default({})
+        attribute :tags, Resources::Types::AwsTags.default({}.freeze)
 
         # Custom validation
         def self.new(attributes = {})

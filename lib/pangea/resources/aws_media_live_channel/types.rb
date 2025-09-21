@@ -757,7 +757,7 @@ module Pangea
         attribute :maintenance, Resources::Types::Hash.schema(
           maintenance_day: Resources::Types::String.enum('MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY', 'SUNDAY'),
           maintenance_start_time: Resources::Types::String
-        ).default({})
+        ).default({}.freeze)
 
         # Reserved instances for pipeline redundancy
         attribute :reserved_instances, Resources::Types::Array.of(
@@ -765,7 +765,7 @@ module Pangea
             count: Resources::Types::Integer,
             name: Resources::Types::String
           )
-        ).default([])
+        ).default([].freeze)
 
         # IAM role ARN for the channel
         attribute :role_arn, Resources::Types::String
@@ -894,17 +894,17 @@ module Pangea
               immediate_mode_schedule_action_start_settings?: Resources::Types::Hash.optional
             )
           )
-        ).default([])
+        ).default([].freeze)
 
         # Tags
-        attribute :tags, Resources::Types::AwsTags.default({})
+        attribute :tags, Resources::Types::AwsTags.default({}.freeze)
 
         # VPC configuration for enhanced security
         attribute :vpc, Resources::Types::Hash.schema(
           public_address_allocation_ids: Resources::Types::Array.of(Resources::Types::String),
           security_group_ids: Resources::Types::Array.of(Resources::Types::String),
           subnet_ids: Resources::Types::Array.of(Resources::Types::String)
-        ).default({})
+        ).default({}.freeze)
 
         # Custom validation
         def self.new(attributes = {})

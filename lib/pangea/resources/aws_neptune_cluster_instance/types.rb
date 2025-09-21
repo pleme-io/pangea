@@ -36,7 +36,7 @@ module Pangea
         attribute :neptune_parameter_group_name, Resources::Types::String.optional
         
         # Tags to apply to the resource
-        attribute :tags, Resources::Types::AwsTags.default({})
+        attribute :tags, Resources::Types::AwsTags.default({}.freeze)
 
         # Custom validation
         def self.new(attributes = {})

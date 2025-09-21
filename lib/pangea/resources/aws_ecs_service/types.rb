@@ -216,7 +216,7 @@ module Pangea
         ).optional
         
         # Tags
-        attribute :tags, Pangea::Resources::Types::AwsTags.default({})
+        attribute :tags, Pangea::Resources::Types::AwsTags.default({}.freeze)
         
         # Wait for steady state
         attribute :wait_for_steady_state, Pangea::Resources::Types::Bool.default(false)

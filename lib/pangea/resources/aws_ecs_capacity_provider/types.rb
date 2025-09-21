@@ -65,7 +65,7 @@ module Pangea
           
           # Optional attributes
           attribute? :auto_scaling_group_provider, AutoScalingGroupProvider.optional
-          attribute? :tags, Hash.map(String, String).default({})
+          attribute? :tags, Hash.map(String, String).default({}.freeze)
           
           # Computed properties
           def has_auto_scaling_group?

@@ -200,7 +200,7 @@ module Pangea
         attribute? :user_pool_add_ons, CognitoUserPoolUserPoolAddOns.optional
 
         # Tags
-        attribute :tags, Resources::Types::AwsTags.default({})
+        attribute :tags, Resources::Types::AwsTags.default({}.freeze)
 
         # Deletion protection
         attribute :deletion_protection, Resources::Types::String.enum('ACTIVE', 'INACTIVE').default('INACTIVE')

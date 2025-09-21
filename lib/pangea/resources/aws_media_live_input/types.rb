@@ -51,7 +51,7 @@ module Pangea
             stream_name?: Resources::Types::String.optional,
             url?: Resources::Types::String.optional
           )
-        ).default([])
+        ).default([].freeze)
 
         # Input devices for hardware inputs
         attribute :input_devices, Resources::Types::Array.of(
@@ -70,17 +70,17 @@ module Pangea
               scan_type?: Resources::Types::String.enum('PROGRESSIVE', 'INTERLACED').optional
             ).optional
           )
-        ).default([])
+        ).default([].freeze)
 
         # MediaConnect flows for MediaConnect inputs
         attribute :media_connect_flows, Resources::Types::Array.of(
           Resources::Types::Hash.schema(
             flow_arn: Resources::Types::String
           )
-        ).default([])
+        ).default([].freeze)
 
         # Input security groups for access control
-        attribute :input_security_groups, Resources::Types::Array.of(Resources::Types::String).default([])
+        attribute :input_security_groups, Resources::Types::Array.of(Resources::Types::String).default([].freeze)
 
         # Role ARN for accessing input sources
         attribute :role_arn, Resources::Types::String.optional
@@ -92,16 +92,16 @@ module Pangea
             url: Resources::Types::String,
             username?: Resources::Types::String.optional
           )
-        ).default([])
+        ).default([].freeze)
 
         # VPC configuration for enhanced security
         attribute :vpc, Resources::Types::Hash.schema(
           security_group_ids?: Resources::Types::Array.of(Resources::Types::String).optional,
           subnet_ids?: Resources::Types::Array.of(Resources::Types::String).optional
-        ).default({})
+        ).default({}.freeze)
 
         # Tags
-        attribute :tags, Resources::Types::AwsTags.default({})
+        attribute :tags, Resources::Types::AwsTags.default({}.freeze)
 
         # Custom validation
         def self.new(attributes = {})

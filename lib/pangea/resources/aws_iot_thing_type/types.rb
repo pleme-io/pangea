@@ -29,7 +29,7 @@ module Pangea
         attribute :thing_type_properties, Resources::Types::IotThingTypeProperties.optional
         
         # Tags (optional)
-        attribute :tags, Resources::Types::AwsTags.default({})
+        attribute :tags, Resources::Types::AwsTags.default({}.freeze)
         
         # Custom validation
         def self.new(attributes = {})

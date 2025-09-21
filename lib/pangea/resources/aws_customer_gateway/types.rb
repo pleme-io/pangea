@@ -33,7 +33,7 @@ module Pangea
         # Optional attributes
         attribute :certificate_arn, Resources::Types::String.optional
         attribute :device_name, Resources::Types::String.optional
-        attribute :tags, Resources::Types::AwsTags.default({})
+        attribute :tags, Resources::Types::AwsTags.default({}.freeze)
 
         # Custom validation
         def self.new(attributes = {})

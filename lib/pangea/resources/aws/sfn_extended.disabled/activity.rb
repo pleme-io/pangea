@@ -26,7 +26,7 @@ module Pangea
         # Step Functions activity for custom task processing
         class ActivityAttributes < Dry::Struct
           attribute :name, Types::String
-          attribute :tags, Types::Hash.default({})
+          attribute :tags, Types::Hash.default({}.freeze)
         end
 
         # Step Functions activity reference

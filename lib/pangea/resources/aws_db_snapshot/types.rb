@@ -29,7 +29,7 @@ module Pangea
         attribute :db_snapshot_identifier, Resources::Types::String
 
         # Tags to apply to the snapshot
-        attribute :tags, Resources::Types::AwsTags.default({})
+        attribute :tags, Resources::Types::AwsTags.default({}.freeze)
 
         # Custom validation
         def self.new(attributes = {})

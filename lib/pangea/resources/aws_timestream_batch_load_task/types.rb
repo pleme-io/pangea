@@ -25,14 +25,14 @@ module Pangea
       class TimestreamBatchLoadTaskAttributes < Dry::Struct
         attribute :database_name, Resources::Types::String
         attribute :table_name, Resources::Types::String
-        attribute :data_source_configuration, Resources::Types::Hash.default({})
-        attribute :data_model_configuration, Resources::Types::Hash.default({}).optional
-        attribute :report_configuration, Resources::Types::Hash.default({}).optional
+        attribute :data_source_configuration, Resources::Types::Hash.default({}.freeze)
+        attribute :data_model_configuration, Resources::Types::Hash.default({}.freeze).optional
+        attribute :report_configuration, Resources::Types::Hash.default({}.freeze).optional
         attribute :target_database_name, Resources::Types::String.optional
         attribute :target_table_name, Resources::Types::String.optional
         
         # Tags to apply to the resource
-        attribute :tags, Resources::Types::AwsTags.default({})
+        attribute :tags, Resources::Types::AwsTags.default({}.freeze)
 
         # Custom validation
         def self.new(attributes = {})

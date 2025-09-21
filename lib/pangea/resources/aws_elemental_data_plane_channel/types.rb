@@ -41,10 +41,10 @@ module Pangea
             maximum_bitrate: Resources::Types::String.enum('MAX_10_MBPS', 'MAX_20_MBPS', 'MAX_50_MBPS'),
             resolution: Resources::Types::String.enum('SD', 'HD', 'UHD')
           )
-        ).default([])
+        ).default([].freeze)
 
         # Tags
-        attribute :tags, Resources::Types::AwsTags.default({})
+        attribute :tags, Resources::Types::AwsTags.default({}.freeze)
 
         # Helper methods
         def live_channel?

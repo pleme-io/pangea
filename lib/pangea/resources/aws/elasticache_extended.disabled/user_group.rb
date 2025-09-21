@@ -28,7 +28,7 @@ module Pangea
           attribute :user_group_id, Types::String
           attribute :engine, Types::String.default('redis')
           attribute :user_ids, Types::Array.of(Types::String).default(['default'])
-          attribute :tags, Types::Hash.default({})
+          attribute :tags, Types::Hash.default({}.freeze)
         end
 
         # ElastiCache user group reference

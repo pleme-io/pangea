@@ -49,7 +49,7 @@ module Pangea
           segment_duration_seconds?: Resources::Types::Integer.optional,
           stream_selection?: Resources::Types::Hash.optional,
           use_audio_rendition_group?: Resources::Types::Bool.optional
-        ).default({})
+        ).default({}.freeze)
 
         # DASH package configuration
         attribute :dash_package, Resources::Types::Hash.schema(
@@ -66,7 +66,7 @@ module Pangea
           suggested_presentation_delay_seconds?: Resources::Types::Integer.optional,
           utc_timing?: Resources::Types::String.optional,
           utc_timing_uri?: Resources::Types::String.optional
-        ).default({})
+        ).default({}.freeze)
 
         # CMAF package configuration
         attribute :cmaf_package, Resources::Types::Hash.schema(
@@ -95,14 +95,14 @@ module Pangea
           ).optional,
           segment_duration_seconds?: Resources::Types::Integer.optional,
           segment_prefix?: Resources::Types::String.optional
-        ).default({})
+        ).default({}.freeze)
 
         # MSS package configuration
         attribute :mss_package, Resources::Types::Hash.schema(
           manifest_window_seconds?: Resources::Types::Integer.optional,
           segment_duration_seconds?: Resources::Types::Integer.optional,
           stream_selection?: Resources::Types::Hash.optional
-        ).default({})
+        ).default({}.freeze)
 
         # Start over behavior
         attribute :startover_window_seconds, Resources::Types::Integer.optional
@@ -111,16 +111,16 @@ module Pangea
         attribute :time_delay_seconds, Resources::Types::Integer.optional
 
         # Whitelist for endpoint access
-        attribute :whitelist, Resources::Types::Array.of(Resources::Types::String).default([])
+        attribute :whitelist, Resources::Types::Array.of(Resources::Types::String).default([].freeze)
 
         # Authorization configuration
         attribute :authorization, Resources::Types::Hash.schema(
           cdn_identifier_secret: Resources::Types::String,
           secrets_role_arn: Resources::Types::String
-        ).default({})
+        ).default({}.freeze)
 
         # Tags
-        attribute :tags, Resources::Types::AwsTags.default({})
+        attribute :tags, Resources::Types::AwsTags.default({}.freeze)
 
         # Custom validation
         def self.new(attributes = {})

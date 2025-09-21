@@ -24,8 +24,8 @@ module Pangea
         class OrganizationsOrganizationAttributes < Dry::Struct
           transform_keys(&:to_sym)
           
-          attribute :aws_service_access_principals, Resources::Types::Array.optional.default([])
-          attribute :enabled_policy_types, Resources::Types::Array.optional.default([])
+          attribute :aws_service_access_principals, Resources::Types::Array.optional.default([].freeze)
+          attribute :enabled_policy_types, Resources::Types::Array.optional.default([].freeze)
           attribute :feature_set, Resources::Types::String.default("ALL")
           
           def self.new(attributes)

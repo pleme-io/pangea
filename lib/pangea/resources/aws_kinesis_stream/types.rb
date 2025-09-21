@@ -38,7 +38,7 @@ module Pangea
           attribute? :stream_mode_details, Pangea::Resources::Types::Hash.schema(
             stream_mode: Pangea::Resources::Types::String.default('PROVISIONED').constrained(included_in: ['PROVISIONED', 'ON_DEMAND'])
           ).optional
-          attribute :tags, Pangea::Resources::Types::AwsTags.default({})
+          attribute :tags, Pangea::Resources::Types::AwsTags.default({}.freeze)
           
           # Custom validation
           def self.new(attributes)

@@ -34,7 +34,7 @@ module Pangea
             attribute :s3_key, Types::String
           end
           
-          attribute :package_encryption_options, Types::Hash.default({})
+          attribute :package_encryption_options, Types::Hash.default({}.freeze)
         end
 
         # OpenSearch package reference

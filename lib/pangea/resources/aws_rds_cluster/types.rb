@@ -206,7 +206,7 @@ module Pangea
         attribute :enable_http_endpoint, Resources::Types::Bool.default(false)
 
         # Tags to apply to the cluster
-        attribute :tags, Resources::Types::AwsTags.default({})
+        attribute :tags, Resources::Types::AwsTags.default({}.freeze)
 
         # Custom validation
         def self.new(attributes = {})

@@ -59,7 +59,7 @@ module Pangea
         attribute :icmp_code, Resources::Types::Integer.optional.constrained(gteq: -1, lteq: 255)
         
         # Tags to apply to the resource
-        attribute :tags, Resources::Types::AwsTags.default({})
+        attribute :tags, Resources::Types::AwsTags.default({}.freeze)
 
         # Custom validation
         def self.new(attributes = {})
