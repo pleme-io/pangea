@@ -38,13 +38,16 @@ module Pangea
         args = ['init', '-no-color', '-input=false']
         args << '-upgrade' if upgrade
         
-        execute_command(args) do |output|
-          # Parse init output for important information
-          if output.include?('Terraform has been successfully initialized!')
-            { success: true, message: 'Initialization complete' }
-          else
-            { success: false, message: 'Initialization may have failed' }
-          end
+        result = execute_command(args)
+        
+        if result[:success]
+          result.merge(message: 'Initialization complete')
+        else
+          error_details = result[:error].empty? ? result[:output] : result[:error]
+          result.merge(
+            message: 'Initialization failed',
+            error: extract_terraform_error(error_details)
+          )
         end
       end
       
@@ -265,6 +268,27 @@ module Pangea
         end
         
         changes
+      end
+      
+      def extract_terraform_error(output)
+        return output if output.nil? || output.empty?
+        
+        # Common terraform error patterns
+        error_lines = output.lines.select do |line|
+          line.include?('Error:') || 
+          line.include?('Failed to') ||
+          line.include?('Could not') ||
+          line.include?('Unable to') ||
+          line.include?('Invalid') ||
+          line.include?('Missing')
+        end
+        
+        if error_lines.any?
+          error_lines.join("\n").strip
+        else
+          # Return the last few meaningful lines if no specific error found
+          output.lines.reject(&:empty?).last(5).join("\n").strip
+        end
       end
     end
   end

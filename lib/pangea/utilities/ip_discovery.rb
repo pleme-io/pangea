@@ -73,7 +73,7 @@ module Pangea
           if response.is_a?(Net::HTTPSuccess)
             ip = service[:parser].call(response.body)
             
-            if valid_ip?(ip)
+            if validate_ip_format(ip)
               @logger&.info("[IpDiscovery] Discovered public IP from #{service[:name]}: #{ip}")
               return ip
             else
@@ -96,7 +96,7 @@ module Pangea
       private
       
       # Validate IP address format
-      def valid_ip?(ip)
+      def validate_ip_format(ip)
         return false unless ip.match?(IP_REGEX)
         
         octets = ip.split('.')
