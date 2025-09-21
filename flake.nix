@@ -27,8 +27,8 @@
         #!${ruby}/bin/ruby
         ext = File.expand_path('../ext', __dir__)
         $LOAD_PATH.unshift(ext) unless $LOAD_PATH.include?(ext)
-        require 'pangea'
-        Pangea::App.run
+        require 'pangea/cli/application'
+        Pangea::CLI::Application.new.run
       '';
     in {
       packages = {
