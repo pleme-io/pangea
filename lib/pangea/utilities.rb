@@ -31,6 +31,7 @@ module Pangea
     autoload :Backup, 'pangea/utilities/backup'
     autoload :Migration, 'pangea/utilities/migration'
     autoload :Monitoring, 'pangea/utilities/monitoring'
+    autoload :IpDiscovery, 'pangea/utilities/ip_discovery'
     
     def self.version
       "1.0.0"

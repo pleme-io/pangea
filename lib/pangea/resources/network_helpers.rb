@@ -14,6 +14,7 @@
 # limitations under the License.
 
 require 'pangea/utilities/ip_discovery'
+require 'pangea/resource_registry'
 
 module Pangea
   module Resources
@@ -64,3 +65,6 @@ module Pangea
     end
   end
 end
+
+# Auto-register the module when loaded
+Pangea::ResourceRegistry.register_module(Pangea::Resources::NetworkHelpers)
