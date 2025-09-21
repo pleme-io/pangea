@@ -83,23 +83,25 @@ module Pangea
             @logger&.warn("[IpDiscovery] HTTP error from #{service[:name]}: #{response.code}")
           end
         end
+        
+        nil
       rescue Timeout::Error
         @logger&.warn("[IpDiscovery] Timeout querying #{service[:name]}")
+        nil
       rescue StandardError => e
         @logger&.warn("[IpDiscovery] Error querying #{service[:name]}: #{e.message}")
+        nil
       end
       
-      nil
-    end
-    
-    private
-    
-    # Validate IP address format
-    def valid_ip?(ip)
-      return false unless ip.match?(IP_REGEX)
+      private
       
-      octets = ip.split('.')
-      octets.all? { |octet| octet.to_i <= 255 }
+      # Validate IP address format
+      def valid_ip?(ip)
+        return false unless ip.match?(IP_REGEX)
+        
+        octets = ip.split('.')
+        octets.all? { |octet| octet.to_i <= 255 }
+      end
     end
     
     class DiscoveryError < StandardError; end
