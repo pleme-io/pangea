@@ -23,63 +23,58 @@ module Pangea
     module UI
       # Beautiful logging with colors and formatting
       class Logger
+        # Style configuration for log levels
+        LOG_STYLES = {
+          info:    { symbol: "ℹ",  label: "info",    color: :bright_blue,   levelpad: 1 },
+          success: { symbol: "✓", label: "success", color: :bright_green,  levelpad: 0 },
+          error:   { symbol: "✗", label: "error",   color: :bright_red,    levelpad: 1 },
+          warn:    { symbol: "⚠",  label: "warning", color: :bright_yellow, levelpad: 0 },
+          debug:   { symbol: "•", label: "debug",   color: :bright_black,  levelpad: 1 }
+        }.freeze
+        
+        # Action symbols and colors mapping
+        ACTION_STYLES = {
+          create:  { symbol: "◉", color: :bright_green },
+          update:  { symbol: "◎", color: :bright_yellow },
+          delete:  { symbol: "◯", color: :bright_red },
+          replace: { symbol: "⧗", color: :bright_magenta },
+          import:  { symbol: "⬇", color: :bright_blue },
+          refresh: { symbol: "↻", color: :bright_cyan },
+          default: { symbol: "●", color: :white }
+        }.freeze
+        
+        # Status indicators mapping
+        STATUS_INDICATORS = {
+          success: " ✓",
+          error:   " ✗",
+          warning: " ⚠",
+          pending: " ⧖"
+        }.freeze
+        
+        # Template action icons
+        TEMPLATE_ICONS = {
+          compiling:  "⚙️",
+          compiled:   "✅",
+          failed:     "❌",
+          validating: "🔍",
+          validated:  "✅",
+          default:    "📄"
+        }.freeze
+        
         def initialize
           @pastel = Pastel.new
           @logger = TTY::Logger.new do |config|
             config.handlers = [
-              [:console, {
-                styles: {
-                  info: {
-                    symbol: "ℹ",
-                    label: "info",
-                    color: :bright_blue,
-                    levelpad: 1
-                  },
-                  success: {
-                    symbol: "✓",
-                    label: "success",
-                    color: :bright_green,
-                    levelpad: 0
-                  },
-                  error: {
-                    symbol: "✗",
-                    label: "error",
-                    color: :bright_red,
-                    levelpad: 1
-                  },
-                  warn: {
-                    symbol: "⚠",
-                    label: "warning",
-                    color: :bright_yellow,
-                    levelpad: 0
-                  },
-                  debug: {
-                    symbol: "•",
-                    label: "debug",
-                    color: :bright_black,
-                    levelpad: 1
-                  }
-                }
-              }]
+              [:console, { styles: LOG_STYLES }]
             ]
           end
         end
         
         # Standard log levels
-        def info(message, **metadata)
-          @logger.info(message, **metadata)
-        end
-        
-        def success(message, **metadata)
-          @logger.success(message, **metadata)
-        end
-        
-        def error(message, **metadata)
-          @logger.error(message, **metadata)
-        end
-        
-        def warn(message, **metadata)
-          @logger.warn(message, **metadata)
+        %i[info success error warn].each do |level|
+          define_method(level) do |message, **metadata|
+            @logger.send(level, message, **metadata)
+          end
         end
         
         def debug(message, **metadata)
@@ -102,21 +97,11 @@ module Pangea
         
         # Resource actions
         def resource_action(action, resource_type, resource_name, status = nil)
-          action_symbol = case action
-                         when :create then "+"
-                         when :update then "~"
-                         when :delete then "-"
-                         when :replace then "±"
-                         else "?"
-                         end
+          symbols = { create: "+", update: "~", delete: "-", replace: "±" }
+          colors = { create: :bright_green, update: :bright_yellow, delete: :bright_red, replace: :bright_magenta }
           
-          action_color = case action
-                        when :create then :bright_green
-                        when :update then :bright_yellow
-                        when :delete then :bright_red
-                        when :replace then :bright_magenta
-                        else :white
-                        end
+          action_symbol = symbols[action] || "?"
+          action_color = colors[action] || :white
           
           message = "#{action_symbol} #{resource_type}.#{resource_name}"
           
@@ -136,14 +121,8 @@ module Pangea
         
         # File operations
         def file_action(action, path)
-          action_text = case action
-                       when :create then "Creating"
-                       when :update then "Updating"
-                       when :delete then "Deleting"
-                       when :read then "Reading"
-                       else action.to_s.capitalize
-                       end
-          
+          action_texts = { create: "Creating", update: "Updating", delete: "Deleting", read: "Reading" }
+          action_text = action_texts[action] || action.to_s.capitalize
           info "#{action_text} #{path}"
         end
         
@@ -179,32 +158,19 @@ module Pangea
         
         # Resource status with enhanced formatting
         def resource_status(resource_type, resource_name, action, status = nil, details = nil)
-          # Enhanced symbols and colors
-          action_symbol = case action
-                         when :create then @pastel.bright_green("◉")
-                         when :update then @pastel.bright_yellow("◎")
-                         when :delete then @pastel.bright_red("◯")
-                         when :replace then @pastel.bright_magenta("⧗")
-                         when :import then @pastel.bright_blue("⬇")
-                         when :refresh then @pastel.bright_cyan("↻")
-                         else @pastel.white("●")
-                         end
+          style = ACTION_STYLES[action] || ACTION_STYLES[:default]
+          action_symbol = @pastel.decorate(style[:symbol], style[:color])
           
-          # Format resource name with type
           resource_display = "#{@pastel.bright_white(resource_type)}.#{@pastel.cyan(resource_name)}"
           
-          # Status indicator
-          status_indicator = if status
-                            case status
-                            when :success then @pastel.bright_green(" ✓")
-                            when :error then @pastel.bright_red(" ✗")
-                            when :warning then @pastel.bright_yellow(" ⚠")
-                            when :pending then @pastel.bright_blue(" ⧖")
-                            else ""
+          status_indicator = if status && indicator = STATUS_INDICATORS[status]
+                              color = status == :success ? :bright_green : 
+                                     status == :error ? :bright_red :
+                                     status == :warning ? :bright_yellow : :bright_blue
+                              @pastel.decorate(indicator, color)
+                            else
+                              ""
                             end
-                           else
-                             ""
-                           end
           
           message = "#{action_symbol} #{resource_display}#{status_indicator}"
           message += " #{@pastel.bright_black("(#{details})")}" if details
@@ -214,43 +180,37 @@ module Pangea
         
         # Beautiful diff display
         def diff_line(type, content)
-          case type
-          when :add
-            say @pastel.bright_green("+ #{content}")
-          when :remove  
-            say @pastel.bright_red("- #{content}")
-          when :context
-            say @pastel.bright_black("  #{content}")
-          when :header
-            say @pastel.bright_cyan("@@ #{content} @@")
-          end
+          diff_styles = {
+            add:     { prefix: "+ ", color: :bright_green },
+            remove:  { prefix: "- ", color: :bright_red },
+            context: { prefix: "  ", color: :bright_black },
+            header:  { prefix: "@@ ", suffix: " @@", color: :bright_cyan }
+          }
+          
+          style = diff_styles[type]
+          return unless style
+          
+          formatted_content = style[:suffix] ? "#{content}#{style[:suffix]}" : content
+          say @pastel.decorate("#{style[:prefix]}#{formatted_content}", style[:color])
         end
         
         # Template processing status
         def template_status(name, action, duration = nil)
-          icon = case action
-                when :compiling then "⚙️"
-                when :compiled then "✅"
-                when :failed then "❌"
-                when :validating then "🔍"
-                when :validated then "✅"
-                else "📄"
-                end
+          icon = TEMPLATE_ICONS[action] || TEMPLATE_ICONS[:default]
+          
+          action_texts = {
+            compiling:  { text: 'compiling...', color: :yellow },
+            compiled:   { text: 'compiled', color: :green },
+            failed:     { text: 'failed', color: :red },
+            validating: { text: 'validating...', color: :blue },
+            validated:  { text: 'validated', color: :green }
+          }
           
           message = "#{icon} Template #{@pastel.bright_white(name)}"
           
-          case action
-          when :compiling
-            message += " #{@pastel.yellow('compiling...')}"
-          when :compiled
-            message += " #{@pastel.green('compiled')}"
-            message += " #{@pastel.bright_black("(#{duration}s)")}" if duration
-          when :failed
-            message += " #{@pastel.red('failed')}"
-          when :validating
-            message += " #{@pastel.blue('validating...')}"
-          when :validated
-            message += " #{@pastel.green('validated')}"
+          if action_info = action_texts[action]
+            message += " #{@pastel.decorate(action_info[:text], action_info[:color])}"
+            message += " #{@pastel.bright_black("(#{duration}s)")}" if duration && action == :compiled
           end
           
           say message
@@ -260,118 +220,60 @@ module Pangea
         def cost_info(current: nil, estimated: nil, savings: nil)
           return unless current || estimated || savings
           
-          content = ""
-          
-          if current
-            content += "#{@pastel.white('Current')}: #{@pastel.bright_white("$#{current}/month")}\n"
+          content = build_content do |c|
+            c << "#{@pastel.white('Current')}: #{@pastel.bright_white("$#{current}/month")}" if current
+            c << "#{@pastel.white('Estimated')}: #{@pastel.bright_white("$#{estimated}/month")}" if estimated
+            
+            if savings && savings != 0
+              color = savings > 0 ? :bright_green : :bright_red
+              symbol = savings > 0 ? "💰" : "⚠️"
+              c << "#{symbol} #{@pastel.white('Savings')}: #{@pastel.decorate("$#{savings.abs}/month", color)}"
+            end
           end
           
-          if estimated
-            content += "#{@pastel.white('Estimated')}: #{@pastel.bright_white("$#{estimated}/month")}\n"
-          end
-          
-          if savings && savings != 0
-            color = savings > 0 ? :bright_green : :bright_red
-            symbol = savings > 0 ? "💰" : "⚠️"
-            content += "#{symbol} #{@pastel.white('Savings')}: #{@pastel.decorate("$#{savings.abs}/month", color)}\n"
-          end
-          
-          box = TTY::Box.frame(
-            content.strip,
-            width: 40,
-            align: :left,
-            border: :light,
-            title: {
-              top_left: "💰 Cost Impact"
-            },
-            style: {
-              border: {
-                color: :yellow
-              }
-            }
-          )
-          
-          say box
+          display_box(content, title: "💰 Cost Impact", color: :yellow, width: 40)
         end
         
         # Time and performance metrics
         def performance_info(metrics)
-          content = ""
+          metric_labels = {
+            compilation_time: 'Compilation',
+            planning_time:    'Planning',
+            apply_time:       'Apply',
+            memory_usage:     'Memory',
+            terraform_version: 'Terraform'
+          }
           
-          if metrics[:compilation_time]
-            content += "#{@pastel.white('Compilation')}: #{@pastel.bright_white(metrics[:compilation_time])}\n"
-          end
-          
-          if metrics[:planning_time]
-            content += "#{@pastel.white('Planning')}: #{@pastel.bright_white(metrics[:planning_time])}\n"
-          end
-          
-          if metrics[:apply_time]
-            content += "#{@pastel.white('Apply')}: #{@pastel.bright_white(metrics[:apply_time])}\n"
-          end
-          
-          if metrics[:memory_usage]
-            content += "#{@pastel.white('Memory')}: #{@pastel.bright_white(metrics[:memory_usage])}\n"
-          end
-          
-          if metrics[:terraform_version]
-            content += "#{@pastel.white('Terraform')}: #{@pastel.bright_white(metrics[:terraform_version])}\n"
+          content = build_content do |c|
+            metric_labels.each do |key, label|
+              c << "#{@pastel.white(label)}: #{@pastel.bright_white(metrics[key])}" if metrics[key]
+            end
           end
           
           return if content.empty?
-          
-          box = TTY::Box.frame(
-            content.strip,
-            width: 50,
-            align: :left,
-            border: :light,
-            title: {
-              top_left: "⚡ Performance"
-            },
-            style: {
-              border: {
-                color: :blue
-              }
-            }
-          )
-          
-          say box
+          display_box(content, title: "⚡ Performance", color: :blue, width: 50)
         end
         
         # Namespace information display
         def namespace_info(namespace_entity)
-          content = ""
-          content += "#{@pastel.white('Name')}: #{@pastel.bright_white(namespace_entity.name)}\n"
-          content += "#{@pastel.white('Backend')}: #{@pastel.bright_white(namespace_entity.state.type)}\n"
-          
-          case namespace_entity.state.type
-          when 's3'
-            content += "#{@pastel.white('Bucket')}: #{@pastel.cyan(namespace_entity.state.bucket)}\n"
-            content += "#{@pastel.white('Region')}: #{@pastel.cyan(namespace_entity.state.region)}\n"
-          when 'local'
-            content += "#{@pastel.white('Path')}: #{@pastel.cyan(namespace_entity.state.path)}\n"
+          content = build_content do |c|
+            c << "#{@pastel.white('Name')}: #{@pastel.bright_white(namespace_entity.name)}"
+            c << "#{@pastel.white('Backend')}: #{@pastel.bright_white(namespace_entity.state.type)}"
+            
+            case namespace_entity.state.type
+            when 's3'
+              c << "#{@pastel.white('Bucket')}: #{@pastel.cyan(namespace_entity.state.bucket)}"
+              c << "#{@pastel.white('Region')}: #{@pastel.cyan(namespace_entity.state.region)}"
+            when 'local'
+              c << "#{@pastel.white('Path')}: #{@pastel.cyan(namespace_entity.state.path)}"
+            end
+            
+            if namespace_entity.description
+              c << "#{@pastel.white('Description')}: #{@pastel.bright_black(namespace_entity.description)}"
+            end
           end
           
-          if namespace_entity.description
-            content += "#{@pastel.white('Description')}: #{@pastel.bright_black(namespace_entity.description)}\n"
-          end
-          
-          box = TTY::Box.frame(
-            content.strip,
-            width: 60,
-            align: :left,
-            border: :light,
-            title: {
-              top_left: "🏷️  Namespace"
-            },
-            style: {
-              border: {
-                color: :cyan
-              }
-            }
-          )
-          
-          say box
+          display_box(content, title: "🏷️  Namespace", color: :cyan, width: 60)
         end
         
         # Command completion celebration
@@ -383,24 +285,32 @@ module Pangea
         # Warning panel for important notices
         def warning_panel(title, warnings)
           content = @pastel.bright_yellow("⚠️  #{title}") + "\n\n"
+          content += warnings.map { |w| "#{@pastel.yellow('•')} #{@pastel.white(w)}" }.join("\n")
           
-          warnings.each do |warning|
-            content += "#{@pastel.yellow('•')} #{@pastel.white(warning)}\n"
-          end
-          
-          box = TTY::Box.frame(
-            content.strip,
-            width: 70,
+          display_box(content, color: :yellow, width: 70, border: :thick)
+        end
+        
+        private
+        
+        # Build content string from blocks
+        def build_content
+          lines = []
+          yield(lines)
+          lines.join("\n")
+        end
+        
+        # Display a framed box
+        def display_box(content, title: nil, color: :white, width: 50, border: :light)
+          options = {
+            width: width,
             align: :left,
-            border: :thick,
-            style: {
-              border: {
-                color: :yellow
-              }
-            }
-          )
+            border: border,
+            style: { border: { color: color } }
+          }
           
-          say box
+          options[:title] = { top_left: title } if title
+          
+          say TTY::Box.frame(content.strip, **options)
         end
       end
     end

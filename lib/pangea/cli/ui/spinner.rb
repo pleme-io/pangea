@@ -52,23 +52,21 @@ module Pangea
         end
         
         def success(message = nil)
-          if message && @start_time
+          formatted_message = if message && @start_time
             duration = Time.now - @start_time
-            formatted_message = "#{@pastel.bright_green(message)} #{@pastel.bright_black("(#{format_duration(duration))})")}"
-            @spinner.success(formatted_message)
+            "#{@pastel.bright_green(message)} #{@pastel.bright_black("(#{format_duration(duration)}")}"
           else
-            @spinner.success(message)
+            message
           end
+          @spinner.success(formatted_message)
         end
         
         def error(message = nil)
-          formatted_message = message ? @pastel.bright_red(message) : nil
-          @spinner.error(formatted_message)
+          @spinner.error(message ? @pastel.bright_red(message) : nil)
         end
         
         def warning(message = nil)
-          formatted_message = message ? @pastel.bright_yellow(message) : nil
-          @spinner.success("⚠️  #{formatted_message}")
+          @spinner.success("⚠️  #{message ? @pastel.bright_yellow(message) : nil}")
         end
         
         def update(message)
@@ -88,13 +86,9 @@ module Pangea
         end
         
         # Multi-stage spinner for complex operations
-        def self.multi_stage(stages, &block)
-          total_stages = stages.length
-          current_stage = 0
-          
-          stages.each do |stage_name|
-            current_stage += 1
-            stage_spinner = new("#{stage_name} (#{current_stage}/#{total_stages})")
+        def self.multi_stage(stages)
+          stages.each_with_index do |stage_name, index|
+            stage_spinner = new("#{stage_name} (#{index + 1}/#{stages.length})")
             
             begin
               stage_spinner.start
@@ -102,49 +96,62 @@ module Pangea
               stage_spinner.success("#{stage_name} complete")
             rescue => e
               stage_spinner.error("#{stage_name} failed")
-              raise e
+              raise
             end
           end
         end
         
         # Specialized spinners for common operations
-        def self.compilation(message = "Compiling templates")
-          new(message, format: :bouncing_ball)
-        end
+        OPERATION_FORMATS = {
+          compilation: { format: :bouncing_ball, default_message: "Compiling templates" },
+          network: { format: :pulse, default_message: "Network operation" },
+          file: { format: :classic, default_message: "File operation" }
+        }.freeze
         
-        def self.terraform_operation(operation)
-          message = case operation
-                   when :init then "Initializing Terraform"
-                   when :plan then "Planning infrastructure"
-                   when :apply then "Applying changes" 
-                   when :destroy then "Destroying resources"
-                   when :validate then "Validating configuration"
-                   when :refresh then "Refreshing state"
-                   else "Running Terraform"
-                   end
+        TERRAFORM_MESSAGES = {
+          init:     "Initializing Terraform",
+          plan:     "Planning infrastructure",
+          apply:    "Applying changes",
+          destroy:  "Destroying resources",
+          validate: "Validating configuration",
+          refresh:  "Refreshing state"
+        }.freeze
+        
+        class << self
+          def compilation(message = nil)
+            create_spinner(:compilation, message)
+          end
           
-          new(message, format: :arrow)
-        end
-        
-        def self.network_operation(message = "Network operation")
-          new(message, format: :pulse)
-        end
-        
-        def self.file_operation(message = "File operation")
-          new(message, format: :classic)
+          def network_operation(message = nil)
+            create_spinner(:network, message)
+          end
+          
+          def file_operation(message = nil)
+            create_spinner(:file, message)
+          end
+          
+          def terraform_operation(operation)
+            message = TERRAFORM_MESSAGES[operation] || "Running Terraform"
+            new(message, format: :arrow)
+          end
+          
+          private
+          
+          def create_spinner(type, message = nil)
+            config = OPERATION_FORMATS[type]
+            new(message || config[:default_message], format: config[:format])
+          end
         end
         
         private
         
         def format_duration(seconds)
-          if seconds < 1
-            "#{(seconds * 1000).round}ms"
-          elsif seconds < 60
-            "#{seconds.round(1)}s"
+          case seconds
+          when 0...1 then "#{(seconds * 1000).round}ms"
+          when 1...60 then "#{seconds.round(1)}s"
           else
-            minutes = (seconds / 60).floor
-            remaining_seconds = (seconds % 60).round
-            "#{minutes}m #{remaining_seconds}s"
+            minutes, remaining_seconds = seconds.divmod(60)
+            "#{minutes.floor}m #{remaining_seconds.round}s"
           end
         end
       end

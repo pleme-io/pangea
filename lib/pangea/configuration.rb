@@ -66,58 +66,63 @@ module Pangea
     
     # Get all namespaces as entities
     def namespaces
-      @namespaces ||= begin
-        if @schema
-          # Use validated schema namespaces
-          @schema.namespace_configs.values.map do |ns_config|
-            # Convert config keys to symbols for entity validation
-            config_with_symbols = ns_config.state.config.transform_keys(&:to_sym)
-            
-            Entities::Namespace.new(
-              name: ns_config.name,
-              description: ns_config.description,
-              state: {
-                type: ns_config.state.type,
-                config: config_with_symbols
-              },
-              tags: {} # Schema doesn't have tags yet
-            )
-          end
-        else
-          # Fallback to old loading method
-          namespace_configs = fetch(:namespaces, default: {})
-          
-          namespace_configs.map do |name, config|
-            # Transform flatter YAML state structure to expected nested structure
-            state_config = config[:state] || config['state'] || {}
-            state_type = state_config[:type] || state_config['type']
-            
-            # Extract state config fields (everything except type)
-            config_fields = state_config.dup
-            config_fields.delete(:type)
-            config_fields.delete('type')
-            
-            # Convert config field keys to symbols for StateConfig entity
-            symbolized_config = config_fields.transform_keys { |key| key.to_sym }
-            
-            # Create properly nested state structure
-            nested_state = {
-              type: state_type&.to_sym,
-              config: symbolized_config
-            }
-            
-            Entities::Namespace.new(
-              name: name.to_s,
-              state: nested_state,
-              description: config[:description],
-              tags: config[:tags] || {}
-            )
-          rescue Dry::Struct::Error => e
-            raise ConfigurationError, "Invalid namespace '#{name}': #{e.message}"
-          end
-        end
+      @namespaces ||= @schema ? load_schema_namespaces : load_fallback_namespaces
+    end
+    
+    private
+    
+    def load_schema_namespaces
+      @schema.namespace_configs.values.map do |ns_config|
+        build_namespace_from_schema(ns_config)
       end
     end
+    
+    def load_fallback_namespaces
+      fetch(:namespaces, default: {}).map do |name, config|
+        build_namespace_from_config(name, config)
+      end
+    end
+    
+    def build_namespace_from_schema(ns_config)
+      Entities::Namespace.new(
+        name: ns_config.name,
+        description: ns_config.description,
+        state: {
+          type: ns_config.state.type,
+          config: ns_config.state.config.transform_keys(&:to_sym)
+        },
+        tags: {} # Schema doesn't have tags yet
+      )
+    end
+    
+    def build_namespace_from_config(name, config)
+      state_config = extract_state_config(config)
+      
+      Entities::Namespace.new(
+        name: name.to_s,
+        state: prepare_state(state_config),
+        description: config[:description],
+        tags: config[:tags] || {}
+      )
+    rescue Dry::Struct::Error => e
+      raise ConfigurationError, "Invalid namespace '#{name}': #{e.message}"
+    end
+    
+    def extract_state_config(config)
+      config[:state] || config['state'] || {}
+    end
+    
+    def prepare_state(state_config)
+      state_type = state_config[:type] || state_config['type']
+      config_fields = state_config.reject { |k, _| k.to_s == 'type' }
+      
+      {
+        type: state_type&.to_sym,
+        config: config_fields.transform_keys(&:to_sym)
+      }
+    end
+    
+    public
     
     # Get a specific namespace
     def namespace(name)
@@ -141,9 +146,7 @@ module Pangea
     
     # Reload configuration from files
     def reload!
-      @namespaces = nil
-      @schema = nil
-      @loaded_from = nil
+      %i[@namespaces @schema @loaded_from].each { |var| instance_variable_set(var, nil) }
       load_config
     end
     
@@ -154,96 +157,119 @@ module Pangea
     
     private
     
+    CONFIG_PATHS = [
+      -> { Dir.pwd },
+      -> { File.join(Dir.pwd, '.pangea') },
+      -> { File.join(Dir.pwd, 'infrastructure', 'pangea') },
+      -> { File.join(Dir.home, '.config', 'pangea') },
+      -> { '/etc/pangea' }
+    ].freeze
+    
     def setup_config
-      # Set up configuration file properties
-      @config.filename = 'pangea'
-      @config.extname = '.yml'
-      @config.env_prefix = 'PANGEA'
-      
-      # Configuration search paths (in order of precedence)
-      @config.append_path Dir.pwd                                    # Current directory
-      @config.append_path File.join(Dir.pwd, '.pangea')            # .pangea/ subdirectory
-      @config.append_path File.join(Dir.pwd, 'infrastructure', 'pangea') # infrastructure/pangea subdirectory
-      @config.append_path File.join(Dir.home, '.config', 'pangea') # User config
-      @config.append_path '/etc/pangea'                            # System config
-      
-      # TTY::Config automatically supports yml/yaml formats
+      @config.tap do |c|
+        c.filename = 'pangea'
+        c.extname = '.yml'
+        c.env_prefix = 'PANGEA'
+        CONFIG_PATHS.each { |path_proc| c.append_path(path_proc.call) }
+      end
     end
     
     def load_config
-      begin
-        @config.read
-        @loaded_from = @config.location_paths.select { |p| File.exist?(File.join(p, 'pangea.yml')) }.first
-        
-        # Validate configuration using schema
-        begin
-          config_hash = @config.to_h
-          @schema = ConfigurationTypes::Types::ConfigurationSchema.new(config_hash)
-          @schema.validate!
-          
-          @ui.success "Loaded configuration from: #{@loaded_from}/pangea.yml" if @loaded_from
-        rescue Dry::Struct::Error => e
-          @ui.error "Configuration validation failed: #{e.message}"
-          @ui.warn "Using default configuration"
-          set_defaults
-          @schema = ConfigurationTypes::Types::ConfigurationSchema.new(@config.to_h)
-        rescue ConfigurationError => e
-          @ui.error e.message
-          raise
-        end
-      rescue TTY::Config::ReadError => e
-        @ui.warn "No configuration file found in search paths"
-        @ui.info "Search paths: #{@config.location_paths.join(', ')}"
-        @ui.info "Using default configuration"
-        set_defaults
-        @schema = ConfigurationTypes::Types::ConfigurationSchema.new(@config.to_h)
-      rescue Psych::SyntaxError => e
-        @ui.error "Invalid YAML syntax in configuration file"
-        @ui.error "  File: #{@loaded_from}/pangea.yml" if @loaded_from
-        @ui.error "  Error: #{e.message}"
-        raise ConfigurationError, "Invalid YAML syntax: #{e.message}"
-      ensure
-        set_from_env
-      end
+      @config.read
+      @loaded_from = find_config_file
+      validate_and_load_schema
+    rescue TTY::Config::ReadError
+      handle_missing_config
+    rescue Psych::SyntaxError => e
+      handle_yaml_error(e)
+    ensure
+      set_from_env
     end
+    
+    def find_config_file
+      @config.location_paths.find { |p| File.exist?(File.join(p, 'pangea.yml')) }
+    end
+    
+    def validate_and_load_schema
+      @schema = ConfigurationTypes::Types::ConfigurationSchema.new(@config.to_h)
+      @schema.validate!
+      @ui.success "Loaded configuration from: #{@loaded_from}/pangea.yml" if @loaded_from
+    rescue Dry::Struct::Error => e
+      @ui.error "Configuration validation failed: #{e.message}"
+      @ui.warn "Using default configuration"
+      set_defaults
+      @schema = ConfigurationTypes::Types::ConfigurationSchema.new(@config.to_h)
+    rescue ConfigurationError => e
+      @ui.error e.message
+      raise
+    end
+    
+    def handle_missing_config
+      @ui.warn "No configuration file found in search paths"
+      @ui.info "Search paths: #{@config.location_paths.join(', ')}"
+      @ui.info "Using default configuration"
+      set_defaults
+      @schema = ConfigurationTypes::Types::ConfigurationSchema.new(@config.to_h)
+    end
+    
+    def handle_yaml_error(error)
+      @ui.error "Invalid YAML syntax in configuration file"
+      @ui.error "  File: #{@loaded_from}/pangea.yml" if @loaded_from
+      @ui.error "  Error: #{error.message}"
+      raise ConfigurationError, "Invalid YAML syntax: #{error.message}"
+    end
+    
+    DEFAULT_CONFIG = {
+      namespaces: {},
+      modules: { path: 'modules' },
+      cache: { directory: -> { File.join(Dir.home, '.pangea', 'cache') } },
+      terraform: { binary: -> { ENV['TERRAFORM_BIN'] || 'tofu' } }
+    }.freeze
     
     def set_defaults
-      # Default configuration structure
-      @config.set(:namespaces, value: {})
-      @config.set(:modules, :path, value: 'modules')
-      @config.set(:cache, :directory, value: File.join(Dir.home, '.pangea', 'cache'))
-      @config.set(:terraform, :binary, value: ENV['TERRAFORM_BIN'] || 'tofu')
+      DEFAULT_CONFIG.each do |key, value|
+        set_config_value(key, value)
+      end
     end
     
+    def set_config_value(key, value)
+      if value.is_a?(Hash)
+        value.each { |k, v| @config.set(key, k, value: v.is_a?(Proc) ? v.call : v) }
+      else
+        @config.set(key, value: value.is_a?(Proc) ? value.call : value)
+      end
+    end
+    
+    ENV_OVERRIDES = {
+      'PANGEA_NAMESPACE' => [:default_namespace],
+      'TERRAFORM_BIN' => [:terraform, :binary],
+      'PANGEA_CACHE_DIR' => [:cache, :directory]
+    }.freeze
+    
     def set_from_env
-      # Override configuration from environment variables
-      if ENV['PANGEA_NAMESPACE']
-        @config.set(:default_namespace, value: ENV['PANGEA_NAMESPACE'])
-      end
-      
-      if ENV['TERRAFORM_BIN']
-        @config.set(:terraform, :binary, value: ENV['TERRAFORM_BIN'])
-      end
-      
-      if ENV['PANGEA_CACHE_DIR']
-        @config.set(:cache, :directory, value: ENV['PANGEA_CACHE_DIR'])
+      ENV_OVERRIDES.each do |env_var, config_path|
+        value = ENV[env_var]
+        @config.set(*config_path, value: value) if value
       end
     end
   end
   
   # Global configuration instance
   class << self
+    attr_writer :configuration
+    
     def configuration
       @configuration ||= Configuration.new
     end
-    
-    def config
-      configuration
-    end
+    alias config configuration
     
     def configure
       yield(configuration) if block_given?
       configuration
+    end
+    
+    def reset!
+      @configuration = nil
     end
   end
 end

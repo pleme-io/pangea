@@ -23,6 +23,19 @@ module Pangea
   module Execution
     # Executes Terraform/OpenTofu commands
     class TerraformExecutor
+      # Exit codes for terraform plan
+      PLAN_EXIT_CODES = {
+        0 => { success: true, changes: false, message: 'No changes required' },
+        2 => { success: true, changes: true, message: 'Plan generated successfully' }
+      }.freeze
+      
+      # Error patterns to extract from Terraform output
+      ERROR_PATTERNS = [
+        /Error: (.+?)\n/,
+        /│ Error: (.+)/,
+        /Failed to (.+)/
+      ].freeze
+      
       attr_reader :binary, :working_dir, :logger
       
       def initialize(working_dir:, binary: nil, logger: nil)
@@ -59,14 +72,7 @@ module Pangea
         args << "-target=#{target}" if target
         
         result = execute_command(args, capture_exit_code: true) do |output, exit_code|
-          case exit_code
-          when 0
-            { success: true, changes: false, message: 'No changes required' }
-          when 2
-            { success: true, changes: true, message: 'Plan generated successfully' }
-          else
-            { success: false, message: 'Plan failed' }
-          end
+          PLAN_EXIT_CODES[exit_code] || { success: false, message: 'Plan failed' }
         end
         
         # Parse plan output for resource changes
@@ -76,34 +82,33 @@ module Pangea
       
       # Run terraform apply
       def apply(plan_file: nil, auto_approve: false, target: nil)
-        args = ['apply', '-no-color', '-input=false']
-        
-        if plan_file
-          args << plan_file
-        else
-          args << '-auto-approve' if auto_approve
-          args << "-target=#{target}" if target
+        args = build_args('apply', '-no-color', '-input=false') do |a|
+          if plan_file
+            a << plan_file
+          else
+            a << '-auto-approve' if auto_approve
+            a << "-target=#{target}" if target
+          end
         end
         
         execute_command(args) do |output|
-          if output.include?('Apply complete!')
-            # Extract resource counts
-            resources_match = output.match(/(\d+) added, (\d+) changed, (\d+) destroyed/)
-            if resources_match
-              {
-                success: true,
-                message: 'Apply completed successfully',
-                added: resources_match[1].to_i,
-                changed: resources_match[2].to_i,
-                destroyed: resources_match[3].to_i
-              }
-            else
-              { success: true, message: 'Apply completed successfully' }
-            end
-          else
-            { success: false, message: 'Apply may have failed' }
-          end
+          parse_apply_output(output)
         end
+      end
+      
+      def parse_apply_output(output)
+        return { success: false, message: 'Apply may have failed' } unless output.include?('Apply complete!')
+        
+        resources_match = output.match(/(\d+) added, (\d+) changed, (\d+) destroyed/)
+        base_result = { success: true, message: 'Apply completed successfully' }
+        
+        return base_result unless resources_match
+        
+        base_result.merge(
+          added: resources_match[1].to_i,
+          changed: resources_match[2].to_i,
+          destroyed: resources_match[3].to_i
+        )
       end
       
       # Run terraform destroy
@@ -211,6 +216,41 @@ module Pangea
         
         result
       end
+      alias import import_resource
+      
+      # Refresh terraform state
+      def refresh
+        args = ['refresh', '-no-color', '-input=false']
+        
+        result = execute_command(args) do |output|
+          if output.include?('Refresh complete') || output.include?('No changes')
+            { success: true, message: 'Refresh completed successfully' }
+          else
+            { success: false, message: 'Refresh may have failed' }
+          end
+        end
+        
+        result
+      end
+      
+      # Format terraform configuration files
+      def fmt(check: false, recursive: true)
+        args = ['fmt']
+        args << '-check' if check
+        args << '-recursive' if recursive
+        
+        result = execute_command(args)
+        
+        if result[:success]
+          formatted_files = result[:output].split("\n").reject(&:empty?)
+          result[:formatted_files] = formatted_files
+          result[:message] = check ? 'Format check passed' : "Formatted #{formatted_files.length} files"
+        else
+          result[:message] = 'Format failed'
+        end
+        
+        result
+      end
       
       private
       
@@ -288,7 +328,13 @@ module Pangea
       def extract_terraform_error(output)
         return output if output.nil? || output.empty?
         
-        # Common terraform error patterns
+        # Try to match specific error patterns first
+        ERROR_PATTERNS.each do |pattern|
+          match = output.match(pattern)
+          return match[1] if match
+        end
+        
+        # Fallback to line-based error extraction
         error_lines = output.lines.select do |line|
           line.include?('Error:') || 
           line.include?('Failed to') ||
@@ -303,6 +349,25 @@ module Pangea
         else
           # Return the last few meaningful lines if no specific error found
           output.lines.reject(&:empty?).last(5).join("\n").strip
+        end
+      end
+      
+      # Build command arguments with block for conditional additions
+      def build_args(*base_args)
+        args = base_args.dup
+        yield(args) if block_given?
+        args
+      end
+      
+      def debug_enabled?
+        @logger || ENV['DEBUG']
+      end
+      
+      def debug_log(message)
+        if @logger
+          @logger.call(message)
+        else
+          puts "[DEBUG] #{message}"
         end
       end
     end

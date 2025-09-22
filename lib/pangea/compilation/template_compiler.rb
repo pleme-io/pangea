@@ -40,43 +40,40 @@ module Pangea
         validate_file!(file_path)
         
         content = File.read(file_path)
-        
-        # Process requires to register components/resources
         process_requires(content, file_path)
         
-        # Extract templates using a custom parser
         template_blocks = extract_templates(content)
+        template_blocks = filter_templates(template_blocks, file_path) if @template_name
         
-        # Filter to specific template if requested
-        if @template_name
-          template_blocks = template_blocks.select { |name, _| name.to_s == @template_name.to_s }
-          
-          if template_blocks.empty?
-            return Entities::CompilationResult.new(
-              success: false,
-              errors: ["Template '#{@template_name}' not found in #{file_path}"]
-            )
-          end
-        end
+        return template_not_found_error(file_path) if @template_name && template_blocks.empty?
         
-        # Compile each template
-        results = {}
-        template_blocks.each do |name, block_content|
-          results[name] = compile_template(name, block_content, file_path)
-        end
-        
-        # Return combined results
-        if @template_name
-          # Return the result for the specific template
-          template_key = template_blocks.keys.first
-          results[template_key]
-        elsif results.count == 1
-          # Single template case - return the template directly instead of combining
-          results.values.first
-        else
-          # Multiple templates case - combine results
-          combine_results(results)
-        end
+        results = compile_all_templates(template_blocks, file_path)
+        format_compilation_results(results, template_blocks)
+      end
+      
+      private
+      
+      def filter_templates(templates, file_path)
+        templates.select { |name, _| name.to_s == @template_name.to_s }
+      end
+      
+      def template_not_found_error(file_path)
+        Entities::CompilationResult.new(
+          success: false,
+          errors: ["Template '#{@template_name}' not found in #{file_path}"]
+        )
+      end
+      
+      def compile_all_templates(template_blocks, file_path)
+        template_blocks.map { |name, block_content| 
+          [name, compile_template(name, block_content, file_path)] 
+        }.to_h
+      end
+      
+      def format_compilation_results(results, template_blocks)
+        return results[template_blocks.keys.first] if @template_name
+        return results.values.first if results.count == 1
+        combine_results(results)
       end
       
       # Compile a single template block
@@ -88,27 +85,7 @@ module Pangea
         require 'pangea/resources/helpers'
         @synthesizer.extend(Pangea::Resources::Helpers)
         
-        # Automatically extend with all registered resource modules
-        # User controls what's available via requires in their infrastructure files
-        Pangea::ResourceRegistry.registered_modules.each do |mod|
-          @synthesizer.extend(mod)
-        end
-        
-        # Automatically extend with all registered component modules
-        # Components have access to resources, so load them after resources
-        puts "[DEBUG] Registered components: #{Pangea::ComponentRegistry.registered_components.length}" if ENV['PANGEA_DEBUG']
-        Pangea::ComponentRegistry.registered_components.each do |comp|
-          puts "[DEBUG] Extending synthesizer with component: #{comp}" if ENV['PANGEA_DEBUG']
-          @synthesizer.extend(comp)
-        end
-        
-        # Automatically extend with all registered architecture modules
-        # Architectures have access to resources and components, so load them last
-        puts "[DEBUG] Registered architectures: #{Pangea::ArchitectureRegistry.registered_architectures.length}" if ENV['PANGEA_DEBUG']
-        Pangea::ArchitectureRegistry.registered_architectures.each do |arch|
-          puts "[DEBUG] Extending synthesizer with architecture: #{arch}" if ENV['PANGEA_DEBUG']
-          @synthesizer.extend(arch)
-        end
+        extend_synthesizer_with_modules
         
         begin
           # The content is already extracted from inside the template block
@@ -138,225 +115,122 @@ module Pangea
         end
       end
       
-      private
+      def extend_synthesizer_with_modules
+        [
+          [Pangea::ResourceRegistry.registered_modules, "resource"],
+          [Pangea::ComponentRegistry.registered_components, "component"],
+          [Pangea::ArchitectureRegistry.registered_architectures, "architecture"]
+        ].each do |modules, type|
+          debug_log "Registered #{type}s: #{modules.length}"
+          modules.each do |mod|
+            debug_log "Extending synthesizer with #{type}: #{mod}"
+            @synthesizer.extend(mod)
+          end
+        end
+      end
       
       def process_requires(content, file_path)
-        # Extract and execute require statements to register components
-        content.each_line do |line|
-          if line =~ /^\s*require\s+['"](.+)['"]/
-            require_path = $1
-            begin
-              puts "[DEBUG] Processing require: #{require_path}" if ENV['PANGEA_DEBUG']
-              require require_path
-            rescue LoadError => e
-              # Try relative to the file's directory
-              begin
-                require File.join(File.dirname(file_path), require_path)
-              rescue LoadError
-                # Ignore if can't load - might be optional
-                puts "[DEBUG] Could not load: #{require_path}" if ENV['PANGEA_DEBUG']
-              end
-            end
-          end
+        content.scan(/^\s*require\s+['"](.+)['"]/).each do |match|
+          load_require(match[0], file_path)
         end
       end
       
-      def validate_template!(template)
-        template.validate!
-      rescue Entities::ValidationError => e
-        raise CompilationError, "Template validation failed: #{e.message}"
+      def load_require(require_path, file_path)
+        debug_log "Processing require: #{require_path}"
+        require require_path
+      rescue LoadError
+        # Try relative to the file's directory
+        require File.join(File.dirname(file_path), require_path)
+      rescue LoadError
+        debug_log "Could not load: #{require_path}"
       end
       
-      def compile_content(content)
-        # Create a clean binding for evaluation
-        context = create_compilation_context
-        
-        # Evaluate in the synthesizer's context
-        @synthesizer.instance_eval(content, "(inline)", 1)
-      end
+      # Removed unused validation methods
       
-      def create_compilation_context(template = nil)
-        # This would include helper methods available in templates
-        Module.new do
-          def var(name)
-            # Variable interpolation logic
-          end
-          
-          def import(module_name)
-            # Module import logic
-          end
-        end
-      end
+      # Removed unused method create_compilation_context
       
       def inject_backend_config(template_name)
-        return unless @namespace
+        return unless @namespace && defined?(Pangea.config)
         
-        # Skip if no namespace configured
-        return unless defined?(Pangea.config) && @namespace
-        
-        # Load namespace entity
         namespace_entity = Pangea.config.namespace(@namespace) rescue nil
         return unless namespace_entity
         
-        # Get backend config 
-        backend_config = namespace_entity.to_terraform_backend
+        backend_config = prepare_backend_config(namespace_entity, template_name)
         
-        # Add template-specific state isolation for S3 backends
-        if backend_config[:s3]
-          original_key = backend_config[:s3][:key]
-          # Generate template-specific state key: original_key + template_name
-          backend_config[:s3][:key] = "#{original_key}/#{template_name}/terraform.tfstate"
-        elsif backend_config[:local]
-          # For local backends, use template-specific directory
-          backend_config[:local][:path] = "#{template_name}.tfstate"
-        end
-        
-        # Always inject backend configuration for template isolation
         @synthesizer.synthesize do
-          terraform do
-            backend(backend_config)
-          end
+          terraform { backend(backend_config) }
         end
+      end
+      
+      def prepare_backend_config(namespace_entity, template_name)
+        config = namespace_entity.to_terraform_backend
+        
+        case config.keys.first
+        when :s3
+          config[:s3][:key] = "#{config[:s3][:key]}/#{template_name}/terraform.tfstate"
+        when :local
+          config[:local][:path] = "#{template_name}.tfstate"
+        end
+        
+        config
       end
       
       def collect_warnings
-        warnings = []
-        
-        # Check for common issues
         synthesis = @synthesizer.synthesis
         
-        if synthesis[:resource].nil? || synthesis[:resource].empty?
-          warnings << "No resources defined in template"
+        [].tap do |warnings|
+          warnings << "No resources defined in template" if synthesis[:resource].to_a.empty?
+          warnings << "No provider configuration found" unless synthesis[:provider]
         end
-        
-        if synthesis[:provider].nil?
-          warnings << "No provider configuration found"
-        end
-        
-        warnings
       end
       
       def extract_templates(content)
-        templates = {}
-        
-        # Use regex parsing to extract template blocks
-        # This regex captures the template name and everything between do...end
-        content.scan(/template\s+:(\w+)\s+do\s*\n(.*?)\nend/m) do |name, block_content|
-          # Clean up the block content - remove leading whitespace uniformly
-          lines = block_content.split("\n")
-          if lines.any?
-            # Find minimum indentation (excluding empty lines)
-            min_indent = lines.reject { |line| line.strip.empty? }
-                             .map { |line| line[/^\s*/].length }
-                             .min || 0
-            
-            # Remove the common indentation
-            cleaned_lines = lines.map do |line|
-              if line.strip.empty?
-                ""
-              else
-                line[min_indent..-1] || line
-              end
-            end
-            
-            templates[name.to_sym] = cleaned_lines.join("\n")
-          end
-        end
-        
-        templates
-      end
-      
-      def extract_templates_from_ast(node, content, templates, depth = 0)
-        return unless node.respond_to?(:children)
-        
-        node.children.each do |child|
-          next unless child.is_a?(RubyVM::AbstractSyntaxTree::Node)
-          
-          # Look for method calls named 'template'
-          if child.type == :FCALL && child.children[0] == :template
-            # Extract template name and block
-            if child.children[1] && child.children[1].children[0] &&
-               child.children[1].children[0].type == :LIST &&
-               child.children[1].children[0].children[0] &&
-               child.children[1].children[0].children[0].type == :LIT
-              
-              template_name = child.children[1].children[0].children[0].children[0].to_s
-              
-              # Extract block content using line numbers
-              start_line = child.first_lineno
-              end_line = child.last_lineno
-              
-              if start_line && end_line
-                lines = content.lines
-                # Find the actual template block content
-                template_content = extract_block_content(lines, start_line, end_line)
-                templates[template_name] = template_content
-              end
-            end
-          end
-          
-          # Recursively search child nodes
-          extract_templates_from_ast(child, content, templates, depth + 1)
+        content.scan(/template\s+:(\w+)\s+do\s*\n(.*?)\nend/m).to_h do |name, block_content|
+          [name.to_sym, clean_template_content(block_content)]
         end
       end
       
-      def extract_block_content(lines, start_line, end_line)
-        # Extract content between template do...end, excluding the template line itself
-        template_lines = lines[(start_line - 1)..(end_line - 1)]
+      def clean_template_content(block_content)
+        lines = block_content.split("\n")
+        return "" if lines.empty?
         
-        # Remove first line (template declaration) and last line (end)
-        content_lines = template_lines[1..-2] || []
-        
-        # Remove common indentation
-        if content_lines.any?
-          min_indent = content_lines.reject(&:strip).empty? ? 0 : 
-                      content_lines.map { |line| line[/^\s*/].length }.min
-          content_lines = content_lines.map { |line| line[min_indent..-1] || line }
-        end
-        
-        content_lines.join
+        min_indent = calculate_min_indent(lines)
+        lines.map { |line| strip_indent(line, min_indent) }.join("\n")
       end
+      
+      def calculate_min_indent(lines)
+        lines.reject { |line| line.strip.empty? }
+             .map { |line| line[/^\s*/].length }
+             .min || 0
+      end
+      
+      def strip_indent(line, indent)
+        line.strip.empty? ? "" : (line[indent..-1] || line)
+      end
+      
+      # Removed unused AST-related methods
       
       def combine_results(results)
-        success = results.values.all?(&:success)
-        errors = results.values.flat_map(&:errors).compact
-        warnings = results.values.flat_map(&:warnings).compact
-        
-        # For multiple templates, we DON'T combine JSON - each is separate workspace
-        # Return info about all templates found
-        template_names = results.keys.map(&:to_s).join(', ')
-        
         Entities::CompilationResult.new(
-          success: success,
-          terraform_json: nil,  # No combined JSON - each template is separate
-          errors: errors,
-          warnings: warnings,
+          success: results.values.all?(&:success),
+          terraform_json: nil,
+          errors: results.values.flat_map(&:errors).compact,
+          warnings: results.values.flat_map(&:warnings).compact,
           template_count: results.count,
-          template_name: "Multiple templates: #{template_names}"
+          template_name: "Multiple templates: #{results.keys.map(&:to_s).join(', ')}"
         )
       end
       
-      def deep_merge(hash1, hash2)
-        hash1.merge(hash2) do |_, old_val, new_val|
-          if old_val.is_a?(Hash) && new_val.is_a?(Hash)
-            deep_merge(old_val, new_val)
-          elsif old_val.is_a?(Array) && new_val.is_a?(Array)
-            old_val + new_val
-          else
-            new_val
-          end
-        end
-      end
+      # Removed unused deep_merge method
       
       
       def validate_file!(file_path)
-        unless File.exist?(file_path)
-          raise CompilationError, "File not found: #{file_path}"
-        end
-        
-        unless File.readable?(file_path)
-          raise CompilationError, "File not readable: #{file_path}"
-        end
+        raise CompilationError, "File not found: #{file_path}" unless File.exist?(file_path)
+        raise CompilationError, "File not readable: #{file_path}" unless File.readable?(file_path)
+      end
+      
+      def debug_log(message)
+        puts "[DEBUG] #{message}" if ENV['PANGEA_DEBUG']
       end
       
       
