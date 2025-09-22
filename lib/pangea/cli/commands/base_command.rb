@@ -18,6 +18,7 @@ require 'tty-option'
 require 'pangea/cli/ui/logger'
 require 'pangea/cli/ui/spinner'
 require 'pangea/cli/ui/table'
+require 'pangea/cli/ui/banner'
 
 module Pangea
   module CLI
@@ -37,6 +38,10 @@ module Pangea
         
         def table
           UI::Table
+        end
+        
+        def banner
+          @banner ||= UI::Banner.new
         end
         
         

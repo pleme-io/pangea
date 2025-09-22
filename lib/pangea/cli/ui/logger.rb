@@ -16,6 +16,7 @@
 
 require 'pastel'
 require 'tty-logger'
+require 'tty-box'
 
 module Pangea
   module CLI
@@ -172,6 +173,234 @@ module Pangea
         # Expose pastel for advanced formatting
         def pastel
           @pastel
+        end
+        
+        # Enhanced display methods
+        
+        # Resource status with enhanced formatting
+        def resource_status(resource_type, resource_name, action, status = nil, details = nil)
+          # Enhanced symbols and colors
+          action_symbol = case action
+                         when :create then @pastel.bright_green("◉")
+                         when :update then @pastel.bright_yellow("◎")
+                         when :delete then @pastel.bright_red("◯")
+                         when :replace then @pastel.bright_magenta("⧗")
+                         when :import then @pastel.bright_blue("⬇")
+                         when :refresh then @pastel.bright_cyan("↻")
+                         else @pastel.white("●")
+                         end
+          
+          # Format resource name with type
+          resource_display = "#{@pastel.bright_white(resource_type)}.#{@pastel.cyan(resource_name)}"
+          
+          # Status indicator
+          status_indicator = if status
+                            case status
+                            when :success then @pastel.bright_green(" ✓")
+                            when :error then @pastel.bright_red(" ✗")
+                            when :warning then @pastel.bright_yellow(" ⚠")
+                            when :pending then @pastel.bright_blue(" ⧖")
+                            else ""
+                            end
+                           else
+                             ""
+                           end
+          
+          message = "#{action_symbol} #{resource_display}#{status_indicator}"
+          message += " #{@pastel.bright_black("(#{details})")}" if details
+          
+          say message
+        end
+        
+        # Beautiful diff display
+        def diff_line(type, content)
+          case type
+          when :add
+            say @pastel.bright_green("+ #{content}")
+          when :remove  
+            say @pastel.bright_red("- #{content}")
+          when :context
+            say @pastel.bright_black("  #{content}")
+          when :header
+            say @pastel.bright_cyan("@@ #{content} @@")
+          end
+        end
+        
+        # Template processing status
+        def template_status(name, action, duration = nil)
+          icon = case action
+                when :compiling then "⚙️"
+                when :compiled then "✅"
+                when :failed then "❌"
+                when :validating then "🔍"
+                when :validated then "✅"
+                else "📄"
+                end
+          
+          message = "#{icon} Template #{@pastel.bright_white(name)}"
+          
+          case action
+          when :compiling
+            message += " #{@pastel.yellow('compiling...')}"
+          when :compiled
+            message += " #{@pastel.green('compiled')}"
+            message += " #{@pastel.bright_black("(#{duration}s)")}" if duration
+          when :failed
+            message += " #{@pastel.red('failed')}"
+          when :validating
+            message += " #{@pastel.blue('validating...')}"
+          when :validated
+            message += " #{@pastel.green('validated')}"
+          end
+          
+          say message
+        end
+        
+        # Cost information display
+        def cost_info(current: nil, estimated: nil, savings: nil)
+          return unless current || estimated || savings
+          
+          content = ""
+          
+          if current
+            content += "#{@pastel.white('Current')}: #{@pastel.bright_white("$#{current}/month")}\n"
+          end
+          
+          if estimated
+            content += "#{@pastel.white('Estimated')}: #{@pastel.bright_white("$#{estimated}/month")}\n"
+          end
+          
+          if savings && savings != 0
+            color = savings > 0 ? :bright_green : :bright_red
+            symbol = savings > 0 ? "💰" : "⚠️"
+            content += "#{symbol} #{@pastel.white('Savings')}: #{@pastel.decorate("$#{savings.abs}/month", color)}\n"
+          end
+          
+          box = TTY::Box.frame(
+            content.strip,
+            width: 40,
+            align: :left,
+            border: :light,
+            title: {
+              top_left: "💰 Cost Impact"
+            },
+            style: {
+              border: {
+                color: :yellow
+              }
+            }
+          )
+          
+          say box
+        end
+        
+        # Time and performance metrics
+        def performance_info(metrics)
+          content = ""
+          
+          if metrics[:compilation_time]
+            content += "#{@pastel.white('Compilation')}: #{@pastel.bright_white(metrics[:compilation_time])}\n"
+          end
+          
+          if metrics[:planning_time]
+            content += "#{@pastel.white('Planning')}: #{@pastel.bright_white(metrics[:planning_time])}\n"
+          end
+          
+          if metrics[:apply_time]
+            content += "#{@pastel.white('Apply')}: #{@pastel.bright_white(metrics[:apply_time])}\n"
+          end
+          
+          if metrics[:memory_usage]
+            content += "#{@pastel.white('Memory')}: #{@pastel.bright_white(metrics[:memory_usage])}\n"
+          end
+          
+          if metrics[:terraform_version]
+            content += "#{@pastel.white('Terraform')}: #{@pastel.bright_white(metrics[:terraform_version])}\n"
+          end
+          
+          return if content.empty?
+          
+          box = TTY::Box.frame(
+            content.strip,
+            width: 50,
+            align: :left,
+            border: :light,
+            title: {
+              top_left: "⚡ Performance"
+            },
+            style: {
+              border: {
+                color: :blue
+              }
+            }
+          )
+          
+          say box
+        end
+        
+        # Namespace information display
+        def namespace_info(namespace_entity)
+          content = ""
+          content += "#{@pastel.white('Name')}: #{@pastel.bright_white(namespace_entity.name)}\n"
+          content += "#{@pastel.white('Backend')}: #{@pastel.bright_white(namespace_entity.state.type)}\n"
+          
+          case namespace_entity.state.type
+          when 's3'
+            content += "#{@pastel.white('Bucket')}: #{@pastel.cyan(namespace_entity.state.bucket)}\n"
+            content += "#{@pastel.white('Region')}: #{@pastel.cyan(namespace_entity.state.region)}\n"
+          when 'local'
+            content += "#{@pastel.white('Path')}: #{@pastel.cyan(namespace_entity.state.path)}\n"
+          end
+          
+          if namespace_entity.description
+            content += "#{@pastel.white('Description')}: #{@pastel.bright_black(namespace_entity.description)}\n"
+          end
+          
+          box = TTY::Box.frame(
+            content.strip,
+            width: 60,
+            align: :left,
+            border: :light,
+            title: {
+              top_left: "🏷️  Namespace"
+            },
+            style: {
+              border: {
+                color: :cyan
+              }
+            }
+          )
+          
+          say box
+        end
+        
+        # Command completion celebration
+        def celebration(message, emoji = "🎉")
+          say "\n#{emoji} #{@pastel.bright_green(message)} #{emoji}", color: :bright_green
+          say @pastel.bright_black("─" * (message.length + 6))
+        end
+        
+        # Warning panel for important notices
+        def warning_panel(title, warnings)
+          content = @pastel.bright_yellow("⚠️  #{title}") + "\n\n"
+          
+          warnings.each do |warning|
+            content += "#{@pastel.yellow('•')} #{@pastel.white(warning)}\n"
+          end
+          
+          box = TTY::Box.frame(
+            content.strip,
+            width: 70,
+            align: :left,
+            border: :thick,
+            style: {
+              border: {
+                color: :yellow
+              }
+            }
+          )
+          
+          say box
         end
       end
     end

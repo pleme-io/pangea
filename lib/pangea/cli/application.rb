@@ -23,6 +23,7 @@ require 'pangea/cli/commands/destroy'
 require 'pangea/cli/commands/inspect'
 require 'pangea/cli/commands/agent'
 require 'pangea/cli/commands/import'
+require 'pangea/cli/ui/banner'
 
 module Pangea
   module CLI
@@ -133,17 +134,24 @@ module Pangea
       def run
         parse(ARGV.dup)
         
+        @banner = UI::Banner.new
+        
         # Handle help flag
         if params[:help] || params[:command].nil?
+          puts @banner.welcome
+          puts "\n"
           print help
           exit
         end
         
         # Handle version flag
         if params[:version]
-          ui.say "pangea v#{Pangea::VERSION}", color: :bright_blue
+          puts @banner.welcome
           exit
         end
+        
+        # Show header for commands
+        @banner.header(params[:command]) if params[:command]
         
         # Enable debug mode
         ENV['DEBUG'] = '1' if params[:debug]
