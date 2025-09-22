@@ -109,11 +109,6 @@ module Pangea
         desc 'Output results in JSON format (agent-friendly)'
       end
       
-      option :show_compiled do
-        long '--show-compiled'
-        desc 'Show the compiled Terraform JSON'
-      end
-      
       option :type do
         long '--type string'
         desc 'Type for inspect command (all|templates|resources|architectures|components|namespaces|config|state|render)'
