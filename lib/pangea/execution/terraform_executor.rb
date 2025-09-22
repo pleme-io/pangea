@@ -18,6 +18,7 @@ require 'open3'
 require 'json'
 require 'fileutils'
 require 'pangea/types'
+require 'pangea/errors'
 
 module Pangea
   module Execution
@@ -36,31 +37,55 @@ module Pangea
         /Failed to (.+)/
       ].freeze
       
+      # Retryable error patterns
+      RETRYABLE_ERROR_PATTERNS = [
+        /timeout/i,
+        /connection.*timed out/i,
+        /connection.*refused/i,
+        /rate limit/i,
+        /throttl/i,
+        /temporary failure/i,
+        /network.*unreachable/i,
+        /could not connect/i,
+        /connection reset/i,
+        /RequestLimitExceeded/,
+        /ServiceUnavailable/
+      ].freeze
+      
       attr_reader :binary, :working_dir, :logger
       
-      def initialize(working_dir:, binary: nil, logger: nil)
+      def initialize(working_dir:, binary: nil, logger: nil, max_retries: 3, retry_delay: 2)
         @working_dir = working_dir
         @binary = binary || Pangea.config.fetch(:terraform, :binary, default: 'tofu')
         @logger = logger
+        @max_retries = max_retries
+        @retry_delay = retry_delay
         
         ensure_working_directory!
       end
       
       # Initialize Terraform in the working directory
       def init(upgrade: false)
-        args = ['init', '-no-color', '-input=false']
-        args << '-upgrade' if upgrade
-        
-        result = execute_command(args)
-        
-        if result[:success]
-          result.merge(message: 'Initialization complete')
-        else
-          error_details = result[:error].empty? ? result[:output] : result[:error]
-          result.merge(
-            message: 'Initialization failed',
-            error: extract_terraform_error(error_details)
-          )
+        with_retries do
+          args = ['init', '-no-color', '-input=false']
+          args << '-upgrade' if upgrade
+          
+          result = execute_command(args)
+          
+          # Raise if retryable to trigger retry logic
+          if !result[:success] && result[:retryable]
+            raise StandardError.new(result[:error] || result[:output])
+          end
+          
+          if result[:success]
+            result.merge(message: 'Initialization complete')
+          else
+            error_details = result[:error].empty? ? result[:output] : result[:error]
+            result.merge(
+              message: 'Initialization failed',
+              error: extract_terraform_error(error_details)
+            )
+          end
         end
       end
       
@@ -82,17 +107,26 @@ module Pangea
       
       # Run terraform apply
       def apply(plan_file: nil, auto_approve: false, target: nil)
-        args = build_args('apply', '-no-color', '-input=false') do |a|
-          if plan_file
-            a << plan_file
-          else
-            a << '-auto-approve' if auto_approve
-            a << "-target=#{target}" if target
+        with_retries do
+          args = build_args('apply', '-no-color', '-input=false') do |a|
+            if plan_file
+              a << plan_file
+            else
+              a << '-auto-approve' if auto_approve
+              a << "-target=#{target}" if target
+            end
           end
-        end
-        
-        execute_command(args) do |output|
-          parse_apply_output(output)
+          
+          result = execute_command(args) do |output|
+            parse_apply_output(output)
+          end
+          
+          # Raise if retryable to trigger retry logic
+          if !result[:success] && result[:retryable]
+            raise StandardError.new(result[:error] || result[:output])
+          end
+          
+          result
         end
       end
       
@@ -113,16 +147,25 @@ module Pangea
       
       # Run terraform destroy
       def destroy(auto_approve: false, target: nil)
-        args = ['destroy', '-no-color', '-input=false']
-        args << '-auto-approve' if auto_approve
-        args << "-target=#{target}" if target
-        
-        execute_command(args) do |output|
-          if output.include?('Destroy complete!')
-            { success: true, message: 'Resources destroyed successfully' }
-          else
-            { success: false, message: 'Destroy may have failed' }
+        with_retries do
+          args = ['destroy', '-no-color', '-input=false']
+          args << '-auto-approve' if auto_approve
+          args << "-target=#{target}" if target
+          
+          result = execute_command(args) do |output|
+            if output.include?('Destroy complete!')
+              { success: true, message: 'Resources destroyed successfully' }
+            else
+              { success: false, message: 'Destroy may have failed' }
+            end
           end
+          
+          # Raise if retryable to trigger retry logic
+          if !result[:success] && result[:retryable]
+            raise StandardError.new(result[:error] || result[:output])
+          end
+          
+          result
         end
       end
       
@@ -204,17 +247,24 @@ module Pangea
       
       # Import a resource into terraform state
       def import_resource(resource_address, resource_id)
-        args = ['import', '-no-color', resource_address, resource_id]
-        
-        result = execute_command(args) do |output|
-          if output.include?('Import successful!')
-            { success: true, message: 'Resource imported successfully' }
-          else
-            { success: false, message: 'Import may have failed' }
+        with_retries do
+          args = ['import', '-no-color', resource_address, resource_id]
+          
+          result = execute_command(args) do |output|
+            if output.include?('Import successful!')
+              { success: true, message: 'Resource imported successfully' }
+            else
+              { success: false, message: 'Import may have failed' }
+            end
           end
+          
+          # Raise if retryable to trigger retry logic
+          if !result[:success] && result[:retryable]
+            raise StandardError.new(result[:error] || result[:output])
+          end
+          
+          result
         end
-        
-        result
       end
       alias import import_resource
       
@@ -252,7 +302,83 @@ module Pangea
         result
       end
       
+      # Execute command with retry logic for transient failures
+      def execute_with_retry(method_name, *args, **kwargs)
+        retries = 0
+        last_error = nil
+        
+        loop do
+          begin
+            return send(method_name, *args, **kwargs)
+          rescue StandardError => e
+            last_error = e
+            
+            if retries < @max_retries && retryable_error?(e)
+              retries += 1
+              delay = @retry_delay ** retries  # Exponential backoff
+              
+              @logger&.warn "Retryable error occurred: #{e.message}"
+              @logger&.info "Retrying in #{delay} seconds (attempt #{retries}/#{@max_retries})..."
+              
+              sleep(delay)
+              next
+            else
+              # Non-retryable error or max retries exceeded
+              raise Errors::PangeaError.new(
+                "Operation failed after #{retries} retries",
+                context: { 
+                  method: method_name, 
+                  retries: retries,
+                  last_error: e.message
+                },
+                cause: e
+              )
+            end
+          end
+        end
+      end
+      
       private
+      
+      # Wrapper for operations that should be retried on transient failures
+      def with_retries
+        retries = 0
+        
+        begin
+          yield
+        rescue StandardError => e
+          if retries < @max_retries && (retryable_error?(e) || retryable_output?(e.message, ''))
+            retries += 1
+            delay = @retry_delay ** retries
+            
+            @logger&.warn "Retryable error: #{e.message}"
+            @logger&.info "Retry #{retries}/#{@max_retries} in #{delay}s..."
+            
+            sleep(delay)
+            retry
+          else
+            raise
+          end
+        end
+      end
+      
+      # Check if an error is retryable based on patterns
+      def retryable_error?(error)
+        error_message = error.message.to_s
+        
+        RETRYABLE_ERROR_PATTERNS.any? do |pattern|
+          error_message.match?(pattern)
+        end
+      end
+      
+      # Check if command output indicates a retryable error
+      def retryable_output?(output, error)
+        combined_output = "#{output} #{error}"
+        
+        RETRYABLE_ERROR_PATTERNS.any? do |pattern|
+          combined_output.match?(pattern)
+        end
+      end
       
       def ensure_working_directory!
         FileUtils.mkdir_p(@working_dir) unless Dir.exist?(@working_dir)
@@ -284,6 +410,11 @@ module Pangea
           error: error.join,
           exit_code: exit_code
         }
+        
+        # Check if the error is retryable
+        if !result[:success] && retryable_output?(result[:output], result[:error])
+          result[:retryable] = true
+        end
         
         # Process output with block if given
         if block_given?

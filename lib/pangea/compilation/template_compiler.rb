@@ -21,6 +21,8 @@ require 'pangea/entities'
 require 'pangea/resource_registry'
 require 'pangea/component_registry'
 require 'pangea/architecture_registry'
+require 'parallel'
+require 'pangea/logging'
 
 module Pangea
   module Compilation
@@ -33,6 +35,11 @@ module Pangea
         @namespace = namespace
         @template_name = template_name
         @templates = {}
+        @logger = Logging.logger.child(
+          component: 'TemplateCompiler',
+          namespace: namespace,
+          template: template_name
+        )
       end
       
       # Compile templates from a file
@@ -65,6 +72,27 @@ module Pangea
       end
       
       def compile_all_templates(template_blocks, file_path)
+        # Use parallel processing for multiple templates
+        if template_blocks.size > 1 && !ENV['PANGEA_NO_PARALLEL']
+          compile_templates_parallel(template_blocks, file_path)
+        else
+          compile_templates_sequential(template_blocks, file_path)
+        end
+      end
+      
+      def compile_templates_parallel(template_blocks, file_path)
+        # Determine thread count based on templates and CPU cores
+        thread_count = [template_blocks.size, Parallel.processor_count, 4].min
+        debug_log "Compiling #{template_blocks.size} templates in parallel with #{thread_count} threads"
+        
+        results = Parallel.map(template_blocks, in_threads: thread_count) do |name, block_content|
+          [name, compile_template(name, block_content, file_path)]
+        end
+        
+        results.to_h
+      end
+      
+      def compile_templates_sequential(template_blocks, file_path)
         template_blocks.map { |name, block_content| 
           [name, compile_template(name, block_content, file_path)] 
         }.to_h

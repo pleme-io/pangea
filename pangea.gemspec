@@ -55,5 +55,6 @@ Gem::Specification.new do |spec|
   spec.add_dependency "dry-types", "~> 1.7"
   spec.add_dependency "dry-struct", "~> 1.6"
   spec.add_dependency "dry-validation", "~> 1.10"
+  spec.add_dependency "parallel", "~> 1.24"
   spec.metadata['rubygems_mfa_required'] = 'true'
 end
