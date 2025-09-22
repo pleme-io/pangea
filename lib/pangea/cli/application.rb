@@ -22,6 +22,7 @@ require 'pangea/cli/commands/apply'
 require 'pangea/cli/commands/destroy'
 require 'pangea/cli/commands/inspect'
 require 'pangea/cli/commands/agent'
+require 'pangea/cli/commands/import'
 
 module Pangea
   module CLI
@@ -46,11 +47,14 @@ module Pangea
         
         example 'Destroy with confirmation prompt',
                 '  $ pangea destroy infrastructure.rb --no-auto-approve'
+                
+        example 'Import existing resources',
+                '  $ pangea import infrastructure.rb --namespace production --resource aws_route53_zone.main --id Z1234567890ABC'
       end
       
       argument :command do
         desc 'Command to execute'
-        permit %w[plan apply destroy inspect agent]
+        permit %w[plan apply destroy inspect agent import]
       end
       
       argument :file do
@@ -116,6 +120,16 @@ module Pangea
         default 'json'
       end
       
+      option :resource do
+        long '--resource string'
+        desc 'Resource address for import (e.g., aws_route53_zone.staging_zone)'
+      end
+      
+      option :id do
+        long '--id string'
+        desc 'Resource ID to import (e.g., Z1234567890ABC)'
+      end
+      
       def run
         parse(ARGV.dup)
         
@@ -161,6 +175,13 @@ module Pangea
           Commands::Agent.new.run(subcommand, target,
             template: params[:template],
             namespace: namespace
+          )
+        when 'import'
+          Commands::Import.new.run(params[:file], 
+            namespace: namespace, 
+            template: params[:template],
+            resource: params[:resource],
+            id: params[:id]
           )
         else
           ui.error "Unknown command: #{params[:command]}"

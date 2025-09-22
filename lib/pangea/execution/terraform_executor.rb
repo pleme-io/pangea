@@ -197,6 +197,21 @@ module Pangea
         result
       end
       
+      # Import a resource into terraform state
+      def import_resource(resource_address, resource_id)
+        args = ['import', '-no-color', resource_address, resource_id]
+        
+        result = execute_command(args) do |output|
+          if output.include?('Import successful!')
+            { success: true, message: 'Resource imported successfully' }
+          else
+            { success: false, message: 'Import may have failed' }
+          end
+        end
+        
+        result
+      end
+      
       private
       
       def ensure_working_directory!
