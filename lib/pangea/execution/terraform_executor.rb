@@ -19,6 +19,7 @@ require 'json'
 require 'fileutils'
 require 'pangea/types'
 require 'pangea/errors'
+require 'pangea/logging'
 
 module Pangea
   module Execution

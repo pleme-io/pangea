@@ -44,18 +44,24 @@ module Pangea
       
       # Compile templates from a file
       def compile_file(file_path)
-        validate_file!(file_path)
-        
-        content = File.read(file_path)
-        process_requires(content, file_path)
-        
-        template_blocks = extract_templates(content)
-        template_blocks = filter_templates(template_blocks, file_path) if @template_name
-        
-        return template_not_found_error(file_path) if @template_name && template_blocks.empty?
-        
-        results = compile_all_templates(template_blocks, file_path)
-        format_compilation_results(results, template_blocks)
+        @logger.measure("compile_file", file: file_path) do
+          validate_file!(file_path)
+          
+          content = File.read(file_path)
+          @logger.debug "Read file content", size: content.size, lines: content.lines.count
+          
+          process_requires(content, file_path)
+          
+          template_blocks = extract_templates(content)
+          @logger.info "Extracted templates", count: template_blocks.size, templates: template_blocks.keys
+          
+          template_blocks = filter_templates(template_blocks, file_path) if @template_name
+          
+          return template_not_found_error(file_path) if @template_name && template_blocks.empty?
+          
+          results = compile_all_templates(template_blocks, file_path)
+          format_compilation_results(results, template_blocks)
+        end
       end
       
       private
@@ -83,7 +89,10 @@ module Pangea
       def compile_templates_parallel(template_blocks, file_path)
         # Determine thread count based on templates and CPU cores
         thread_count = [template_blocks.size, Parallel.processor_count, 4].min
-        debug_log "Compiling #{template_blocks.size} templates in parallel with #{thread_count} threads"
+        @logger.info "Compiling templates in parallel", 
+                     template_count: template_blocks.size, 
+                     thread_count: thread_count,
+                     cpu_count: Parallel.processor_count
         
         results = Parallel.map(template_blocks, in_threads: thread_count) do |name, block_content|
           [name, compile_template(name, block_content, file_path)]
@@ -106,40 +115,56 @@ module Pangea
       
       # Compile a single template block
       def compile_template(name, content, source_file)
-        # Create a fresh synthesizer for each template
-        @synthesizer = TerraformSynthesizer.new
+        template_logger = @logger.child(template_name: name)
         
-        # Add helper functions (ref, var, etc.)
-        require 'pangea/resources/helpers'
-        @synthesizer.extend(Pangea::Resources::Helpers)
-        
-        extend_synthesizer_with_modules
-        
-        begin
-          # The content is already extracted from inside the template block
-          # so we can directly evaluate it in the synthesizer context
-          @synthesizer.instance_eval(content, source_file, 1)
+        template_logger.measure("compile_template") do
+          # Create a fresh synthesizer for each template
+          @synthesizer = TerraformSynthesizer.new
           
-          # Inject backend configuration
-          inject_backend_config(name)
+          # Add helper functions (ref, var, etc.)
+          require 'pangea/resources/helpers'
+          @synthesizer.extend(Pangea::Resources::Helpers)
           
-          # Get the synthesis result
-          terraform_json = @synthesizer.synthesis
+          extend_synthesizer_with_modules
           
-          # Convert result to JSON string for storage/output
-          json_string = terraform_json.is_a?(String) ? terraform_json : JSON.pretty_generate(terraform_json)
-          
-          Entities::CompilationResult.new(
-            success: true,
-            terraform_json: json_string,
-            template_name: name.to_s,
-            warnings: collect_warnings
-          )
-          
-        rescue SyntaxError => e
-          handle_syntax_error(e, name, source_file)
-        rescue StandardError => e
-          handle_compilation_error(e, name)
+          begin
+            # The content is already extracted from inside the template block
+            # so we can directly evaluate it in the synthesizer context
+            template_logger.debug "Evaluating template content", lines: content.lines.count
+            @synthesizer.instance_eval(content, source_file, 1)
+            
+            # Inject backend configuration
+            inject_backend_config(name)
+            
+            # Get the synthesis result
+            terraform_json = @synthesizer.synthesis
+            resource_count = terraform_json[:resource]&.size || 0
+            
+            template_logger.info "Template compiled successfully", 
+                                resource_count: resource_count,
+                                has_provider: !!terraform_json[:provider]
+            
+            # Convert result to JSON string for storage/output
+            json_string = terraform_json.is_a?(String) ? terraform_json : JSON.pretty_generate(terraform_json)
+            
+            Entities::CompilationResult.new(
+              success: true,
+              terraform_json: json_string,
+              template_name: name.to_s,
+              warnings: collect_warnings
+            )
+            
+          rescue SyntaxError => e
+            template_logger.error "Syntax error in template", 
+                                 error: e.message, 
+                                 type: e.class.name
+            handle_syntax_error(e, name, source_file)
+          rescue StandardError => e
+            template_logger.error "Compilation error", 
+                                 error: e.message, 
+                                 type: e.class.name
+            handle_compilation_error(e, name)
+          end
         end
       end
       
@@ -149,9 +174,9 @@ module Pangea
           [Pangea::ComponentRegistry.registered_components, "component"],
           [Pangea::ArchitectureRegistry.registered_architectures, "architecture"]
         ].each do |modules, type|
-          debug_log "Registered #{type}s: #{modules.length}"
+          @logger.debug "Loading #{type} modules", count: modules.length
           modules.each do |mod|
-            debug_log "Extending synthesizer with #{type}: #{mod}"
+            @logger.debug "Extending synthesizer", type: type, module: mod
             @synthesizer.extend(mod)
           end
         end
@@ -164,13 +189,19 @@ module Pangea
       end
       
       def load_require(require_path, file_path)
-        debug_log "Processing require: #{require_path}"
+        @logger.debug "Loading required file", path: require_path
         require require_path
-      rescue LoadError
+        @logger.debug "Successfully loaded", path: require_path
+      rescue LoadError => e
         # Try relative to the file's directory
-        require File.join(File.dirname(file_path), require_path)
-      rescue LoadError
-        debug_log "Could not load: #{require_path}"
+        relative_path = File.join(File.dirname(file_path), require_path)
+        @logger.debug "Trying relative path", path: relative_path
+        require relative_path
+        @logger.debug "Successfully loaded", path: relative_path
+      rescue LoadError => e
+        @logger.warn "Could not load required file", 
+                     path: require_path, 
+                     error: e.message
       end
       
       # Removed unused validation methods
@@ -258,7 +289,7 @@ module Pangea
       end
       
       def debug_log(message)
-        puts "[DEBUG] #{message}" if ENV['PANGEA_DEBUG']
+        @logger.debug message
       end
       
       
