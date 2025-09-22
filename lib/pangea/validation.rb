@@ -13,6 +13,8 @@
 # limitations under the License.
 
 require_relative 'errors'
+require_relative 'validation/resource_validator'
+require_relative 'validation/validator_manager'
 
 module Pangea
   module Validation
