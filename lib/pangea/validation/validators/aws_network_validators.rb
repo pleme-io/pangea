@@ -75,8 +75,19 @@ module Pangea
             key.failure('must be 255 characters or less')
           end
           
-          unless value.match?(/^[a-zA-Z0-9 ._\-:/()#,@\[\]+=&;{}!$*]+$/)
-            key.failure('contains invalid characters')
+          # Define allowed characters for security group names
+          allowed_chars = [
+            ('a'..'z').to_a, ('A'..'Z').to_a, ('0'..'9').to_a,
+            [' ', '.', '_', '-', ':', '/', '(', ')', '#', ',', '@', 
+             '[', ']', '+', '=', '&', ';', '{', '}', '!', '$', '*']
+          ].flatten
+          
+          # Check each character is in the allowed set
+          value.each_char do |char|
+            unless allowed_chars.include?(char)
+              key.failure("contains invalid character: '#{char}'")
+              break
+            end
           end
         end
         
