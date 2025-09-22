@@ -54,7 +54,7 @@ module Pangea
         def success(message = nil)
           formatted_message = if message && @start_time
             duration = Time.now - @start_time
-            "#{@pastel.bright_green(message)} #{@pastel.bright_black("(#{format_duration(duration)}")}"
+            "#{@pastel.bright_green(message)} #{@pastel.bright_black("(#{format_duration(duration)})")}"
           else
             message
           end
