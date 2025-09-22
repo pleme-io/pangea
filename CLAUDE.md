@@ -200,12 +200,13 @@ For each template, Pangea automatically generates unique state keys:
 
 **Minimalist Command Set**: Only three commands exist for focused, automation-first operation:
 
-### `pangea plan <file> [--namespace <ns>] [--template <name>]`
+### `pangea plan <file> [--namespace <ns>] [--template <name>] [--show-compiled]`
 
 - **Purpose**: Preview infrastructure changes without applying them
 - **Template Processing**: If `--template` omitted, processes all templates in the file
 - **Namespace**: If `--namespace` omitted, uses `default_namespace` from configuration
 - **Output**: Colorized Terraform plan showing proposed changes
+- **Show Compiled**: Use `--show-compiled` to output the compiled Terraform JSON without running plan
 - **Automation**: Safe to run in CI/CD pipelines - no state changes
 
 ### `pangea apply <file> [--namespace <ns>] [--template <name>] [--no-auto-approve]`
@@ -403,6 +404,27 @@ tf_json = JSON.pretty_generate(tf_hash)  # Convert to JSON
 - **Error Handling**: Syntax errors are captured with line number context for debugging
 
 This compilation approach enables the Ruby DSL abstraction while maintaining full Terraform compatibility and feature support.
+
+### Compiled JSON Output
+The `--show-compiled` flag allows viewing the complete Terraform JSON output without executing any infrastructure operations:
+
+- **Purpose**: Debug template compilation, validate resource generation, create artifacts
+- **Output**: Pretty-printed JSON with syntax highlighting and line numbers
+- **No Side Effects**: Does not require cloud credentials or modify any state
+- **CI/CD Integration**: Can be used to generate JSON artifacts for version control
+- **Validation**: Output can be piped to tools like `jq` for structural validation
+
+Example usage:
+```bash
+# View compiled JSON for debugging
+pangea plan infrastructure.rb --show-compiled
+
+# Save JSON artifact
+pangea plan infrastructure.rb --template web --show-compiled > web.tf.json
+
+# Validate JSON structure
+pangea plan infrastructure.rb --show-compiled | jq . > /dev/null
+```
 
 ## Architecture Abstraction System
 

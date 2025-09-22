@@ -119,6 +119,12 @@ pangea plan infrastructure.rb --template web_server
 
 # Plan with specific namespace
 pangea plan infrastructure.rb --namespace production
+
+# Show compiled Terraform JSON without running plan
+pangea plan infrastructure.rb --show-compiled
+
+# Show compiled JSON for specific template
+pangea plan infrastructure.rb --template web_server --show-compiled
 ```
 
 #### Apply Changes

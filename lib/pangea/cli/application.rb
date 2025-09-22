@@ -99,6 +99,11 @@ module Pangea
         desc 'Target specific template within file'
       end
       
+      option :show_compiled do
+        long '--show-compiled'
+        desc 'Show compiled Terraform JSON output (plan command only)'
+      end
+      
       option :json do
         long '--json'
         desc 'Output results in JSON format (agent-friendly)'
