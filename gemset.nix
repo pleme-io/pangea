@@ -509,7 +509,7 @@
     version = "0.3.0";
   };
   pangea = {
-    dependencies = ["abstract-synthesizer" "aws-sdk-dynamodb" "aws-sdk-s3" "diff-lcs" "dry-struct" "dry-types" "dry-validation" "pastel" "rexml" "terraform-synthesizer" "toml-rb" "tty-box" "tty-config" "tty-logger" "tty-option" "tty-progressbar" "tty-spinner" "tty-table"];
+    dependencies = ["abstract-synthesizer" "aws-sdk-dynamodb" "aws-sdk-s3" "diff-lcs" "dry-struct" "dry-types" "dry-validation" "parallel" "pastel" "rexml" "terraform-synthesizer" "toml-rb" "tty-box" "tty-config" "tty-logger" "tty-option" "tty-progressbar" "tty-spinner" "tty-table"];
     groups = ["default"];
     platforms = [];
     source = {
