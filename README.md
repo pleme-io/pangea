@@ -109,6 +109,7 @@ namespaces:
 ### Commands
 
 #### Plan Changes
+
 ```bash
 # Plan all templates in file (uses default namespace)
 pangea plan infrastructure.rb
@@ -127,6 +128,7 @@ pangea plan infrastructure.rb --template web_server --show-compiled
 ```
 
 #### Apply Changes
+
 ```bash
 # Apply (auto-approves by default)
 pangea apply infrastructure.rb --template web_server
@@ -136,6 +138,7 @@ pangea apply infrastructure.rb --template web_server --no-auto-approve
 ```
 
 #### Destroy Infrastructure
+
 ```bash
 # Destroy (auto-approves by default)
 pangea destroy infrastructure.rb --template web_server
@@ -147,29 +150,27 @@ pangea destroy infrastructure.rb --template web_server --no-auto-approve
 ## Key Features
 
 ### 🏗️ Template-Level State Isolation
+
 - Each template gets its own workspace and state file
 - More granular than industry standard directory-based approaches
 - Reduces blast radius and enables parallel development
 
 ### 🤖 Automation-First Design
+
 - Auto-approval by default for streamlined CI/CD
-- No `init` command needed - initialization is automatic
 - Non-interactive operation for automation workflows
 
 ### 📦 Ruby DSL Compilation
+
 - Type-safe resource functions with RBS definitions
 - Compile-time validation using dry-struct
 - Access to full Ruby ecosystem for complex logic
 
 ### 🌐 Multi-Environment Management
+
 - Configuration-driven namespace management
 - Support for local, S3, and custom backends
 - Automatic state key generation prevents conflicts
-
-### 🔧 Developer Experience
-- Beautiful colorized output and progress indicators
-- Default namespace support reduces CLI verbosity
-- Comprehensive examples and documentation
 
 ## Architecture
 
@@ -181,18 +182,21 @@ pangea destroy infrastructure.rb --template web_server --no-auto-approve
 ## Why Pangea?
 
 ### vs. Directory-Based Terraform
+
 - **Reduced File Sprawl**: Multiple templates in single files vs scattered directories
 - **Automatic Backend Management**: No manual backend configuration per component
 - **Ruby DSL Power**: Better abstraction than HCL for complex logic
 - **Code Reuse**: Shared helper methods and logic within files
 
 ### vs. Terragrunt
+
 - **Configuration Simplicity**: Single YAML file vs multiple terragrunt.hcl files
 - **Template Isolation**: Built-in template-level isolation vs manual workspace management
 - **Ruby Ecosystem**: Access to full Ruby library ecosystem
 - **No DRY Complexity**: Templates handle repetition naturally
 
 ### vs. Terraform Workspaces
+
 - **True State Isolation**: Completely separate state files vs shared backend
 - **Security Boundaries**: No cross-template state access
 - **Template Granularity**: Template-specific configurations
