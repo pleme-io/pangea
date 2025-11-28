@@ -21,24 +21,28 @@ module Pangea
     module TerraformCommandExecutor
       private
       
-      def execute_command(args, capture_exit_code: false)
+      def execute_command(args, capture_exit_code: false, stream_output: false)
         cmd = [@binary] + args
         command_str = cmd.join(' ')
-        
-        @logger.debug "Executing Terraform command", 
+
+        @logger.debug "Executing Terraform command",
                      command: command_str,
                      working_dir: @working_dir
-        
-        output, error, exit_code = capture_command_output(cmd)
-        
+
+        if stream_output
+          output, error, exit_code = stream_command_output(cmd)
+        else
+          output, error, exit_code = capture_command_output(cmd)
+        end
+
         result = build_command_result(output, error, exit_code, capture_exit_code)
-        
+
         # Process output with block if given
         if block_given?
           processed = yield(result[:output], exit_code)
           result.merge!(processed) if processed.is_a?(Hash)
         end
-        
+
         result
       rescue StandardError => e
         { success: false, error: e.message, output: '', exit_code: -1 }
@@ -48,24 +52,69 @@ module Pangea
         output = []
         error = []
         exit_code = nil
-        
+
         Open3.popen3(*cmd, chdir: @working_dir) do |stdin, stdout, stderr, wait_thr|
           stdin.close
-          
+
           # Read output streams
-          stdout.each_line do |line| 
+          stdout.each_line do |line|
             output << line
             @logger.debug "Terraform stdout", line: line.chomp if ENV['PANGEA_TERRAFORM_OUTPUT']
           end
-          
+
           stderr.each_line do |line|
             error << line
             @logger.debug "Terraform stderr", line: line.chomp if ENV['PANGEA_TERRAFORM_OUTPUT']
           end
-          
+
           exit_code = wait_thr.value.exitstatus
         end
-        
+
+        [output.join, error.join, exit_code]
+      end
+
+      def stream_command_output(cmd)
+        output = []
+        error = []
+        exit_code = nil
+
+        Open3.popen3(*cmd, chdir: @working_dir) do |stdin, stdout, stderr, wait_thr|
+          stdin.close
+
+          # Set streams to non-blocking mode
+          stdout.sync = true
+          stderr.sync = true
+
+          # Read and stream output in real-time
+          readers = [stdout, stderr]
+          while !readers.empty?
+            ready = IO.select(readers, nil, nil, 0.1)
+            next unless ready
+
+            ready[0].each do |io|
+              begin
+                # Use read_nonblock to get partial output (not just full lines)
+                data = io.read_nonblock(4096)
+                if io == stdout
+                  output << data
+                  $stdout.print data
+                  $stdout.flush
+                elsif io == stderr
+                  error << data
+                  $stderr.print data
+                  $stderr.flush
+                end
+              rescue IO::WaitReadable
+                # No data available yet, continue
+              rescue EOFError
+                readers.delete(io)
+              end
+            end
+          end
+
+          exit_code = wait_thr.value.exitstatus
+        end
+
         [output.join, error.join, exit_code]
       end
       

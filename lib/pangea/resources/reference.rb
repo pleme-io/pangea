@@ -61,17 +61,20 @@ module Pangea
         end
       end
       
-      # Method delegation to computed attributes
+      # Method delegation to outputs and computed attributes
       def method_missing(method_name, *args, &block)
-        if computed_attributes.respond_to?(method_name)
+        # First check if this is an output
+        if outputs.key?(method_name)
+          outputs[method_name]
+        elsif computed_attributes.respond_to?(method_name)
           computed_attributes.public_send(method_name, *args, &block)
         else
           super
         end
       end
-      
+
       def respond_to_missing?(method_name, include_private = false)
-        computed_attributes.respond_to?(method_name, include_private) || super
+        outputs.key?(method_name) || computed_attributes.respond_to?(method_name, include_private) || super
       end
       
       # Convert to hash for terraform-synthesizer integration

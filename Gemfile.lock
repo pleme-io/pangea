@@ -10,6 +10,7 @@ PATH
       dry-struct (~> 1.6)
       dry-types (~> 1.7)
       dry-validation (~> 1.10)
+      parallel (~> 1.24)
       pastel (~> 0.8)
       rexml (~> 3.2)
       terraform-synthesizer (~> 0.0.27)

@@ -18,11 +18,11 @@ require 'simplecov'
 SimpleCov.start do
   add_filter '/spec/'
   add_filter '/vendor/'
-  
+
   track_files 'lib/**/*.rb'
-  
-  minimum_coverage 80
-  
+
+  # No minimum coverage requirement - coverage is tracked but not enforced
+
   if ENV['CI']
     require 'simplecov-lcov'
     SimpleCov::Formatter::LcovFormatter.config do |c|

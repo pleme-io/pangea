@@ -65,7 +65,7 @@ All standard commands support JSON output with the `--json` flag:
 # Plan with JSON output
 pangea plan infrastructure.rb --json
 
-# Apply with JSON output  
+# Apply with JSON output
 pangea apply infrastructure.rb --json
 
 # Destroy with JSON output
@@ -111,6 +111,7 @@ puts info[:documentation]  # Resource docs
 ## Response Formats
 
 ### Resource Listing
+
 ```json
 {
   "total": 523,
@@ -126,6 +127,7 @@ puts info[:documentation]  # Resource docs
 ```
 
 ### Template Analysis
+
 ```json
 {
   "file": "infrastructure.rb",
@@ -140,18 +142,17 @@ puts info[:documentation]  # Resource docs
         "providers": ["aws"]
       },
       "resource_functions": [
-        {"function": "aws_vpc", "name": "main"},
-        {"function": "aws_subnet", "name": "public"}
+        { "function": "aws_vpc", "name": "main" },
+        { "function": "aws_subnet", "name": "public" }
       ],
-      "dependencies": [
-        {"type": "aws_vpc", "name": "main", "attribute": "id"}
-      ]
+      "dependencies": [{ "type": "aws_vpc", "name": "main", "attribute": "id" }]
     }
   ]
 }
 ```
 
 ### Plan Output
+
 ```json
 {
   "timestamp": "2024-01-15T10:30:00Z",
@@ -168,7 +169,11 @@ puts info[:documentation]  # Resource docs
   },
   "resources": {
     "create": [
-      {"type": "aws_instance", "name": "web", "full_address": "aws_instance.web"}
+      {
+        "type": "aws_instance",
+        "name": "web",
+        "full_address": "aws_instance.web"
+      }
     ],
     "update": [],
     "delete": []
@@ -179,6 +184,7 @@ puts info[:documentation]  # Resource docs
 ## Best Practices for Agents
 
 ### 1. Always Validate Before Apply
+
 ```bash
 # First validate
 pangea agent validate infrastructure.rb
@@ -191,6 +197,7 @@ pangea apply infrastructure.rb --json
 ```
 
 ### 2. Use Introspection for Discovery
+
 ```bash
 # Discover available resources before generating code
 pangea inspect --type resources | jq '.resources[] | select(.service == "ec2")'
@@ -200,6 +207,7 @@ pangea inspect project.rb --type templates
 ```
 
 ### 3. Leverage Analysis for Better Code Generation
+
 ```bash
 # Analyze existing infrastructure to understand patterns
 pangea agent analyze infrastructure.rb
@@ -209,6 +217,7 @@ pangea agent suggest infrastructure.rb
 ```
 
 ### 4. Handle Errors Gracefully
+
 All JSON responses include error information when failures occur:
 
 ```json
@@ -220,6 +229,7 @@ All JSON responses include error information when failures occur:
 ```
 
 ### 5. Use Cost Estimation
+
 Before applying changes, estimate costs:
 
 ```bash
@@ -229,6 +239,7 @@ pangea agent cost infrastructure.rb
 ## Common Agent Workflows
 
 ### 1. Generate New Infrastructure
+
 ```bash
 # 1. List available resources
 pangea inspect --type resources
@@ -250,6 +261,7 @@ pangea apply infrastructure.rb --json
 ```
 
 ### 2. Modify Existing Infrastructure
+
 ```bash
 # 1. Analyze current state
 pangea agent analyze infrastructure.rb
@@ -271,6 +283,7 @@ pangea apply infrastructure.rb --json
 ```
 
 ### 3. Infrastructure Explanation
+
 ```bash
 # Get a human-readable explanation
 pangea agent explain infrastructure.rb
@@ -292,6 +305,7 @@ pangea agent analyze infrastructure.rb
 ## Advanced Agent Features
 
 ### Batch Operations
+
 Process multiple templates or files:
 
 ```ruby
@@ -303,6 +317,7 @@ end
 ```
 
 ### Custom Analysis
+
 Extend the agent with custom analysis:
 
 ```ruby
@@ -316,6 +331,7 @@ end
 ```
 
 ### Integration with CI/CD
+
 Use JSON output for CI/CD integration:
 
 ```bash

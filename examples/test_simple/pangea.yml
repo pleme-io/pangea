@@ -1,0 +1,7 @@
+default_namespace: development
+
+namespaces:
+  development:
+    state:
+      type: local
+      path: "terraform.tfstate"

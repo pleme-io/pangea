@@ -25,30 +25,24 @@ module Pangea
     module AwsSubnet
       # Create an AWS Subnet with type-safe attributes
       #
-      # @param name [Symbol] The resource name  
+      # @param name [Symbol] The resource name
       # @param attributes [Hash] Subnet attributes
       # @return [ResourceReference] Reference object with outputs and computed properties
       def aws_subnet(name, attributes = {})
         # Validate attributes using dry-struct
         subnet_attrs = AWS::Types::SubnetAttributes.new(attributes)
-        
+
         # Generate terraform resource block via terraform-synthesizer
         resource(:aws_subnet, name) do
           vpc_id subnet_attrs.vpc_id
           cidr_block subnet_attrs.cidr_block
           availability_zone subnet_attrs.availability_zone
           map_public_ip_on_launch subnet_attrs.map_public_ip_on_launch
-          
+
           # Apply tags if present
-          if subnet_attrs.tags.any?
-            tags do
-              subnet_attrs.tags.each do |key, value|
-                public_send(key, value)
-              end
-            end
-          end
+          tags subnet_attrs.tags if subnet_attrs.tags.any?
         end
-        
+
         # Return resource reference with available outputs
         ResourceReference.new(
           type: 'aws_subnet',
@@ -66,7 +60,7 @@ module Pangea
         )
       end
     end
-    
+
     # Maintain backward compatibility by extending AWS module
     module AWS
       include AwsSubnet
@@ -75,4 +69,4 @@ module Pangea
 end
 
 # Auto-register this module when it's loaded
-Pangea::ResourceRegistry.register(:aws, Pangea::Resources::AwsSubnet)
+Pangea::ResourceRegistry.register(:aws, Pangea::Resources::AWS)

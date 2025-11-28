@@ -59,11 +59,11 @@ module Pangea
       end
       
       # Initialize Terraform in the working directory
-      def init(upgrade: false)
+      def init(upgrade: false, stream_output: false)
         with_retries do
-          result = execute_command(build_init_args(upgrade: upgrade))
+          result = execute_command(build_init_args(upgrade: upgrade), stream_output: stream_output)
           handle_retryable_result(result)
-          
+
           if result[:success]
             result.merge(message: 'Initialization complete')
           else

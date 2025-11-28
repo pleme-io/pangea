@@ -1206,26 +1206,506 @@ module Pangea
         alert_target_arn: String.constrained(format: /\Aarn:aws:sns:/),
         role_arn: String.constrained(format: /\Aarn:aws:iam::\d{12}:role\//)
       )
-      
+
       # IoT Billing group properties
       IotBillingGroupProperties = Hash.schema(
         billing_group_description?: String.constrained(max_size: 2028).optional
       )
-      
+
       # IoT Dynamic group query string
       IotDynamicGroupQueryString = String.constructor { |value|
         # Must be a valid IoT fleet indexing query
         if value.length > 500
           raise Dry::Types::ConstraintError, "IoT Dynamic group query string cannot exceed 500 characters"
         end
-        
+
         # Basic validation - should contain searchable attributes
         unless value.include?('attributes.') || value.include?('connectivity.') || value.include?('registry.')
           raise Dry::Types::ConstraintError, "IoT Dynamic group query must reference searchable attributes"
         end
-        
+
         value
       }
+
+      # ============================================================================
+      # Cloudflare Types
+      # ============================================================================
+
+      # Cloudflare Zone Types
+      CloudflareZoneType = String.default('full').enum('full', 'partial', 'secondary')
+      CloudflareZonePlan = String.default('free').enum('free', 'pro', 'business', 'enterprise')
+      CloudflareZoneStatus = String.enum('active', 'pending', 'initializing', 'moved', 'deleted', 'deactivated')
+
+      # Cloudflare DNS Record Types
+      CloudflareDnsRecordType = String.enum(
+        'A', 'AAAA', 'CNAME', 'TXT', 'MX', 'NS', 'SRV', 'CAA',
+        'HTTPS', 'SVCB', 'LOC', 'PTR', 'CERT', 'DNSKEY', 'DS',
+        'NAPTR', 'SMIMEA', 'SSHFP', 'TLSA', 'URI'
+      )
+
+      # Cloudflare proxied status (orange cloud vs grey cloud)
+      CloudflareProxied = Bool.default(false)
+
+      # Cloudflare TTL validation (1 = automatic, or 60-86400 for manual)
+      CloudflareTtl = Integer.constructor { |value|
+        # TTL = 1 means automatic (proxied mode)
+        next value if value == 1
+
+        # Manual TTL must be between 60 and 86400 seconds
+        unless (60..86400).include?(value)
+          raise Dry::Types::ConstraintError, "Cloudflare TTL must be 1 (automatic) or between 60-86400 seconds"
+        end
+
+        value
+      }
+
+      # Cloudflare priority (for MX, SRV records)
+      CloudflarePriority = Integer.constrained(gteq: 0, lteq: 65535)
+
+      # Cloudflare Page Rule actions
+      CloudflarePageRuleAction = String.enum(
+        'always_online', 'always_use_https', 'automatic_https_rewrites',
+        'browser_cache_ttl', 'browser_check', 'bypass_cache_on_cookie',
+        'cache_by_device_type', 'cache_deception_armor', 'cache_key_fields',
+        'cache_level', 'cache_on_cookie', 'cache_ttl_by_status',
+        'disable_apps', 'disable_performance', 'disable_railgun',
+        'disable_security', 'edge_cache_ttl', 'email_obfuscation',
+        'explicit_cache_control', 'forwarding_url', 'host_header_override',
+        'ip_geolocation', 'minify', 'mirage', 'opportunistic_encryption',
+        'origin_error_page_pass_thru', 'polish', 'resolve_override',
+        'respect_strong_etag', 'response_buffering', 'rocket_loader',
+        'security_level', 'server_side_exclude', 'sort_query_string_for_cache',
+        'ssl', 'true_client_ip_header', 'waf'
+      )
+
+      # Cloudflare cache level
+      CloudflareCacheLevel = String.enum('bypass', 'basic', 'simplified', 'aggressive', 'cache_everything')
+
+      # Cloudflare security level
+      CloudflareSecurityLevel = String.enum('off', 'essentially_off', 'low', 'medium', 'high', 'under_attack')
+
+      # Cloudflare SSL mode
+      CloudflareSslMode = String.enum('off', 'flexible', 'full', 'strict', 'origin_pull')
+
+      # Cloudflare Rocket Loader setting
+      CloudflareRocketLoader = String.enum('off', 'manual', 'automatic')
+
+      # Cloudflare Polish setting
+      CloudflarePolish = String.enum('off', 'lossless', 'lossy')
+
+      # Cloudflare Worker script format
+      CloudflareWorkerScriptFormat = String.enum('service-worker', 'modules')
+
+      # Cloudflare Worker route pattern validation
+      CloudflareWorkerRoutePattern = String.constructor { |value|
+        # Must contain a valid hostname pattern
+        unless value.match?(/\A[a-z0-9\-\.\*]+\/.*\z/i)
+          raise Dry::Types::ConstraintError, "Worker route pattern must include hostname and path (e.g., 'example.com/*')"
+        end
+
+        # Cannot have multiple consecutive asterisks
+        if value.include?('**')
+          raise Dry::Types::ConstraintError, "Worker route pattern cannot contain consecutive asterisks"
+        end
+
+        value
+      }
+
+      # Cloudflare Load Balancer steering policy
+      CloudflareLoadBalancerSteeringPolicy = String.default('off').enum(
+        'off', 'geo', 'random', 'dynamic_latency', 'proximity', 'least_outstanding_requests', 'least_connections'
+      )
+
+      # Cloudflare Load Balancer session affinity
+      CloudflareLoadBalancerSessionAffinity = String.default('none').enum('none', 'cookie', 'ip_cookie', 'header')
+
+      # Cloudflare Load Balancer fallback pool
+      CloudflareLoadBalancerFallbackPool = String.optional
+
+      # Cloudflare Load Balancer Pool health check region
+      CloudflareHealthCheckRegion = String.enum(
+        'WNAM', 'ENAM', 'WEU', 'EEU', 'NSAM', 'SSAM', 'OC', 'ME', 'NAF', 'SAF',
+        'SAS', 'SEAS', 'NEAS', 'ALL_REGIONS'
+      )
+
+      # Cloudflare Load Balancer Monitor type
+      CloudflareMonitorType = String.default('http').enum('http', 'https', 'tcp', 'udp_icmp', 'icmp_ping', 'smtp')
+
+      # Cloudflare Load Balancer Monitor method
+      CloudflareMonitorMethod = String.default('GET').enum('GET', 'HEAD', 'POST', 'PUT', 'DELETE', 'CONNECT', 'OPTIONS', 'TRACE', 'PATCH')
+
+      # Cloudflare Load Balancer Monitor interval (in seconds)
+      CloudflareMonitorInterval = Integer.constrained(gteq: 5, lteq: 3600)
+
+      # Cloudflare Load Balancer Monitor timeout (in seconds)
+      CloudflareMonitorTimeout = Integer.constrained(gteq: 1, lteq: 10)
+
+      # Cloudflare Load Balancer Monitor retries
+      CloudflareMonitorRetries = Integer.constrained(gteq: 0, lteq: 5)
+
+      # Cloudflare Load Balancer Monitor expected codes (e.g., "2xx", "200-299")
+      CloudflareMonitorExpectedCodes = String.constructor { |value|
+        # Valid formats: "2xx", "200", "200-299"
+        valid_formats = [
+          /\A\dxx\z/,                    # 2xx, 3xx, etc.
+          /\A\d{3}\z/,                   # 200, 404, etc.
+          /\A\d{3}-\d{3}\z/              # 200-299, etc.
+        ]
+
+        unless valid_formats.any? { |pattern| value.match?(pattern) }
+          raise Dry::Types::ConstraintError, "Monitor expected codes must be in format '2xx', '200', or '200-299'"
+        end
+
+        value
+      }
+
+      # Cloudflare Firewall rule action
+      CloudflareFirewallAction = String.enum(
+        'block', 'challenge', 'js_challenge', 'managed_challenge', 'allow', 'log', 'bypass'
+      )
+
+      # Cloudflare Filter expression (Wirefilter syntax)
+      CloudflareFilterExpression = String.constructor { |value|
+        # Basic validation - must not be empty
+        if value.strip.empty?
+          raise Dry::Types::ConstraintError, "Filter expression cannot be empty"
+        end
+
+        # Check for common fields to ensure it's likely valid
+        common_fields = ['http.', 'ip.', 'cf.', 'ssl.', 'http.request.', 'http.host', 'http.user_agent']
+        unless common_fields.any? { |field| value.include?(field) }
+          # Allow it anyway, but it might be suspicious
+        end
+
+        value
+      }
+
+      # Cloudflare Access application type
+      CloudflareAccessApplicationType = String.enum('self_hosted', 'saas', 'ssh', 'vnc', 'app_launcher', 'warp', 'biso', 'bookmark')
+
+      # Cloudflare Access session duration
+      CloudflareAccessSessionDuration = String.constructor { |value|
+        # Valid formats: "24h", "12h", "30m", "1h"
+        unless value.match?(/\A\d+[mhd]\z/)
+          raise Dry::Types::ConstraintError, "Access session duration must be in format like '24h', '30m', '7d'"
+        end
+
+        value
+      }
+
+      # Cloudflare Access policy decision
+      CloudflareAccessPolicyDecision = String.enum('allow', 'deny', 'non_identity', 'bypass')
+
+      # Cloudflare Access identity provider type
+      CloudflareAccessIdentityProviderType = String.enum(
+        'onetimepin', 'azureAD', 'saml', 'centrify', 'facebook',
+        'github', 'google-apps', 'google', 'linkedin', 'oidc',
+        'okta', 'onelogin', 'pingone', 'yandex'
+      )
+
+      # Cloudflare Rate Limit threshold
+      CloudflareRateLimitThreshold = Integer.constrained(gteq: 2, lteq: 1000000)
+
+      # Cloudflare Rate Limit period (in seconds)
+      CloudflareRateLimitPeriod = Integer.constrained(gteq: 1, lteq: 86400)
+
+      # Cloudflare Rate Limit action mode
+      CloudflareRateLimitActionMode = String.enum('simulate', 'ban', 'challenge', 'js_challenge', 'managed_challenge')
+
+      # Cloudflare Rate Limit action timeout (in seconds)
+      CloudflareRateLimitActionTimeout = Integer.constrained(gteq: 10, lteq: 86400)
+
+      # Cloudflare Argo smart routing
+      CloudflareArgoSmartRouting = String.enum('on', 'off')
+
+      # Cloudflare Argo Tiered Caching
+      CloudflareArgoTieredCaching = String.enum('on', 'off')
+
+      # Cloudflare Logpush job dataset
+      CloudflareLogpushDataset = String.enum(
+        'http_requests', 'spectrum_events', 'firewall_events', 'nel_reports',
+        'dns_logs', 'network_analytics_logs', 'workers_trace_events',
+        'access_requests', 'gateway_dns', 'gateway_http', 'gateway_network'
+      )
+
+      # Cloudflare Logpush destination type
+      CloudflareLogpushDestinationType = String.enum('s3', 'gcs', 'azure', 'sumo_logic', 'splunk', 'datadog')
+
+      # Cloudflare Logpush frequency
+      CloudflareLogpushFrequency = String.enum('high', 'low')
+
+      # Cloudflare Spectrum application protocol
+      CloudflareSpectrumProtocol = String.enum('tcp/22', 'tcp/80', 'tcp/443', 'tcp/3389', 'tcp/8080', 'udp/53')
+
+      # Cloudflare Spectrum edge IP connectivity
+      CloudflareSpectrumEdgeIpConnectivity = String.enum('all', 'ipv4', 'ipv6')
+
+      # Cloudflare Spectrum TLS mode
+      CloudflareSpectrumTls = String.enum('off', 'flexible', 'full', 'strict')
+
+      # Cloudflare Custom Hostname SSL method
+      CloudflareCustomHostnameSslMethod = String.enum('http', 'txt', 'email')
+
+      # Cloudflare Custom Hostname SSL type
+      CloudflareCustomHostnameSslType = String.enum('dv')
+
+      # Cloudflare Custom Hostname SSL settings
+      CloudflareCustomHostnameSslSettings = Hash.schema(
+        http2?: String.enum('on', 'off').optional,
+        http3?: String.enum('on', 'off').optional,
+        tls_1_3?: String.enum('on', 'off').optional,
+        min_tls_version?: String.enum('1.0', '1.1', '1.2', '1.3').optional,
+        ciphers?: Array.of(String).optional
+      )
+
+      # Cloudflare WAF rule mode
+      CloudflareWafRuleMode = String.enum('default', 'disable', 'simulate', 'block', 'challenge')
+
+      # Cloudflare WAF package sensitivity
+      CloudflareWafPackageSensitivity = String.enum('high', 'medium', 'low', 'off')
+
+      # Cloudflare WAF package action mode
+      CloudflareWafPackageActionMode = String.enum('simulate', 'block', 'challenge')
+
+      # Cloudflare Zone ID validation
+      CloudflareZoneId = String.constrained(
+        format: /\A[a-f0-9]{32}\z/
+      )
+
+      # Cloudflare Account ID validation
+      CloudflareAccountId = String.constrained(
+        format: /\A[a-f0-9]{32}\z/
+      )
+
+      # Cloudflare API Token validation (40 character hex)
+      CloudflareApiToken = String.constrained(
+        min_size: 40,
+        max_size: 40
+      )
+
+      # Cloudflare Email validation
+      CloudflareEmail = String.constrained(
+        format: /\A[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}\z/
+      )
+
+      # Cloudflare origin pool configuration
+      CloudflareOriginPoolOrigin = Hash.schema(
+        name: String,
+        address: String,  # IP or hostname
+        enabled?: Bool.default(true),
+        weight?: Integer.constrained(gteq: 0, lteq: 1).default(1),
+        header?: Hash.map(String, String).optional
+      )
+
+      # Cloudflare Load Balancer region pool
+      CloudflareRegionPool = Hash.schema(
+        region: CloudflareHealthCheckRegion,
+        pool_ids: Array.of(String).constrained(min_size: 1)
+      )
+
+      # Cloudflare Load Balancer pop pool
+      CloudflarePopPool = Hash.schema(
+        pop: String.constrained(format: /\A[A-Z]{3}\z/),  # 3-letter airport code
+        pool_ids: Array.of(String).constrained(min_size: 1)
+      )
+
+      # Cloudflare Load Balancer adaptive routing
+      CloudflareAdaptiveRouting = Hash.schema(
+        failover_across_pools?: Bool.default(false)
+      )
+
+      # Cloudflare Load Balancer location strategy
+      CloudflareLocationStrategy = Hash.schema(
+        prefer_ecs?: String.enum('always', 'never', 'proximity', 'geo').optional,
+        mode?: String.enum('pop', 'resolver_ip').optional
+      )
+
+      # Cloudflare Load Balancer random steering
+      CloudflareRandomSteering = Hash.schema(
+        pool_weights: Hash.map(String, Integer.constrained(gteq: 0, lteq: 1))
+      )
+
+      # Cloudflare Access CORS headers
+      CloudflareAccessCorsHeaders = Hash.schema(
+        allowed_methods?: Array.of(String).optional,
+        allowed_origins?: Array.of(String).optional,
+        allow_credentials?: Bool.optional,
+        max_age?: Integer.optional
+      )
+
+      # Cloudflare Access include/exclude configuration
+      CloudflareAccessRuleConfiguration = Hash.schema(
+        email?: Array.of(String).optional,
+        email_domain?: Array.of(String).optional,
+        ip?: Array.of(String).optional,
+        ip_list?: Array.of(String).optional,
+        everyone?: Bool.optional,
+        certificate?: Bool.optional,
+        common_name?: String.optional,
+        auth_method?: String.optional,
+        geo?: Array.of(String).optional,
+        login_method?: Array.of(String).optional,
+        service_token?: Array.of(String).optional,
+        any_valid_service_token?: Bool.optional,
+        group?: Array.of(String).optional,
+        azure?: Array.of(Hash).optional,
+        github?: Array.of(Hash).optional,
+        google?: Array.of(Hash).optional,
+        okta?: Array.of(Hash).optional,
+        saml?: Array.of(Hash).optional
+      )
+
+      # Cloudflare common tags
+      CloudflareTags = Hash.map(String, String).default({}.freeze)
+
+      # ======================================================================
+      # Hetzner Cloud Types
+      # ======================================================================
+
+      # Hetzner datacenter locations
+      HetznerLocation = String.enum(
+        'fsn1',  # Falkenstein, Germany
+        'nbg1',  # Nuremberg, Germany
+        'hel1',  # Helsinki, Finland
+        'ash',   # Ashburn, Virginia, USA
+        'hil',   # Hillsboro, Oregon, USA
+        'sin'    # Singapore
+      )
+
+      # Hetzner server types by series
+      HetznerServerType = String.enum(
+        # CX Series - Cost-Optimized x86
+        'cx23', 'cx33', 'cx43', 'cx53',
+        # CAX Series - Cost-Optimized ARM
+        'cax11', 'cax21', 'cax31', 'cax41',
+        # CPX Series - Shared AMD (legacy)
+        'cpx11', 'cpx21', 'cpx31', 'cpx41', 'cpx51',
+        # CCX Series - Dedicated AMD EPYC
+        'ccx13', 'ccx23', 'ccx33', 'ccx43', 'ccx53', 'ccx63'
+      )
+
+      # Hetzner network zones
+      HetznerNetworkZone = String.enum(
+        'eu-central',    # Helsinki, Falkenstein, Nuremberg
+        'us-east',       # Ashburn
+        'us-west',       # Hillsboro
+        'ap-southeast'   # Singapore
+      )
+
+      # Hetzner firewall rule direction
+      HetznerFirewallDirection = String.enum('in', 'out')
+
+      # Hetzner firewall protocols
+      HetznerFirewallProtocol = String.enum('tcp', 'udp', 'icmp', 'esp', 'gre')
+
+      # Hetzner load balancer types
+      HetznerLoadBalancerType = String.enum(
+        'lb11',  # 10k connections, 5 services, 25 targets
+        'lb21',  # 20k connections, 15 services, 75 targets
+        'lb31'   # 40k connections, 30 services, 150 targets
+      )
+
+      # Hetzner load balancing algorithms
+      HetznerLoadBalancerAlgorithm = String.enum('round_robin', 'least_connections')
+
+      # Hetzner certificate types
+      HetznerCertificateType = String.enum('uploaded', 'managed')
+
+      # Hetzner volume filesystem formats
+      HetznerVolumeFormat = String.enum('xfs', 'ext4')
+
+      # Hetzner server ID (positive integer)
+      HetznerServerId = Integer.constrained(gteq: 1)
+
+      # IPv4 address validation
+      HetznerIpv4 = String.constrained(
+        format: /\A(?:[0-9]{1,3}\.){3}[0-9]{1,3}\z/
+      )
+
+      # IPv6 address/range validation
+      HetznerIpv6 = String.constrained(
+        format: /\A(?:[0-9a-fA-F]{0,4}:){2,7}[0-9a-fA-F]{0,4}(\/\d{1,3})?\z/
+      )
+
+      # Hetzner image name (OS images)
+      HetznerImageName = String.constrained(
+        format: /\A[a-z0-9\-\.]+\z/
+      )
+
+      # Hetzner placement group types
+      HetznerPlacementGroupType = String.enum('spread')
+
+      # Hetzner load balancer protocol
+      HetznerLoadBalancerProtocol = String.enum('http', 'https', 'tcp')
+
+      # Hetzner load balancer health check protocol
+      HetznerHealthCheckProtocol = String.enum('http', 'https', 'tcp')
+
+      # Hetzner network subnet type
+      HetznerSubnetType = String.enum('cloud', 'server', 'vswitch')
+
+      # Hetzner common labels (like tags)
+      HetznerLabels = Hash.map(String, String).default({}.freeze)
+
+      # Hetzner firewall rule
+      HetznerFirewallRule = Hash.schema(
+        direction: HetznerFirewallDirection,
+        protocol: HetznerFirewallProtocol,
+        port?: String.optional,
+        source_ips?: Array.of(String).optional,
+        destination_ips?: Array.of(String).optional,
+        description?: String.optional
+      )
+
+      # Hetzner DNS record types
+      HetznerDnsRecordType = String.enum(
+        'A', 'AAAA', 'NS', 'MX', 'CNAME', 'RP', 'TXT', 'SOA', 'HINFO',
+        'SRV', 'DANE', 'TLSA', 'DS', 'CAA'
+      )
+
+      # Hetzner DNS zone TTL (60-86400 seconds)
+      HetznerDnsZoneTtl = Integer.constrained(gteq: 60, lteq: 86400).default(86400)
+
+      # Hetzner DNS record TTL
+      HetznerDnsRecordTtl = Integer.constrained(gteq: 60, lteq: 86400)
+
+      # Hetzner snapshot type
+      HetznerSnapshotType = String.enum('snapshot')
+
+      # Hetzner PEM certificate validation
+      HetznerPemCertificate = String.constructor { |value|
+        # Must start with PEM header
+        unless value.strip.start_with?('-----BEGIN CERTIFICATE-----')
+          raise Dry::Types::ConstraintError, "Certificate must be in PEM format starting with '-----BEGIN CERTIFICATE-----'"
+        end
+
+        # Must end with PEM footer
+        unless value.strip.end_with?('-----END CERTIFICATE-----')
+          raise Dry::Types::ConstraintError, "Certificate must be in PEM format ending with '-----END CERTIFICATE-----'"
+        end
+
+        value
+      }
+
+      # Hetzner PEM private key validation
+      HetznerPemPrivateKey = String.constructor { |value|
+        # Accept various private key formats
+        valid_headers = [
+          '-----BEGIN PRIVATE KEY-----',
+          '-----BEGIN RSA PRIVATE KEY-----',
+          '-----BEGIN EC PRIVATE KEY-----',
+          '-----BEGIN ENCRYPTED PRIVATE KEY-----'
+        ]
+
+        unless valid_headers.any? { |header| value.strip.start_with?(header) }
+          raise Dry::Types::ConstraintError, "Private key must be in PEM format"
+        end
+
+        value
+      }
+
+      # Hetzner volume size validation (10-10000 GB)
+      HetznerVolumeSize = Integer.constrained(gteq: 10, lteq: 10000)
     end
   end
 end

@@ -135,7 +135,15 @@ module Pangea
             }
           }
         end
-        
+
+        # Validate S3 backend configuration before returning
+        if state.config.bucket.nil? || state.config.bucket.empty?
+          raise ValidationError, "S3 bucket is required but was nil or empty for namespace '#{name}'"
+        end
+        if state.config.key.nil? || state.config.key.empty?
+          raise ValidationError, "S3 key is required but was nil or empty for namespace '#{name}'"
+        end
+
         {
           s3: {
             bucket: state.config.bucket,

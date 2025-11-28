@@ -13,6 +13,8 @@
 # limitations under the License.
 
 require 'spec_helper'
+require 'terraform-synthesizer'
+require 'pangea/resources/aws_vpc/resource'
 
 RSpec.describe "aws_vpc synthesis" do
   include Pangea::Resources::AWS

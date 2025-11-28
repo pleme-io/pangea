@@ -1,8 +1,12 @@
 # direnv
-.envrc
+# .envrc is committed as a standard Nix flake template
+# User customizations should go in .envrc.local
 
 # direnv use flake
 .direnv
+
+# User-specific direnv overrides
+.envrc.local
 
 # artifacts
 pkg

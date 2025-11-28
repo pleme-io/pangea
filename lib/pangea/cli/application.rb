@@ -17,8 +17,9 @@
 require 'tty-option'
 require 'pangea/version'
 require 'pangea/cli/commands/base_command'
+require 'pangea/cli/commands/init'
 require 'pangea/cli/commands/plan'
-require 'pangea/cli/commands/apply' 
+require 'pangea/cli/commands/apply'
 require 'pangea/cli/commands/destroy'
 require 'pangea/cli/commands/inspect'
 require 'pangea/cli/commands/agent'
@@ -55,7 +56,7 @@ module Pangea
       
       argument :command do
         desc 'Command to execute'
-        permit %w[plan apply destroy inspect agent import]
+        permit %w[init plan apply destroy inspect agent import]
       end
       
       argument :file do
@@ -161,6 +162,8 @@ module Pangea
         namespace = resolve_namespace
         
         case params[:command]
+        when 'init'
+          Commands::Init.new.run(params[:file], namespace: namespace, template: params[:template])
         when 'plan'
           Commands::Plan.new.run(params[:file], namespace: namespace, template: params[:template], show_compiled: params[:show_compiled])
         when 'apply'

@@ -17,7 +17,6 @@ Pangea compiles Ruby DSL templates to Terraform JSON and manages infrastructure 
 
 - Ruby 3.1+ (Ruby 3.3+ recommended)
 - Terraform 1.5+ or OpenTofu 1.6+
-- AWS CLI configured (if using AWS resources)
 
 ## Installation
 
@@ -62,11 +61,11 @@ template :web_server do
   provider :aws do
     region "us-east-1"
   end
-  
+
   resource :aws_instance, :web do
     ami "ami-12345678"
     instance_type "t2.micro"
-    
+
     tags do
       Name "WebServer"
     end
@@ -77,7 +76,7 @@ template :database do
   provider :aws do
     region "us-east-1"
   end
-  
+
   resource :aws_rds_instance, :main do
     engine "postgres"
     instance_class "db.t2.micro"
@@ -97,7 +96,7 @@ namespaces:
     state:
       type: local
       path: "terraform.tfstate"
-  
+
   production:
     state:
       type: s3
@@ -168,7 +167,7 @@ pangea destroy infrastructure.rb --template web_server --no-auto-approve
 - Automatic state key generation prevents conflicts
 
 ### 🔧 Developer Experience
-- Beautiful colorized output and progress indicators  
+- Beautiful colorized output and progress indicators
 - Default namespace support reduces CLI verbosity
 - Comprehensive examples and documentation
 
@@ -183,7 +182,7 @@ pangea destroy infrastructure.rb --template web_server --no-auto-approve
 
 ### vs. Directory-Based Terraform
 - **Reduced File Sprawl**: Multiple templates in single files vs scattered directories
-- **Automatic Backend Management**: No manual backend configuration per component  
+- **Automatic Backend Management**: No manual backend configuration per component
 - **Ruby DSL Power**: Better abstraction than HCL for complex logic
 - **Code Reuse**: Shared helper methods and logic within files
 

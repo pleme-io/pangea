@@ -48,15 +48,9 @@ module Pangea
         # Generate terraform resource block via terraform-synthesizer
         resource(:aws_internet_gateway, name) do
           vpc_id igw_attrs.vpc_id if igw_attrs.vpc_id
-          
+
           # Apply tags if present
-          if igw_attrs.tags.any?
-            tags do
-              igw_attrs.tags.each do |key, value|
-                public_send(key, value)
-              end
-            end
-          end
+          tags igw_attrs.tags if igw_attrs.tags.any?
         end
         
         # Return resource reference with available outputs
@@ -82,4 +76,4 @@ module Pangea
 end
 
 # Auto-register this module when it's loaded
-Pangea::ResourceRegistry.register(:aws, Pangea::Resources::AwsInternetGateway)
+Pangea::ResourceRegistry.register(:aws, Pangea::Resources::AWS)

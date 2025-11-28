@@ -1,0 +1,68 @@
+# Pangea Synthesizer Tests Configuration
+# Controls which synthesis tests are executed by `nix run .#synthesizer-tests`
+
+# Test execution mode:
+# - all: Run all synthesis tests
+# - enabled_only: Run only the tests listed in enabled_tests
+# - disabled_excluded: Run all tests except those listed in disabled_tests
+mode: enabled_only
+
+# List of specific test files to run (when mode is enabled_only)
+# Paths are relative to spec/resources/
+enabled_tests:
+  # Core zone and DNS resources
+  - cloudflare_zone/synthesis_spec.rb
+  - cloudflare_record/synthesis_spec.rb
+  - cloudflare_page_rule/synthesis_spec.rb
+  - cloudflare_api_token/synthesis_spec.rb
+
+  # Cloudflare Workers ecosystem
+  - cloudflare_workers_kv_namespace/synthesis_spec.rb
+  - cloudflare_worker_script/synthesis_spec.rb
+  - cloudflare_worker_route/synthesis_spec.rb
+  - cloudflare_workers_kv/synthesis_spec.rb
+  - cloudflare_d1_database/synthesis_spec.rb
+  - cloudflare_queue/synthesis_spec.rb
+
+  # Load Balancing and Traffic Management
+  - cloudflare_load_balancer/synthesis_spec.rb
+  - cloudflare_load_balancer_pool/synthesis_spec.rb
+  - cloudflare_load_balancer_monitor/synthesis_spec.rb
+
+  # R2 Object Storage
+  - cloudflare_r2_bucket/synthesis_spec.rb
+  - cloudflare_r2_bucket_cors/synthesis_spec.rb
+  - cloudflare_r2_bucket_lifecycle/synthesis_spec.rb
+  - cloudflare_r2_bucket_event_notification/synthesis_spec.rb
+  - cloudflare_r2_bucket_lock/synthesis_spec.rb
+  - cloudflare_r2_bucket_sippy/synthesis_spec.rb
+  - cloudflare_r2_custom_domain/synthesis_spec.rb
+  - cloudflare_r2_managed_domain/synthesis_spec.rb
+
+  # Security and Firewall (NEW - production critical)
+  - cloudflare_filter/synthesis_spec.rb
+  - cloudflare_firewall_rule/synthesis_spec.rb
+  - cloudflare_rate_limit/synthesis_spec.rb
+
+  # SSL/TLS and Certificates (NEW - production critical)
+  - cloudflare_certificate_pack/synthesis_spec.rb
+  - cloudflare_custom_ssl/synthesis_spec.rb
+  - cloudflare_origin_ca_certificate/synthesis_spec.rb
+
+  # Cloudflare Pages (NEW - complete developer platform)
+  - cloudflare_pages_project/synthesis_spec.rb
+  - cloudflare_pages_domain/synthesis_spec.rb
+
+  # Zone Settings (NEW - commonly used)
+  - cloudflare_zone_settings_override/synthesis_spec.rb
+  - cloudflare_zone_dnssec/synthesis_spec.rb
+
+# List of test files to exclude (when mode is disabled_excluded)
+# Paths are relative to spec/resources/
+disabled_tests: []
+
+# Provider filtering (optional)
+# If specified, only tests from these providers will run
+# Examples: cloudflare, hcloud
+# Leave empty to allow all providers
+providers: []
