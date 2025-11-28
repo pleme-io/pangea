@@ -133,9 +133,14 @@ module Pangea
       end
 
       def run
-        parse(ARGV.dup)
-
         @banner = UI::Banner.new
+
+        if ARGV.include?('--version') || ARGV.include?('-v')
+          puts @banner.welcome
+          exit
+        end
+
+        parse(ARGV.dup)
 
         # Handle help flag
         if params[:help] || params[:command].nil?
