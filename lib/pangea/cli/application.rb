@@ -181,24 +181,32 @@ module Pangea
         when 'inspect'
           # For inspect command, file is optional
           file = params[:file] unless params[:file] == 'inspect'
-          Commands::Inspect.new.run(file,
-                                    type: params[:type] || 'all',
-                                    template: params[:template],
-                                    format: params[:format] || 'json',
-                                    namespace: namespace)
+          Commands::Inspect.new.run(
+            file,
+            type: params[:type] || 'all',
+            template: params[:template],
+            format: params[:format] || 'json',
+            namespace: namespace
+          )
+
         when 'agent'
           # For agent command, parse subcommand
           subcommand = params[:file]
           target = ARGV[2] # Get the actual target file
-          Commands::Agent.new.run(subcommand, target,
-                                  template: params[:template],
-                                  namespace: namespace)
+          Commands::Agent.new.run(
+            subcommand, target,
+            template: params[:template],
+            namespace: namespace
+          )
+
         when 'import'
-          Commands::Import.new.run(params[:file],
-                                   namespace: namespace,
-                                   template: params[:template],
-                                   resource: params[:resource],
-                                   id: params[:id])
+          Commands::Import.new.run(
+            params[:file],
+            namespace: namespace,
+            template: params[:template],
+            resource: params[:resource],
+            id: params[:id]
+          )
         else
           ui.error "Unknown command: #{params[:command]}"
           print help
