@@ -24,6 +24,7 @@ require 'pangea/cli/commands/destroy'
 require 'pangea/cli/commands/inspect'
 require 'pangea/cli/commands/agent'
 require 'pangea/cli/commands/import'
+require 'pangea/cli/commands/sync'
 require 'pangea/cli/ui/banner'
 
 module Pangea
@@ -56,7 +57,7 @@ module Pangea
 
       argument :command do
         desc 'Command to execute'
-        permit %w[init plan apply destroy inspect agent import]
+        permit %w[init plan apply destroy inspect agent import sync]
       end
 
       argument :file do
@@ -207,6 +208,8 @@ module Pangea
             resource: params[:resource],
             id: params[:id]
           )
+        when 'sync'
+          Commands::Sync.new.run(params[:file], namespace: namespace, template: params[:template])
         else
           ui.error "Unknown command: #{params[:command]}"
           print help

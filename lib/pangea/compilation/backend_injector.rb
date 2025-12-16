@@ -59,7 +59,16 @@ module Pangea
           end
           config[:s3][:key] = "#{base_key}/#{template_name}/terraform.tfstate"
         when :local
-          config[:local][:path] = "#{template_name}.tfstate"
+          # Use the yaml path as a base directory and append template_name.tfstate
+          base_path = config[:local][:path] || "."
+          # If path looks like a directory (no .tfstate extension), append template_name.tfstate
+          if base_path.end_with?('.tfstate')
+            # Path is already a full file path, use as-is
+            config[:local][:path] = base_path
+          else
+            # Path is a directory, append template_name.tfstate
+            config[:local][:path] = File.join(base_path, "#{template_name}.tfstate")
+          end
         end
 
         config
