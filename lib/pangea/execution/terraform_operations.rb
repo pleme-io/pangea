@@ -61,11 +61,12 @@ module Pangea
       
       # Refresh terraform state
       def refresh
-        result = execute_command(['refresh', '-no-color', '-input=false']) do |output|
-          if output.include?('Refresh complete') || output.include?('No changes')
+        result = execute_command(['refresh', '-no-color', '-input=false']) do |output, exit_code|
+          # Trust exit code - OpenTofu outputs "Refreshing state..." not "Refresh complete"
+          if exit_code == 0
             { success: true, message: 'Refresh completed successfully' }
           else
-            { success: false, message: 'Refresh may have failed' }
+            { success: false, message: 'Refresh failed' }
           end
         end
         result
