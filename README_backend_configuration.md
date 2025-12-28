@@ -17,8 +17,8 @@ namespaces:
   namespace_name:
     description: "Description of this namespace"
     state:
-      type: local|s3  # Backend type
-      config:         # Backend-specific configuration
+      type: local|s3 # Backend type
+      config: # Backend-specific configuration
         # Configuration fields depend on backend type
 ```
 
@@ -35,7 +35,7 @@ namespaces:
     state:
       type: local
       config:
-        path: "./terraform.tfstate"  # Path to state file
+        path: "./terraform.tfstate" # Path to state file
 ```
 
 ### S3 Backend
@@ -49,12 +49,12 @@ namespaces:
     state:
       type: s3
       config:
-        bucket: "my-terraform-state"        # S3 bucket name
+        bucket: "my-terraform-state" # S3 bucket name
         key: "pangea/prod/terraform.tfstate" # State file key
-        region: "us-east-1"                 # AWS region
-        dynamodb_table: "terraform-locks"   # DynamoDB table for locking
-        encrypt: true                       # Enable encryption
-        kms_key_id: "arn:aws:kms:..."     # Optional: KMS key for encryption
+        region: "us-east-1" # AWS region
+        dynamodb_table: "terraform-locks" # DynamoDB table for locking
+        encrypt: true # Enable encryption
+        kms_key_id: "arn:aws:kms:..." # Optional: KMS key for encryption
 ```
 
 ## Backend Initialization
@@ -62,6 +62,7 @@ namespaces:
 When you run `pangea apply` or `pangea plan`, Pangea will:
 
 1. **For Local Backend:**
+
    - Create the directory structure if it doesn't exist
    - Create lock files for state protection
 
@@ -139,10 +140,12 @@ pangea apply infrastructure.rb --template web_server --namespace staging
 ## Template-Level State Isolation
 
 Each template within a namespace gets its own state file:
+
 - For S3: `s3://bucket/key/template_name/terraform.tfstate`
 - For Local: `./path/template_name/terraform.tfstate`
 
 This provides:
+
 - Complete state isolation between templates
 - Parallel development without conflicts
 - Granular deployment and rollback capabilities
@@ -160,15 +163,19 @@ This provides:
 ## Troubleshooting
 
 ### S3 Backend Issues
+
 - Ensure AWS credentials are configured (`aws configure`)
 - Verify the AWS account has permissions to create S3 buckets and DynamoDB tables
 - Check the region is valid and accessible
 
 ### Local Backend Issues
+
 - Ensure the path is writable
 - Avoid using relative paths that might change based on working directory
 
 ### State Locking
+
 - For S3: DynamoDB table is used for locking
 - For Local: `.lock` files are created alongside state files
 - If a lock is stuck, check for stale processes or failed runs
+
