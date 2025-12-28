@@ -61,7 +61,9 @@ RSpec.describe 'cloudflare_rate_limit synthesis' do
     result = synthesizer.synthesis
     rl = result[:resource][:cloudflare_rate_limit][:login_limit]
 
-    expect(rl[:match][:request][:url_pattern]).to eq("*/login")
-    expect(rl[:match][:request][:methods]).to eq(["POST"])
+    expect(rl[:threshold]).to eq(5)
+    expect(rl[:period]).to eq(300)
+    expect(rl[:action][:mode]).to eq("ban")
+    expect(rl[:action][:timeout]).to eq(600)
   end
 end

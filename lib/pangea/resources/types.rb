@@ -1468,14 +1468,32 @@ module Pangea
       CloudflareWafPackageActionMode = String.enum('simulate', 'block', 'challenge')
 
       # Cloudflare Zone ID validation
-      CloudflareZoneId = String.constrained(
-        format: /\A[a-f0-9]{32}\z/
-      )
+      # Accepts both valid 32-char hex IDs and Terraform interpolation strings
+      CloudflareZoneId = String.constructor { |value|
+        # Allow Terraform interpolation strings
+        next value if value.match?(/\A\$\{.+\}\z/)
+
+        # Validate as 32-character hex zone ID
+        unless value.match?(/\A[a-f0-9]{32}\z/)
+          raise Dry::Types::ConstraintError, "Cloudflare Zone ID must be 32-character hex or a Terraform interpolation string"
+        end
+
+        value
+      }
 
       # Cloudflare Account ID validation
-      CloudflareAccountId = String.constrained(
-        format: /\A[a-f0-9]{32}\z/
-      )
+      # Accepts both valid 32-char hex IDs and Terraform interpolation strings
+      CloudflareAccountId = String.constructor { |value|
+        # Allow Terraform interpolation strings
+        next value if value.match?(/\A\$\{.+\}\z/)
+
+        # Validate as 32-character hex account ID
+        unless value.match?(/\A[a-f0-9]{32}\z/)
+          raise Dry::Types::ConstraintError, "Cloudflare Account ID must be 32-character hex or a Terraform interpolation string"
+        end
+
+        value
+      }
 
       # Cloudflare API Token validation (40 character hex)
       CloudflareApiToken = String.constrained(

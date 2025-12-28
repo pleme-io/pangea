@@ -206,41 +206,41 @@ RSpec.describe 'cloudflare_origin_ca_certificate synthesis' do
   describe 'validation' do
     it 'requires at least one hostname' do
       expect {
-        Cloudflare::Types::OriginCACertificateAttributes.new(
+        Pangea::Resources::Cloudflare::Types::OriginCACertificateAttributes.new(
           csr: test_csr,
           hostnames: [],
           request_type: "origin-rsa",
           requested_validity: 365
         )
-      }.to raise_error(Dry::Types::ConstraintError)
+      }.to raise_error(Dry::Struct::Error)
     end
 
     it 'rejects invalid request type' do
       expect {
-        Cloudflare::Types::OriginCACertificateAttributes.new(
+        Pangea::Resources::Cloudflare::Types::OriginCACertificateAttributes.new(
           csr: test_csr,
           hostnames: ["example.com"],
           request_type: "invalid",
           requested_validity: 365
         )
-      }.to raise_error(Dry::Types::ConstraintError)
+      }.to raise_error(Dry::Struct::Error)
     end
 
     it 'rejects invalid validity period' do
       expect {
-        Cloudflare::Types::OriginCACertificateAttributes.new(
+        Pangea::Resources::Cloudflare::Types::OriginCACertificateAttributes.new(
           csr: test_csr,
           hostnames: ["example.com"],
           request_type: "origin-rsa",
           requested_validity: 60  # Not in allowed list
         )
-      }.to raise_error(Dry::Types::ConstraintError)
+      }.to raise_error(Dry::Struct::Error)
     end
   end
 
   describe 'helper methods' do
     it 'identifies RSA certificate' do
-      attrs = Cloudflare::Types::OriginCACertificateAttributes.new(
+      attrs = Pangea::Resources::Cloudflare::Types::OriginCACertificateAttributes.new(
         csr: test_csr,
         hostnames: ["example.com"],
         request_type: "origin-rsa",
@@ -253,7 +253,7 @@ RSpec.describe 'cloudflare_origin_ca_certificate synthesis' do
     end
 
     it 'identifies ECC certificate' do
-      attrs = Cloudflare::Types::OriginCACertificateAttributes.new(
+      attrs = Pangea::Resources::Cloudflare::Types::OriginCACertificateAttributes.new(
         csr: test_csr,
         hostnames: ["example.com"],
         request_type: "origin-ecc",
@@ -266,7 +266,7 @@ RSpec.describe 'cloudflare_origin_ca_certificate synthesis' do
     end
 
     it 'detects wildcards' do
-      attrs = Cloudflare::Types::OriginCACertificateAttributes.new(
+      attrs = Pangea::Resources::Cloudflare::Types::OriginCACertificateAttributes.new(
         csr: test_csr,
         hostnames: ["*.example.com", "example.com"],
         request_type: "origin-rsa",
@@ -277,7 +277,7 @@ RSpec.describe 'cloudflare_origin_ca_certificate synthesis' do
     end
 
     it 'provides validity description' do
-      attrs = Cloudflare::Types::OriginCACertificateAttributes.new(
+      attrs = Pangea::Resources::Cloudflare::Types::OriginCACertificateAttributes.new(
         csr: test_csr,
         hostnames: ["example.com"],
         request_type: "origin-rsa",
