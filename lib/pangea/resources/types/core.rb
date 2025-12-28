@@ -13,5 +13,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Load all modular type definitions
-require_relative 'types/index'
+require 'dry-struct'
+require 'dry-types'
+require 'json'
+require 'base64'
+
+module Pangea
+  module Resources
+    # Common types for resource definitions
+    module Types
+      include Dry.Types()
+    end
+  end
+end
