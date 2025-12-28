@@ -1,5 +1,7 @@
 # Pangea
 
+an interesting project
+
 [![CI Status](https://github.com/drzln/pangea/workflows/CI/badge.svg)](https://github.com/drzln/pangea/actions)
 [![Ruby](https://img.shields.io/badge/ruby-3.1%2B-red.svg)](https://www.ruby-lang.org/)
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](LICENSE)
