@@ -27,10 +27,10 @@ module Pangea
           attribute :availability_zone, Resources::Types::AwsAvailabilityZone
 
           # Size of the volume in GiB (conditional - required for gp3, gp2, st1, sc1)
-          attribute :size, Resources::Types::Integer.constrained(gteq: 1, lteq: 65_536)
+          attribute? :size, Resources::Types::Integer.constrained(gteq: 1, lteq: 65_536)
 
           # Snapshot to create volume from (conditional)
-          attribute :snapshot_id, Resources::Types::String.optional
+          attribute? :snapshot_id, Resources::Types::String
 
           # Volume type (optional, default "gp3")
           attribute :type, Resources::Types::String.default('gp3').constrained(
@@ -38,22 +38,22 @@ module Pangea
           )
 
           # IOPS for the volume (conditional - required for io1/io2, optional for gp3)
-          attribute :iops, Resources::Types::Integer.constrained(gteq: 100, lteq: 64_000)
+          attribute? :iops, Resources::Types::Integer.constrained(gteq: 100, lteq: 64_000)
 
           # Throughput for gp3 volumes (optional, 125-1000 MiB/s)
-          attribute :throughput, Resources::Types::Integer.constrained(gteq: 125, lteq: 1000)
+          attribute? :throughput, Resources::Types::Integer.constrained(gteq: 125, lteq: 1000)
 
           # Enable encryption (optional, default false)
           attribute :encrypted, Resources::Types::Bool.default(false)
 
           # KMS key for encryption (optional)
-          attribute :kms_key_id, Resources::Types::String.optional
+          attribute? :kms_key_id, Resources::Types::String
 
           # Enable Multi-Attach (optional, default false)
           attribute :multi_attach_enabled, Resources::Types::Bool.default(false)
 
           # Outpost ARN for Outpost volumes (optional)
-          attribute :outpost_arn, Resources::Types::String.optional
+          attribute? :outpost_arn, Resources::Types::String
 
           # Tags to apply to the resource
           attribute :tags, Resources::Types::AwsTags.default({}.freeze)

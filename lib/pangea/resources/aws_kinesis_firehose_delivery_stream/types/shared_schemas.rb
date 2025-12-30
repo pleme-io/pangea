@@ -13,67 +13,59 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-require 'dry-types'
-
 module Pangea
   module Resources
     module AWS
       module Types
-        # Shared schema definitions for Kinesis Firehose Delivery Stream
-        module FirehoseSharedSchemas
-          include Dry.Types()
+        # Validation methods for Kinesis Firehose Delivery Stream attributes
+        module FirehoseValidation
+          DESTINATION_CONFIG_MAP = {
+            's3' => :s3_configuration,
+            'extended_s3' => :extended_s3_configuration,
+            'redshift' => :redshift_configuration,
+            'elasticsearch' => :elasticsearch_configuration,
+            'amazonopensearch' => :amazonopensearch_configuration,
+            'splunk' => :splunk_configuration,
+            'http_endpoint' => :http_endpoint_configuration
+          }.freeze
 
-          # CloudWatch logging options schema - reused across all destinations
-          CloudWatchLoggingOptions = Dry.Types()['hash'].schema(
-            enabled?: Dry.Types()['bool'].optional,
-            log_group_name?: Dry.Types()['string'].optional,
-            log_stream_name?: Dry.Types()['string'].optional
-          )
+          ARN_PATTERNS = {
+            'kinesis' => /\Aarn:aws:kinesis:[a-z0-9-]+:\d{12}:stream\/[a-zA-Z0-9_-]+\z/,
+            'iam' => /\Aarn:aws:iam::\d{12}:role\/[a-zA-Z0-9_\+\=\,\.\@\-]+\z/,
+            's3' => /\Aarn:aws:s3:::[a-z0-9.-]+\z/,
+            'default' => /\Aarn:aws:[a-z0-9-]+:[a-z0-9-]*:\d{12}:.+\z/
+          }.freeze
 
-          # Processing configuration schema - reused across multiple destinations
-          ProcessingConfiguration = Dry.Types()['hash'].schema(
-            enabled: Dry.Types()['bool'],
-            processors?: Dry.Types()['array'].of(Dry.Types()['hash'].schema(
-              type: Dry.Types()['string'].enum('Lambda'),
-              parameters?: Dry.Types()['array'].of(Dry.Types()['hash'].schema(
-                parameter_name: Dry.Types()['string'],
-                parameter_value: Dry.Types()['string']
-              )).optional
-            )).optional
-          )
+          def self.validate_destination_config!(attrs)
+            destination = attrs[:destination]
+            config_key = DESTINATION_CONFIG_MAP[destination]
+            return unless config_key && !attrs[config_key]
 
-          # KMS encryption configuration schema
-          EncryptionConfiguration = Dry.Types()['hash'].schema(
-            no_encryption_config?: Dry.Types()['string'].enum('NoEncryption').optional,
-            kms_encryption_config?: Dry.Types()['hash'].schema(
-              aws_kms_key_arn: Dry.Types()['string']
-            ).optional
-          )
+            raise Dry::Struct::Error, "#{config_key} is required when destination is '#{destination}'"
+          end
 
-          # Buffer size constraints (1-128 MB for S3)
-          S3BufferSize = Dry.Types()['integer'].constrained(gteq: 1, lteq: 128)
+          def self.validate_encryption_config!(attrs)
+            return unless attrs[:server_side_encryption]&.dig(:enabled)
 
-          # Buffer interval constraints (60-900 seconds)
-          BufferInterval = Dry.Types()['integer'].constrained(gteq: 60, lteq: 900)
+            sse_config = attrs[:server_side_encryption]
+            return unless sse_config[:key_type] == 'CUSTOMER_MANAGED_CMK' && !sse_config[:key_arn]
 
-          # Retry duration constraints (0-7200 seconds)
-          RetryDuration = Dry.Types()['integer'].constrained(gteq: 0, lteq: 7200)
+            raise Dry::Struct::Error, "key_arn is required when key_type is 'CUSTOMER_MANAGED_CMK'"
+          end
 
-          # Compression formats for S3
-          S3CompressionFormat = Dry.Types()['string'].enum(
-            'UNCOMPRESSED', 'GZIP', 'ZIP', 'Snappy', 'HADOOP_SNAPPY'
-          )
+          def self.validate_source_arns!(attrs)
+            return unless attrs[:kinesis_source_configuration]
 
-          # Index rotation periods for search destinations
-          IndexRotationPeriod = Dry.Types()['string'].enum(
-            'NoRotation', 'OneHour', 'OneDay', 'OneWeek', 'OneMonth'
-          )
+            validate_arn!(attrs[:kinesis_source_configuration][:kinesis_stream_arn], 'kinesis')
+            validate_arn!(attrs[:kinesis_source_configuration][:role_arn], 'iam')
+          end
 
-          # Search destination buffer size (1-100 MB)
-          SearchBufferSize = Dry.Types()['integer'].constrained(gteq: 1, lteq: 100)
+          def self.validate_arn!(arn, service)
+            pattern = ARN_PATTERNS[service] || ARN_PATTERNS['default']
+            return if arn.match?(pattern)
 
-          # HTTP endpoint buffer size (1-64 MB)
-          HttpBufferSize = Dry.Types()['integer'].constrained(gteq: 1, lteq: 64)
+            raise Dry::Struct::Error, "Invalid #{service} ARN format: #{arn}"
+          end
         end
       end
     end

@@ -62,7 +62,7 @@ module Pangea
       end
 
       def self.validate_instance_type(instance_type)
-        return false unless instance_type.is_a?(String)
+        return false unless instance_type.is_a?(::String)
 
         instance_type.match?(/^[a-z]+[0-9]+[a-z]*\.(nano|micro|small|medium|large|xlarge|[0-9]+xlarge)$/)
       end
@@ -76,7 +76,7 @@ module Pangea
       end
 
       def self.validate_region(region)
-        return false unless region.is_a?(String)
+        return false unless region.is_a?(::String)
 
         region.match?(/^[a-z]{2}-[a-z]+-[0-9]$/)
       end
@@ -84,25 +84,25 @@ module Pangea
       # Type coercion helpers
       def self.coerce_tags(tags)
         case tags
-        when Hash
+        when ::Hash
           tags.transform_keys(&:to_sym).transform_values(&:to_s)
-        when NilClass
+        when ::NilClass
           {}
         else
-          raise ArgumentError, "Tags must be a Hash, got #{tags.class}"
+          raise ::ArgumentError, "Tags must be a Hash, got #{tags.class}"
         end
       end
 
       def self.coerce_auto_scaling_config(config)
         case config
-        when Hash
+        when ::Hash
           {
             min: config[:min]&.to_i,
             max: config[:max]&.to_i,
             desired: config[:desired]&.to_i
           }.compact
         else
-          raise ArgumentError, "Auto scaling config must be a Hash, got #{config.class}"
+          raise ::ArgumentError, "Auto scaling config must be a Hash, got #{config.class}"
         end
       end
     end

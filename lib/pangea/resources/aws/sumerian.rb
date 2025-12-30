@@ -13,8 +13,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
 require "dry-struct"
+require_relative "sumerian/attributes"
 
 module Pangea
   module Resources
@@ -24,82 +24,14 @@ module Pangea
       module Sumerian
         include Dry::Types()
 
-        # Sumerian Project
-        module SumerianProject
-          class ProjectAttributes < Dry::Struct
-            attribute :name, String
-            attribute? :description, String
-            attribute? :template, String
-            attribute? :tags, Types::Hash.map(Types::String, Types::String)
-          end
-        end
-
-        # Sumerian Scene
-        module SumerianScene
-          class SceneAttributes < Dry::Struct
-            attribute :project_name, String
-            attribute :scene_name, String
-            attribute? :description, String
-            attribute? :scene_data, String
-            attribute? :thumbnail_url, String
-            attribute? :tags, Types::Hash.map(Types::String, Types::String)
-          end
-        end
-
-        # Sumerian Asset
-        module SumerianAsset
-          class AssetAttributes < Dry::Struct
-            attribute :project_name, String
-            attribute :asset_name, String
-            attribute :asset_type, String
-            attribute? :asset_data, String
-            attribute? :asset_url, String
-            attribute? :description, String
-            attribute? :tags, Types::Hash.map(Types::String, Types::String)
-          end
-        end
-
-        # Sumerian Bundle
-        module SumerianBundle
-          class BundleAttributes < Dry::Struct
-            attribute :project_name, String
-            attribute :bundle_name, String
-            attribute :asset_ids, Types::Array.of(Types::String)
-            attribute? :description, String
-            attribute? :tags, Types::Hash.map(Types::String, Types::String)
-          end
-        end
-
-        # Sumerian Host
-        module SumerianHost
-          class HostAttributes < Dry::Struct
-            attribute :project_name, String
-            attribute :host_name, String
-            attribute? :host_configuration, Hash
-            attribute? :polly_config, Hash
-            attribute? :tags, Types::Hash.map(Types::String, Types::String)
-          end
-        end
-
-        # Sumerian Published Scene
-        module SumerianPublishedScene
-          class PublishedSceneAttributes < Dry::Struct
-            attribute :project_name, String
-            attribute :scene_name, String
-            attribute :version, String
-            attribute? :description, String
-            attribute? :access_policy, String
-          end
-        end
-
         # Public resource functions for Amazon Sumerian
         def aws_sumerian_project(name, attributes = {})
           validated = SumerianProject::ProjectAttributes.from_dynamic(attributes)
-          
+
           resource :aws_sumerian_project, name do
             validated.to_h.each { |k, v| send(k, v) unless v.nil? }
           end
-          
+
           OpenStruct.new(
             id: "${aws_sumerian_project.#{name}.id}",
             arn: "${aws_sumerian_project.#{name}.arn}",
@@ -115,11 +47,11 @@ module Pangea
 
         def aws_sumerian_scene(name, attributes = {})
           validated = SumerianScene::SceneAttributes.from_dynamic(attributes)
-          
+
           resource :aws_sumerian_scene, name do
             validated.to_h.each { |k, v| send(k, v) unless v.nil? }
           end
-          
+
           OpenStruct.new(
             id: "${aws_sumerian_scene.#{name}.id}",
             arn: "${aws_sumerian_scene.#{name}.arn}",
@@ -136,11 +68,11 @@ module Pangea
 
         def aws_sumerian_asset(name, attributes = {})
           validated = SumerianAsset::AssetAttributes.from_dynamic(attributes)
-          
+
           resource :aws_sumerian_asset, name do
             validated.to_h.each { |k, v| send(k, v) unless v.nil? }
           end
-          
+
           OpenStruct.new(
             id: "${aws_sumerian_asset.#{name}.id}",
             arn: "${aws_sumerian_asset.#{name}.arn}",
@@ -158,11 +90,11 @@ module Pangea
 
         def aws_sumerian_bundle(name, attributes = {})
           validated = SumerianBundle::BundleAttributes.from_dynamic(attributes)
-          
+
           resource :aws_sumerian_bundle, name do
             validated.to_h.each { |k, v| send(k, v) unless v.nil? }
           end
-          
+
           OpenStruct.new(
             id: "${aws_sumerian_bundle.#{name}.id}",
             arn: "${aws_sumerian_bundle.#{name}.arn}",
@@ -180,11 +112,11 @@ module Pangea
 
         def aws_sumerian_host(name, attributes = {})
           validated = SumerianHost::HostAttributes.from_dynamic(attributes)
-          
+
           resource :aws_sumerian_host, name do
             validated.to_h.each { |k, v| send(k, v) unless v.nil? }
           end
-          
+
           OpenStruct.new(
             id: "${aws_sumerian_host.#{name}.id}",
             arn: "${aws_sumerian_host.#{name}.arn}",
@@ -199,11 +131,11 @@ module Pangea
 
         def aws_sumerian_published_scene(name, attributes = {})
           validated = SumerianPublishedScene::PublishedSceneAttributes.from_dynamic(attributes)
-          
+
           resource :aws_sumerian_published_scene, name do
             validated.to_h.each { |k, v| send(k, v) unless v.nil? }
           end
-          
+
           OpenStruct.new(
             id: "${aws_sumerian_published_scene.#{name}.id}",
             arn: "${aws_sumerian_published_scene.#{name}.arn}",

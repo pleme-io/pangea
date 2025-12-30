@@ -18,7 +18,8 @@ require 'pangea/cli/commands/template_processor'
 require 'pangea/cli/commands/workspace_operations'
 require 'pangea/execution/terraform_executor'
 require 'pangea/execution/workspace_manager'
-require 'json'
+require_relative 'import/resource_analyzer'
+require_relative 'import/import_command_generator'
 
 module Pangea
   module CLI
@@ -27,16 +28,16 @@ module Pangea
       class Import < BaseCommand
         include TemplateProcessor
         include WorkspaceOperations
-        
+
         def run(file_path, namespace:, template: nil, resource: nil, id: nil)
           @workspace_manager = Execution::WorkspaceManager.new
           @namespace = namespace
           @file_path = file_path
-          
+
           # Load namespace configuration
           namespace_entity = load_namespace(namespace)
           return unless namespace_entity
-          
+
           if resource && id
             # Direct import mode
             import_single_resource(resource, id, template, namespace_entity)
@@ -51,62 +52,72 @@ module Pangea
             end
           end
         end
-        
+
         private
-        
-        def import_single_resource(resource_address, resource_id, template_name, namespace_entity)
-          # Set up workspace
+
+        def import_single_resource(resource_address, resource_id, template_name, _namespace_entity)
           workspace = @workspace_manager.workspace_for(
             namespace: @namespace,
             project: template_name
           )
-          
+
           unless @workspace_manager.initialized?(workspace)
             ui.error "Workspace not initialized. Run 'pangea plan' first to initialize."
             return
           end
-          
+
           executor = Execution::TerraformExecutor.new(working_dir: workspace)
-          
+
           ui.info "Importing resource: #{resource_address}"
           ui.info "Resource ID: #{resource_id}"
-          
+
           result = with_spinner("Importing #{resource_address}...") do
             executor.import_resource(resource_address, resource_id)
           end
-          
+
+          handle_import_result(result, resource_address, executor)
+        end
+
+        def handle_import_result(result, resource_address, executor)
           if result[:success]
             ui.success "Successfully imported #{resource_address}"
-            
-            # Run plan to show current state
-            ui.info "\nRunning plan to verify import..."
-            plan_result = executor.plan
-            
-            if plan_result[:success]
-              if plan_result[:changes]
-                ui.warn "Import successful but there are pending changes:"
-                display_resource_changes(plan_result[:resource_changes]) if plan_result[:resource_changes]
-              else
-                ui.success "Import verified - no changes required"
-              end
-            end
+            verify_import(executor)
           else
             ui.error "Import failed: #{result[:error]}"
           end
         end
-        
-        def interactive_import(template_name, terraform_json, namespace_entity)
+
+        def verify_import(executor)
+          ui.info "\nRunning plan to verify import..."
+          plan_result = executor.plan
+
+          return unless plan_result[:success]
+
+          if plan_result[:changes]
+            ui.warn "Import successful but there are pending changes:"
+            display_resource_changes(plan_result[:resource_changes]) if plan_result[:resource_changes]
+          else
+            ui.success "Import verified - no changes required"
+          end
+        end
+
+        def interactive_import(template_name, terraform_json, _namespace_entity)
           ui.info "Interactive import for template: #{template_name}"
           ui.info "─" * 60
-          
-          # Analyze resources in template
-          resources = analyze_resources(terraform_json)
-          
+
+          resources = Import::ResourceAnalyzer.analyze_resources(terraform_json)
+
           if resources.empty?
             ui.warn "No resources found in template"
             return
           end
-          
+
+          display_resources(resources)
+          display_import_commands(resources)
+          setup_and_initialize_workspace(template_name, terraform_json)
+        end
+
+        def display_resources(resources)
           ui.info "Resources defined in template:"
           resources.each_with_index do |resource, idx|
             ui.say "  #{idx + 1}. #{ui.pastel.cyan(resource[:address])} (#{resource[:type]})"
@@ -114,118 +125,54 @@ module Pangea
               ui.say "     #{key}: #{value}" if value
             end
           end
-          
+        end
+
+        def display_import_commands(resources)
           ui.info "\nTo import existing AWS resources, you'll need their IDs:"
           ui.info "─" * 60
-          
-          # Generate import commands
-          import_commands = generate_import_commands(resources)
-          
+
+          import_commands = Import::ImportCommandGenerator.generate_import_commands(resources)
+
           ui.info "Example import commands:"
           import_commands.each do |cmd|
             ui.say "  #{ui.pastel.bright_black(cmd[:command])}"
             ui.say "    # #{cmd[:help]}" if cmd[:help]
           end
-          
-          # Set up workspace
+        end
+
+        def setup_and_initialize_workspace(template_name, terraform_json)
           workspace = setup_workspace(
             template_name: template_name,
             terraform_json: terraform_json,
             namespace: @namespace,
             source_file: @file_path
           )
-          
-          # Check if terraform is initialized
-          unless @workspace_manager.initialized?(workspace)
-            ui.info "\nInitializing terraform..."
-            executor = Execution::TerraformExecutor.new(working_dir: workspace)
-            
-            init_result = with_spinner("Initializing...") do
-              executor.init
-            end
-            
-            unless init_result[:success]
-              ui.error "Failed to initialize: #{init_result[:error]}"
-              return
-            end
+
+          initialize_workspace_if_needed(workspace)
+          display_workspace_instructions(workspace, template_name)
+        end
+
+        def initialize_workspace_if_needed(workspace)
+          return if @workspace_manager.initialized?(workspace)
+
+          ui.info "\nInitializing terraform..."
+          executor = Execution::TerraformExecutor.new(working_dir: workspace)
+
+          init_result = with_spinner("Initializing...") do
+            executor.init
           end
-          
+
+          ui.error "Failed to initialize: #{init_result[:error]}" unless init_result[:success]
+        end
+
+        def display_workspace_instructions(workspace, template_name)
           ui.info "\nWorkspace ready at: #{workspace}"
           ui.info "\nTo import resources manually, run:"
           ui.say "  cd #{workspace}"
           ui.say "  tofu import RESOURCE_ADDRESS RESOURCE_ID"
           ui.info "\nOr use pangea import with --resource and --id flags:"
-          ui.say "  pangea import #{@file_path} --namespace #{@namespace} --template #{template_name} --resource RESOURCE_ADDRESS --id RESOURCE_ID"
-        end
-        
-        def analyze_resources(terraform_json)
-          config = JSON.parse(terraform_json)
-          resources = []
-          
-          return resources unless config['resource']
-          
-          config['resource'].each do |resource_type, instances|
-            instances.each do |resource_name, resource_config|
-              resources << {
-                type: resource_type,
-                name: resource_name,
-                address: "#{resource_type}.#{resource_name}",
-                attributes: extract_key_attributes(resource_type, resource_config),
-                config: resource_config
-              }
-            end
-          end
-          
-          resources
-        end
-        
-        def extract_key_attributes(resource_type, config)
-          case resource_type
-          when 'aws_route53_zone'
-            {
-              name: config['name'],
-              comment: config['comment']
-            }
-          when 'aws_route53_record'
-            {
-              name: config['name'],
-              type: config['type'],
-              ttl: config['ttl'],
-              records: config['records']&.join(', ')
-            }
-          else
-            # Generic attributes
-            {
-              name: config['name'],
-              id: config['id']
-            }.compact
-          end
-        end
-        
-        def generate_import_commands(resources)
-          commands = []
-          
-          resources.each do |resource|
-            case resource[:type]
-            when 'aws_route53_zone'
-              commands << {
-                command: "tofu import #{resource[:address]} ZONE_ID",
-                help: "Find zone ID: aws route53 list-hosted-zones --query 'HostedZones[?Name==`#{resource[:attributes][:name]}.`].Id'"
-              }
-            when 'aws_route53_record'
-              commands << {
-                command: "tofu import #{resource[:address]} ZONE_ID_#{resource[:attributes][:name]}_#{resource[:attributes][:type]}",
-                help: "Format: ZONEID_RECORDNAME_TYPE (e.g., Z123_example.com_A)"
-              }
-            else
-              commands << {
-                command: "tofu import #{resource[:address]} RESOURCE_ID",
-                help: "Find the resource ID in AWS console or CLI"
-              }
-            end
-          end
-          
-          commands
+          ui.say "  pangea import #{@file_path} --namespace #{@namespace} " \
+                 "--template #{template_name} --resource RESOURCE_ADDRESS --id RESOURCE_ID"
         end
       end
     end

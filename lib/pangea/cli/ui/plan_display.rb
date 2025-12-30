@@ -16,12 +16,14 @@
 require 'pangea/cli/ui/output_formatter'
 require 'pangea/cli/ui/diff'
 require 'pangea/cli/ui/visualizer'
+require_relative 'plan_display/action_group_display'
 
 module Pangea
   module CLI
     module UI
       # Plan display utilities for consistent plan visualization
       module PlanDisplay
+        include ActionGroupDisplay
         def formatter
           @formatter ||= OutputFormatter.new
         end
@@ -94,63 +96,6 @@ module Pangea
             formatter.pastel.bold("#{total_changes} resource(s) will be modified")
           )
           formatter.blank_line
-        end
-
-        # Display a group of resources for a specific action
-        def display_action_group(action, resources, resource_analysis)
-          action_config = {
-            create: { icon: :create, color: :green, label: 'CREATE' },
-            update: { icon: :update, color: :yellow, label: 'UPDATE' },
-            delete: { icon: :delete, color: :red, label: 'DELETE' },
-            replace: { icon: :replace, color: :magenta, label: 'REPLACE' }
-          }
-
-          config = action_config[action]
-          icon = OutputFormatter::ICONS[config[:icon]]
-          color = config[:color]
-
-          formatted_label = formatter.pastel.decorate(
-            "#{icon} #{config[:label]} (#{resources.count})",
-            color
-          )
-
-          puts
-          puts "  #{formatted_label}:"
-
-          resources.each do |resource_ref|
-            resource_info = find_resource_info(resource_ref, resource_analysis)
-
-            if resource_info
-              display_resource_with_details(resource_ref, resource_info, action)
-            else
-              formatter.list_items([resource_ref], indent: 4)
-            end
-          end
-        end
-
-        # Display resource with its details
-        def display_resource_with_details(resource_ref, resource_info, action)
-          formatter.list_items([formatter.pastel.bold(resource_ref)], indent: 4)
-
-          # Show action-specific message
-          case action
-          when :create
-            formatter.kv_pair('Action', "Creating new #{resource_info[:type]}", indent: 6)
-          when :delete
-            formatter.kv_pair('Action', formatter.pastel.red('⚠️  Will destroy existing resource'), indent: 6)
-          when :update
-            formatter.kv_pair('Action', "Modifying existing #{resource_info[:type]}", indent: 6)
-          when :replace
-            formatter.kv_pair('Action', formatter.pastel.magenta('⚠️  Will replace (destroy + create)'), indent: 6)
-          end
-
-          # Show key attributes
-          if resource_info[:attributes] && resource_info[:attributes].any?
-            resource_info[:attributes].first(3).each do |key, value|
-              formatted_value = format_attribute_value(value)
-              formatter.kv_pair(key.to_s, formatted_value, indent: 6)
-            end
-          end
         end
 
         # Display impact visualization

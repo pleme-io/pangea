@@ -103,54 +103,7 @@ module Pangea
           build_blue_green_deployment_config(group_attrs.blue_green_deployment_config) if group_attrs.blue_green_deployment_config.any?
           
           # Load balancer info
-          if group_attrs.load_balancer_info.any?
-            load_balancer_info do
-              # ELB info
-              if group_attrs.load_balancer_info[:elb_info]
-                group_attrs.load_balancer_info[:elb_info].each do |elb|
-                  elb_info do
-                    name elb[:name] if elb[:name]
-                  end
-                end
-              end
-              
-              # Target group info
-              if group_attrs.load_balancer_info[:target_group_info]
-                group_attrs.load_balancer_info[:target_group_info].each do |tg|
-                  target_group_info do
-                    name tg[:name] if tg[:name]
-                  end
-                end
-              end
-              
-              # Target group pair info (for ECS)
-              if group_attrs.load_balancer_info[:target_group_pair_info]
-                group_attrs.load_balancer_info[:target_group_pair_info].each do |pair|
-                  target_group_pair_info do
-                    if pair[:prod_traffic_route]
-                      prod_traffic_route do
-                        listener_arns pair[:prod_traffic_route][:listener_arns] if pair[:prod_traffic_route][:listener_arns]
-                      end
-                    end
-                    
-                    if pair[:test_traffic_route]
-                      test_traffic_route do
-                        listener_arns pair[:test_traffic_route][:listener_arns] if pair[:test_traffic_route][:listener_arns]
-                      end
-                    end
-                    
-                    if pair[:target_groups]
-                      pair[:target_groups].each do |tg|
-                        target_group do
-                          name tg[:name] if tg[:name]
-                        end
-                      end
-                    end
-                  end
-                end
-              end
-            end
-          end
+          build_load_balancer_info(group_attrs.load_balancer_info) if group_attrs.load_balancer_info.any?
           
           # ECS service
           if group_attrs.ecs_service.any?
