@@ -20,13 +20,13 @@ module Pangea
     module AWS
       module Types
         # SageMaker Domain default user settings
-        SageMakerDomainDefaultUserSettings = Hash.schema(
+        SageMakerDomainDefaultUserSettings = Resources::Types::Hash.schema(
           execution_role: SageMakerDomainExecutionRole,
-          security_groups?: Array.of(String).optional,
-          sharing_settings?: Hash.schema(
-            notebook_output_option?: String.enum('Allowed', 'Disabled').optional,
-            s3_output_path?: String.optional,
-            s3_kms_key_id?: String.optional
+          security_groups?: Resources::Types::Array.of(Resources::Types::String).optional,
+          sharing_settings?: Resources::Types::Hash.schema(
+            notebook_output_option?: Resources::Types::String.enum('Allowed', 'Disabled').optional,
+            s3_output_path?: Resources::Types::String.optional,
+            s3_kms_key_id?: Resources::Types::String.optional
           ).optional,
           jupyter_server_app_settings?: SageMakerDomainJupyterServerAppSettings.optional,
           kernel_gateway_app_settings?: SageMakerDomainKernelGatewayAppSettings.optional,
@@ -36,8 +36,8 @@ module Pangea
         )
 
         # SageMaker Domain retention policy
-        SageMakerDomainRetentionPolicy = Hash.schema(
-          home_efs_file_system?: String.enum('Retain', 'Delete').default('Retain')
+        SageMakerDomainRetentionPolicy = Resources::Types::Hash.schema(
+          home_efs_file_system?: Resources::Types::String.enum('Retain', 'Delete').default('Retain')
         )
       end
     end
