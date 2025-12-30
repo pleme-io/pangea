@@ -16,6 +16,7 @@
 require 'tty-box'
 require 'pastel'
 require 'pangea/version'
+require_relative 'banner/operation_summary'
 
 module Pangea
   module CLI

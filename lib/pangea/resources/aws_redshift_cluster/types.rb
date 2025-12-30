@@ -65,7 +65,7 @@ module Pangea
           attribute :cluster_parameter_group_name, Resources::Types::String.optional
 
           # VPC security group IDs
-          attribute :vpc_security_group_ids, Resources::Types::Array.of(Types::String).default([].freeze)
+          attribute :vpc_security_group_ids, Resources::Types::Array.of(Resources::Types::String).default([].freeze)
 
           # Availability zone
           attribute :availability_zone, Resources::Types::String.optional
@@ -117,20 +117,20 @@ module Pangea
 
           # Logging configuration
           attribute :logging, Resources::Types::Hash.schema(
-            enable: Types::Bool.default(false),
-            bucket_name?: Types::String.optional,
-            s3_key_prefix?: Types::String.optional
+            enable: Resources::Types::Bool.default(false),
+            bucket_name?: Resources::Types::String.optional,
+            s3_key_prefix?: Resources::Types::String.optional
           ).optional
 
           # Snapshot copy configuration
           attribute :snapshot_copy, Resources::Types::Hash.schema(
-            destination_region: Types::String,
-            retention_period?: Types::Integer.optional,
-            grant_name?: Types::String.optional
+            destination_region: Resources::Types::String,
+            retention_period?: Resources::Types::Integer.optional,
+            grant_name?: Resources::Types::String.optional
           ).optional
 
           # IAM roles
-          attribute :iam_roles, Resources::Types::Array.of(Types::String).default([].freeze)
+          attribute :iam_roles, Resources::Types::Array.of(Resources::Types::String).default([].freeze)
 
           # Tags
           attribute :tags, Resources::Types::AwsTags.default({}.freeze)
