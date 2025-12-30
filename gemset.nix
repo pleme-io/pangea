@@ -360,7 +360,7 @@
     platforms = [];
     source = {
       remotes = ["https://rubygems.org"];
-      sha256 = "0s3hm7bhp8dsl8b4p0sf1fyv583r28vw744avnpg0q35y8ymgb98";
+      sha256 = "0k1xaqw2jk13q3ss7cnyvkp8fzp75dk4kazysrxgfd1rpgvkk7qf";
       type = "gem";
     };
     version = "1.17.3";
