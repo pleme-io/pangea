@@ -25,6 +25,7 @@ module Pangea
       class Banner
         def initialize
           @pastel = Pastel.new
+          @operation_summary = OperationSummary.new(@pastel)
         end
         
         # Main Pangea banner with ASCII art
