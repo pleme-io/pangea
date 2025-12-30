@@ -18,8 +18,10 @@ module Pangea
   module Architectures
     module Types
       # Validation helpers
+      # Note: Use ::String, ::Hash, ::Array to reference Ruby's built-in classes
+      # since the Types module includes Dry.Types() which shadows these names
       def self.validate_cidr_block(cidr)
-        return false unless cidr.is_a?(String)
+        return false unless cidr.is_a?(::String)
         return false unless cidr.match?(/^\d+\.\d+\.\d+\.\d+\/\d+$/)
 
         ip, prefix = cidr.split('/')
