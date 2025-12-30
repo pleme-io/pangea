@@ -171,9 +171,13 @@ module Pangea
           return unless attributes.any?
 
           attributes.first(2).each do |key, value|
-            formatted_value = format_attribute_value(value)
-            formatter.kv_pair(key.to_s, formatted_value, indent: 6)
+            formatter.kv_pair(key.to_s, format_attribute_value(value), indent: 6)
           end
+        end
+
+        def display_list_item(name, description)
+          text = "#{formatter.pastel.cyan(name)}: #{formatter.pastel.bright_black(description)}"
+          formatter.list_items([text], icon: '•')
         end
       end
     end

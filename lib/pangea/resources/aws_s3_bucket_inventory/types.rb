@@ -155,7 +155,6 @@ module Pangea
         end
 
       end
-    end
       end
     end
   end

@@ -37,8 +37,8 @@ module Pangea
 
           # List of regular expression patterns
           attribute :regular_expression, Resources::Types::Array.of(
-            Types::Hash.schema(
-              regex_string: Types::String
+            Resources::Types::Hash.schema(
+              regex_string: Resources::Types::String
             )
           )
 

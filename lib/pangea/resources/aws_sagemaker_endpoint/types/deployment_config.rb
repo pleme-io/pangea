@@ -13,12 +13,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+require 'dry-types'
 require 'pangea/resources/types'
 
 module Pangea
   module Resources
     module AWS
       module Types
+        include Dry.Types()
+
         # SageMaker Endpoint deployment configuration for updates
         SageMakerDeploymentConfig = Hash.schema(
           blue_green_update_policy?: Hash.schema(
