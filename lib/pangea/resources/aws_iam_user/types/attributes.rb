@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 # Copyright 2025 The Pangea Authors
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,19 +15,29 @@
 # limitations under the License.
 
 require 'pangea/resources/types'
-require_relative 'types/attributes'
-require_relative 'types/validation'
-require_relative 'types/helpers'
 
 module Pangea
   module Resources
     module AWS
       module Types
-        # Type-safe attributes for AWS Glue Trigger resources
-        class GlueTriggerAttributes < Dry::Struct
-          include GlueTriggerTypes::Attributes
-          include GlueTriggerTypes::Validation
-          include GlueTriggerTypes::Helpers
+        # Type-safe attributes for AWS IAM User resources
+        class IamUserAttributes < Dry::Struct
+          transform_keys(&:to_sym)
+
+          # User name (required)
+          attribute :name, Resources::Types::String
+
+          # Path for the user (default: "/")
+          attribute :path, Resources::Types::String.default('/')
+
+          # Permissions boundary ARN
+          attribute :permissions_boundary, Resources::Types::String.optional
+
+          # Force destroy user on deletion (removes dependencies)
+          attribute :force_destroy, Resources::Types::Bool.default(false)
+
+          # Tags to apply to the user
+          attribute :tags, Resources::Types::AwsTags.default({}.freeze)
         end
       end
     end
