@@ -17,6 +17,7 @@
 require 'pangea/resources/base'
 require 'pangea/resources/reference'
 require 'pangea/resources/aws_lambda_function/types'
+require_relative 'block_builders'
 require 'pangea/resource_registry'
 
 module Pangea
@@ -78,87 +79,21 @@ module Pangea
           # Layers
           layers lambda_attrs.layers if lambda_attrs.layers.any?
           
-          # Environment variables
-          if lambda_attrs.environment && lambda_attrs.environment[:variables]
-            environment do
-              variables do
-                lambda_attrs.environment[:variables].each do |key, value|
-                  public_send(key, value)
-                end
-              end
-            end
-          end
-          
-          # VPC configuration
-          if lambda_attrs.vpc_config
-            vpc_config do
-              subnet_ids lambda_attrs.vpc_config[:subnet_ids]
-              security_group_ids lambda_attrs.vpc_config[:security_group_ids]
-            end
-          end
-          
-          # Dead letter queue
-          if lambda_attrs.dead_letter_config
-            dead_letter_config do
-              target_arn lambda_attrs.dead_letter_config[:target_arn]
-            end
-          end
-          
-          # File system configs (EFS)
-          if lambda_attrs.file_system_config.any?
-            lambda_attrs.file_system_config.each do |fs_config|
-              file_system_config do
-                arn fs_config[:arn]
-                local_mount_path fs_config[:local_mount_path]
-              end
-            end
-          end
-          
-          # Tracing configuration
-          if lambda_attrs.tracing_config
-            tracing_config do
-              mode lambda_attrs.tracing_config[:mode]
-            end
-          end
-          
+          # Apply configuration blocks via block builders
+          LambdaBlockBuilders.apply_environment(self, lambda_attrs.environment)
+          LambdaBlockBuilders.apply_vpc_config(self, lambda_attrs.vpc_config)
+          LambdaBlockBuilders.apply_dead_letter_config(self, lambda_attrs.dead_letter_config)
+          LambdaBlockBuilders.apply_file_system_configs(self, lambda_attrs.file_system_config)
+          LambdaBlockBuilders.apply_tracing_config(self, lambda_attrs.tracing_config)
+
           # KMS key for environment encryption
           kms_key_arn lambda_attrs.kms_key_arn if lambda_attrs.kms_key_arn
-          
-          # Code signing
           code_signing_config_arn lambda_attrs.code_signing_config_arn if lambda_attrs.code_signing_config_arn
-          
-          # Ephemeral storage
-          if lambda_attrs.ephemeral_storage
-            ephemeral_storage do
-              size lambda_attrs.ephemeral_storage[:size]
-            end
-          end
-          
-          # Snap start (Java only)
-          if lambda_attrs.snap_start
-            snap_start do
-              apply_on lambda_attrs.snap_start[:apply_on]
-            end
-          end
-          
-          # Logging configuration
-          if lambda_attrs.logging_config
-            logging_config do
-              log_format lambda_attrs.logging_config[:log_format] if lambda_attrs.logging_config[:log_format]
-              log_group lambda_attrs.logging_config[:log_group] if lambda_attrs.logging_config[:log_group]
-              system_log_level lambda_attrs.logging_config[:system_log_level] if lambda_attrs.logging_config[:system_log_level]
-              application_log_level lambda_attrs.logging_config[:application_log_level] if lambda_attrs.logging_config[:application_log_level]
-            end
-          end
-          
-          # Tags
-          if lambda_attrs.tags.any?
-            tags do
-              lambda_attrs.tags.each do |key, value|
-                public_send(key, value)
-              end
-            end
-          end
+
+          LambdaBlockBuilders.apply_ephemeral_storage(self, lambda_attrs.ephemeral_storage)
+          LambdaBlockBuilders.apply_snap_start(self, lambda_attrs.snap_start)
+          LambdaBlockBuilders.apply_logging_config(self, lambda_attrs.logging_config)
+          LambdaBlockBuilders.apply_tags(self, lambda_attrs.tags)
         end
         
         # Return resource reference with available outputs

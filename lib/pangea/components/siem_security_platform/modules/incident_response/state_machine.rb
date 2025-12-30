@@ -90,57 +90,6 @@ module Pangea
           }
         end
 
-        def isolation_branch(name, attrs, resources)
-          {
-            StartAt: "IsolateResource",
-            States: {
-              IsolateResource: {
-                Type: "Task",
-                Resource: "arn:aws:states:::lambda:invoke",
-                Parameters: {
-                  FunctionName: create_isolation_lambda(name, attrs, resources),
-                  Payload: { "action" => "isolate", "resource.$" => "$.affected_resource" }
-                },
-                End: true
-              }
-            }
-          }
-        end
-
-        def notification_branch(resources)
-          {
-            StartAt: "NotifySOC",
-            States: {
-              NotifySOC: {
-                Type: "Task",
-                Resource: "arn:aws:states:::sns:publish",
-                Parameters: {
-                  TopicArn: resources[:sns_topics][:alerts]&.arn,
-                  Message: { "incident.$" => "$", "priority" => "CRITICAL" }
-                },
-                End: true
-              }
-            }
-          }
-        end
-
-        def forensics_branch(name, attrs, resources)
-          {
-            StartAt: "CollectForensics",
-            States: {
-              CollectForensics: {
-                Type: "Task",
-                Resource: "arn:aws:states:::lambda:invoke",
-                Parameters: {
-                  FunctionName: create_forensics_lambda(name, attrs, resources),
-                  Payload: { "action" => "collect", "incident.$" => "$" }
-                },
-                End: true
-              }
-            }
-          }
-        end
-
         def severity_response_state(name, severity, attrs, resources)
           {
             Type: "Task",

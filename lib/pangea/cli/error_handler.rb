@@ -13,6 +13,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+require_relative "errors"
+
 module Pangea
   module CLI
     # Centralized error handling for CLI commands
@@ -161,41 +163,6 @@ module Pangea
         end
         
         display_error("Unexpected Error", details)
-      end
-    end
-    
-    # Custom error classes
-    class PangeaError < StandardError; end
-    
-    class CompilationError < PangeaError; end
-    
-    class TerraformError < PangeaError
-      attr_accessor :phase, :output
-      
-      def initialize(message, phase: nil, output: nil)
-        super(message)
-        @phase = phase
-        @output = output
-      end
-    end
-    
-    class NetworkError < PangeaError
-      attr_accessor :service, :timeout
-      
-      def initialize(message, service: nil, timeout: nil)
-        super(message)
-        @service = service
-        @timeout = timeout
-      end
-    end
-    
-    class ValidationError < PangeaError
-      attr_accessor :field, :value
-      
-      def initialize(message, field: nil, value: nil)
-        super(message)
-        @field = field
-        @value = value
       end
     end
   end
