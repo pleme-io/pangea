@@ -19,6 +19,9 @@ require 'pangea/resources/types'
 module Pangea
   module Components
     module EventDrivenMicroservice
+      # Make Types available in this namespace
+      Types = Pangea::Resources::Types unless const_defined?(:Types)
+
       # Event source configuration
       class EventSource < Dry::Struct
         transform_keys(&:to_sym)

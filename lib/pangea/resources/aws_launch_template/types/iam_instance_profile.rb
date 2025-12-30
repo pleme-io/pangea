@@ -17,19 +17,31 @@ require 'dry-struct'
 require 'pangea/resources/types'
 
 module Pangea
-  module Components
-    module EventDrivenMicroservice
-      # Make Types available in this namespace
-      Types = Pangea::Resources::Types unless const_defined?(:Types)
+  module Resources
+    module AWS
+      module Types
+        # IAM instance profile configuration
+        class IamInstanceProfile < Dry::Struct
+          transform_keys(&:to_sym)
 
-      # Event replay configuration
-      class EventReplayConfig < Dry::Struct
-        transform_keys(&:to_sym)
+          attribute :arn, Resources::Types::String.optional.default(nil)
+          attribute :name, Resources::Types::String.optional.default(nil)
 
-        attribute :enabled, Types::Bool.default(true)
-        attribute :snapshot_enabled, Types::Bool.default(true)
-        attribute :snapshot_frequency, Types::Integer.default(100) # events
-        attribute :replay_dead_letter_queue_ref, Types::ResourceReference.optional
+          def self.new(attributes)
+            return super if attributes.is_a?(Hash)
+
+            # Allow string input for name
+            if attributes.is_a?(String)
+              super(name: attributes)
+            else
+              super(attributes)
+            end
+          end
+
+          def to_h
+            { arn: arn, name: name }.compact
+          end
+        end
       end
     end
   end

@@ -17,19 +17,26 @@ require 'dry-struct'
 require 'pangea/resources/types'
 
 module Pangea
-  module Components
-    module EventDrivenMicroservice
-      # Make Types available in this namespace
-      Types = Pangea::Resources::Types unless const_defined?(:Types)
+  module Resources
+    module AWS
+      module Types
+        # Tag specification for launch template
+        class TagSpecification < Dry::Struct
+          transform_keys(&:to_sym)
 
-      # Event replay configuration
-      class EventReplayConfig < Dry::Struct
-        transform_keys(&:to_sym)
+          attribute :resource_type, Resources::Types::String.enum(
+            'instance', 'volume', 'elastic-gpu', 'spot-instances-request',
+            'network-interface'
+          )
+          attribute :tags, Resources::Types::AwsTags
 
-        attribute :enabled, Types::Bool.default(true)
-        attribute :snapshot_enabled, Types::Bool.default(true)
-        attribute :snapshot_frequency, Types::Integer.default(100) # events
-        attribute :replay_dead_letter_queue_ref, Types::ResourceReference.optional
+          def to_h
+            {
+              resource_type: resource_type,
+              tags: tags
+            }
+          end
+        end
       end
     end
   end

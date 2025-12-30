@@ -27,6 +27,9 @@ require_relative 'types/monitoring_config'
 module Pangea
   module Components
     module EventDrivenMicroservice
+      # Make Types available in this namespace
+      Types = Pangea::Resources::Types unless const_defined?(:Types)
+
       # Main component attributes
       class EventDrivenMicroserviceAttributes < Dry::Struct
         transform_keys(&:to_sym)
