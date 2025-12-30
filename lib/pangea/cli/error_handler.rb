@@ -117,8 +117,8 @@ module Pangea
       def handle_network_error(error, context)
         details = [
           error.message,
-          "Service: #{error.service}" if error.respond_to?(:service),
-          "Timeout: #{error.timeout}s" if error.respond_to?(:timeout)
+          ("Service: #{error.service}" if error.respond_to?(:service)),
+          ("Timeout: #{error.timeout}s" if error.respond_to?(:timeout))
         ].compact
         
         suggestions = [
@@ -154,7 +154,7 @@ module Pangea
         details = [
           error.message,
           "Type: #{error.class.name}",
-          "Context: #{context.inspect}" if context.any?
+          ("Context: #{context.inspect}" if context.any?)
         ].compact
         
         if error.backtrace && ENV['PANGEA_DEBUG']
