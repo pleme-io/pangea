@@ -22,12 +22,15 @@ module Pangea
       module Types
         # Destination types for S3 replication rules
         module S3BucketReplicationDestination
-          # Status enum type
+          # Status enum type (without default - applied in schemas)
           Status = Resources::Types::String.enum('Enabled', 'Disabled')
+
+          # Status with disabled default
+          StatusDefaultDisabled = Resources::Types::String.default('Disabled').enum('Enabled', 'Disabled')
 
           # Access control translation for cross-account replication
           AccessControlTranslation = Resources::Types::Hash.schema(
-            owner: Resources::Types::String.enum('Destination').default('Destination')
+            owner: Resources::Types::String.default('Destination').enum('Destination')
           )
 
           # Encryption configuration for replicated objects
@@ -42,7 +45,7 @@ module Pangea
 
           # Metrics configuration
           Metrics = Resources::Types::Hash.schema(
-            status: Status.default('Disabled'),
+            status: StatusDefaultDisabled,
             event_threshold?: EventThreshold.optional
           )
 
@@ -53,7 +56,7 @@ module Pangea
 
           # Replication time control
           ReplicationTime = Resources::Types::Hash.schema(
-            status: Status.default('Disabled'),
+            status: StatusDefaultDisabled,
             time?: TimeConfig.optional
           )
 

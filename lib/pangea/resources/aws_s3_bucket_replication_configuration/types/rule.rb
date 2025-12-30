@@ -24,27 +24,31 @@ module Pangea
       module Types
         # Rule types for S3 replication configuration
         module S3BucketReplicationRule
-          # Status enum type
+          # Status enum type (without default)
           Status = Resources::Types::String.enum('Enabled', 'Disabled')
+
+          # Status with default values
+          StatusDefaultEnabled = Resources::Types::String.default('Enabled').enum('Enabled', 'Disabled')
+          StatusDefaultDisabled = Resources::Types::String.default('Disabled').enum('Enabled', 'Disabled')
 
           # Delete marker replication
           DeleteMarkerReplication = Resources::Types::Hash.schema(
-            status: Status.default('Disabled')
+            status: StatusDefaultDisabled
           )
 
           # Existing object replication
           ExistingObjectReplication = Resources::Types::Hash.schema(
-            status: Status.default('Disabled')
+            status: StatusDefaultDisabled
           )
 
           # Replica modifications in source selection
           ReplicaModifications = Resources::Types::Hash.schema(
-            status: Status.default('Disabled')
+            status: StatusDefaultDisabled
           )
 
           # SSE KMS encrypted objects in source selection
           SseKmsEncryptedObjects = Resources::Types::Hash.schema(
-            status: Status.default('Disabled')
+            status: StatusDefaultDisabled
           )
 
           # Source selection criteria
@@ -57,7 +61,7 @@ module Pangea
           Rule = Resources::Types::Hash.schema(
             id?: Resources::Types::String.optional,
             priority?: Resources::Types::Integer.constrained(gteq: 0).optional,
-            status: Status.default('Enabled'),
+            status: StatusDefaultEnabled,
             filter?: S3BucketReplicationFilter::Filter.optional,
             destination: S3BucketReplicationDestination::Destination,
             delete_marker_replication?: DeleteMarkerReplication.optional,

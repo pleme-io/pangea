@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 # Copyright 2025 The Pangea Authors
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,12 +16,15 @@
 
 require 'json'
 require 'pangea/cli/ui/output_formatter'
+require_relative 'template_display/resource_extractor'
 
 module Pangea
   module CLI
     module UI
       # Template display utilities for consistent template visualization
       module TemplateDisplay
+        include ResourceExtractor
+
         def formatter
           @formatter ||= OutputFormatter.new
         end
@@ -39,9 +43,7 @@ module Pangea
             display_variables_summary(parsed)
             display_outputs_summary(parsed)
 
-            if show_full
-              display_full_json(parsed)
-            end
+            display_full_json(parsed) if show_full
 
             parsed
           rescue JSON::ParserError => e
@@ -53,10 +55,8 @@ module Pangea
         # Display template metadata
         def display_template_metadata(template_name, parsed)
           formatter.subsection_header('Template Information', icon: :info)
-
           resource_count = parsed.dig('resource')&.values&.flat_map(&:keys)&.count || 0
           provider_count = parsed.dig('provider')&.keys&.count || 0
-
           formatter.kv_pair('Name', formatter.pastel.bold(template_name))
           formatter.kv_pair('Resources', formatter.pastel.cyan(resource_count.to_s))
           formatter.kv_pair('Providers', formatter.pastel.cyan(provider_count.to_s))
@@ -69,22 +69,9 @@ module Pangea
           return unless backend
 
           formatter.subsection_header('Backend Configuration', icon: :backend)
-
           backend_type = backend.keys.first
-          backend_config = backend[backend_type]
-
           formatter.kv_pair('Type', formatter.pastel.cyan(backend_type))
-
-          case backend_type
-          when 's3'
-            formatter.kv_pair('Bucket', backend_config['bucket'])
-            formatter.kv_pair('Key', backend_config['key'])
-            formatter.kv_pair('Region', backend_config['region'])
-            formatter.kv_pair('DynamoDB Table', backend_config['dynamodb_table']) if backend_config['dynamodb_table']
-          when 'local'
-            formatter.kv_pair('Path', backend_config['path'])
-          end
-
+          display_backend_type_config(backend_type, backend[backend_type])
           formatter.blank_line
         end
 
@@ -94,20 +81,9 @@ module Pangea
           return unless providers
 
           formatter.subsection_header('Provider Configuration', icon: :provider)
-
           providers.each do |provider_type, configs|
-            configs = [configs] unless configs.is_a?(Array)
-
-            configs.each do |config|
-              formatter.list_items([formatter.pastel.cyan(provider_type)])
-
-              if config.is_a?(Hash)
-                formatter.kv_pair('Region', config['region'], indent: 4) if config['region']
-                formatter.kv_pair('Alias', config['alias'], indent: 4) if config['alias']
-              end
-            end
+            Array(configs).each { |config| display_single_provider(provider_type, config) }
           end
-
           formatter.blank_line
         end
 
@@ -117,70 +93,35 @@ module Pangea
           return if resources.empty?
 
           formatter.subsection_header('Resources', icon: :resource)
-
-          # Group by type
-          grouped = resources.group_by { |r| r[:type] }
-
-          grouped.sort_by { |type, _| type }.each do |type, type_resources|
-            formatter.list_items(
-              ["#{formatter.pastel.cyan(type)}: #{type_resources.count}"],
-              icon: '•'
-            )
-
-            type_resources.each do |resource|
-              formatter.kv_pair(resource[:name], '', indent: 4)
-
-              # Show key attributes
-              if resource[:attributes].any?
-                resource[:attributes].first(2).each do |key, value|
-                  formatted_value = format_attribute_value(value)
-                  formatter.kv_pair(key.to_s, formatted_value, indent: 6)
-                end
-              end
-            end
+          resources.group_by { |r| r[:type] }.sort_by { |type, _| type }.each do |type, items|
+            display_resource_type_group(type, items)
           end
-
           formatter.blank_line
         end
 
         # Display variables summary
         def display_variables_summary(parsed)
           variables = parsed['variable']
-          return unless variables && variables.any?
+          return unless variables&.any?
 
           formatter.subsection_header('Variables', icon: :config)
-
-          variables.each do |var_name, var_config|
-            var_config ||= {}
-            description = var_config['description'] || 'No description'
-            type_info = var_config['type'] || 'any'
-
-            formatter.list_items(
-              ["#{formatter.pastel.cyan(var_name)} (#{type_info}): #{formatter.pastel.bright_black(description)}"],
-              icon: '•'
-            )
+          variables.each do |var_name, cfg|
+            desc = (cfg || {})['description'] || 'No description'
+            type_info = (cfg || {})['type'] || 'any'
+            display_list_item("#{var_name} (#{type_info})", desc)
           end
-
           formatter.blank_line
         end
 
         # Display outputs summary
         def display_outputs_summary(parsed)
           outputs = parsed['output']
-          return unless outputs && outputs.any?
+          return unless outputs&.any?
 
           formatter.subsection_header('Outputs', icon: :output)
-
-          outputs.each do |output_name, output_config|
-            output_config ||= {}
-            description = output_config['description'] || 'No description'
-
-            formatter.list_items(
-              ["#{formatter.pastel.cyan(output_name)}: #{formatter.pastel.bright_black(description)}"],
-              icon: '•'
-            )
+          outputs.each do |name, cfg|
+            display_list_item(name, (cfg || {})['description'] || 'No description')
           end
-
           formatter.blank_line
         end
 
@@ -191,80 +132,47 @@ module Pangea
           formatter.json_output(parsed)
         end
 
-        # Extract resources from parsed config
-        def extract_resources(parsed)
-          return [] unless parsed['resource']
+        private
 
-          resources = []
-          parsed['resource'].each do |resource_type, resource_instances|
-            next unless resource_instances.is_a?(Hash)
-
-            resource_instances.each do |resource_name, resource_config|
-              next unless resource_config.is_a?(Hash)
-
-              resources << {
-                type: resource_type,
-                name: resource_name,
-                full_name: "#{resource_type}.#{resource_name}",
-                config: resource_config,
-                attributes: extract_key_attributes(resource_type, resource_config)
-              }
-            end
+        def display_backend_type_config(backend_type, backend_config)
+          case backend_type
+          when 's3'
+            formatter.kv_pair('Bucket', backend_config['bucket'])
+            formatter.kv_pair('Key', backend_config['key'])
+            formatter.kv_pair('Region', backend_config['region'])
+            formatter.kv_pair('DynamoDB Table', backend_config['dynamodb_table']) if backend_config['dynamodb_table']
+          when 'local'
+            formatter.kv_pair('Path', backend_config['path'])
           end
-
-          resources
         end
 
-        # Extract key attributes based on resource type
-        def extract_key_attributes(resource_type, resource_config)
-          key_attrs = {}
+        def display_single_provider(provider_type, config)
+          formatter.list_items([formatter.pastel.cyan(provider_type)])
 
-          case resource_type
-          when /aws_route53_/
-            key_attrs[:name] = resource_config['name']
-            key_attrs[:type] = resource_config['type']
-            key_attrs[:ttl] = resource_config['ttl']
-            key_attrs[:records] = resource_config['records']
-          when /aws_s3_/
-            key_attrs[:bucket] = resource_config['bucket']
-            key_attrs[:acl] = resource_config['acl']
-          when /aws_lambda_/
-            key_attrs[:function_name] = resource_config['function_name']
-            key_attrs[:runtime] = resource_config['runtime']
-            key_attrs[:handler] = resource_config['handler']
-          when /aws_rds_|aws_db_/
-            key_attrs[:identifier] = resource_config['identifier']
-            key_attrs[:engine] = resource_config['engine']
-            key_attrs[:instance_class] = resource_config['instance_class']
-          when /aws_ec2_|aws_instance/
-            key_attrs[:instance_type] = resource_config['instance_type']
-            key_attrs[:ami] = resource_config['ami']
-          when /aws_vpc/
-            key_attrs[:cidr_block] = resource_config['cidr_block']
-          when /aws_subnet/
-            key_attrs[:cidr_block] = resource_config['cidr_block']
-            key_attrs[:availability_zone] = resource_config['availability_zone']
-          else
-            # Generic extraction
-            %w[name id identifier domain].each do |attr|
-              key_attrs[attr.to_sym] = resource_config[attr] if resource_config[attr]
-            end
-          end
+          return unless config.is_a?(Hash)
 
-          key_attrs.compact
+          formatter.kv_pair('Region', config['region'], indent: 4) if config['region']
+          formatter.kv_pair('Alias', config['alias'], indent: 4) if config['alias']
         end
 
-        # Format attribute value for display
-        def format_attribute_value(value)
-          case value
-          when String
-            value.length > 50 ? "#{value[0..47]}..." : value
-          when Array
-            value.join(', ')
-          when Hash
-            value.to_json
-          else
-            value.to_s
+        def display_resource_type_group(type, type_resources)
+          formatter.list_items(
+            ["#{formatter.pastel.cyan(type)}: #{type_resources.count}"],
+            icon: '•'
+          )
+
+          type_resources.each do |resource|
+            formatter.kv_pair(resource[:name], '', indent: 4)
+            display_resource_attributes(resource[:attributes])
+          end
+        end
+
+        def display_resource_attributes(attributes)
+          return unless attributes.any?
+
+          attributes.first(2).each do |key, value|
+            formatted_value = format_attribute_value(value)
+            formatter.kv_pair(key.to_s, formatted_value, indent: 6)
           end
         end
       end
