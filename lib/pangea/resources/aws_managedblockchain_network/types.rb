@@ -83,15 +83,11 @@ module Pangea
                 ).optional
               ).optional
             ).optional,
-            tags?: Resources::Types::Hash.schema(
-              Resources::Types::String => Resources::Types::String
-            ).optional
+            tags?: Resources::Types::Hash.optional
           )
 
           # Tags (optional)
-          attribute? :tags, Resources::Types::Hash.schema(
-            Resources::Types::String => Resources::Types::String
-          ).optional
+          attribute? :tags, Resources::Types::Hash.optional
 
           # Custom validation
           def self.new(attributes = {})

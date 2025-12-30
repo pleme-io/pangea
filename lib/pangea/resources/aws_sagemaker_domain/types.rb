@@ -33,7 +33,7 @@ module Pangea
           )
           attribute :auth_mode, SageMakerDomainAuthMode
           attribute :default_user_settings, SageMakerDomainDefaultUserSettings
-          attribute :subnet_ids, Resources::Types::Array.of(String).constrained(min_size: 1, max_size: 16)
+          attribute :subnet_ids, Resources::Types::Array.of(Resources::Types::String).constrained(min_size: 1, max_size: 16)
           attribute :vpc_id, Resources::Types::String
 
           # Optional attributes
