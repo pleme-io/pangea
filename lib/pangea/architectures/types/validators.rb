@@ -32,7 +32,7 @@ module Pangea
       end
 
       def self.validate_domain_name(domain)
-        return false unless domain.is_a?(String)
+        return false unless domain.is_a?(::String)
         return false if domain.length > 253
 
         domain.match?(/^[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9]?\.[a-zA-Z]{2,}$/)

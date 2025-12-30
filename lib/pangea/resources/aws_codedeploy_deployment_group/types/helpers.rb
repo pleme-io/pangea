@@ -58,7 +58,7 @@ module Pangea
           end
 
           def ecs_deployment?
-            ecs_service[:cluster_name].present?
+            !ecs_service[:cluster_name].nil? && !ecs_service[:cluster_name].empty?
           end
 
           def traffic_control_enabled?
