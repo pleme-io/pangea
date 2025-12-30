@@ -19,6 +19,9 @@ require 'pangea/resources/types'
 module Pangea
   module Components
     module DisasterRecoveryPilotLight
+      # Make Types available in this namespace
+      Types = Pangea::Resources::Types unless const_defined?(:Types)
+
       # Critical data configuration
       class CriticalDataConfig < Dry::Struct
         transform_keys(&:to_sym)

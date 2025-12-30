@@ -18,3 +18,12 @@ require 'pangea/resources/types'
 require_relative 'types/validation'
 require_relative 'types/instance_methods'
 require_relative 'types/attributes'
+
+module Pangea
+  module Resources
+    module AWS
+      # Backward compatibility alias for EbsVolumeAttributes
+      EbsVolumeAttributes = Types::EbsVolumeAttributes
+    end
+  end
+end

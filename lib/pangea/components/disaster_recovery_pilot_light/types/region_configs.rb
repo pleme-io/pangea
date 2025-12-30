@@ -20,7 +20,7 @@ module Pangea
   module Components
     module DisasterRecoveryPilotLight
       # Make Types available in this namespace
-      Types = Pangea::Resources::Types
+      Types = Pangea::Resources::Types unless const_defined?(:Types)
 
       # Primary region configuration
       class PrimaryRegionConfig < Dry::Struct

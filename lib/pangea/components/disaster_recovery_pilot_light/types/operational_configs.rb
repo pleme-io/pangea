@@ -19,11 +19,14 @@ require 'pangea/resources/types'
 module Pangea
   module Components
     module DisasterRecoveryPilotLight
+      # Make Types available in this namespace
+      Types = Pangea::Resources::Types unless const_defined?(:Types)
+
       # Activation configuration
       class ActivationConfig < Dry::Struct
         transform_keys(&:to_sym)
 
-        attribute :activation_method, Types::String.enum('manual', 'automated', 'semi-automated').default('semi-automated')
+        attribute :activation_method, Types::String.default('semi-automated').enum('manual', 'automated', 'semi-automated')
         attribute :health_check_threshold, Types::Integer.default(3)
         attribute :activation_timeout, Types::Integer.default(900)
         attribute :pre_activation_checks, Types::Array.of(Types::Hash).default([].freeze)

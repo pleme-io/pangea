@@ -29,7 +29,7 @@ module Pangea
           attribute :display_name, Resources::Types::String.constrained(max_size: 100).optional
           attribute :vpc_config, VpcConfigType.optional
           attribute :domain_join_info, DomainJoinInfoType.optional
-          attribute :fleet_type, Resources::Types::String.enum('ALWAYS_ON', 'ON_DEMAND').default('ON_DEMAND')
+          attribute :fleet_type, Resources::Types::String.default('ON_DEMAND').enum('ALWAYS_ON', 'ON_DEMAND')
           attribute :enable_default_internet_access, Resources::Types::Bool.default(true)
           attribute :image_name, Resources::Types::String.optional
           attribute :image_arn, Resources::Types::String.optional
@@ -42,7 +42,7 @@ module Pangea
           attribute :max_user_duration_in_seconds, Resources::Types::Integer.constrained(
             gteq: 600, lteq: 360_000
           ).default(57_600) # 16 hours
-          attribute :stream_view, Resources::Types::String.enum('APP', 'DESKTOP').default('APP')
+          attribute :stream_view, Resources::Types::String.default('APP').enum('APP', 'DESKTOP')
           attribute :tags, Resources::Types::AwsTags
 
           # Validation

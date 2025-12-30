@@ -24,6 +24,9 @@ require_relative 'types/optimization_configs'
 module Pangea
   module Components
     module DisasterRecoveryPilotLight
+      # Make Types available in this namespace
+      Types = Pangea::Resources::Types unless const_defined?(:Types)
+
       # Main component attributes
       class DisasterRecoveryPilotLightAttributes < Dry::Struct
         transform_keys(&:to_sym)
