@@ -13,6 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+require 'dry-types'
 require_relative 'shared_schemas'
 
 module Pangea
@@ -21,36 +22,36 @@ module Pangea
       module Types
         # Search destination schemas for Kinesis Firehose Delivery Stream
         module FirehoseSearchDestinations
-          include FirehoseSharedSchemas
+          T = Dry.Types()
 
           # Elasticsearch destination configuration
-          ElasticsearchConfiguration = Hash.schema(
-            role_arn: String,
-            domain_arn: String,
-            index_name: String,
-            type_name?: String.optional,
+          ElasticsearchConfiguration = T['hash'].schema(
+            role_arn: T['string'],
+            domain_arn: T['string'],
+            index_name: T['string'],
+            type_name?: T['string'].optional,
             index_rotation_period?: FirehoseSharedSchemas::IndexRotationPeriod.optional,
             buffering_size?: FirehoseSharedSchemas::SearchBufferSize.optional,
             buffering_interval?: FirehoseSharedSchemas::BufferInterval.optional,
             retry_duration?: FirehoseSharedSchemas::RetryDuration.optional,
-            s3_backup_mode?: String.enum('FailedDocumentsOnly', 'AllDocuments').optional,
-            processing_configuration?: Hash.optional,
-            cloudwatch_logging_options?: Hash.optional
+            s3_backup_mode?: T['string'].enum('FailedDocumentsOnly', 'AllDocuments').optional,
+            processing_configuration?: T['hash'].optional,
+            cloudwatch_logging_options?: T['hash'].optional
           )
 
           # OpenSearch destination configuration
-          AmazonOpensearchConfiguration = Hash.schema(
-            role_arn: String,
-            domain_arn: String,
-            index_name: String,
-            type_name?: String.optional,
+          AmazonOpensearchConfiguration = T['hash'].schema(
+            role_arn: T['string'],
+            domain_arn: T['string'],
+            index_name: T['string'],
+            type_name?: T['string'].optional,
             index_rotation_period?: FirehoseSharedSchemas::IndexRotationPeriod.optional,
             buffering_size?: FirehoseSharedSchemas::SearchBufferSize.optional,
             buffering_interval?: FirehoseSharedSchemas::BufferInterval.optional,
             retry_duration?: FirehoseSharedSchemas::RetryDuration.optional,
-            s3_backup_mode?: String.enum('FailedDocumentsOnly', 'AllDocuments').optional,
-            processing_configuration?: Hash.optional,
-            cloudwatch_logging_options?: Hash.optional
+            s3_backup_mode?: T['string'].enum('FailedDocumentsOnly', 'AllDocuments').optional,
+            processing_configuration?: T['hash'].optional,
+            cloudwatch_logging_options?: T['hash'].optional
           )
         end
       end

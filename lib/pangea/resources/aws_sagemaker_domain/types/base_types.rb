@@ -28,17 +28,17 @@ module Pangea
         SageMakerDomainAuthMode = Resources::Types::String.enum('SSO', 'IAM')
 
         # SageMaker Domain VPC-only mode
-        SageMakerDomainVpcOnly = Resources::Types::String.enum('Enabled', 'Disabled').default('Disabled')
+        SageMakerDomainVpcOnly = Resources::Types::String.default('Disabled').enum('Enabled', 'Disabled')
 
         # SageMaker Domain app network access type
-        SageMakerDomainAppNetworkAccessType = Resources::Types::String.enum(
+        SageMakerDomainAppNetworkAccessType = Resources::Types::String.default('PublicInternetOnly').enum(
           'PublicInternetOnly', 'VpcOnly'
-        ).default('PublicInternetOnly')
+        )
 
         # SageMaker Domain app security group override
-        SageMakerDomainAppSecurityGroupManagement = Resources::Types::String.enum(
+        SageMakerDomainAppSecurityGroupManagement = Resources::Types::String.default('Service').enum(
           'Service', 'Customer'
-        ).default('Service')
+        )
 
         # SageMaker Domain instance types for Studio
         SageMakerDomainInstanceType = Resources::Types::String.enum(

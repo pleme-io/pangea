@@ -18,11 +18,12 @@ module Pangea
   module Architectures
     module Types
       # Auto scaling configuration
+      # Note: min <= max constraint is validated in Types.validate_auto_scaling_config
       AutoScalingConfig = Hash.schema(
         min: Integer.constrained(gteq: 1),
         max: Integer.constrained(gteq: 1),
         desired: Integer.constrained(gteq: 1).optional
-      ).constrained(rule: ->(config) { config[:min] <= config[:max] })
+      )
 
       # High availability configuration
       HighAvailabilityConfig = Hash.schema(
@@ -38,7 +39,7 @@ module Pangea
         encryption_in_transit: Bool.default(true),
         enable_waf: Bool.default(false),
         enable_ddos_protection: Bool.default(false),
-        compliance_standards: Array.of(String).default([])
+        compliance_standards: Array.of(String).default([].freeze)
       )
 
       # Monitoring configuration
@@ -86,7 +87,7 @@ module Pangea
       # Performance configuration
       PerformanceConfig = Hash.schema(
         enable_caching: Bool.default(false),
-        cache_engine: String.enum('redis', 'memcached').default('redis'),
+        cache_engine: String.default('redis').enum('redis', 'memcached'),
         enable_cdn: Bool.default(false),
         connection_pooling: Bool.default(true)
       )
@@ -104,7 +105,7 @@ module Pangea
         name: String,
         environment: Environment,
         region: Region,
-        tags: Tags.default({})
+        tags: Tags.default({}.freeze)
       )
     end
   end

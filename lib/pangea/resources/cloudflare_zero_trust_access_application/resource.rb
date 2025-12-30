@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 # Copyright 2025 The Pangea Authors
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,10 +14,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
 require 'pangea/resources/base'
 require 'pangea/resources/reference'
 require 'pangea/resources/cloudflare_zero_trust_access_application/types'
+require 'pangea/resources/cloudflare_zero_trust_access_application/block_builders'
 require 'pangea/resource_registry'
 
 module Pangea
@@ -85,6 +86,8 @@ module Pangea
 
         # Generate terraform resource block via terraform-synthesizer
         resource(:cloudflare_zero_trust_access_application, name) do
+          extend BlockBuilders
+
           account_id app_attrs.account_id
           name app_attrs.name
           type app_attrs.type if app_attrs.type
@@ -125,105 +128,13 @@ module Pangea
           tags app_attrs.tags if app_attrs.tags
           self_hosted_domains app_attrs.self_hosted_domains if app_attrs.self_hosted_domains
 
-          # CORS headers
-          if app_attrs.cors_headers
-            cors_headers do
-              allow_all_headers app_attrs.cors_headers.allow_all_headers if app_attrs.cors_headers.allow_all_headers
-              allow_all_methods app_attrs.cors_headers.allow_all_methods if app_attrs.cors_headers.allow_all_methods
-              allow_all_origins app_attrs.cors_headers.allow_all_origins if app_attrs.cors_headers.allow_all_origins
-              allow_credentials app_attrs.cors_headers.allow_credentials if app_attrs.cors_headers.allow_credentials
-              allowed_headers app_attrs.cors_headers.allowed_headers if app_attrs.cors_headers.allowed_headers
-              allowed_methods app_attrs.cors_headers.allowed_methods if app_attrs.cors_headers.allowed_methods
-              allowed_origins app_attrs.cors_headers.allowed_origins if app_attrs.cors_headers.allowed_origins
-              max_age app_attrs.cors_headers.max_age if app_attrs.cors_headers.max_age
-            end
-          end
-
-          # Destinations
-          if app_attrs.destinations
-            app_attrs.destinations.each do |dest|
-              destinations do
-                type dest.type if dest.type
-                uri dest.uri if dest.uri
-                hostname dest.hostname if dest.hostname
-                cidr dest.cidr if dest.cidr
-                port_range dest.port_range if dest.port_range
-                l4_protocol dest.l4_protocol if dest.l4_protocol
-                vnet_id dest.vnet_id if dest.vnet_id
-                mcp_server_id dest.mcp_server_id if dest.mcp_server_id
-              end
-            end
-          end
-
-          # Landing page design
-          if app_attrs.landing_page_design
-            landing_page_design do
-              title app_attrs.landing_page_design.title if app_attrs.landing_page_design.title
-              message app_attrs.landing_page_design.message if app_attrs.landing_page_design.message
-              button_color app_attrs.landing_page_design.button_color if app_attrs.landing_page_design.button_color
-              button_text_color app_attrs.landing_page_design.button_text_color if app_attrs.landing_page_design.button_text_color
-              image_url app_attrs.landing_page_design.image_url if app_attrs.landing_page_design.image_url
-            end
-          end
-
-          # Footer links
-          if app_attrs.footer_links
-            app_attrs.footer_links.each do |link|
-              footer_links do
-                name link.name
-                url link.url
-              end
-            end
-          end
-
-          # SaaS app configuration
-          if app_attrs.saas_app
-            saas_app do
-              auth_type app_attrs.saas_app.auth_type if app_attrs.saas_app.auth_type
-              client_id app_attrs.saas_app.client_id if app_attrs.saas_app.client_id
-              client_secret app_attrs.saas_app.client_secret if app_attrs.saas_app.client_secret
-              redirect_uris app_attrs.saas_app.redirect_uris if app_attrs.saas_app.redirect_uris
-              grant_types app_attrs.saas_app.grant_types if app_attrs.saas_app.grant_types
-              scopes app_attrs.saas_app.scopes if app_attrs.saas_app.scopes
-              sp_entity_id app_attrs.saas_app.sp_entity_id if app_attrs.saas_app.sp_entity_id
-              idp_entity_id app_attrs.saas_app.idp_entity_id if app_attrs.saas_app.idp_entity_id
-              sso_endpoint app_attrs.saas_app.sso_endpoint if app_attrs.saas_app.sso_endpoint
-              public_key app_attrs.saas_app.public_key if app_attrs.saas_app.public_key
-              name_id_format app_attrs.saas_app.name_id_format if app_attrs.saas_app.name_id_format
-              name_id_transform_jsonata app_attrs.saas_app.name_id_transform_jsonata if app_attrs.saas_app.name_id_transform_jsonata
-              access_token_lifetime app_attrs.saas_app.access_token_lifetime if app_attrs.saas_app.access_token_lifetime
-              default_relay_state app_attrs.saas_app.default_relay_state if app_attrs.saas_app.default_relay_state
-              allow_pkce_without_client_secret app_attrs.saas_app.allow_pkce_without_client_secret if app_attrs.saas_app.allow_pkce_without_client_secret
-            end
-          end
-
-          # SCIM configuration
-          if app_attrs.scim_config
-            scim_config do
-              enabled app_attrs.scim_config.enabled
-              remote_uri app_attrs.scim_config.remote_uri
-              idp_uid app_attrs.scim_config.idp_uid if app_attrs.scim_config.idp_uid
-              deactivate_on_delete app_attrs.scim_config.deactivate_on_delete if app_attrs.scim_config.deactivate_on_delete
-
-              if app_attrs.scim_config.authentication
-                authentication do
-                  app_attrs.scim_config.authentication.each do |key, value|
-                    send(key.to_sym, value)
-                  end
-                end
-              end
-
-              if app_attrs.scim_config.mappings
-                app_attrs.scim_config.mappings.each do |mapping|
-                  mappings do
-                    mapping.each do |key, value|
-                      send(key.to_sym, value)
-                    end
-                  end
-                end
-              end
-            end
-          end
+          # Nested block configurations
+          build_cors_headers(app_attrs.cors_headers) if app_attrs.cors_headers
+          app_attrs.destinations&.each { |dest| build_destination(dest) }
+          build_landing_page_design(app_attrs.landing_page_design) if app_attrs.landing_page_design
+          app_attrs.footer_links&.each { |link| build_footer_link(link) }
+          build_saas_app(app_attrs.saas_app) if app_attrs.saas_app
+          build_scim_config(app_attrs.scim_config) if app_attrs.scim_config
         end
 
         # Return resource reference with available outputs

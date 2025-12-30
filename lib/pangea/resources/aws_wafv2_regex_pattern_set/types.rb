@@ -30,7 +30,7 @@ module Pangea
           attribute :name, Resources::Types::String
 
           # Description of the regex pattern set
-          attribute :description, Resources::Types::String.optional
+          attribute :description, Resources::Types::String.optional.default(nil)
 
           # Scope of the regex pattern set (CLOUDFRONT or REGIONAL)
           attribute :scope, Resources::Types::String.enum('CLOUDFRONT', 'REGIONAL')

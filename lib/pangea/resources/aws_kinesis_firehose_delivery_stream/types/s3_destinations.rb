@@ -13,6 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+require 'dry-types'
 require_relative 'shared_schemas'
 
 module Pangea
@@ -21,14 +22,14 @@ module Pangea
       module Types
         # S3 destination schemas for Kinesis Firehose Delivery Stream
         module FirehoseS3Destinations
-          include FirehoseSharedSchemas
+          T = Dry.Types()
 
           # Basic S3 destination configuration
-          S3Configuration = Hash.schema(
-            role_arn: String,
-            bucket_arn: String,
-            prefix?: String.optional,
-            error_output_prefix?: String.optional,
+          S3Configuration = T['hash'].schema(
+            role_arn: T['string'],
+            bucket_arn: T['string'],
+            prefix?: T['string'].optional,
+            error_output_prefix?: T['string'].optional,
             buffer_size?: FirehoseSharedSchemas::S3BufferSize.optional,
             buffer_interval?: FirehoseSharedSchemas::BufferInterval.optional,
             compression_format?: FirehoseSharedSchemas::S3CompressionFormat.optional,
@@ -37,38 +38,38 @@ module Pangea
           )
 
           # Data format conversion configuration for Extended S3
-          DataFormatConversionConfiguration = Hash.schema(
-            enabled: Bool,
-            output_format_configuration?: Hash.schema(
-              serializer?: Hash.schema(
-                parquet_ser_de?: Hash.optional,
-                orc_ser_de?: Hash.optional
+          DataFormatConversionConfiguration = T['hash'].schema(
+            enabled: T['bool'],
+            output_format_configuration?: T['hash'].schema(
+              serializer?: T['hash'].schema(
+                parquet_ser_de?: T['hash'].optional,
+                orc_ser_de?: T['hash'].optional
               ).optional
             ).optional,
-            schema_configuration?: Hash.schema(
-              database_name: String,
-              table_name: String,
-              role_arn: String,
-              region?: String.optional,
-              catalog_id?: String.optional,
-              version_id?: String.optional
+            schema_configuration?: T['hash'].schema(
+              database_name: T['string'],
+              table_name: T['string'],
+              role_arn: T['string'],
+              region?: T['string'].optional,
+              catalog_id?: T['string'].optional,
+              version_id?: T['string'].optional
             ).optional
           )
 
           # Extended S3 destination configuration
-          ExtendedS3Configuration = Hash.schema(
-            role_arn: String,
-            bucket_arn: String,
-            prefix?: String.optional,
-            error_output_prefix?: String.optional,
+          ExtendedS3Configuration = T['hash'].schema(
+            role_arn: T['string'],
+            bucket_arn: T['string'],
+            prefix?: T['string'].optional,
+            error_output_prefix?: T['string'].optional,
             buffer_size?: FirehoseSharedSchemas::S3BufferSize.optional,
             buffer_interval?: FirehoseSharedSchemas::BufferInterval.optional,
             compression_format?: FirehoseSharedSchemas::S3CompressionFormat.optional,
             data_format_conversion_configuration?: DataFormatConversionConfiguration.optional,
             processing_configuration?: FirehoseSharedSchemas::ProcessingConfiguration.optional,
             cloudwatch_logging_options?: FirehoseSharedSchemas::CloudWatchLoggingOptions.optional,
-            s3_backup_mode?: String.enum('Disabled', 'Enabled').optional,
-            s3_backup_configuration?: Hash.optional
+            s3_backup_mode?: T['string'].enum('Disabled', 'Enabled').optional,
+            s3_backup_configuration?: T['hash'].optional
           )
         end
       end

@@ -28,6 +28,7 @@ module Pangea
       module Types
         # WAF v2 Rule Group attributes with validation
         class WafV2RuleGroupAttributes < Dry::Struct
+          include Dry.Types()
           include WafV2ComputedProperties
           transform_keys(&:to_sym)
 

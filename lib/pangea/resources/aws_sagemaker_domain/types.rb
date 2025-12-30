@@ -40,25 +40,27 @@ module Pangea
           attribute :app_network_access_type, SageMakerDomainAppNetworkAccessType
           attribute :app_security_group_management, SageMakerDomainAppSecurityGroupManagement
           attribute :domain_settings, Resources::Types::Hash.schema(
-            security_group_ids?: Array.of(String).optional,
-            r_studio_server_pro_domain_settings?: Hash.schema(
-              domain_execution_role_arn: String,
-              r_studio_connect_url?: String.optional,
-              r_studio_package_manager_url?: String.optional,
-              default_resource_spec?: Hash.schema(
-                instance_type?: String.optional,
-                lifecycle_config_arn?: String.optional,
-                sage_maker_image_arn?: String.optional,
-                sage_maker_image_version_arn?: String.optional
+            security_group_ids?: Resources::Types::Array.of(Resources::Types::String).optional,
+            r_studio_server_pro_domain_settings?: Resources::Types::Hash.schema(
+              domain_execution_role_arn: Resources::Types::String,
+              r_studio_connect_url?: Resources::Types::String.optional,
+              r_studio_package_manager_url?: Resources::Types::String.optional,
+              default_resource_spec?: Resources::Types::Hash.schema(
+                instance_type?: Resources::Types::String.optional,
+                lifecycle_config_arn?: Resources::Types::String.optional,
+                sage_maker_image_arn?: Resources::Types::String.optional,
+                sage_maker_image_version_arn?: Resources::Types::String.optional
               ).optional
             ).optional,
-            execution_role_identity_config?: String.enum('USER_PROFILE_NAME', 'DISABLED').optional
+            execution_role_identity_config?: Resources::Types::String.enum(
+              'USER_PROFILE_NAME', 'DISABLED'
+            ).optional
           ).optional
           attribute :kms_key_id, Resources::Types::String.optional
           attribute :tags, Resources::Types::AwsTags
           attribute :default_space_settings, Resources::Types::Hash.schema(
-            execution_role?: String.optional,
-            security_groups?: Array.of(String).optional,
+            execution_role?: Resources::Types::String.optional,
+            security_groups?: Resources::Types::Array.of(Resources::Types::String).optional,
             jupyter_server_app_settings?: SageMakerDomainJupyterServerAppSettings.optional,
             kernel_gateway_app_settings?: SageMakerDomainKernelGatewayAppSettings.optional
           ).optional

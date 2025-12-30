@@ -26,7 +26,7 @@ module Pangea
       module Types
         # Type-safe attributes for AWS Managed Blockchain Network resources
         class ManagedBlockchainNetworkAttributes < Dry::Struct
-          include Helpers
+          include ManagedBlockchainNetworkHelpers
 
           transform_keys(&:to_sym)
 
@@ -97,14 +97,14 @@ module Pangea
           def self.new(attributes = {})
             attrs = super(attributes)
 
-            Validation.validate_name(attrs.name)
-            Validation.validate_member_name(attrs.member_configuration[:name])
+            ManagedBlockchainNetworkValidation.validate_name(attrs.name)
+            ManagedBlockchainNetworkValidation.validate_member_name(attrs.member_configuration[:name])
 
             case attrs.framework
             when 'HYPERLEDGER_FABRIC'
-              Validation.validate_fabric_configuration(attrs)
+              ManagedBlockchainNetworkValidation.validate_fabric_configuration(attrs)
             when 'ETHEREUM'
-              Validation.validate_ethereum_configuration(attrs)
+              ManagedBlockchainNetworkValidation.validate_ethereum_configuration(attrs)
             end
 
             attrs

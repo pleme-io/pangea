@@ -37,7 +37,7 @@ module Pangea
 
         # SageMaker Domain retention policy
         SageMakerDomainRetentionPolicy = Resources::Types::Hash.schema(
-          home_efs_file_system?: Resources::Types::String.enum('Retain', 'Delete').default('Retain')
+          home_efs_file_system?: Resources::Types::String.default('Retain').enum('Retain', 'Delete')
         )
       end
     end

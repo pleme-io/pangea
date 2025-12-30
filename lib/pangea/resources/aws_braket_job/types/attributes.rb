@@ -48,8 +48,8 @@ module Pangea
             local_path?: Resources::Types::String.optional
           ).optional
 
-          attribute? :hyper_parameters, Resources::Types::Hash.schema(
-            Resources::Types::String => Resources::Types::String
+          attribute? :hyper_parameters, Resources::Types::Hash.map(
+            Resources::Types::String, Resources::Types::String
           ).optional
 
           attribute? :input_data_config, Resources::Types::Array.of(
@@ -67,9 +67,7 @@ module Pangea
             )
           ).optional
 
-          attribute? :tags, Resources::Types::Hash.schema(
-            Resources::Types::String => Resources::Types::String
-          ).optional
+          attribute? :tags, Resources::Types::AwsTags
 
           def self.new(attributes = {})
             attrs = super(attributes)

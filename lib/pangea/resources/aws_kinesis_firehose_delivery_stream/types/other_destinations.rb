@@ -13,6 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+require 'dry-types'
 require_relative 'shared_schemas'
 
 module Pangea
@@ -21,50 +22,50 @@ module Pangea
       module Types
         # Other destination schemas for Kinesis Firehose Delivery Stream
         module FirehoseOtherDestinations
-          include FirehoseSharedSchemas
+          T = Dry.Types()
 
           # Redshift destination configuration
-          RedshiftConfiguration = Hash.schema(
-            role_arn: String,
-            cluster_jdbcurl: String,
-            username: String,
-            password: String,
-            data_table_name: String,
-            copy_options?: String.optional,
-            data_table_columns?: String.optional,
-            s3_backup_mode?: String.enum('Disabled', 'Enabled').optional,
-            s3_backup_configuration?: Hash.optional,
-            processing_configuration?: Hash.optional,
-            cloudwatch_logging_options?: Hash.optional
+          RedshiftConfiguration = T['hash'].schema(
+            role_arn: T['string'],
+            cluster_jdbcurl: T['string'],
+            username: T['string'],
+            password: T['string'],
+            data_table_name: T['string'],
+            copy_options?: T['string'].optional,
+            data_table_columns?: T['string'].optional,
+            s3_backup_mode?: T['string'].enum('Disabled', 'Enabled').optional,
+            s3_backup_configuration?: T['hash'].optional,
+            processing_configuration?: T['hash'].optional,
+            cloudwatch_logging_options?: T['hash'].optional
           )
 
           # Splunk destination configuration
-          SplunkConfiguration = Hash.schema(
-            hec_endpoint: String,
-            hec_token: String,
-            hec_acknowledgment_timeout?: Integer.constrained(gteq: 180, lteq: 600).optional,
-            hec_endpoint_type?: String.enum('Raw', 'Event').optional,
+          SplunkConfiguration = T['hash'].schema(
+            hec_endpoint: T['string'],
+            hec_token: T['string'],
+            hec_acknowledgment_timeout?: T['integer'].constrained(gteq: 180, lteq: 600).optional,
+            hec_endpoint_type?: T['string'].enum('Raw', 'Event').optional,
             retry_duration?: FirehoseSharedSchemas::RetryDuration.optional,
-            s3_backup_mode?: String.enum('FailedEventsOnly', 'AllEvents').optional,
-            processing_configuration?: Hash.optional,
-            cloudwatch_logging_options?: Hash.optional
+            s3_backup_mode?: T['string'].enum('FailedEventsOnly', 'AllEvents').optional,
+            processing_configuration?: T['hash'].optional,
+            cloudwatch_logging_options?: T['hash'].optional
           )
 
           # HTTP endpoint destination configuration
-          HttpEndpointConfiguration = Hash.schema(
-            url: String,
-            name?: String.optional,
-            access_key?: String.optional,
+          HttpEndpointConfiguration = T['hash'].schema(
+            url: T['string'],
+            name?: T['string'].optional,
+            access_key?: T['string'].optional,
             buffering_size?: FirehoseSharedSchemas::HttpBufferSize.optional,
             buffering_interval?: FirehoseSharedSchemas::BufferInterval.optional,
             retry_duration?: FirehoseSharedSchemas::RetryDuration.optional,
-            s3_backup_mode?: String.enum('FailedDataOnly', 'AllData').optional,
-            request_configuration?: Hash.schema(
-              content_encoding?: String.enum('NONE', 'GZIP').optional,
-              common_attributes?: Hash.map(String, String).optional
+            s3_backup_mode?: T['string'].enum('FailedDataOnly', 'AllData').optional,
+            request_configuration?: T['hash'].schema(
+              content_encoding?: T['string'].enum('NONE', 'GZIP').optional,
+              common_attributes?: T['hash'].map(T['string'], T['string']).optional
             ).optional,
-            processing_configuration?: Hash.optional,
-            cloudwatch_logging_options?: Hash.optional
+            processing_configuration?: T['hash'].optional,
+            cloudwatch_logging_options?: T['hash'].optional
           )
         end
       end

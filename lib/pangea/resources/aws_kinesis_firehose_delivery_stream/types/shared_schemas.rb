@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-require 'dry-struct'
+require 'dry-types'
 
 module Pangea
   module Resources
@@ -21,57 +21,59 @@ module Pangea
       module Types
         # Shared schema definitions for Kinesis Firehose Delivery Stream
         module FirehoseSharedSchemas
+          include Dry.Types()
+
           # CloudWatch logging options schema - reused across all destinations
-          CloudWatchLoggingOptions = Hash.schema(
-            enabled?: Bool.optional,
-            log_group_name?: String.optional,
-            log_stream_name?: String.optional
+          CloudWatchLoggingOptions = Dry.Types()['hash'].schema(
+            enabled?: Dry.Types()['bool'].optional,
+            log_group_name?: Dry.Types()['string'].optional,
+            log_stream_name?: Dry.Types()['string'].optional
           )
 
           # Processing configuration schema - reused across multiple destinations
-          ProcessingConfiguration = Hash.schema(
-            enabled: Bool,
-            processors?: Array.of(Hash.schema(
-              type: String.enum('Lambda'),
-              parameters?: Array.of(Hash.schema(
-                parameter_name: String,
-                parameter_value: String
+          ProcessingConfiguration = Dry.Types()['hash'].schema(
+            enabled: Dry.Types()['bool'],
+            processors?: Dry.Types()['array'].of(Dry.Types()['hash'].schema(
+              type: Dry.Types()['string'].enum('Lambda'),
+              parameters?: Dry.Types()['array'].of(Dry.Types()['hash'].schema(
+                parameter_name: Dry.Types()['string'],
+                parameter_value: Dry.Types()['string']
               )).optional
             )).optional
           )
 
           # KMS encryption configuration schema
-          EncryptionConfiguration = Hash.schema(
-            no_encryption_config?: String.enum('NoEncryption').optional,
-            kms_encryption_config?: Hash.schema(
-              aws_kms_key_arn: String
+          EncryptionConfiguration = Dry.Types()['hash'].schema(
+            no_encryption_config?: Dry.Types()['string'].enum('NoEncryption').optional,
+            kms_encryption_config?: Dry.Types()['hash'].schema(
+              aws_kms_key_arn: Dry.Types()['string']
             ).optional
           )
 
           # Buffer size constraints (1-128 MB for S3)
-          S3BufferSize = Integer.constrained(gteq: 1, lteq: 128)
+          S3BufferSize = Dry.Types()['integer'].constrained(gteq: 1, lteq: 128)
 
           # Buffer interval constraints (60-900 seconds)
-          BufferInterval = Integer.constrained(gteq: 60, lteq: 900)
+          BufferInterval = Dry.Types()['integer'].constrained(gteq: 60, lteq: 900)
 
           # Retry duration constraints (0-7200 seconds)
-          RetryDuration = Integer.constrained(gteq: 0, lteq: 7200)
+          RetryDuration = Dry.Types()['integer'].constrained(gteq: 0, lteq: 7200)
 
           # Compression formats for S3
-          S3CompressionFormat = String.enum(
+          S3CompressionFormat = Dry.Types()['string'].enum(
             'UNCOMPRESSED', 'GZIP', 'ZIP', 'Snappy', 'HADOOP_SNAPPY'
           )
 
           # Index rotation periods for search destinations
-          IndexRotationPeriod = String.enum(
+          IndexRotationPeriod = Dry.Types()['string'].enum(
             'NoRotation', 'OneHour', 'OneDay', 'OneWeek', 'OneMonth'
           )
 
           # Search destination buffer size (1-100 MB)
-          SearchBufferSize = Integer.constrained(gteq: 1, lteq: 100)
+          SearchBufferSize = Dry.Types()['integer'].constrained(gteq: 1, lteq: 100)
 
           # HTTP endpoint buffer size (1-64 MB)
-          HttpBufferSize = Integer.constrained(gteq: 1, lteq: 64)
+          HttpBufferSize = Dry.Types()['integer'].constrained(gteq: 1, lteq: 64)
         end
       end
     end
