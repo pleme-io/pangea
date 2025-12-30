@@ -86,47 +86,7 @@ module Pangea
           dataset_name validated_attributes.dataset_name
 
           # Configure actions
-          actions validated_attributes.actions.map do |action|
-            action_config = { "actionName" => action.action_name }
-            
-            if action.query_action
-              query_config = { "sqlQuery" => action.query_action.sql_query }
-              
-              if action.query_action.filters
-                query_config["filters"] = action.query_action.filters.map do |filter|
-                  filter_config = {}
-                  if filter.delta_time
-                    filter_config["deltaTime"] = {
-                      "offsetSeconds" => filter.delta_time.offset_seconds,
-                      "timeExpression" => filter.delta_time.time_expression
-                    }
-                  end
-                  filter_config
-                end
-              end
-              
-              action_config["queryAction"] = query_config
-            end
-            
-            if action.container_action
-              container_config = {
-                "image" => action.container_action.image,
-                "executionRoleArn" => action.container_action.execution_role_arn,
-                "resourceConfiguration" => {
-                  "computeType" => action.container_action.resource_configuration.compute_type,
-                  "volumeSizeInGB" => action.container_action.resource_configuration.volume_size_in_gb
-                }
-              }
-              
-              if action.container_action.variables
-                container_config["variables"] = action.container_action.variables
-              end
-              
-              action_config["containerAction"] = container_config
-            end
-            
-            action_config
-          end
+          actions Builders::ActionBuilder.build(validated_attributes.actions)
 
           # Configure content delivery rules
           if validated_attributes.content_delivery_rules
