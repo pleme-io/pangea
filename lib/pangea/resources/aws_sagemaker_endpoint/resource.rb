@@ -17,6 +17,7 @@
 require 'pangea/resources/base'
 require 'pangea/resources/aws_sagemaker_endpoint/types'
 require 'pangea/resource_registry'
+require_relative 'reference_attributes'
 
 module Pangea
   module Resources

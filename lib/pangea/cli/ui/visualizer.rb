@@ -20,6 +20,7 @@ require 'pastel'
 require_relative 'visualizer/graph'
 require_relative 'visualizer/display'
 require_relative 'visualizer/cost'
+require_relative 'visualizer/statistics'
 
 module Pangea
   module CLI
@@ -29,6 +30,7 @@ module Pangea
         include Graph
         include Display
         include Cost
+        include Statistics
 
         def initialize
           @pastel = Pastel.new
@@ -71,52 +73,6 @@ module Pangea
               display_resource_node(resource, indent: 2)
             end
           end
-        end
-
-        # Resource statistics dashboard
-        def statistics_dashboard(stats)
-          # Title
-          title = " Infrastructure Statistics "
-          box = TTY::Box.frame(
-            width: @screen_width - 4,
-            height: 20,
-            padding: 1,
-            title: { top_center: title },
-            style: {
-              fg: :bright_cyan,
-              border: {
-                fg: :bright_blue
-              }
-            }
-          ) do
-            lines = []
-
-            # Summary stats
-            lines << @pastel.bold("Summary")
-            lines << "  Total Resources: #{stats[:total_resources]}"
-            lines << "  Namespaces: #{stats[:namespaces]}"
-            lines << "  Last Updated: #{stats[:last_updated]}"
-            lines << ""
-
-            # Resource breakdown
-            lines << @pastel.bold("Resources by Type")
-            stats[:by_type].each do |type, count|
-              bar = progress_bar(count, stats[:total_resources], width: 20)
-              lines << "  #{type.ljust(20)} #{bar} #{count}"
-            end
-            lines << ""
-
-            # Provider breakdown
-            lines << @pastel.bold("Resources by Provider")
-            stats[:by_provider].each do |provider, count|
-              percentage = (count.to_f / stats[:total_resources] * 100).round(1)
-              lines << "  #{provider.ljust(20)} #{percentage}% (#{count})"
-            end
-
-            lines.join("\n")
-          end
-
-          puts box
         end
 
         # Plan visualization with impact analysis

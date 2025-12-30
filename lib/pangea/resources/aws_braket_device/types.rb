@@ -62,7 +62,7 @@ module Pangea
               ).optional
             ),
             action: Resources::Types::Hash.schema(
-              braket.ir.jaqcd.program?: Resources::Types::Hash.schema(
+              :"braket.ir.jaqcd.program" => Resources::Types::Hash.schema(
                 supportedOperations: Resources::Types::Array.of(Resources::Types::String),
                 supportedResultTypes: Resources::Types::Array.of(
                   Resources::Types::Hash.schema(
@@ -73,7 +73,7 @@ module Pangea
                   )
                 ).optional
               ).optional,
-              braket.ir.openqasm.program?: Resources::Types::Hash.schema(
+              :"braket.ir.openqasm.program" => Resources::Types::Hash.schema(
                 supportedOperations: Resources::Types::Array.of(Resources::Types::String)
               ).optional
             ),

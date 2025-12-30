@@ -3,6 +3,7 @@
 # Copyright 2025 The Pangea Authors. Licensed under Apache 2.0.
 
 require_relative 'instance_methods'
+require_relative 'validations'
 
 module Pangea
   module Resources
@@ -131,94 +132,16 @@ module Pangea
           # Custom validation
           def self.new(attributes = {})
             attrs = super(attributes)
+            attrs = enable_stream_if_view_type_set(attrs)
+            DynamoDbTableValidations.validate!(attrs)
+          end
 
-            # Validate billing mode consistency
-            if attrs.billing_mode == "PROVISIONED"
-              unless attrs.read_capacity && attrs.write_capacity
-                raise Dry::Struct::Error, "PROVISIONED billing mode requires read_capacity and write_capacity"
-              end
-
-              # Validate GSI capacity settings for PROVISIONED mode
-              attrs.global_secondary_index.each do |gsi|
-                unless gsi[:read_capacity] && gsi[:write_capacity]
-                  raise Dry::Struct::Error, "GSI '#{gsi[:name]}' requires read_capacity and write_capacity for PROVISIONED billing mode"
-                end
-              end
-            elsif attrs.billing_mode == "PAY_PER_REQUEST"
-              if attrs.read_capacity || attrs.write_capacity
-                raise Dry::Struct::Error, "PAY_PER_REQUEST billing mode does not support read_capacity or write_capacity"
-              end
-
-              # Validate GSI capacity settings for PAY_PER_REQUEST mode
-              attrs.global_secondary_index.each do |gsi|
-                if gsi[:read_capacity] || gsi[:write_capacity]
-                  raise Dry::Struct::Error, "GSI '#{gsi[:name]}' does not support capacity settings for PAY_PER_REQUEST billing mode"
-                end
-              end
-            end
-
-            # Validate stream configuration
-            if attrs.stream_enabled && !attrs.stream_view_type
-              raise Dry::Struct::Error, "stream_view_type is required when stream_enabled is true"
-            end
-
+          def self.enable_stream_if_view_type_set(attrs)
             if attrs.stream_view_type && !attrs.stream_enabled
-              attrs = attrs.copy_with(stream_enabled: true)
+              attrs.copy_with(stream_enabled: true)
+            else
+              attrs
             end
-
-            # Validate attribute definitions
-            all_key_attributes = [attrs.hash_key]
-            all_key_attributes << attrs.range_key if attrs.range_key
-
-            attrs.global_secondary_index.each do |gsi|
-              all_key_attributes << gsi[:hash_key]
-              all_key_attributes << gsi[:range_key] if gsi[:range_key]
-            end
-
-            attrs.local_secondary_index.each do |lsi|
-              all_key_attributes << lsi[:range_key]
-            end
-
-            defined_attributes = attrs.attribute.map { |attr| attr[:name] }
-            missing_attributes = all_key_attributes.uniq - defined_attributes
-
-            unless missing_attributes.empty?
-              raise Dry::Struct::Error, "Missing attribute definitions for: #{missing_attributes.join(', ')}"
-            end
-
-            # Validate GSI projection settings
-            attrs.global_secondary_index.each do |gsi|
-              if gsi[:projection_type] == "INCLUDE" && (!gsi[:non_key_attributes] || gsi[:non_key_attributes].empty?)
-                raise Dry::Struct::Error, "GSI '#{gsi[:name]}' with INCLUDE projection_type requires non_key_attributes"
-              end
-
-              if gsi[:projection_type] != "INCLUDE" && gsi[:non_key_attributes]
-                raise Dry::Struct::Error, "GSI '#{gsi[:name]}' with #{gsi[:projection_type]} projection_type cannot have non_key_attributes"
-              end
-            end
-
-            # Validate LSI projection settings
-            attrs.local_secondary_index.each do |lsi|
-              if lsi[:projection_type] == "INCLUDE" && (!lsi[:non_key_attributes] || lsi[:non_key_attributes].empty?)
-                raise Dry::Struct::Error, "LSI '#{lsi[:name]}' with INCLUDE projection_type requires non_key_attributes"
-              end
-
-              if lsi[:projection_type] != "INCLUDE" && lsi[:non_key_attributes]
-                raise Dry::Struct::Error, "LSI '#{lsi[:name]}' with #{lsi[:projection_type]} projection_type cannot have non_key_attributes"
-              end
-            end
-
-            # Validate LSI limitations (max 10 LSIs per table)
-            if attrs.local_secondary_index.size > 10
-              raise Dry::Struct::Error, "Maximum of 10 Local Secondary Indexes allowed per table"
-            end
-
-            # Validate GSI limitations (max 20 GSIs per table)
-            if attrs.global_secondary_index.size > 20
-              raise Dry::Struct::Error, "Maximum of 20 Global Secondary Indexes allowed per table"
-            end
-
-            attrs
           end
         end
       end

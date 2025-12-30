@@ -17,11 +17,14 @@
 require 'pangea/resources/base'
 require 'pangea/resources/reference'
 require 'pangea/resources/aws_codedeploy_deployment_group/types'
+require 'pangea/resources/aws_codedeploy_deployment_group/block_builders'
 require 'pangea/resource_registry'
 
 module Pangea
   module Resources
     module AWS
+      include CodeDeployDeploymentGroupBlockBuilders
+
       # Create an AWS CodeDeploy Deployment Group with type-safe attributes
       #
       # @param name [Symbol] The resource name

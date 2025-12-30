@@ -67,9 +67,7 @@ module Pangea
           )
 
           # Tags (optional)
-          attribute? :tags, Resources::Types::Hash.schema(
-            Resources::Types::String => Resources::Types::String
-          ).optional
+          attribute? :tags, Resources::Types::AwsTags
 
           # Custom validation
           def self.new(attributes = {})
