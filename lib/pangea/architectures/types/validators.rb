@@ -51,7 +51,7 @@ module Pangea
       end
 
       def self.validate_availability_zones(azs, region = nil)
-        return false unless azs.is_a?(Array) && azs.any?
+        return false unless azs.is_a?(::Array) && azs.any?
         return false unless azs.all? { |az| az.match?(/^[a-z]{2}-[a-z]+-[0-9][a-z]$/) }
 
         if region

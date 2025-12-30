@@ -165,7 +165,7 @@ module Pangea
       end
       
       # Resource function for aws_sagemaker_endpoint_configuration
-      # 
+      #
       # @param name [Symbol] The resource name
       # @param attributes [Hash] The resource attributes
       # @return [ResourceReference] Reference to the created resource
@@ -174,55 +174,14 @@ module Pangea
           name: name,
           attributes: attributes
         )
-        
+
         add_resource(resource)
-        
+
         # Return resource reference with computed attributes
         ResourceReference.new(
           name: name,
           type: :aws_sagemaker_endpoint_configuration,
-          attributes: {
-            # Direct attributes
-            id: "${aws_sagemaker_endpoint_configuration.#{name}.id}",
-            arn: "${aws_sagemaker_endpoint_configuration.#{name}.arn}",
-            name: "${aws_sagemaker_endpoint_configuration.#{name}.name}",
-            
-            # Computed attributes
-            creation_time: "${aws_sagemaker_endpoint_configuration.#{name}.creation_time}",
-            
-            # Helper attributes for integration
-            config_name: "${aws_sagemaker_endpoint_configuration.#{name}.name}",
-            variant_count: attributes[:production_variants]&.size || 0,
-            total_instance_count: attributes[:production_variants]&.sum { |v| v[:initial_instance_count] } || 0,
-            
-            # Configuration type classification
-            is_serverless: attributes[:production_variants]&.all? { |v| v[:serverless_config] } || false,
-            is_multi_variant: (attributes[:production_variants]&.size || 0) > 1,
-            has_gpu_instances: attributes[:production_variants]&.any? { |v| v[:instance_type].match?(/ml\.(p|g)/) } || false,
-            has_inference_optimized: attributes[:production_variants]&.any? { |v| v[:instance_type].start_with?('ml.inf') } || false,
-            has_accelerators: attributes[:production_variants]&.any? { |v| v[:accelerator_type] } || false,
-            
-            # Feature flags
-            data_capture_enabled: attributes.dig(:data_capture_config, :enable_capture) == true,
-            async_inference_enabled: !attributes[:async_inference_config].nil?,
-            kms_encrypted: !attributes[:kms_key_id].nil?,
-            
-            # Instance type summary
-            instance_types: attributes[:production_variants]&.map { |v| v[:instance_type] }&.uniq || [],
-            primary_instance_type: attributes[:production_variants]&.first&.dig(:instance_type),
-            
-            # Capacity information
-            min_capacity: attributes[:production_variants]&.map { |v| v[:initial_instance_count] }&.min || 0,
-            max_capacity: attributes[:production_variants]&.map { |v| v[:initial_instance_count] }&.max || 0,
-            
-            # Cost estimation
-            estimated_monthly_cost: begin
-              config_attrs = Types::Types::SageMakerEndpointConfigurationAttributes.new(attributes)
-              config_attrs.estimated_monthly_cost
-            rescue
-              0.0
-            end
-          }
+          attributes: SageMakerEndpointConfigurationReferenceAttributes.build(name, attributes)
         )
       end
     end

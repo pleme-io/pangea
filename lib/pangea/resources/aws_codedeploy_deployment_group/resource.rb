@@ -100,28 +100,7 @@ module Pangea
           end
           
           # Blue-green deployment configuration
-          if group_attrs.blue_green_deployment_config.any?
-            blue_green_deployment_config do
-              if group_attrs.blue_green_deployment_config[:terminate_blue_instances_on_deployment_success]
-                terminate_blue_instances_on_deployment_success do
-                  action group_attrs.blue_green_deployment_config[:terminate_blue_instances_on_deployment_success][:action] if group_attrs.blue_green_deployment_config[:terminate_blue_instances_on_deployment_success][:action]
-                  termination_wait_time_in_minutes group_attrs.blue_green_deployment_config[:terminate_blue_instances_on_deployment_success][:termination_wait_time_in_minutes] if group_attrs.blue_green_deployment_config[:terminate_blue_instances_on_deployment_success][:termination_wait_time_in_minutes]
-                end
-              end
-              
-              if group_attrs.blue_green_deployment_config[:deployment_ready_option]
-                deployment_ready_option do
-                  action_on_timeout group_attrs.blue_green_deployment_config[:deployment_ready_option][:action_on_timeout] if group_attrs.blue_green_deployment_config[:deployment_ready_option][:action_on_timeout]
-                end
-              end
-              
-              if group_attrs.blue_green_deployment_config[:green_fleet_provisioning_option]
-                green_fleet_provisioning_option do
-                  action group_attrs.blue_green_deployment_config[:green_fleet_provisioning_option][:action] if group_attrs.blue_green_deployment_config[:green_fleet_provisioning_option][:action]
-                end
-              end
-            end
-          end
+          build_blue_green_deployment_config(group_attrs.blue_green_deployment_config) if group_attrs.blue_green_deployment_config.any?
           
           # Load balancer info
           if group_attrs.load_balancer_info.any?
