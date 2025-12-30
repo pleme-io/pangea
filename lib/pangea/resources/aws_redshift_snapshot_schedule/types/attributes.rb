@@ -24,7 +24,7 @@ module Pangea
 
           # Schedule definitions (required)
           # Format: "rate(12 hours)" or "cron(0 12 * * ? *)"
-          attribute :definitions, Resources::Types::Array.of(Types::String).constrained(min_size: 1)
+          attribute :definitions, Resources::Types::Array.of(Resources::Types::String).constrained(min_size: 1)
 
           # Force destroy
           attribute :force_destroy, Resources::Types::Bool.default(false)
