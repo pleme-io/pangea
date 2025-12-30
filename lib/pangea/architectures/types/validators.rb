@@ -39,7 +39,7 @@ module Pangea
       end
 
       def self.validate_auto_scaling_config(config)
-        return false unless config.is_a?(Hash)
+        return false unless config.is_a?(::Hash)
         return false unless config[:min] && config[:max]
         return false unless config[:min] <= config[:max]
 
