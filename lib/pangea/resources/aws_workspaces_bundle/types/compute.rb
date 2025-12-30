@@ -20,21 +20,14 @@ module Pangea
   module Resources
     module AWS
       module Types
-        # Compute type configuration for WorkSpaces Bundle
+        # Compute type configuration
         class ComputeTypeConfigurationType < Dry::Struct
           transform_keys(&:to_sym)
 
           attribute :name, Resources::Types::String.enum(
-            'VALUE',
-            'STANDARD',
-            'PERFORMANCE',
-            'POWER',
-            'POWERPRO',
-            'GRAPHICS',
-            'GRAPHICSPRO'
+            'VALUE', 'STANDARD', 'PERFORMANCE', 'POWER', 'POWERPRO', 'GRAPHICS', 'GRAPHICSPRO'
           )
 
-          # Computed specifications based on compute type
           def vcpus
             case name
             when 'VALUE' then 1

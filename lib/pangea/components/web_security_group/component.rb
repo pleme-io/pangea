@@ -13,124 +13,28 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
 require 'pangea/components/base'
 require 'pangea/components/web_security_group/types'
 require 'pangea/resources/aws_security_group/resource'
+require_relative 'rules'
 
 module Pangea
   module Components
     module WebSecurityGroup
       include Base
-      
+
       # Create a security group optimized for web servers with configurable access rules
       #
       # @param name [Symbol] The component name
       # @param attributes [Hash] WebSecurityGroup attributes
       # @return [ComponentReference] Reference object with security group resources and outputs
       def web_security_group(name, attributes = {})
-        # Validate attributes using dry-struct
         component_attrs = Types::WebSecurityGroupAttributes.new(attributes)
-        
-        # Extract VPC ID from reference (handle both ResourceReference and String)
-        vpc_id = case component_attrs.vpc_ref
-                 when String then component_attrs.vpc_ref
-                 else component_attrs.vpc_ref.id
-                 end
-        
-        # Build ingress rules based on configuration
-        ingress_rules = []
-        
-        # HTTP access
-        if component_attrs.enable_http
-          ingress_rules << {
-            from_port: component_attrs.http_port,
-            to_port: component_attrs.http_port,
-            protocol: "tcp",
-            cidr_blocks: component_attrs.allowed_cidr_blocks,
-            description: "HTTP web traffic"
-          }
-        end
-        
-        # HTTPS access
-        if component_attrs.enable_https
-          ingress_rules << {
-            from_port: component_attrs.https_port,
-            to_port: component_attrs.https_port,
-            protocol: "tcp",
-            cidr_blocks: component_attrs.allowed_cidr_blocks,
-            description: "HTTPS web traffic"
-          }
-        end
-        
-        # SSH access (with separate CIDR blocks for better security)
-        if component_attrs.enable_ssh
-          ingress_rules << {
-            from_port: component_attrs.ssh_port,
-            to_port: component_attrs.ssh_port,
-            protocol: "tcp",
-            cidr_blocks: component_attrs.ssh_cidr_blocks,
-            description: "SSH administrative access"
-          }
-        end
-        
-        # Custom ports
-        component_attrs.custom_ports.each do |port|
-          ingress_rules << {
-            from_port: port,
-            to_port: port,
-            protocol: "tcp",
-            cidr_blocks: component_attrs.allowed_cidr_blocks,
-            description: "Custom port #{port}"
-          }
-        end
-        
-        # ICMP ping (if enabled)
-        if component_attrs.enable_ping
-          ingress_rules << {
-            from_port: -1,
-            to_port: -1,
-            protocol: "icmp",
-            cidr_blocks: component_attrs.allowed_cidr_blocks,
-            description: "ICMP ping"
-          }
-        end
-        
-        # Build egress rules based on configuration
-        egress_rules = []
-        
-        # Outbound internet access
-        if component_attrs.enable_outbound_internet
-          egress_rules << {
-            from_port: 0,
-            to_port: 65535,
-            protocol: "tcp",
-            cidr_blocks: ["0.0.0.0/0"],
-            description: "All outbound TCP traffic to internet"
-          }
-          
-          egress_rules << {
-            from_port: 0,
-            to_port: 65535,
-            protocol: "udp",
-            cidr_blocks: ["0.0.0.0/0"],
-            description: "All outbound UDP traffic to internet"
-          }
-        end
-        
-        # VPC communication (if enabled and different from internet access)
-        if component_attrs.enable_vpc_communication && !component_attrs.enable_outbound_internet
-          # This would need VPC CIDR - for now we'll use a placeholder
-          # In practice, this should get the VPC CIDR from the vpc_ref
-          egress_rules << {
-            from_port: 0,
-            to_port: 65535,
-            protocol: "tcp",
-            cidr_blocks: ["10.0.0.0/8"], # Placeholder - should be actual VPC CIDR
-            description: "All TCP traffic within VPC"
-          }
-        end
-        
+        vpc_id = extract_vpc_id(component_attrs.vpc_ref)
+
+        ingress_rules = Rules.build_ingress_rules(component_attrs)
+        egress_rules = Rules.build_egress_rules(component_attrs)
+
         # Create the security group
         sg_ref = aws_security_group(resource_name(name, :web_sg), {
           name: "#{name}-web-sg",
@@ -211,6 +115,18 @@ module Pangea
           resources: resources,
           outputs: outputs
         )
+      end
+
+      private
+
+      # Extract VPC ID from reference (handle both ResourceReference and String)
+      # @param vpc_ref [String, ResourceReference] VPC reference
+      # @return [String] VPC ID
+      def extract_vpc_id(vpc_ref)
+        case vpc_ref
+        when String then vpc_ref
+        else vpc_ref.id
+        end
       end
     end
   end
