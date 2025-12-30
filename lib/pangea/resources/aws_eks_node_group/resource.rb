@@ -18,6 +18,8 @@ require 'pangea/resources/base'
 require 'pangea/resources/reference'
 require 'pangea/resources/aws_eks_node_group/types'
 require 'pangea/resource_registry'
+require_relative 'builders/dsl_builder'
+require_relative 'builders/reference_builder'
 
 module Pangea
   module Resources
@@ -99,122 +101,13 @@ module Pangea
       #     }]
       #   })
       def aws_eks_node_group(name, attributes = {})
-        # Validate attributes using dry-struct
         node_group_attrs = AWS::Types::Types::EksNodeGroupAttributes.new(attributes)
-        
-        # Generate terraform resource block via terraform-synthesizer
+
         resource(:aws_eks_node_group, name) do
-          # Required attributes
-          cluster_name node_group_attrs.cluster_name
-          node_role_arn node_group_attrs.node_role_arn
-          subnet_ids node_group_attrs.subnet_ids
-          
-          # Optional name
-          node_group_name node_group_attrs.node_group_name if node_group_attrs.node_group_name
-          
-          # Scaling configuration
-          scaling_config do
-            desired_size node_group_attrs.scaling_config.desired_size
-            max_size node_group_attrs.scaling_config.max_size
-            min_size node_group_attrs.scaling_config.min_size
-          end
-          
-          # Update configuration
-          if node_group_attrs.update_config
-            update_config do
-              if node_group_attrs.update_config.max_unavailable
-                max_unavailable node_group_attrs.update_config.max_unavailable
-              elsif node_group_attrs.update_config.max_unavailable_percentage
-                max_unavailable_percentage node_group_attrs.update_config.max_unavailable_percentage
-              end
-            end
-          end
-          
-          # Instance configuration
-          instance_types node_group_attrs.instance_types
-          capacity_type node_group_attrs.capacity_type
-          ami_type node_group_attrs.ami_type
-          disk_size node_group_attrs.disk_size
-          
-          # Version information
-          release_version node_group_attrs.release_version if node_group_attrs.release_version
-          version node_group_attrs.version if node_group_attrs.version
-          force_update_version node_group_attrs.force_update_version if node_group_attrs.force_update_version
-          
-          # Remote access
-          if node_group_attrs.remote_access
-            remote_access do
-              ec2_ssh_key node_group_attrs.remote_access.ec2_ssh_key if node_group_attrs.remote_access.ec2_ssh_key
-              if node_group_attrs.remote_access.source_security_group_ids.any?
-                source_security_group_ids node_group_attrs.remote_access.source_security_group_ids
-              end
-            end
-          end
-          
-          # Launch template
-          if node_group_attrs.launch_template
-            launch_template do
-              id node_group_attrs.launch_template.id if node_group_attrs.launch_template.id
-              __send__(:name, node_group_attrs.launch_template.name) if node_group_attrs.launch_template.name
-              version node_group_attrs.launch_template.version if node_group_attrs.launch_template.version
-            end
-          end
-          
-          # Kubernetes labels
-          labels node_group_attrs.labels if node_group_attrs.labels.any?
-          
-          # Kubernetes taints
-          if node_group_attrs.taints.any?
-            node_group_attrs.taints.each do |taint_config|
-              taint do
-                key taint_config.key
-                value taint_config.value if taint_config.value
-                effect taint_config.effect
-              end
-            end
-          end
-          
-          # Tags
-          tags node_group_attrs.tags if node_group_attrs.tags.any?
+          EksNodeGroup::DslBuilder.build_resource(self, node_group_attrs)
         end
-        
-        # Create resource reference
-        ref = ResourceReference.new(
-          type: 'aws_eks_node_group',
-          name: name,
-          resource_attributes: node_group_attrs.to_h,
-          outputs: {
-            id: "${aws_eks_node_group.#{name}.id}",
-            arn: "${aws_eks_node_group.#{name}.arn}",
-            cluster_name: "${aws_eks_node_group.#{name}.cluster_name}",
-            node_group_name: "${aws_eks_node_group.#{name}.node_group_name}",
-            node_role_arn: "${aws_eks_node_group.#{name}.node_role_arn}",
-            subnet_ids: "${aws_eks_node_group.#{name}.subnet_ids}",
-            status: "${aws_eks_node_group.#{name}.status}",
-            capacity_type: "${aws_eks_node_group.#{name}.capacity_type}",
-            instance_types: "${aws_eks_node_group.#{name}.instance_types}",
-            disk_size: "${aws_eks_node_group.#{name}.disk_size}",
-            remote_access: "${aws_eks_node_group.#{name}.remote_access}",
-            scaling_config: "${aws_eks_node_group.#{name}.scaling_config}",
-            update_config: "${aws_eks_node_group.#{name}.update_config}",
-            launch_template: "${aws_eks_node_group.#{name}.launch_template}",
-            version: "${aws_eks_node_group.#{name}.version}",
-            release_version: "${aws_eks_node_group.#{name}.release_version}",
-            resources: "${aws_eks_node_group.#{name}.resources}",
-            tags_all: "${aws_eks_node_group.#{name}.tags_all}"
-          }
-        )
-        
-        # Add computed properties via method delegation
-        ref.define_singleton_method(:spot_instances?) { node_group_attrs.spot_instances? }
-        ref.define_singleton_method(:custom_ami?) { node_group_attrs.custom_ami? }
-        ref.define_singleton_method(:has_remote_access?) { node_group_attrs.has_remote_access? }
-        ref.define_singleton_method(:has_taints?) { node_group_attrs.has_taints? }
-        ref.define_singleton_method(:has_labels?) { node_group_attrs.has_labels? }
-        ref.define_singleton_method(:ami_type) { node_group_attrs.ami_type }
-        ref.define_singleton_method(:desired_size) { node_group_attrs.scaling_config.desired_size }
-        
-        ref
+
+        EksNodeGroup::ReferenceBuilder.build_reference(name, node_group_attrs)
       end
     end
   end
