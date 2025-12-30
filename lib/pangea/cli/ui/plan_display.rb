@@ -144,19 +144,6 @@ module Pangea
 
           resource_analysis[:resources].find { |r| r[:full_name] == resource_ref }
         end
-
-        def format_attribute_value(value)
-          case value
-          when String
-            value.length > 50 ? "#{value[0..47]}..." : value
-          when Array
-            value.join(', ')
-          when Hash
-            value.to_json
-          else
-            value.to_s
-          end
-        end
       end
     end
   end

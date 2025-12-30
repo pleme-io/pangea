@@ -23,6 +23,16 @@ module Pangea
     # Common types for resource definitions
     module Types
       include Dry.Types()
+
+      # Alias for ResourceReference to support Types::ResourceReference usage
+      def self.const_missing(name)
+        if name == :ResourceReference
+          require 'pangea/resources/reference' unless defined?(::Pangea::Resources::ResourceReference)
+          ::Pangea::Resources::ResourceReference
+        else
+          super
+        end
+      end
     end
   end
 end

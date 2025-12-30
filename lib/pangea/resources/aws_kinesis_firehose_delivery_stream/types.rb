@@ -15,11 +15,8 @@
 
 require 'dry-struct'
 require 'pangea/resources/types'
-require_relative 'types/shared_schemas'
-require_relative 'types/s3_destinations'
-require_relative 'types/search_destinations'
-require_relative 'types/other_destinations'
-require_relative 'types/source_and_encryption'
+require_relative 'types/validation'
+require_relative 'types/computed_properties'
 
 module Pangea
   module Resources
@@ -27,6 +24,7 @@ module Pangea
       module Types
         # Kinesis Firehose Delivery Stream resource attributes with validation
         class KinesisFirehoseDeliveryStreamAttributes < Dry::Struct
+          include FirehoseComputedProperties
           transform_keys(&:to_sym)
 
           attribute :name, String
@@ -35,126 +33,150 @@ module Pangea
             'splunk', 'http_endpoint', 'snowflake'
           )
 
-          # S3 destination configurations
-          attribute :s3_configuration, FirehoseS3Destinations::S3Configuration.optional
-          attribute :extended_s3_configuration, FirehoseS3Destinations::ExtendedS3Configuration.optional
+          # S3 destination configuration
+          attribute :s3_configuration, Hash.schema(
+            role_arn: String,
+            bucket_arn: String,
+            prefix?: String.optional,
+            error_output_prefix?: String.optional,
+            buffer_size?: Integer.constrained(gteq: 1, lteq: 128).optional,
+            buffer_interval?: Integer.constrained(gteq: 60, lteq: 900).optional,
+            compression_format?: String.enum(
+              'UNCOMPRESSED', 'GZIP', 'ZIP', 'Snappy', 'HADOOP_SNAPPY'
+            ).optional,
+            encryption_configuration?: Hash.schema(
+              no_encryption_config?: String.enum('NoEncryption').optional,
+              kms_encryption_config?: Hash.schema(aws_kms_key_arn: String).optional
+            ).optional,
+            cloudwatch_logging_options?: Hash.schema(
+              enabled?: Bool.optional,
+              log_group_name?: String.optional,
+              log_stream_name?: String.optional
+            ).optional
+          ).optional
 
-          # Search destination configurations
-          attribute :elasticsearch_configuration, FirehoseSearchDestinations::ElasticsearchConfiguration.optional
-          attribute :amazonopensearch_configuration, FirehoseSearchDestinations::AmazonOpensearchConfiguration.optional
+          # Extended S3 destination configuration
+          attribute :extended_s3_configuration, Hash.schema(
+            role_arn: String,
+            bucket_arn: String,
+            prefix?: String.optional,
+            error_output_prefix?: String.optional,
+            buffer_size?: Integer.constrained(gteq: 1, lteq: 128).optional,
+            buffer_interval?: Integer.constrained(gteq: 60, lteq: 900).optional,
+            compression_format?: String.enum(
+              'UNCOMPRESSED', 'GZIP', 'ZIP', 'Snappy', 'HADOOP_SNAPPY'
+            ).optional,
+            data_format_conversion_configuration?: Hash.schema(
+              enabled: Bool,
+              output_format_configuration?: Hash.schema(
+                serializer?: Hash.schema(
+                  parquet_ser_de?: Hash.optional, orc_ser_de?: Hash.optional
+                ).optional
+              ).optional,
+              schema_configuration?: Hash.schema(
+                database_name: String, table_name: String, role_arn: String,
+                region?: String.optional, catalog_id?: String.optional, version_id?: String.optional
+              ).optional
+            ).optional,
+            processing_configuration?: Hash.schema(
+              enabled: Bool,
+              processors?: Array.of(Hash.schema(
+                type: String.enum('Lambda'),
+                parameters?: Array.of(Hash.schema(
+                  parameter_name: String, parameter_value: String
+                )).optional
+              )).optional
+            ).optional,
+            cloudwatch_logging_options?: Hash.schema(
+              enabled?: Bool.optional, log_group_name?: String.optional, log_stream_name?: String.optional
+            ).optional,
+            s3_backup_mode?: String.enum('Disabled', 'Enabled').optional,
+            s3_backup_configuration?: Hash.optional
+          ).optional
 
-          # Other destination configurations
-          attribute :redshift_configuration, FirehoseOtherDestinations::RedshiftConfiguration.optional
-          attribute :splunk_configuration, FirehoseOtherDestinations::SplunkConfiguration.optional
-          attribute :http_endpoint_configuration, FirehoseOtherDestinations::HttpEndpointConfiguration.optional
+          # Redshift destination configuration
+          attribute :redshift_configuration, Hash.schema(
+            role_arn: String, cluster_jdbcurl: String, username: String,
+            password: String, data_table_name: String,
+            copy_options?: String.optional, data_table_columns?: String.optional,
+            s3_backup_mode?: String.enum('Disabled', 'Enabled').optional,
+            s3_backup_configuration?: Hash.optional, processing_configuration?: Hash.optional,
+            cloudwatch_logging_options?: Hash.optional
+          ).optional
 
-          # Source and encryption configurations
-          attribute :kinesis_source_configuration, FirehoseSourceAndEncryption::KinesisSourceConfiguration.optional
-          attribute :server_side_encryption, FirehoseSourceAndEncryption::ServerSideEncryption.optional
+          # Elasticsearch destination configuration
+          attribute :elasticsearch_configuration, Hash.schema(
+            role_arn: String, domain_arn: String, index_name: String,
+            type_name?: String.optional,
+            index_rotation_period?: String.enum(
+              'NoRotation', 'OneHour', 'OneDay', 'OneWeek', 'OneMonth'
+            ).optional,
+            buffering_size?: Integer.constrained(gteq: 1, lteq: 100).optional,
+            buffering_interval?: Integer.constrained(gteq: 60, lteq: 900).optional,
+            retry_duration?: Integer.constrained(gteq: 0, lteq: 7200).optional,
+            s3_backup_mode?: String.enum('FailedDocumentsOnly', 'AllDocuments').optional,
+            processing_configuration?: Hash.optional, cloudwatch_logging_options?: Hash.optional
+          ).optional
+
+          # OpenSearch destination configuration
+          attribute :amazonopensearch_configuration, Hash.schema(
+            role_arn: String, domain_arn: String, index_name: String,
+            type_name?: String.optional,
+            index_rotation_period?: String.enum(
+              'NoRotation', 'OneHour', 'OneDay', 'OneWeek', 'OneMonth'
+            ).optional,
+            buffering_size?: Integer.constrained(gteq: 1, lteq: 100).optional,
+            buffering_interval?: Integer.constrained(gteq: 60, lteq: 900).optional,
+            retry_duration?: Integer.constrained(gteq: 0, lteq: 7200).optional,
+            s3_backup_mode?: String.enum('FailedDocumentsOnly', 'AllDocuments').optional,
+            processing_configuration?: Hash.optional, cloudwatch_logging_options?: Hash.optional
+          ).optional
+
+          # Splunk destination configuration
+          attribute :splunk_configuration, Hash.schema(
+            hec_endpoint: String, hec_token: String,
+            hec_acknowledgment_timeout?: Integer.constrained(gteq: 180, lteq: 600).optional,
+            hec_endpoint_type?: String.enum('Raw', 'Event').optional,
+            retry_duration?: Integer.constrained(gteq: 0, lteq: 7200).optional,
+            s3_backup_mode?: String.enum('FailedEventsOnly', 'AllEvents').optional,
+            processing_configuration?: Hash.optional, cloudwatch_logging_options?: Hash.optional
+          ).optional
+
+          # HTTP endpoint destination configuration
+          attribute :http_endpoint_configuration, Hash.schema(
+            url: String, name?: String.optional, access_key?: String.optional,
+            buffering_size?: Integer.constrained(gteq: 1, lteq: 64).optional,
+            buffering_interval?: Integer.constrained(gteq: 60, lteq: 900).optional,
+            retry_duration?: Integer.constrained(gteq: 0, lteq: 7200).optional,
+            s3_backup_mode?: String.enum('FailedDataOnly', 'AllData').optional,
+            request_configuration?: Hash.schema(
+              content_encoding?: String.enum('NONE', 'GZIP').optional,
+              common_attributes?: Hash.map(String, String).optional
+            ).optional,
+            processing_configuration?: Hash.optional, cloudwatch_logging_options?: Hash.optional
+          ).optional
+
+          # Kinesis source configuration
+          attribute :kinesis_source_configuration, Hash.schema(
+            kinesis_stream_arn: String, role_arn: String
+          ).optional
+
+          # Server-side encryption
+          attribute :server_side_encryption, Hash.schema(
+            enabled?: Bool.default(false),
+            key_type?: String.enum('AWS_OWNED_CMK', 'CUSTOMER_MANAGED_CMK').optional,
+            key_arn?: String.optional
+          ).optional
 
           attribute :tags, Resources::Types::AwsTags
 
           # Custom validation
           def self.new(attributes)
             attrs = attributes.is_a?(Hash) ? attributes : {}
-            validate_destination_config!(attrs)
-            validate_encryption_config!(attrs)
-            validate_source_arns!(attrs)
+            FirehoseValidation.validate_destination_config!(attrs)
+            FirehoseValidation.validate_encryption_config!(attrs)
+            FirehoseValidation.validate_source_arns!(attrs)
             super(attrs)
-          end
-
-          def self.validate_destination_config!(attrs)
-            destination = attrs[:destination]
-            config_key = destination_config_key(destination)
-            return unless config_key && !attrs[config_key]
-
-            raise Dry::Struct::Error, "#{config_key} is required when destination is '#{destination}'"
-          end
-
-          def self.destination_config_key(destination)
-            {
-              's3' => :s3_configuration,
-              'extended_s3' => :extended_s3_configuration,
-              'redshift' => :redshift_configuration,
-              'elasticsearch' => :elasticsearch_configuration,
-              'amazonopensearch' => :amazonopensearch_configuration,
-              'splunk' => :splunk_configuration,
-              'http_endpoint' => :http_endpoint_configuration
-            }[destination]
-          end
-
-          def self.validate_encryption_config!(attrs)
-            return unless attrs[:server_side_encryption]&.dig(:enabled)
-
-            sse_config = attrs[:server_side_encryption]
-            return unless sse_config[:key_type] == 'CUSTOMER_MANAGED_CMK' && !sse_config[:key_arn]
-
-            raise Dry::Struct::Error, "key_arn is required when key_type is 'CUSTOMER_MANAGED_CMK'"
-          end
-
-          def self.validate_source_arns!(attrs)
-            return unless attrs[:kinesis_source_configuration]
-
-            validate_arn!(attrs[:kinesis_source_configuration][:kinesis_stream_arn], 'kinesis')
-            validate_arn!(attrs[:kinesis_source_configuration][:role_arn], 'iam')
-          end
-
-          def self.validate_arn!(arn, service)
-            pattern = arn_pattern(service)
-            return if arn.match?(pattern)
-
-            raise Dry::Struct::Error, "Invalid #{service} ARN format: #{arn}"
-          end
-
-          def self.arn_pattern(service)
-            case service
-            when 'kinesis' then /\Aarn:aws:kinesis:[a-z0-9-]+:\d{12}:stream\/[a-zA-Z0-9_-]+\z/
-            when 'iam' then /\Aarn:aws:iam::\d{12}:role\/[a-zA-Z0-9_\+\=\,\.\@\-]+\z/
-            when 's3' then /\Aarn:aws:s3:::[a-z0-9.-]+\z/
-            else /\Aarn:aws:[a-z0-9-]+:[a-z0-9-]*:\d{12}:.+\z/
-            end
-          end
-
-          # Computed properties
-          def has_data_transformation?
-            config = destination_config
-            config&.dig(:processing_configuration, :enabled) == true
-          end
-
-          def has_format_conversion?
-            destination == 'extended_s3' &&
-              extended_s3_configuration&.dig(:data_format_conversion_configuration, :enabled) == true
-          end
-
-          def backup_enabled?
-            backup_mode = destination_config&.dig(:s3_backup_mode)
-            backup_enabled_values.include?(backup_mode)
-          end
-
-          def is_encrypted?
-            server_side_encryption&.dig(:enabled) == true
-          end
-
-          def uses_customer_managed_key?
-            is_encrypted? && server_side_encryption&.dig(:key_type) == 'CUSTOMER_MANAGED_CMK'
-          end
-
-          def has_kinesis_source?
-            !kinesis_source_configuration.nil?
-          end
-
-          def estimated_monthly_cost_usd
-            "Variable - depends on data volume and destination"
-          end
-
-          private
-
-          def destination_config
-            public_send("#{destination}_configuration".to_sym) if respond_to?("#{destination}_configuration")
-          end
-
-          def backup_enabled_values
-            %w[Enabled AllDocuments AllEvents AllData]
           end
         end
       end
