@@ -14,12 +14,14 @@
 # limitations under the License.
 
 require 'json'
+require_relative 'branches'
 
 module Pangea
   module Components
     module SiemSecurityPlatform
       # Step Functions state machine for incident response
       module StateMachine
+        include Branches
         def create_step_functions_state_machine(name, attrs, resources)
           state_machine_name = component_resource_name(name, :incident_response)
           resources[:step_functions][:incident_response] = aws_sfn_state_machine(state_machine_name, {
