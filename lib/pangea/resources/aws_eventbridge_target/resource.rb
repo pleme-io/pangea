@@ -18,6 +18,8 @@ require 'pangea/resources/base'
 require 'pangea/resources/reference'
 require 'pangea/resources/aws_eventbridge_target/types'
 require 'pangea/resource_registry'
+require_relative 'ecs_target_builder'
+require_relative 'batch_target_builder'
 
 module Pangea
   module Resources
@@ -93,86 +95,12 @@ module Pangea
           
           # ECS parameters
           if target_attrs.ecs_parameters
-            ecs_parameters do
-              task_definition_arn target_attrs.ecs_parameters[:task_definition_arn]
-              task_count target_attrs.ecs_parameters[:task_count] if target_attrs.ecs_parameters[:task_count]
-              launch_type target_attrs.ecs_parameters[:launch_type] if target_attrs.ecs_parameters[:launch_type]
-              platform_version target_attrs.ecs_parameters[:platform_version] if target_attrs.ecs_parameters[:platform_version]
-              group target_attrs.ecs_parameters[:group] if target_attrs.ecs_parameters[:group]
-              
-              # Network configuration
-              if target_attrs.ecs_parameters[:network_configuration]
-                network_configuration do
-                  awsvpc_configuration do
-                    subnets target_attrs.ecs_parameters[:network_configuration][:awsvpc_configuration][:subnets]
-                    security_groups target_attrs.ecs_parameters[:network_configuration][:awsvpc_configuration][:security_groups] if target_attrs.ecs_parameters[:network_configuration][:awsvpc_configuration][:security_groups]
-                    assign_public_ip target_attrs.ecs_parameters[:network_configuration][:awsvpc_configuration][:assign_public_ip] if target_attrs.ecs_parameters[:network_configuration][:awsvpc_configuration][:assign_public_ip]
-                  end
-                end
-              end
-              
-              # Capacity provider strategy
-              if target_attrs.ecs_parameters[:capacity_provider_strategy]
-                target_attrs.ecs_parameters[:capacity_provider_strategy].each do |strategy|
-                  capacity_provider_strategy do
-                    capacity_provider strategy[:capacity_provider]
-                    weight strategy[:weight] if strategy[:weight]
-                    base strategy[:base] if strategy[:base]
-                  end
-                end
-              end
-              
-              # Placement constraints
-              if target_attrs.ecs_parameters[:placement_constraint]
-                target_attrs.ecs_parameters[:placement_constraint].each do |constraint|
-                  placement_constraint do
-                    type constraint[:type] if constraint[:type]
-                    expression constraint[:expression] if constraint[:expression]
-                  end
-                end
-              end
-              
-              # Placement strategy
-              if target_attrs.ecs_parameters[:placement_strategy]
-                target_attrs.ecs_parameters[:placement_strategy].each do |strategy|
-                  placement_strategy do
-                    type strategy[:type] if strategy[:type]
-                    field strategy[:field] if strategy[:field]
-                  end
-                end
-              end
-              
-              # Tags
-              if target_attrs.ecs_parameters[:tags]
-                tags do
-                  target_attrs.ecs_parameters[:tags].each do |key, value|
-                    public_send(key, value)
-                  end
-                end
-              end
-            end
+            ecs_parameters(&EcsTargetBuilder.ecs_parameters_block(target_attrs.ecs_parameters))
           end
           
           # Batch parameters
           if target_attrs.batch_parameters
-            batch_parameters do
-              job_definition target_attrs.batch_parameters[:job_definition]
-              job_name target_attrs.batch_parameters[:job_name]
-              
-              # Array properties
-              if target_attrs.batch_parameters[:array_properties]
-                array_properties do
-                  size target_attrs.batch_parameters[:array_properties][:size] if target_attrs.batch_parameters[:array_properties][:size]
-                end
-              end
-              
-              # Retry strategy
-              if target_attrs.batch_parameters[:retry_strategy]
-                retry_strategy do
-                  attempts target_attrs.batch_parameters[:retry_strategy][:attempts] if target_attrs.batch_parameters[:retry_strategy][:attempts]
-                end
-              end
-            end
+            batch_parameters(&BatchTargetBuilder.batch_parameters_block(target_attrs.batch_parameters))
           end
         end
         

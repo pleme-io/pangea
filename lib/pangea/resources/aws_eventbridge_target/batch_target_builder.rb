@@ -19,30 +19,27 @@ module Pangea
     module AWS
       # Builder module for Batch target parameters in EventBridge targets
       module BatchTargetBuilder
-        # Builds batch parameters block for EventBridge target
-        # @param builder [Object] The DSL builder context
+        module_function
+
+        # Returns a proc that builds batch parameters in DSL context
         # @param batch_params [Hash] Batch parameters configuration
-        def build_batch_parameters(builder, batch_params)
-          builder.batch_parameters do
+        # @return [Proc] Block to be instance_exec'd in DSL context
+        def batch_parameters_block(batch_params)
+          proc do
             job_definition batch_params[:job_definition]
             job_name batch_params[:job_name]
 
-            build_array_properties(self, batch_params[:array_properties]) if batch_params[:array_properties]
-            build_retry_strategy(self, batch_params[:retry_strategy]) if batch_params[:retry_strategy]
-          end
-        end
+            if batch_params[:array_properties]
+              array_properties do
+                size batch_params[:array_properties][:size] if batch_params[:array_properties][:size]
+              end
+            end
 
-        private
-
-        def build_array_properties(builder, array_props)
-          builder.array_properties do
-            size array_props[:size] if array_props[:size]
-          end
-        end
-
-        def build_retry_strategy(builder, retry_strategy)
-          builder.retry_strategy do
-            attempts retry_strategy[:attempts] if retry_strategy[:attempts]
+            if batch_params[:retry_strategy]
+              retry_strategy do
+                attempts batch_params[:retry_strategy][:attempts] if batch_params[:retry_strategy][:attempts]
+              end
+            end
           end
         end
       end
