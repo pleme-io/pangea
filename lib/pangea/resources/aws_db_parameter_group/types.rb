@@ -16,6 +16,7 @@
 require 'pangea/resources/types'
 require_relative 'types/db_parameter'
 require_relative 'types/db_parameter_configs'
+require_relative 'types/parameter_validators'
 
 module Pangea
   module Resources
@@ -23,6 +24,8 @@ module Pangea
       module Types
         # Type-safe attributes for AWS RDS DB Parameter Group resources
         class DbParameterGroupAttributes < Dry::Struct
+          include ParameterValidators
+
           # Parameter group name (required)
           attribute :name, Resources::Types::String
 
@@ -151,54 +154,6 @@ module Pangea
           # Estimate monthly cost (parameter groups have no direct cost)
           def estimated_monthly_cost
             "$0.00/month (no direct cost for parameter groups)"
-          end
-
-          private
-
-          def validate_mysql_parameters
-            # MySQL-specific parameter validation
-            mysql_params = %w[
-              innodb_buffer_pool_size max_connections slow_query_log
-              log_bin_trust_function_creators innodb_log_file_size
-            ]
-
-            invalid_params = parameters.map(&:name) - mysql_params
-            if invalid_params.any?
-              # Note: This is a simplified validation - in practice, MySQL has hundreds of parameters
-              # For production use, we'd want a comprehensive parameter registry
-            end
-          end
-
-          def validate_postgresql_parameters
-            # PostgreSQL-specific parameter validation
-            pg_params = %w[
-              shared_preload_libraries max_connections work_mem
-              maintenance_work_mem checkpoint_completion_target
-              wal_buffers log_statement
-            ]
-
-            # Similar simplified validation for PostgreSQL
-          end
-
-          def validate_mariadb_parameters
-            # MariaDB shares many parameters with MySQL
-            validate_mysql_parameters
-          end
-
-          def validate_oracle_parameters
-            # Oracle-specific parameter validation
-            oracle_params = %w[
-              open_cursors processes sessions
-              shared_pool_size pga_aggregate_target
-            ]
-          end
-
-          def validate_sqlserver_parameters
-            # SQL Server parameter validation
-            sqlserver_params = %w[
-              max_degree_of_parallelism cost_threshold_for_parallelism
-              max_server_memory backup_compression_default
-            ]
           end
         end
       end
