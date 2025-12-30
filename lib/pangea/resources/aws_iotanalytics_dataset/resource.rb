@@ -15,6 +15,7 @@
 
 
 require_relative 'types'
+require_relative 'builders/action_builder'
 require 'pangea/resources/base'
 
 module Pangea
