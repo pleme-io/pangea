@@ -1,0 +1,31 @@
+# frozen_string_literal: true
+
+# Copyright 2025 The Pangea Authors. Licensed under Apache 2.0.
+
+# AWS Compute resources - Autoscaling, Load Balancers, ECS, EKS, Lambda
+require 'pangea/resources/aws_lb/resource'
+require 'pangea/resources/aws_lb_listener/resource'
+require 'pangea/resources/aws_lb_listener_rule/resource'
+require 'pangea/resources/aws_lb_listener_certificate/resource'
+require 'pangea/resources/aws_lb_target_group_attachment/resource'
+require 'pangea/resources/aws_launch_template/resource'
+require 'pangea/resources/aws_autoscaling_group/resource'
+require 'pangea/resources/aws_lb_target_group/resource'
+require 'pangea/resources/aws_autoscaling_attachment/resource'
+require 'pangea/resources/aws_autoscaling_policy/resource'
+require 'pangea/resources/aws_autoscaling_schedule/resource'
+require 'pangea/resources/aws_autoscaling_lifecycle_hook/resource'
+require 'pangea/resources/aws_autoscaling_notification/resource'
+require 'pangea/resources/aws_autoscaling_tag/resource'
+require 'pangea/resources/aws_ecs_cluster/resource'
+require 'pangea/resources/aws_ecs_task_definition/resource'
+require 'pangea/resources/aws_ecs_service/resource'
+require 'pangea/resources/aws_ecs_cluster_capacity_providers/resource'
+require 'pangea/resources/aws_lambda_function/resource'
+require 'pangea/resources/aws_lambda_permission/resource'
+require 'pangea/resources/aws_lambda_event_source_mapping/resource'
+require 'pangea/resources/aws_lambda_layer_version/resource'
+require 'pangea/resources/aws_eks_cluster/resource'
+require 'pangea/resources/aws_eks_node_group/resource'
+require 'pangea/resources/aws_eks_addon/resource'
+require 'pangea/resources/aws_eks_fargate_profile/resource'
