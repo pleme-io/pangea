@@ -56,5 +56,6 @@ Gem::Specification.new do |spec|
   spec.add_dependency "dry-struct", "~> 1.6"
   spec.add_dependency "dry-validation", "~> 1.10"
   spec.add_dependency "parallel", "~> 1.24"
+  spec.add_dependency "webrick", "~> 1.8"  # HTTP server for compiler sidecar
   spec.metadata['rubygems_mfa_required'] = 'true'
 end

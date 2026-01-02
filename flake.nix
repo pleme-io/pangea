@@ -212,7 +212,7 @@
         checkPhase = "true"; # Tests run in buildPhase
       };
 
-      # Build Docker image for local architecture (amd64)
+      # Build Docker image for local architecture (amd64) - CLI
       dockerImage = pkgs.dockerTools.buildLayeredImage {
         name = "ghcr.io/pleme-io/pangea";
         tag = "latest";
@@ -248,12 +248,78 @@
           echo "pangea:x:1000:" > etc/group
         '';
       };
+
+      # Build compiler server package (HTTP sidecar for pangea-operator)
+      compilerServer = pkgs.stdenv.mkDerivation {
+        pname = "pangea-compiler-server";
+        version = "1.0.0";
+        src = ./.;
+        buildInputs = [env ruby];
+        installPhase = ''
+          mkdir -p $out/bin
+          mkdir -p $out/lib
+
+          # Copy gem environment
+          cp -r ${env}/lib/* $out/lib/
+
+          # Copy pangea source code to lib
+          cp -r $src/lib/* $out/lib/
+
+          # Create wrapper script for compiler server
+          cat > $out/bin/pangea-compiler-server <<EOF
+          #!${ruby}/bin/ruby
+          # Suppress dry-types warnings
+          ENV['DRY_TYPES_WARNINGS'] = 'false'
+          \$LOAD_PATH.unshift(File.expand_path('../lib', __dir__))
+          load '${./.}/bin/pangea-compiler-server'
+          EOF
+
+          chmod +x $out/bin/pangea-compiler-server
+        '';
+      };
+
+      # Docker image for compiler sidecar (WEBrick HTTP server)
+      # Used by pangea-operator as a sidecar for compiling Ruby DSL to Terraform JSON
+      compilerImage = pkgs.dockerTools.buildLayeredImage {
+        name = "ghcr.io/pleme-io/nexus/pangea-compiler";
+        tag = "latest";
+
+        contents = [
+          compilerServer
+          env
+          ruby
+          pkgs.cacert
+          pkgs.tzdata
+          pkgs.coreutils
+          pkgs.bash
+        ];
+
+        config = {
+          Cmd = ["${compilerServer}/bin/pangea-compiler-server"];
+          WorkingDir = "/";
+          Env = [
+            "SSL_CERT_FILE=${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt"
+            "DRY_TYPES_WARNINGS=false"
+            "COMPILER_PORT=8082"
+            "COMPILER_HOST=0.0.0.0"
+          ];
+          ExposedPorts = { "8082/tcp" = {}; };
+        };
+
+        extraCommands = ''
+          mkdir -p tmp
+          mkdir -p etc
+          echo "compiler:x:1000:1000::/:/bin/bash" > etc/passwd
+          echo "compiler:x:1000:" > etc/group
+        '';
+      };
     in {
       packages = {
         default = pangeaPackage;
         pangea = pangeaPackage;
         synthesizer-tests = synthesizerTests;
-        inherit env ruby dockerImage;
+        compiler-server = compilerServer;
+        inherit env ruby dockerImage compilerImage;
       };
 
       devShells = rec {
