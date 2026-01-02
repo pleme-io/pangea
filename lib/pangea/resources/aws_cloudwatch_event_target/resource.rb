@@ -17,11 +17,14 @@
 require 'pangea/resources/base'
 require 'pangea/resources/reference'
 require 'pangea/resources/aws_cloudwatch_event_target/types'
+require 'pangea/resources/aws_cloudwatch_event_target/target_builders'
 require 'pangea/resource_registry'
 
 module Pangea
   module Resources
     module AWS
+      include CloudWatchEventTargetBuilders
+
       # Create an AWS CloudWatch Event Target with type-safe attributes
       #
       # @param name [Symbol] The resource name
@@ -46,159 +49,71 @@ module Pangea
       #     arn: processor_lambda.arn
       #   })
       #
-      # @example SNS topic with input transformation
-      #   sns_target = aws_cloudwatch_event_target(:notification, {
-      #     rule: alert_rule.name,
-      #     arn: notification_topic.arn,
-      #     input_transformer: {
-      #       input_paths_map: {
-      #         instance: "$.detail.instance",
-      #         status: "$.detail.status"
-      #       },
-      #       input_template: '"Instance <instance> is now <status>"'
-      #     }
-      #   })
-      #
       # @example ECS task target with retry policy
       #   ecs_target = aws_cloudwatch_event_target(:ecs_task, {
       #     rule: scheduled_rule.name,
       #     arn: ecs_cluster.arn,
       #     role_arn: ecs_events_role.arn,
-      #     ecs_target: {
-      #       task_definition_arn: task_definition.arn,
-      #       task_count: 1,
-      #       launch_type: "FARGATE",
-      #       network_configuration: {
-      #         awsvpc_configuration: {
-      #           subnets: subnet_ids,
-      #           security_groups: [security_group.id],
-      #           assign_public_ip: "ENABLED"
-      #         }
-      #       }
-      #     },
-      #     retry_policy: {
-      #       maximum_retry_attempts: 2,
-      #       maximum_event_age_in_seconds: 3600
-      #     }
+      #     ecs_target: { task_definition_arn: task_definition.arn, task_count: 1 },
+      #     retry_policy: { maximum_retry_attempts: 2, maximum_event_age_in_seconds: 3600 }
       #   })
       def aws_cloudwatch_event_target(name, attributes = {})
-        # Validate attributes using dry-struct
         target_attrs = Types::Types::CloudWatchEventTargetAttributes.new(attributes)
-        
-        # Generate terraform resource block via terraform-synthesizer
+
         resource(:aws_cloudwatch_event_target, name) do
           rule target_attrs.rule
           arn target_attrs.arn
-          
-          # Optional target ID
           target_id target_attrs.target_id if target_attrs.target_id
-          
-          # Event bus name if not default
           event_bus_name target_attrs.event_bus_name if target_attrs.event_bus_name != 'default'
-          
-          # Input configuration (mutually exclusive)
-          if target_attrs.input
-            input target_attrs.input
-          elsif target_attrs.input_path
-            input_path target_attrs.input_path
-          elsif target_attrs.input_transformer
-            input_transformer do
-              input_paths_map target_attrs.input_transformer.input_paths_map if target_attrs.input_transformer.input_paths_map.any?
-              input_template target_attrs.input_transformer.input_template
-            end
-          end
-          
-          # IAM role if required
+          build_input_configuration(self, target_attrs)
           role_arn target_attrs.role_arn if target_attrs.role_arn
-          
-          # Target-specific configurations
-          if target_attrs.ecs_target
-            ecs_target do
-              task_definition_arn target_attrs.ecs_target[:task_definition_arn]
-              task_count target_attrs.ecs_target[:task_count] if target_attrs.ecs_target[:task_count]
-              launch_type target_attrs.ecs_target[:launch_type] if target_attrs.ecs_target[:launch_type]
-              platform_version target_attrs.ecs_target[:platform_version] if target_attrs.ecs_target[:platform_version]
-              group target_attrs.ecs_target[:group] if target_attrs.ecs_target[:group]
-              
-              if target_attrs.ecs_target[:network_configuration]
-                network_configuration do
-                  if target_attrs.ecs_target[:network_configuration][:awsvpc_configuration]
-                    awsvpc_configuration do
-                      subnets target_attrs.ecs_target[:network_configuration][:awsvpc_configuration][:subnets]
-                      security_groups target_attrs.ecs_target[:network_configuration][:awsvpc_configuration][:security_groups] if target_attrs.ecs_target[:network_configuration][:awsvpc_configuration][:security_groups]
-                      assign_public_ip target_attrs.ecs_target[:network_configuration][:awsvpc_configuration][:assign_public_ip] if target_attrs.ecs_target[:network_configuration][:awsvpc_configuration][:assign_public_ip]
-                    end
-                  end
-                end
-              end
-              
-              if target_attrs.ecs_target[:placement_constraints]
-                target_attrs.ecs_target[:placement_constraints].each do |constraint|
-                  placement_constraint do
-                    type constraint[:type]
-                    expression constraint[:expression] if constraint[:expression]
-                  end
-                end
-              end
-            end
-          end
-          
-          if target_attrs.batch_target
-            batch_target do
-              job_definition target_attrs.batch_target[:job_definition]
-              job_name target_attrs.batch_target[:job_name]
-              array_size target_attrs.batch_target[:array_size] if target_attrs.batch_target[:array_size]
-              job_attempts target_attrs.batch_target[:job_attempts] if target_attrs.batch_target[:job_attempts]
-            end
-          end
-          
-          if target_attrs.kinesis_target
-            kinesis_target do
-              partition_key_path target_attrs.kinesis_target[:partition_key_path] if target_attrs.kinesis_target[:partition_key_path]
-            end
-          end
-          
-          if target_attrs.sqs_target
-            sqs_target do
-              message_group_id target_attrs.sqs_target[:message_group_id] if target_attrs.sqs_target[:message_group_id]
-            end
-          end
-          
-          if target_attrs.http_target
-            http_target do
-              endpoint target_attrs.http_target[:endpoint] if target_attrs.http_target[:endpoint]
-              header_parameters target_attrs.http_target[:header_parameters] if target_attrs.http_target[:header_parameters]
-              query_string_parameters target_attrs.http_target[:query_string_parameters] if target_attrs.http_target[:query_string_parameters]
-              path_parameter_values target_attrs.http_target[:path_parameter_values] if target_attrs.http_target[:path_parameter_values]
-            end
-          end
-          
-          # Run command targets
-          if target_attrs.run_command_targets.any?
-            target_attrs.run_command_targets.each do |run_command|
-              run_command_targets do
-                key run_command[:key]
-                values run_command[:values]
-              end
-            end
-          end
-          
-          # Error handling
-          if target_attrs.retry_policy
-            retry_policy do
-              maximum_retry_attempts target_attrs.retry_policy.maximum_retry_attempts if target_attrs.retry_policy.maximum_retry_attempts
-              maximum_event_age_in_seconds target_attrs.retry_policy.maximum_event_age_in_seconds if target_attrs.retry_policy.maximum_event_age_in_seconds
-            end
-          end
-          
-          if target_attrs.dead_letter_config
-            dead_letter_config do
-              arn target_attrs.dead_letter_config.arn
-            end
+          build_target_configurations(self, target_attrs)
+          build_error_handling(self, target_attrs)
+        end
+
+        build_resource_reference(name, target_attrs)
+      end
+
+      private
+
+      def build_input_configuration(context, target_attrs)
+        if target_attrs.input
+          context.input target_attrs.input
+        elsif target_attrs.input_path
+          context.input_path target_attrs.input_path
+        elsif target_attrs.input_transformer
+          context.input_transformer do
+            input_paths_map target_attrs.input_transformer.input_paths_map if target_attrs.input_transformer.input_paths_map.any?
+            input_template target_attrs.input_transformer.input_template
           end
         end
-        
-        # Return resource reference with available outputs
+      end
+
+      def build_target_configurations(context, target_attrs)
+        build_ecs_target(context, target_attrs.ecs_target) if target_attrs.ecs_target
+        build_batch_target(context, target_attrs.batch_target) if target_attrs.batch_target
+        build_kinesis_target(context, target_attrs.kinesis_target) if target_attrs.kinesis_target
+        build_sqs_target(context, target_attrs.sqs_target) if target_attrs.sqs_target
+        build_http_target(context, target_attrs.http_target) if target_attrs.http_target
+        build_run_command_targets(context, target_attrs.run_command_targets) if target_attrs.run_command_targets.any?
+      end
+
+      def build_error_handling(context, target_attrs)
+        if target_attrs.retry_policy
+          context.retry_policy do
+            maximum_retry_attempts target_attrs.retry_policy.maximum_retry_attempts if target_attrs.retry_policy.maximum_retry_attempts
+            maximum_event_age_in_seconds target_attrs.retry_policy.maximum_event_age_in_seconds if target_attrs.retry_policy.maximum_event_age_in_seconds
+          end
+        end
+
+        if target_attrs.dead_letter_config
+          context.dead_letter_config do
+            arn target_attrs.dead_letter_config.arn
+          end
+        end
+      end
+
+      def build_resource_reference(name, target_attrs)
         ResourceReference.new(
           type: 'aws_cloudwatch_event_target',
           name: name,

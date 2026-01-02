@@ -56,6 +56,36 @@
         '';
       };
 
+      # Build Pangea Compiler Server package
+      pangeaCompilerPackage = pkgs.stdenv.mkDerivation {
+        pname = "pangea-compiler";
+        version = "1.0.0";
+        src = ./.;
+        buildInputs = [env ruby];
+        installPhase = ''
+          mkdir -p $out/bin
+          mkdir -p $out/lib
+
+          # Copy gem environment
+          cp -r ${env}/lib/* $out/lib/
+
+          # Copy pangea source code to lib
+          cp -r $src/lib/* $out/lib/
+
+          # Create compiler server wrapper
+          cat > $out/bin/pangea-compiler <<EOF
+          #!${ruby}/bin/ruby
+          ENV['DRY_TYPES_WARNINGS'] = 'false'
+          \$LOAD_PATH.unshift(File.expand_path('../lib', __dir__))
+          require 'pangea/compiler_server'
+          server = Pangea::CompilerServer.new
+          server.start
+          EOF
+
+          chmod +x $out/bin/pangea-compiler
+        '';
+      };
+
       # Build synthesizer test suite
       synthesizerTests = pkgs.stdenv.mkDerivation {
         pname = "pangea-synthesizer-tests";
@@ -248,6 +278,7 @@
           echo "pangea:x:1000:" > etc/group
         '';
       };
+<<<<<<< HEAD
 
       # Build compiler server package (HTTP sidecar for pangea-operator)
       compilerServer = pkgs.stdenv.mkDerivation {
@@ -313,13 +344,59 @@
           echo "compiler:x:1000:" > etc/group
         '';
       };
+||||||| ebe434d
+=======
+
+      # Build Docker image for Pangea Compiler sidecar
+      compilerImage = pkgs.dockerTools.buildLayeredImage {
+        name = "ghcr.io/pleme-io/nexus/pangea-compiler";
+        tag = "latest";
+
+        contents = [
+          pangeaCompilerPackage
+          env
+          ruby
+          pkgs.cacert
+          pkgs.coreutils
+        ];
+
+        config = {
+          Cmd = ["${pangeaCompilerPackage}/bin/pangea-compiler"];
+          WorkingDir = "/";
+          Env = [
+            "SSL_CERT_FILE=${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt"
+            "DRY_TYPES_WARNINGS=false"
+            "COMPILE_HOST=0.0.0.0"
+            "COMPILE_PORT=8082"
+          ];
+          ExposedPorts = {
+            "8082/tcp" = {};
+          };
+        };
+
+        extraCommands = ''
+          mkdir -p tmp
+          chmod 1777 tmp
+          mkdir -p etc
+          echo "pangea:x:1000:1000::/:/bin/false" > etc/passwd
+          echo "pangea:x:1000:" > etc/group
+        '';
+      };
+>>>>>>> 8846b500b296e88178cad99f9809f2132e30d367
     in {
       packages = {
         default = pangeaPackage;
         pangea = pangeaPackage;
+        pangea-compiler = pangeaCompilerPackage;
         synthesizer-tests = synthesizerTests;
+<<<<<<< HEAD
         compiler-server = compilerServer;
         inherit env ruby dockerImage compilerImage;
+||||||| ebe434d
+        inherit env ruby dockerImage;
+=======
+        inherit env ruby dockerImage compilerImage;
+>>>>>>> 8846b500b296e88178cad99f9809f2132e30d367
       };
 
       devShells = rec {
@@ -401,6 +478,56 @@
             # Build image
             echo "Building Docker image..."
             nix build .#dockerImage
+
+            # Push with architecture-specific tag (standardized format)
+            echo "Pushing amd64-$GIT_SHA..."
+            ${pkgs.skopeo}/bin/skopeo copy \
+              --insecure-policy \
+              --retry-times=10 \
+              --dest-creds=pleme-io:$GHCR_TOKEN \
+              docker-archive:./result \
+              docker://$REGISTRY:amd64-$GIT_SHA
+
+            # Also tag as latest
+            echo "Tagging as latest..."
+            ${pkgs.skopeo}/bin/skopeo copy \
+              --insecure-policy \
+              --retry-times=10 \
+              --dest-creds=pleme-io:$GHCR_TOKEN \
+              docker-archive:./result \
+              docker://$REGISTRY:latest
+
+            echo ""
+            echo "✅ Pushed to $REGISTRY:amd64-$GIT_SHA"
+            echo "✅ Tagged as $REGISTRY:latest"
+          '');
+        };
+
+        # Push compiler image to GitHub Container Registry using skopeo
+        push-compiler = {
+          type = "app";
+          program = toString (pkgs.writeShellScript "push-pangea-compiler" ''
+            set -euo pipefail
+
+            # Get GHCR token (follows repo standard)
+            GHCR_TOKEN="''${GHCR_TOKEN:-''${GITHUB_TOKEN:-}}"
+            if [ -z "$GHCR_TOKEN" ]; then
+              echo "Error: GHCR_TOKEN or GITHUB_TOKEN environment variable is required"
+              echo "Set it with: export GHCR_TOKEN=ghp_your_token"
+              exit 1
+            fi
+
+            # Get git commit SHA for tagging (10-char hash for consistency with services)
+            GIT_SHA=$(git rev-parse --short=10 HEAD 2>/dev/null || echo "dev")
+            REGISTRY="ghcr.io/pleme-io/nexus/pangea-compiler"
+
+            echo "📦 Pushing Pangea Compiler to $REGISTRY"
+            echo "🏷️  Tags: amd64-$GIT_SHA, latest"
+            echo ""
+
+            # Build image
+            echo "Building Docker image..."
+            nix build .#compilerImage
 
             # Push with architecture-specific tag (standardized format)
             echo "Pushing amd64-$GIT_SHA..."

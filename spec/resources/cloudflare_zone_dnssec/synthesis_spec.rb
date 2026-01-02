@@ -16,6 +16,7 @@
 
 require 'spec_helper'
 require 'terraform-synthesizer'
+require 'pangea/resources/cloudflare_zone/resource'
 require 'pangea/resources/cloudflare_zone_dnssec/resource'
 require 'pangea/resources/cloudflare_zone_dnssec/types'
 
@@ -99,7 +100,9 @@ RSpec.describe 'cloudflare_zone_dnssec synthesis' do
 
         # Create zone
         zone_ref = cloudflare_zone(:example, {
-          zone: "example.com"
+          zone: "example.com",
+          plan: "free",
+          type: "full"
         })
 
         # Enable DNSSEC for the zone
@@ -123,7 +126,9 @@ RSpec.describe 'cloudflare_zone_dnssec synthesis' do
 
         # Primary zone
         zone1 = cloudflare_zone(:primary, {
-          zone: "primary.com"
+          zone: "primary.com",
+          plan: "free",
+          type: "full"
         })
 
         cloudflare_zone_dnssec(:primary_dnssec, {
@@ -132,7 +137,9 @@ RSpec.describe 'cloudflare_zone_dnssec synthesis' do
 
         # Secondary zone
         zone2 = cloudflare_zone(:secondary, {
-          zone: "secondary.com"
+          zone: "secondary.com",
+          plan: "pro",
+          type: "full"
         })
 
         cloudflare_zone_dnssec(:secondary_dnssec, {

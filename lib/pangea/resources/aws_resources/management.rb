@@ -1,0 +1,33 @@
+# frozen_string_literal: true
+
+# Copyright 2025 The Pangea Authors. Licensed under Apache 2.0.
+
+# AWS Management and Monitoring resources - CloudWatch, CloudTrail, Config, SSM, Route53
+require 'pangea/resources/aws_cloudwatch_metric_alarm/resource'
+require 'pangea/resources/aws_cloudwatch_log_group/resource'
+require 'pangea/resources/aws_cloudwatch_log_stream/resource'
+require 'pangea/resources/aws_cloudwatch_dashboard/resource'
+require 'pangea/resources/aws_cloudwatch_composite_alarm/resource'
+require 'pangea/resources/aws_cloudwatch_log_destination/resource'
+require 'pangea/resources/aws_cloudwatch_log_destination_policy/resource'
+require 'pangea/resources/aws_cloudwatch_log_metric_filter/resource'
+require 'pangea/resources/aws_cloudwatch_log_subscription_filter/resource'
+require 'pangea/resources/aws_cloudwatch_event_rule/resource'
+require 'pangea/resources/aws_cloudwatch_event_target/resource'
+require 'pangea/resources/aws_cloudformation_stack/resource'
+require 'pangea/resources/aws_cloudformation_stack_set/resource'
+require 'pangea/resources/aws_ssm_parameter/resource'
+require 'pangea/resources/aws_ssm_document/resource'
+require 'pangea/resources/aws_ssm_maintenance_window/resource'
+require 'pangea/resources/aws_ssm_patch_baseline/resource'
+require 'pangea/resources/aws_route53_zone/resource'
+require 'pangea/resources/aws_route53_record/resource'
+require 'pangea/resources/aws_route53_health_check/resource'
+require 'pangea/resources/aws_config_configuration_recorder/resource'
+require 'pangea/resources/aws_config_delivery_channel/resource'
+require 'pangea/resources/aws_config_config_rule/resource'
+require 'pangea/resources/aws_config_remediation_configuration/resource'
+require 'pangea/resources/aws_cloudtrail/resource'
+require 'pangea/resources/aws_cloudtrail_event_data_store/resource'
+require 'pangea/resources/aws_organizations_organization/resource'
+require 'pangea/resources/aws_organizations_account/resource'

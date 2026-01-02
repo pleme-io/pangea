@@ -13,9 +13,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
 require 'dry-struct'
 require 'pangea/components/types'
+require_relative 'types/threat_source'
+require_relative 'types/enrichment_source'
+require_relative 'types/threat_feed'
+require_relative 'types/correlation_rule'
 
 module Pangea
   module Components
@@ -24,33 +27,16 @@ module Pangea
       class Attributes < Dry::Struct
         transform_keys(&:to_sym)
         schema schema.strict
-        
+
         # VPC reference for deployment
         attribute :vpc_ref, Types::VpcReference
-        
+
         # Subnet references for Lambda functions
         attribute :subnet_refs, Types::SubnetReferences
-        
+
         # Threat intelligence sources
-        attribute :threat_sources, Types::Array.of(
-          Types::Hash.schema(
-            name: Types::String,
-            type: Types::String.enum('osint', 'commercial', 'government', 'custom', 'community'),
-            category: Types::String.enum('ip', 'domain', 'url', 'hash', 'email', 'cve', 'ttp', 'ioc'),
-            source_url?: Types::String.optional,
-            api_endpoint?: Types::String.optional,
-            api_key_secret_arn?: Types::String.optional,
-            format: Types::String.enum('stix', 'taxii', 'json', 'csv', 'xml', 'misp').default('json'),
-            polling_interval: Types::Integer.default(3600).constrained(gteq: 300),
-            confidence_threshold?: Types::Integer.default(70).constrained(gteq: 0, lteq: 100),
-            enabled?: Types::Bool.default(true),
-            authentication?: Types::Hash.schema(
-              type: Types::String.enum('none', 'api_key', 'oauth', 'basic'),
-              credentials_secret_arn?: Types::String.optional
-            ).optional
-          )
-        ).constrained(min_size: 1)
-        
+        attribute :threat_sources, Types::Array.of(ThreatSource).constrained(min_size: 1)
+
         # IOC (Indicator of Compromise) processing
         attribute :ioc_processing, Types::Hash.schema(
           enable_deduplication?: Types::Bool.default(true),
@@ -61,7 +47,7 @@ module Pangea
           archive_after_days?: Types::Integer.default(30).constrained(gteq: 1, lteq: 365),
           max_ioc_age_days?: Types::Integer.default(180).constrained(gteq: 1, lteq: 730)
         ).default({}.freeze)
-        
+
         # Threat scoring configuration
         attribute :threat_scoring, Types::Hash.schema(
           scoring_model: Types::String.enum('weighted', 'ml_based', 'rule_based', 'hybrid').default('hybrid'),
@@ -77,52 +63,20 @@ module Pangea
           decay_rate?: Types::Float.default(0.95).constrained(gteq: 0.0, lteq: 1.0),
           confidence_multiplier?: Types::Float.default(1.2).constrained(gteq: 0.5, lteq: 2.0)
         ).default({}.freeze)
-        
+
         # Enrichment sources
-        attribute :enrichment_sources, Types::Array.of(
-          Types::Hash.schema(
-            name: Types::String,
-            type: Types::String.enum('geoip', 'whois', 'dns', 'asn', 'reputation', 'sandbox', 'virustotal'),
-            api_endpoint?: Types::String.optional,
-            api_key_secret_arn?: Types::String.optional,
-            enabled?: Types::Bool.default(true),
-            cache_ttl?: Types::Integer.default(86400)
-          )
-        ).default([
+        attribute :enrichment_sources, Types::Array.of(EnrichmentSource).default([
           { name: 'GeoIP', type: 'geoip', enabled: true },
           { name: 'WHOIS', type: 'whois', enabled: true },
           { name: 'DNS', type: 'dns', enabled: true }
         ].freeze)
-        
+
         # Threat feed integration
-        attribute :threat_feeds, Types::Array.of(
-          Types::Hash.schema(
-            name: Types::String,
-            description?: Types::String.optional,
-            feed_url?: Types::String.optional,
-            feed_type: Types::String.enum('public', 'private', 'sharing_group'),
-            tlp_level: Types::String.enum('white', 'green', 'amber', 'red').default('amber'),
-            sharing_enabled?: Types::Bool.default(false),
-            auto_publish?: Types::Bool.default(false),
-            tags?: Types::Array.of(Types::String).default([].freeze)
-          )
-        ).default([].freeze)
-        
+        attribute :threat_feeds, Types::Array.of(ThreatFeed).default([].freeze)
+
         # Correlation rules
-        attribute :correlation_rules, Types::Array.of(
-          Types::Hash.schema(
-            name: Types::String,
-            description: Types::String,
-            rule_type: Types::String.enum('simple', 'complex', 'ml_based', 'graph_based'),
-            conditions: Types::Array.of(Types::Hash),
-            actions: Types::Array.of(
-              Types::String.enum('alert', 'enrich', 'block', 'investigate', 'share')
-            ).default(['alert'].freeze),
-            severity: Types::String.enum('critical', 'high', 'medium', 'low').default('medium'),
-            enabled?: Types::Bool.default(true)
-          )
-        ).default([].freeze)
-        
+        attribute :correlation_rules, Types::Array.of(CorrelationRule).default([].freeze)
+
         # Automated response configuration
         attribute :automated_response, Types::Hash.schema(
           enable_auto_blocking?: Types::Bool.default(false),
@@ -139,7 +93,7 @@ module Pangea
             )
           ).default([].freeze)
         ).default({}.freeze)
-        
+
         # Threat hunting features
         attribute :threat_hunting, Types::Hash.schema(
           enable_proactive_hunting?: Types::Bool.default(true),
@@ -154,7 +108,7 @@ module Pangea
           enable_ml_hunting?: Types::Bool.default(true),
           anomaly_detection_models?: Types::Array.of(Types::String).default([].freeze)
         ).default({}.freeze)
-        
+
         # API configuration for sharing
         attribute :api_config, Types::Hash.schema(
           enable_api?: Types::Bool.default(true),
@@ -168,7 +122,7 @@ module Pangea
             Types::String.enum('read', 'write', 'update', 'delete', 'share')
           ).default(['read'].freeze)
         ).default({}.freeze)
-        
+
         # Reporting and analytics
         attribute :reporting_config, Types::Hash.schema(
           enable_daily_reports?: Types::Bool.default(true),
@@ -184,7 +138,7 @@ module Pangea
             )
           ).default([].freeze)
         ).default({}.freeze)
-        
+
         # Storage configuration
         attribute :storage_config, Types::Hash.schema(
           primary_storage: Types::String.enum('dynamodb', 'elasticsearch', 'both').default('both'),
@@ -194,7 +148,7 @@ module Pangea
           enable_replication?: Types::Bool.default(true),
           replication_regions?: Types::Array.of(Types::String).default([].freeze)
         ).default({}.freeze)
-        
+
         # Tags for resource management
         attribute :tags, Types::AwsTags.default({}.freeze)
       end

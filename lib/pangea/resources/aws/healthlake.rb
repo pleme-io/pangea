@@ -15,6 +15,8 @@
 
 
 require_relative 'healthlake/fhir_datastore'
+require_relative 'healthlake/fhir_export_job'
+require_relative 'healthlake/fhir_import_job'
 
 module Pangea
   module Resources
@@ -22,6 +24,8 @@ module Pangea
       # Amazon HealthLake resources for healthcare data management
       module HealthLake
         include FHIRDatastore
+        include FHIRExportJob
+        include FHIRImportJob
       end
     end
   end

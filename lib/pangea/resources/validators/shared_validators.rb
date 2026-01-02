@@ -1,0 +1,49 @@
+# frozen_string_literal: true
+
+# Copyright 2025 The Pangea Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+require_relative 'shared/network_validators'
+require_relative 'shared/aws_validators'
+require_relative 'shared/format_validators'
+
+module Pangea
+  module Resources
+    module Validators
+      # Shared validation methods for resource attributes
+      #
+      # Provides reusable validation logic that can be used across
+      # different providers and resource types.
+      #
+      # @example Using in a dry-struct type
+      #   CidrBlock = String.constructor { |value|
+      #     SharedValidators.valid_cidr!(value)
+      #   }
+      #
+      module SharedValidators
+        class ValidationError < StandardError; end
+
+        # Include all validator modules
+        include NetworkValidators
+        include AwsValidators
+        include FormatValidators
+
+        # Extend self to make methods available as module functions
+        extend NetworkValidators
+        extend AwsValidators
+        extend FormatValidators
+      end
+    end
+  end
+end

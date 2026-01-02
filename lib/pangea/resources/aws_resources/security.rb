@@ -1,0 +1,30 @@
+# frozen_string_literal: true
+
+# Copyright 2025 The Pangea Authors. Licensed under Apache 2.0.
+
+# AWS Security and Identity resources - IAM, KMS, ACM, Secrets Manager, WAF, GuardDuty
+require 'pangea/resources/aws_iam_role/resource'
+require 'pangea/resources/aws_iam_policy/resource'
+require 'pangea/resources/aws_iam_role_policy_attachment/resource'
+require 'pangea/resources/aws_iam_user/resource'
+require 'pangea/resources/aws_iam_group/resource'
+require 'pangea/resources/aws_acm_certificate/resource'
+require 'pangea/resources/aws_acm_certificate_validation/resource'
+require 'pangea/resources/aws_secretsmanager_secret/resource'
+require 'pangea/resources/aws_secretsmanager_secret_version/resource'
+require 'pangea/resources/aws_kms_key/resource'
+require 'pangea/resources/aws_kms_alias/resource'
+require 'pangea/resources/aws_wafv2_web_acl/resource'
+require 'pangea/resources/aws_wafv2_rule_group/resource'
+require 'pangea/resources/aws_wafv2_ip_set/resource'
+require 'pangea/resources/aws_guardduty_detector/resource'
+require 'pangea/resources/aws_guardduty_member/resource'
+require 'pangea/resources/aws_securityhub_account/resource'
+require 'pangea/resources/aws_inspector2_enabler/resource'
+require 'pangea/resources/aws_cognito_user_pool/resource'
+require 'pangea/resources/aws_cognito_user_pool_client/resource'
+require 'pangea/resources/aws_cognito_user_pool_domain/resource'
+require 'pangea/resources/aws_cognito_identity_pool/resource'
+require 'pangea/resources/aws_cognito_identity_provider/resource'
+require 'pangea/resources/aws_cognito_user_group/resource'
+require 'pangea/resources/aws_cognito_user/resource'

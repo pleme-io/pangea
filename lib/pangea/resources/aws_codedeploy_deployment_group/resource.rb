@@ -17,11 +17,14 @@
 require 'pangea/resources/base'
 require 'pangea/resources/reference'
 require 'pangea/resources/aws_codedeploy_deployment_group/types'
+require 'pangea/resources/aws_codedeploy_deployment_group/block_builders'
 require 'pangea/resource_registry'
 
 module Pangea
   module Resources
     module AWS
+      include CodeDeployDeploymentGroupBlockBuilders
+
       # Create an AWS CodeDeploy Deployment Group with type-safe attributes
       #
       # @param name [Symbol] The resource name
@@ -97,78 +100,10 @@ module Pangea
           end
           
           # Blue-green deployment configuration
-          if group_attrs.blue_green_deployment_config.any?
-            blue_green_deployment_config do
-              if group_attrs.blue_green_deployment_config[:terminate_blue_instances_on_deployment_success]
-                terminate_blue_instances_on_deployment_success do
-                  action group_attrs.blue_green_deployment_config[:terminate_blue_instances_on_deployment_success][:action] if group_attrs.blue_green_deployment_config[:terminate_blue_instances_on_deployment_success][:action]
-                  termination_wait_time_in_minutes group_attrs.blue_green_deployment_config[:terminate_blue_instances_on_deployment_success][:termination_wait_time_in_minutes] if group_attrs.blue_green_deployment_config[:terminate_blue_instances_on_deployment_success][:termination_wait_time_in_minutes]
-                end
-              end
-              
-              if group_attrs.blue_green_deployment_config[:deployment_ready_option]
-                deployment_ready_option do
-                  action_on_timeout group_attrs.blue_green_deployment_config[:deployment_ready_option][:action_on_timeout] if group_attrs.blue_green_deployment_config[:deployment_ready_option][:action_on_timeout]
-                end
-              end
-              
-              if group_attrs.blue_green_deployment_config[:green_fleet_provisioning_option]
-                green_fleet_provisioning_option do
-                  action group_attrs.blue_green_deployment_config[:green_fleet_provisioning_option][:action] if group_attrs.blue_green_deployment_config[:green_fleet_provisioning_option][:action]
-                end
-              end
-            end
-          end
+          build_blue_green_deployment_config(group_attrs.blue_green_deployment_config) if group_attrs.blue_green_deployment_config.any?
           
           # Load balancer info
-          if group_attrs.load_balancer_info.any?
-            load_balancer_info do
-              # ELB info
-              if group_attrs.load_balancer_info[:elb_info]
-                group_attrs.load_balancer_info[:elb_info].each do |elb|
-                  elb_info do
-                    name elb[:name] if elb[:name]
-                  end
-                end
-              end
-              
-              # Target group info
-              if group_attrs.load_balancer_info[:target_group_info]
-                group_attrs.load_balancer_info[:target_group_info].each do |tg|
-                  target_group_info do
-                    name tg[:name] if tg[:name]
-                  end
-                end
-              end
-              
-              # Target group pair info (for ECS)
-              if group_attrs.load_balancer_info[:target_group_pair_info]
-                group_attrs.load_balancer_info[:target_group_pair_info].each do |pair|
-                  target_group_pair_info do
-                    if pair[:prod_traffic_route]
-                      prod_traffic_route do
-                        listener_arns pair[:prod_traffic_route][:listener_arns] if pair[:prod_traffic_route][:listener_arns]
-                      end
-                    end
-                    
-                    if pair[:test_traffic_route]
-                      test_traffic_route do
-                        listener_arns pair[:test_traffic_route][:listener_arns] if pair[:test_traffic_route][:listener_arns]
-                      end
-                    end
-                    
-                    if pair[:target_groups]
-                      pair[:target_groups].each do |tg|
-                        target_group do
-                          name tg[:name] if tg[:name]
-                        end
-                      end
-                    end
-                  end
-                end
-              end
-            end
-          end
+          build_load_balancer_info(group_attrs.load_balancer_info) if group_attrs.load_balancer_info.any?
           
           # ECS service
           if group_attrs.ecs_service.any?

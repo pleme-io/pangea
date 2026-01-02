@@ -18,6 +18,7 @@ require 'pangea/resources/base'
 require 'pangea/resources/reference'
 require 'pangea/resources/aws_ce_cost_category/types'
 require 'pangea/resource_registry'
+require_relative 'expression_builder'
 
 module Pangea
   module Resources
@@ -51,7 +52,7 @@ module Pangea
               
               # Rule expression configuration
               rule do
-                build_cost_category_expression(rule_config[:rule], self)
+                CostCategoryExpressionBuilder.build(rule_config[:rule], self)
               end
               
               # Inherited value configuration for INHERITED rules
@@ -142,59 +143,6 @@ module Pangea
             governance_maturity_level: category_attrs.governance_maturity_level
           }
         )
-      end
-      
-      private
-      
-      # Build cost category expression recursively
-      def build_cost_category_expression(expression, builder)
-        # Handle logical operators
-        if expression[:and]
-          builder.and do
-            expression[:and].each_with_index do |sub_expr, index|
-              builder.public_send(index) do
-                build_cost_category_expression(sub_expr, self)
-              end
-            end
-          end
-        elsif expression[:or]
-          builder.or do
-            expression[:or].each_with_index do |sub_expr, index|
-              builder.public_send(index) do
-                build_cost_category_expression(sub_expr, self)
-              end
-            end
-          end
-        elsif expression[:not]
-          builder.not do
-            build_cost_category_expression(expression[:not], self)
-          end
-        end
-        
-        # Handle filter types
-        if expression[:dimension]
-          builder.dimension do
-            key expression[:dimension][:key]
-            values expression[:dimension][:values]
-            match_options expression[:dimension][:match_options] if expression[:dimension][:match_options]
-          end
-        end
-        
-        if expression[:tags]
-          builder.tags do
-            key expression[:tags][:key]
-            values expression[:tags][:values] if expression[:tags][:values]
-            match_options expression[:tags][:match_options] if expression[:tags][:match_options]
-          end
-        end
-        
-        if expression[:cost_category]
-          builder.cost_category do
-            key expression[:cost_category][:key]
-            values expression[:cost_category][:values]
-            match_options expression[:cost_category][:match_options] if expression[:cost_category][:match_options]
-          end
-        end
       end
     end
   end

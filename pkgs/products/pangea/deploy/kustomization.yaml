@@ -1,0 +1,54 @@
+# Pangea - Infrastructure Template Management Operator
+# Use this as a base for your Kustomize overlays
+#
+# Example usage with FluxCD:
+#   apiVersion: kustomize.toolkit.fluxcd.io/v1
+#   kind: Kustomization
+#   spec:
+#     sourceRef:
+#       kind: GitRepository
+#       name: flux-system
+#     path: ./pkgs/products/pangea/deploy
+#     prune: true
+#     interval: 10m
+#
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: pangea-system
+
+labels:
+  - pairs:
+      app.kubernetes.io/part-of: pangea
+      app.kubernetes.io/managed-by: kustomize
+
+resources:
+  - namespace.yaml
+  - crds/infrastructuretemplates.yaml
+  - crds/pangeanamespaces.yaml
+  - rbac/serviceaccount.yaml
+  - rbac/role.yaml
+  - rbac/rolebinding.yaml
+  - configmap.yaml
+  - operator-deployment.yaml
+  - operator-service.yaml
+  - web-deployment.yaml
+  - web-service.yaml
+
+# Common labels applied to all resources
+commonLabels:
+  app.kubernetes.io/name: pangea
+  app.kubernetes.io/version: "0.1.0"
+
+# Image customization
+images:
+  - name: ghcr.io/pleme-io/nexus/pangea-operator
+    newTag: latest
+  - name: ghcr.io/pleme-io/nexus/pangea-web
+    newTag: latest
+
+# Configuration generation from files
+configMapGenerator: []
+
+# Patches for customization
+patches: []

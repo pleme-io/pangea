@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 # Copyright 2025 The Pangea Authors
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,8 +14,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
 require "dry-struct"
+require_relative "gamelift/attributes"
 
 module Pangea
   module Resources
@@ -24,93 +25,13 @@ module Pangea
       module GameLift
         include Dry::Types()
 
-        # GameLift Script (Realtime Servers)
-        module GameLiftScript
-          class ScriptAttributes < Dry::Struct
-            attribute :name, String
-            attribute? :version, String
-            attribute? :storage_location, Hash
-            attribute? :zip_file, String
-            attribute? :tags, Types::Hash.map(Types::String, Types::String)
-          end
-        end
-
-        # GameLift Matchmaking Rule Set
-        module GameLiftMatchmakingRuleSet
-          class RuleSetAttributes < Dry::Struct
-            attribute :name, String
-            attribute :rule_set_body, String
-            attribute? :tags, Types::Hash.map(Types::String, Types::String)
-          end
-        end
-
-        # GameLift Player Session
-        module GameLiftPlayerSession
-          class PlayerSessionAttributes < Dry::Struct
-            attribute :game_session_id, String
-            attribute :player_id, String
-            attribute? :player_data, String
-          end
-        end
-
-        # GameLift Game Session
-        module GameLiftGameSession
-          class GameSessionAttributes < Dry::Struct
-            attribute? :fleet_id, String
-            attribute? :alias_id, String
-            attribute :maximum_player_session_count, Integer
-            attribute? :name, String
-            attribute? :game_properties, Array
-            attribute? :creator_id, String
-            attribute? :game_session_data, String
-          end
-        end
-
-        # GameLift Fleet Locations
-        module GameLiftFleetLocations
-          class FleetLocationAttributes < Dry::Struct
-            attribute :fleet_id, String
-            attribute :locations, Types::Array.of(Types::String)
-          end
-        end
-
-        # GameLift Fleet Capacity  
-        module GameLiftFleetCapacity
-          class FleetCapacityAttributes < Dry::Struct
-            attribute :fleet_id, String
-            attribute :desired_instances, Integer
-            attribute? :location, String
-          end
-        end
-
-        # GameLift Compute (Anywhere)
-        module GameLiftCompute
-          class ComputeAttributes < Dry::Struct
-            attribute :compute_name, String
-            attribute :fleet_id, String
-            attribute? :ip_address, String
-            attribute? :dns_name, String
-            attribute? :certificate_path, String
-          end
-        end
-
-        # GameLift Matchmaking Ticket
-        module GameLiftMatchmakingTicket
-          class TicketAttributes < Dry::Struct
-            attribute :configuration_name, String
-            attribute :players, Array
-            attribute? :ticket_id, String
-          end
-        end
-
-        # Public resource functions for GameLift
         def aws_gamelift_script(name, attributes = {})
           validated = GameLiftScript::ScriptAttributes.from_dynamic(attributes)
-          
+
           resource :aws_gamelift_script, name do
             validated.to_h.each { |k, v| send(k, v) unless v.nil? }
           end
-          
+
           OpenStruct.new(
             id: "${aws_gamelift_script.#{name}.id}",
             arn: "${aws_gamelift_script.#{name}.arn}",
@@ -122,11 +43,11 @@ module Pangea
 
         def aws_gamelift_matchmaking_rule_set(name, attributes = {})
           validated = GameLiftMatchmakingRuleSet::RuleSetAttributes.from_dynamic(attributes)
-          
+
           resource :aws_gamelift_matchmaking_rule_set, name do
             validated.to_h.each { |k, v| send(k, v) unless v.nil? }
           end
-          
+
           OpenStruct.new(
             id: "${aws_gamelift_matchmaking_rule_set.#{name}.id}",
             arn: "${aws_gamelift_matchmaking_rule_set.#{name}.arn}",
@@ -137,11 +58,11 @@ module Pangea
 
         def aws_gamelift_player_session(name, attributes = {})
           validated = GameLiftPlayerSession::PlayerSessionAttributes.from_dynamic(attributes)
-          
+
           resource :aws_gamelift_player_session, name do
             validated.to_h.each { |k, v| send(k, v) unless v.nil? }
           end
-          
+
           OpenStruct.new(
             id: "${aws_gamelift_player_session.#{name}.id}",
             player_session_id: "${aws_gamelift_player_session.#{name}.player_session_id}",
@@ -157,11 +78,11 @@ module Pangea
 
         def aws_gamelift_game_session(name, attributes = {})
           validated = GameLiftGameSession::GameSessionAttributes.from_dynamic(attributes)
-          
+
           resource :aws_gamelift_game_session, name do
             validated.to_h.each { |k, v| send(k, v) unless v.nil? }
           end
-          
+
           OpenStruct.new(
             id: "${aws_gamelift_game_session.#{name}.id}",
             game_session_id: "${aws_gamelift_game_session.#{name}.game_session_id}",
@@ -176,11 +97,11 @@ module Pangea
 
         def aws_gamelift_fleet_locations(name, attributes = {})
           validated = GameLiftFleetLocations::FleetLocationAttributes.from_dynamic(attributes)
-          
+
           resource :aws_gamelift_fleet_locations, name do
             validated.to_h.each { |k, v| send(k, v) unless v.nil? }
           end
-          
+
           OpenStruct.new(
             id: "${aws_gamelift_fleet_locations.#{name}.id}",
             fleet_id: "${aws_gamelift_fleet_locations.#{name}.fleet_id}",
@@ -190,11 +111,11 @@ module Pangea
 
         def aws_gamelift_fleet_capacity(name, attributes = {})
           validated = GameLiftFleetCapacity::FleetCapacityAttributes.from_dynamic(attributes)
-          
+
           resource :aws_gamelift_fleet_capacity, name do
             validated.to_h.each { |k, v| send(k, v) unless v.nil? }
           end
-          
+
           OpenStruct.new(
             id: "${aws_gamelift_fleet_capacity.#{name}.id}",
             fleet_id: "${aws_gamelift_fleet_capacity.#{name}.fleet_id}",
@@ -205,11 +126,11 @@ module Pangea
 
         def aws_gamelift_compute(name, attributes = {})
           validated = GameLiftCompute::ComputeAttributes.from_dynamic(attributes)
-          
+
           resource :aws_gamelift_compute, name do
             validated.to_h.each { |k, v| send(k, v) unless v.nil? }
           end
-          
+
           OpenStruct.new(
             id: "${aws_gamelift_compute.#{name}.id}",
             compute_name: "${aws_gamelift_compute.#{name}.compute_name}",
@@ -223,11 +144,11 @@ module Pangea
 
         def aws_gamelift_matchmaking_ticket(name, attributes = {})
           validated = GameLiftMatchmakingTicket::TicketAttributes.from_dynamic(attributes)
-          
+
           resource :aws_gamelift_matchmaking_ticket, name do
             validated.to_h.each { |k, v| send(k, v) unless v.nil? }
           end
-          
+
           OpenStruct.new(
             id: "${aws_gamelift_matchmaking_ticket.#{name}.id}",
             ticket_id: "${aws_gamelift_matchmaking_ticket.#{name}.ticket_id}",

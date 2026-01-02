@@ -131,8 +131,8 @@ module Pangea
       protected
       
       def validate_config!
-        # Ensure path is safe
-        if @config[:path].include?('..')
+        # Ensure path is safe (skip if path is nil - will be set to default later)
+        if @config[:path] && @config[:path].include?('..')
           raise ArgumentError, "Path cannot contain '..': #{@config[:path]}"
         end
       end

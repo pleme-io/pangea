@@ -39,23 +39,27 @@ enabled_tests:
   - cloudflare_r2_custom_domain/synthesis_spec.rb
   - cloudflare_r2_managed_domain/synthesis_spec.rb
 
-  # Security and Firewall (NEW - production critical)
+  # Security and Firewall
   - cloudflare_filter/synthesis_spec.rb
   - cloudflare_firewall_rule/synthesis_spec.rb
   - cloudflare_rate_limit/synthesis_spec.rb
 
-  # SSL/TLS and Certificates (NEW - production critical)
+  # SSL/TLS and Certificates
   - cloudflare_certificate_pack/synthesis_spec.rb
   - cloudflare_custom_ssl/synthesis_spec.rb
   - cloudflare_origin_ca_certificate/synthesis_spec.rb
 
-  # Cloudflare Pages (NEW - complete developer platform)
+  # Cloudflare Pages
   - cloudflare_pages_project/synthesis_spec.rb
   - cloudflare_pages_domain/synthesis_spec.rb
 
-  # Zone Settings (NEW - commonly used)
+  # Zone Settings
   - cloudflare_zone_settings_override/synthesis_spec.rb
   - cloudflare_zone_dnssec/synthesis_spec.rb
+
+# Note: AWS synthesis tests are disabled pending fixes to underlying
+# resource type definitions. The test files exist in spec/resources/aws_*
+# but many AWS resource types.rb files have syntax or type definition errors.
 
 # List of test files to exclude (when mode is disabled_excluded)
 # Paths are relative to spec/resources/

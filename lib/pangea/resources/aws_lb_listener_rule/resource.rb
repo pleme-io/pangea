@@ -17,6 +17,7 @@
 require 'pangea/resources/base'
 require 'pangea/resources/reference'
 require 'pangea/resources/aws_lb_listener_rule/types'
+require_relative 'action_builders'
 require 'pangea/resource_registry'
 
 module Pangea
@@ -37,94 +38,8 @@ module Pangea
           priority rule_attrs.priority
           
           # Actions configuration
-          rule_attrs.action.each_with_index do |action, index|
-            action do
-              type action[:type]
-              order action[:order] if action[:order]
-              
-              case action[:type]
-              when 'forward'
-                if action[:target_group_arn]
-                  target_group_arn action[:target_group_arn]
-                elsif action[:forward]
-                  forward do
-                    action[:forward][:target_groups].each do |tg|
-                      target_group do
-                        arn tg[:arn]
-                        weight tg[:weight] if tg[:weight] != 100
-                      end
-                    end
-                    
-                    if action[:forward][:stickiness]
-                      stickiness do
-                        enabled action[:forward][:stickiness][:enabled]
-                        duration action[:forward][:stickiness][:duration] if action[:forward][:stickiness][:duration]
-                      end
-                    end
-                  end
-                end
-                
-              when 'redirect'
-                redirect do
-                  protocol action[:redirect][:protocol] if action[:redirect][:protocol]
-                  port action[:redirect][:port] if action[:redirect][:port]
-                  host action[:redirect][:host] if action[:redirect][:host]
-                  path action[:redirect][:path] if action[:redirect][:path]
-                  query action[:redirect][:query] if action[:redirect][:query]
-                  status_code action[:redirect][:status_code]
-                end
-                
-              when 'fixed-response'
-                fixed_response do
-                  content_type action[:fixed_response][:content_type] if action[:fixed_response][:content_type]
-                  message_body action[:fixed_response][:message_body] if action[:fixed_response][:message_body]
-                  status_code action[:fixed_response][:status_code]
-                end
-                
-              when 'authenticate-cognito'
-                authenticate_cognito do
-                  user_pool_arn action[:authenticate_cognito][:user_pool_arn]
-                  user_pool_client_id action[:authenticate_cognito][:user_pool_client_id]
-                  user_pool_domain action[:authenticate_cognito][:user_pool_domain]
-                  
-                  if action[:authenticate_cognito][:authentication_request_extra_params]
-                    authentication_request_extra_params do
-                      action[:authenticate_cognito][:authentication_request_extra_params].each do |key, value|
-                        public_send(key, value)
-                      end
-                    end
-                  end
-                  
-                  on_unauthenticated_request action[:authenticate_cognito][:on_unauthenticated_request] if action[:authenticate_cognito][:on_unauthenticated_request]
-                  scope action[:authenticate_cognito][:scope] if action[:authenticate_cognito][:scope]
-                  session_cookie_name action[:authenticate_cognito][:session_cookie_name] if action[:authenticate_cognito][:session_cookie_name]
-                  session_timeout action[:authenticate_cognito][:session_timeout] if action[:authenticate_cognito][:session_timeout]
-                end
-                
-              when 'authenticate-oidc'
-                authenticate_oidc do
-                  authorization_endpoint action[:authenticate_oidc][:authorization_endpoint]
-                  client_id action[:authenticate_oidc][:client_id]
-                  client_secret action[:authenticate_oidc][:client_secret]
-                  issuer action[:authenticate_oidc][:issuer]
-                  token_endpoint action[:authenticate_oidc][:token_endpoint]
-                  user_info_endpoint action[:authenticate_oidc][:user_info_endpoint]
-                  
-                  if action[:authenticate_oidc][:authentication_request_extra_params]
-                    authentication_request_extra_params do
-                      action[:authenticate_oidc][:authentication_request_extra_params].each do |key, value|
-                        public_send(key, value)
-                      end
-                    end
-                  end
-                  
-                  on_unauthenticated_request action[:authenticate_oidc][:on_unauthenticated_request] if action[:authenticate_oidc][:on_unauthenticated_request]
-                  scope action[:authenticate_oidc][:scope] if action[:authenticate_oidc][:scope]
-                  session_cookie_name action[:authenticate_oidc][:session_cookie_name] if action[:authenticate_oidc][:session_cookie_name]
-                  session_timeout action[:authenticate_oidc][:session_timeout] if action[:authenticate_oidc][:session_timeout]
-                end
-              end
-            end
+          rule_attrs.action.each do |act|
+            LbListenerRuleActionBuilders.apply_action(self, act)
           end
           
           # Conditions configuration

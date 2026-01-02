@@ -17,6 +17,7 @@
 require 'pangea/resources/base'
 require 'pangea/resources/aws_sagemaker_endpoint/types'
 require 'pangea/resource_registry'
+require_relative 'reference_attributes'
 
 module Pangea
   module Resources
@@ -146,86 +147,7 @@ module Pangea
         ResourceReference.new(
           name: name,
           type: :aws_sagemaker_endpoint,
-          attributes: {
-            # Direct attributes
-            id: "${aws_sagemaker_endpoint.#{name}.id}",
-            arn: "${aws_sagemaker_endpoint.#{name}.arn}",
-            name: "${aws_sagemaker_endpoint.#{name}.name}",
-            endpoint_name: "${aws_sagemaker_endpoint.#{name}.name}",
-            endpoint_config_name: "${aws_sagemaker_endpoint.#{name}.endpoint_config_name}",
-            
-            # Computed attributes
-            creation_time: "${aws_sagemaker_endpoint.#{name}.creation_time}",
-            last_modified_time: "${aws_sagemaker_endpoint.#{name}.last_modified_time}",
-            endpoint_status: "${aws_sagemaker_endpoint.#{name}.endpoint_status}",
-            
-            # Helper attributes for integration
-            inference_url: "https://runtime.sagemaker.${data.aws_region.current.name}.amazonaws.com/endpoints/${aws_sagemaker_endpoint.#{name}.name}/invocations",
-            
-            # Deployment configuration attributes
-            has_deployment_config: !attributes[:deployment_config].nil?,
-            has_blue_green: !attributes.dig(:deployment_config, :blue_green_update_policy).nil?,
-            has_auto_rollback: !attributes.dig(:deployment_config, :auto_rollback_configuration).nil?,
-            
-            deployment_strategy: begin
-              if attributes.dig(:deployment_config, :blue_green_update_policy)
-                traffic_type = attributes.dig(:deployment_config, :blue_green_update_policy, :traffic_routing_configuration, :type)
-                traffic_type&.downcase&.gsub('_', '-') || 'all-at-once'
-              else
-                'all-at-once'
-              end
-            end,
-            
-            supports_canary: begin
-              traffic_type = attributes.dig(:deployment_config, :blue_green_update_policy, :traffic_routing_configuration, :type)
-              traffic_type == 'CANARY'
-            end,
-            
-            supports_linear: begin
-              traffic_type = attributes.dig(:deployment_config, :blue_green_update_policy, :traffic_routing_configuration, :type)
-              traffic_type == 'LINEAR'
-            end,
-            
-            # Monitoring and rollback attributes
-            rollback_alarm_count: attributes.dig(:deployment_config, :auto_rollback_configuration, :alarms)&.size || 0,
-            
-            rollback_alarms: attributes.dig(:deployment_config, :auto_rollback_configuration, :alarms)&.map { |a| a[:alarm_name] } || [],
-            
-            # Timing configuration
-            traffic_wait_time: attributes.dig(:deployment_config, :blue_green_update_policy, :traffic_routing_configuration, :wait_interval_in_seconds) || 0,
-            
-            termination_wait_time: attributes.dig(:deployment_config, :blue_green_update_policy, :termination_wait_in_seconds) || 0,
-            
-            max_deployment_timeout: attributes.dig(:deployment_config, :blue_green_update_policy, :maximum_execution_timeout_in_seconds) || 3600,
-            
-            # Canary configuration (if applicable)
-            canary_size: begin
-              if attributes.dig(:deployment_config, :blue_green_update_policy, :traffic_routing_configuration, :type) == 'CANARY'
-                canary = attributes.dig(:deployment_config, :blue_green_update_policy, :traffic_routing_configuration, :canary_size)
-                canary ? { type: canary[:type], value: canary[:value] } : nil
-              else
-                nil
-              end
-            end,
-            
-            # Linear configuration (if applicable) 
-            linear_step_size: begin
-              if attributes.dig(:deployment_config, :blue_green_update_policy, :traffic_routing_configuration, :type) == 'LINEAR'
-                linear = attributes.dig(:deployment_config, :blue_green_update_policy, :traffic_routing_configuration, :linear_step_size)
-                linear ? { type: linear[:type], value: linear[:value] } : nil
-              else
-                nil
-              end
-            end,
-            
-            # Operational score
-            operational_score: begin
-              endpoint_attrs = Types::Types::SageMakerEndpointAttributes.new(attributes)
-              endpoint_attrs.operational_score
-            rescue
-              0
-            end
-          }
+          attributes: SageMakerEndpointReferenceAttributes.build(name, attributes)
         )
       end
     end

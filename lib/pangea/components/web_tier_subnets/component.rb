@@ -21,11 +21,13 @@ require 'pangea/resources/aws_internet_gateway/resource'
 require 'pangea/resources/aws_route_table/resource'
 require 'pangea/resources/aws_route/resource'
 require 'pangea/resources/aws_route_table_association/resource'
+require_relative 'component/outputs'
 
 module Pangea
   module Components
     module WebTierSubnets
       include Base
+      include Outputs
       
       # Create public subnets across multiple AZs optimized for web tier workloads
       #
@@ -138,60 +140,11 @@ module Pangea
         end
         resources[:subnet_associations] = subnet_associations
         
-        # 6. Generate AZ distribution information
-        az_distribution = {}
-        component_attrs.availability_zones.each_with_index do |az, az_index|
-          subnets_in_az = web_subnets.select.with_index do |(subnet_key, subnet_ref), subnet_index|
-            subnet_index % component_attrs.az_count == az_index
-          end
-          az_distribution[az] = {
-            subnet_count: subnets_in_az.count,
-            subnets: subnets_in_az.keys,
-            estimated_capacity: component_attrs.estimated_capacity_per_subnet
-                                  .select.with_index { |cap, idx| idx % component_attrs.az_count == az_index }
-                                  .sum
-          }
-        end
-        
-        # 7. Generate computed outputs
-        outputs = {
-          # Subnet information
-          subnet_ids: web_subnets.values.map(&:id),
-          subnet_cidrs: component_attrs.subnet_cidrs,
-          subnet_count: component_attrs.subnet_count,
-          
-          # Availability zone information
-          availability_zones: component_attrs.availability_zones,
-          az_count: component_attrs.az_count,
-          az_distribution: az_distribution,
-          subnets_per_az: component_attrs.subnets_per_az,
-          
-          # Network configuration
-          vpc_id: vpc_id,
-          internet_gateway_id: igw_ref&.id,
-          route_table_id: web_rt_ref.id,
-          
-          # Feature flags
-          public_ips_enabled: component_attrs.enable_public_ips,
-          ipv6_enabled: component_attrs.enable_ipv6,
-          internet_gateway_created: component_attrs.create_internet_gateway,
-          
-          # High availability information
-          is_highly_available: component_attrs.is_highly_available?,
-          distribution_pattern: component_attrs.distribution_pattern,
-          load_balancer_ready: component_attrs.load_balancer_ready?,
-          
-          # Capacity planning
-          estimated_capacity_per_subnet: component_attrs.estimated_capacity_per_subnet,
-          total_estimated_capacity: component_attrs.total_estimated_capacity,
-          
-          # Configuration summary
-          tier_configuration: component_attrs.tier_configuration,
-          web_tier_profile: component_attrs.web_tier_profile,
-          compliance_features: component_attrs.compliance_features
-        }
-        
-        # 8. Create and return component reference
+        # 6. Generate AZ distribution and outputs
+        az_distribution = generate_az_distribution(component_attrs, web_subnets)
+        outputs = generate_outputs(component_attrs, vpc_id, igw_ref, web_subnets, web_rt_ref, az_distribution)
+
+        # 7. Create and return component reference
         create_component_reference(
           type: :web_tier_subnets,
           name: name,
