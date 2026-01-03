@@ -278,7 +278,6 @@
           echo "pangea:x:1000:" > etc/group
         '';
       };
-<<<<<<< HEAD
 
       # Build compiler server package (HTTP sidecar for pangea-operator)
       compilerServer = pkgs.stdenv.mkDerivation {
@@ -344,59 +343,14 @@
           echo "compiler:x:1000:" > etc/group
         '';
       };
-||||||| ebe434d
-=======
-
-      # Build Docker image for Pangea Compiler sidecar
-      compilerImage = pkgs.dockerTools.buildLayeredImage {
-        name = "ghcr.io/pleme-io/nexus/pangea-compiler";
-        tag = "latest";
-
-        contents = [
-          pangeaCompilerPackage
-          env
-          ruby
-          pkgs.cacert
-          pkgs.coreutils
-        ];
-
-        config = {
-          Cmd = ["${pangeaCompilerPackage}/bin/pangea-compiler"];
-          WorkingDir = "/";
-          Env = [
-            "SSL_CERT_FILE=${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt"
-            "DRY_TYPES_WARNINGS=false"
-            "COMPILE_HOST=0.0.0.0"
-            "COMPILE_PORT=8082"
-          ];
-          ExposedPorts = {
-            "8082/tcp" = {};
-          };
-        };
-
-        extraCommands = ''
-          mkdir -p tmp
-          chmod 1777 tmp
-          mkdir -p etc
-          echo "pangea:x:1000:1000::/:/bin/false" > etc/passwd
-          echo "pangea:x:1000:" > etc/group
-        '';
-      };
->>>>>>> 8846b500b296e88178cad99f9809f2132e30d367
     in {
       packages = {
         default = pangeaPackage;
         pangea = pangeaPackage;
         pangea-compiler = pangeaCompilerPackage;
         synthesizer-tests = synthesizerTests;
-<<<<<<< HEAD
         compiler-server = compilerServer;
         inherit env ruby dockerImage compilerImage;
-||||||| ebe434d
-        inherit env ruby dockerImage;
-=======
-        inherit env ruby dockerImage compilerImage;
->>>>>>> 8846b500b296e88178cad99f9809f2132e30d367
       };
 
       devShells = rec {
