@@ -45,22 +45,10 @@
     platforms = [];
     source = {
       remotes = ["https://rubygems.org"];
-<<<<<<< HEAD
       sha256 = "16h4b88v432akkmh1xqjzmi3a6vvpnqagj7nwn57ndq59jd6sdcg";
-||||||| ebe434d
-      sha256 = "16mg10xb1413jfqs30swwb8fcg9j8236122z55qpmcw1jfz3bw6z";
-=======
-      sha256 = "070dcj2qpq3f6jxd6phxb719852dk4b64c0ks41wa89sv2xk545k";
->>>>>>> 8846b500b296e88178cad99f9809f2132e30d367
       type = "gem";
     };
-<<<<<<< HEAD
     version = "1.1200.0";
-||||||| ebe434d
-    version = "1.1188.0";
-=======
-    version = "1.1199.0";
->>>>>>> 8846b500b296e88178cad99f9809f2132e30d367
   };
   aws-sdk-core = {
     dependencies = ["aws-eventstream" "aws-partitions" "aws-sigv4" "base64" "bigdecimal" "jmespath" "logger"];

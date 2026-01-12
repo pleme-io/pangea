@@ -333,7 +333,7 @@
             "COMPILER_PORT=8082"
             "COMPILER_HOST=0.0.0.0"
           ];
-          ExposedPorts = { "8082/tcp" = {}; };
+          ExposedPorts = {"8082/tcp" = {};};
         };
 
         extraCommands = ''
