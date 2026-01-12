@@ -235,10 +235,8 @@ module Pangea
         long '--id string'
         desc 'Resource ID to import (e.g., Z1234567890ABC)'
       end
-=======
       include Application::Options
       include Application::CommandRouter
->>>>>>> 8846b500b296e88178cad99f9809f2132e30d367
 
       def run
         @banner = UI::Banner.new
@@ -351,9 +349,8 @@ module Pangea
           print help
           exit 1
         end
-=======
+
         route_command(params[:command], namespace)
->>>>>>> 8846b500b296e88178cad99f9809f2132e30d367
       rescue TTY::Option::InvalidParameter => e
         ui.error e.message
         print help
