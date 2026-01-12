@@ -233,6 +233,6 @@ This project is licensed under the Apache License 2.0 - see the [LICENSE](LICENS
 
 ## Acknowledgments
 
-- Built on [terraform-synthesizer](https://github.com/VaultTech/terraform-synthesizer) for Ruby-to-Terraform compilation
+- Built on [terraform-synthesizer](https://github.com/drzln/terraform-synthesizer) for Ruby-to-Terraform compilation
 - Inspired by the need for better infrastructure-as-code scalability
 - Thanks to all [contributors](https://github.com/drzln/pangea/contributors)
