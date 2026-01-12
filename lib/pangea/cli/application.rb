@@ -33,7 +33,6 @@ module Pangea
   module CLI
     # Main CLI application entry point
     class Application < Commands::BaseCommand
-<<<<<<< HEAD
       usage do
         program 'pangea'
 
@@ -135,7 +134,6 @@ module Pangea
         long '--id string'
         desc 'Resource ID to import (e.g., Z1234567890ABC)'
       end
-||||||| ebe434d
       usage do
         program 'pangea'
 
@@ -257,7 +255,6 @@ module Pangea
 
         # Route to appropriate command
         namespace = resolve_namespace
-<<<<<<< HEAD
 
         case params[:command]
         when 'init'
@@ -307,7 +304,6 @@ module Pangea
           print help
           exit 1
         end
-||||||| ebe434d
 
         case params[:command]
         when 'init'
