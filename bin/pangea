@@ -1,4 +1,17 @@
 #!/usr/bin/env ruby
+# Suppress dry-types warnings about mutable defaults
+ENV['DRY_TYPES_WARNINGS'] = 'false'
+
+# Disable Zeitwerk's kernel require hook before loading dry-rb gems
+# This prevents Zeitwerk from intercepting our requires
+module Zeitwerk
+  module Kernel
+    def self.extended(base)
+      # Don't patch Kernel#require
+    end
+  end
+end
+
 lib = File.expand_path('../lib', __dir__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require 'pangea/cli/application'

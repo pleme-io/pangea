@@ -16,9 +16,8 @@
 
 module Pangea
   module CLI
-    module Application
-      # Routes CLI commands to appropriate handler classes
-      module CommandRouter
+    # Routes CLI commands to appropriate handler classes
+    module ApplicationCommandRouter
         def route_command(command, namespace)
           case command
           when 'init'
@@ -35,6 +34,8 @@ module Pangea
             run_agent(namespace)
           when 'import'
             run_import(namespace)
+          when 'sync'
+            run_sync(namespace)
           else
             handle_unknown_command(command)
           end
@@ -110,6 +111,14 @@ module Pangea
           )
         end
 
+        def run_sync(namespace)
+          Commands::Sync.new.run(
+            params[:file],
+            namespace: namespace,
+            template: params[:template]
+          )
+        end
+
         def handle_unknown_command(command)
           ui.error "Unknown command: #{command}"
           print help
@@ -118,4 +127,3 @@ module Pangea
       end
     end
   end
-end

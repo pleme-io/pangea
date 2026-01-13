@@ -29,7 +29,7 @@ module Pangea
         end
 
         def diff_viewer
-          @diff_viewer ||= Diff.new
+          @diff_viewer ||= Diff::Renderer.new
         end
 
         def visualizer

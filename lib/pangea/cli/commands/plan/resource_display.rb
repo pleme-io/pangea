@@ -17,9 +17,8 @@
 module Pangea
   module CLI
     module Commands
-      class Plan
-        # Resource display methods for plan command
-        module ResourceDisplay
+      # Resource display methods for plan command
+      module ResourceDisplay
           private
 
           def display_resource_analysis(template_name, analysis)
@@ -97,4 +96,3 @@ module Pangea
       end
     end
   end
-end

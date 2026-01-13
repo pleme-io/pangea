@@ -19,9 +19,8 @@ require 'json'
 module Pangea
   module CLI
     module Commands
-      module Import
-        # Analyzes Terraform JSON to extract resource information
-        module ResourceAnalyzer
+      # Analyzes Terraform JSON to extract resource information for Import command
+      module ImportResourceAnalyzer
           module_function
 
           def analyze_resources(terraform_json)
@@ -71,4 +70,3 @@ module Pangea
       end
     end
   end
-end

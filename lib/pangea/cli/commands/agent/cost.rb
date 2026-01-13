@@ -3,9 +3,8 @@
 module Pangea
   module CLI
     module Commands
-      module Agent
-        # Cost estimation
-        module Cost
+      # Cost estimation for Agent command
+      module AgentCost
           def estimate_cost(file, template: nil, namespace: nil)
             return { error: 'File required' } unless file
 
@@ -58,4 +57,3 @@ module Pangea
       end
     end
   end
-end

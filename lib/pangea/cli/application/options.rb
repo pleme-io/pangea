@@ -16,9 +16,8 @@
 
 module Pangea
   module CLI
-    module Application
-      # TTY::Option definitions for the main CLI application
-      module Options
+    # TTY::Option definitions for the main CLI application
+    module ApplicationOptions
         def self.included(base)
           base.class_eval do
             usage do
@@ -47,7 +46,7 @@ module Pangea
 
             argument :command do
               desc 'Command to execute'
-              permit %w[init plan apply destroy inspect agent import]
+              permit %w[init plan apply destroy inspect agent import sync]
             end
 
             argument :file do
@@ -127,4 +126,3 @@ module Pangea
       end
     end
   end
-end

@@ -105,7 +105,7 @@ module Pangea
           ui.info "Interactive import for template: #{template_name}"
           ui.info "─" * 60
 
-          resources = Import::ResourceAnalyzer.analyze_resources(terraform_json)
+          resources = ImportResourceAnalyzer.analyze_resources(terraform_json)
 
           if resources.empty?
             ui.warn "No resources found in template"
@@ -131,7 +131,7 @@ module Pangea
           ui.info "\nTo import existing AWS resources, you'll need their IDs:"
           ui.info "─" * 60
 
-          import_commands = Import::ImportCommandGenerator.generate_import_commands(resources)
+          import_commands = ImportCommandGeneratorHelper.generate_import_commands(resources)
 
           ui.info "Example import commands:"
           import_commands.each do |cmd|

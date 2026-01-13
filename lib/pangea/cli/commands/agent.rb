@@ -32,14 +32,14 @@ module Pangea
     module Commands
       # Agent command for AI/automation-friendly operations
       class Agent < BaseCommand
-        include Agent::Analysis
-        include Agent::Complexity
-        include Agent::Dependencies
-        include Agent::Validation
-        include Agent::Cost
-        include Agent::Security
-        include Agent::Suggestions
-        include Agent::Explanation
+        include AgentAnalysis
+        include AgentComplexity
+        include AgentDependencies
+        include AgentValidation
+        include AgentCost
+        include AgentSecurity
+        include AgentSuggestions
+        include AgentExplanation
 
         AVAILABLE_ACTIONS = %w[analyze validate diff cost security dependencies suggest explain].freeze
 

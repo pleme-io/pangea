@@ -17,9 +17,8 @@
 module Pangea
   module CLI
     module Commands
-      class EnhancedPlan
-        # Cost estimation and performance metrics
-        module Metrics
+      # Cost estimation and performance metrics
+      module Metrics
           private
 
           def show_cost_estimate(plan_results)
@@ -52,4 +51,3 @@ module Pangea
       end
     end
   end
-end

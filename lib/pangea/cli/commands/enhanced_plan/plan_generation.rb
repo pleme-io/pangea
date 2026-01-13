@@ -17,9 +17,8 @@
 module Pangea
   module CLI
     module Commands
-      class EnhancedPlan
-        # Plan generation and result display operations
-        module PlanGeneration
+      # Plan generation and result display operations
+      module PlanGeneration
           private
 
           def generate_plan_with_progress(templates, _namespace_entity)
@@ -92,4 +91,3 @@ module Pangea
       end
     end
   end
-end

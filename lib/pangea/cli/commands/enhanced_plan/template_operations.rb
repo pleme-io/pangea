@@ -17,9 +17,8 @@
 module Pangea
   module CLI
     module Commands
-      class EnhancedPlan
-        # Template parsing and compilation operations
-        module TemplateOperations
+      # Template parsing and compilation operations
+      module TemplateOperations
           private
 
           def parse_templates_with_progress(file_path, template_filter)
@@ -105,4 +104,3 @@ module Pangea
       end
     end
   end
-end
