@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 # Copyright 2025 The Pangea Authors
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,7 +13,6 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
 
 require 'pangea/version'
 require 'pangea/configuration'
@@ -29,16 +29,16 @@ module Pangea
     def configuration
       @configuration ||= Configuration.new
     end
-    
+
     def config
       configuration
     end
-    
+
     def configure
       yield(configuration) if block_given?
       configuration
     end
-    
+
     # Add utilities access
     def utilities
       Utilities
