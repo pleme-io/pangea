@@ -46,15 +46,16 @@ When splitting large files:
 
 Files exceeding 200 lines should be refactored. Current high-priority targets:
 
-| Category | Pattern |
-|----------|---------|
-| Components >1000 lines | Split into concern-based modules |
-| Types >500 lines | Split into sub-type files |
-| CLI commands >400 lines | Extract operation classes |
+| Category                | Pattern                          |
+| ----------------------- | -------------------------------- |
+| Components >1000 lines  | Split into concern-based modules |
+| Types >500 lines        | Split into sub-type files        |
+| CLI commands >400 lines | Extract operation classes        |
 
 ### Verification
 
 After refactoring:
+
 ```bash
 # Check file sizes
 find lib -name "*.rb" -exec wc -l {} \; | sort -rn | head -20
@@ -76,7 +77,7 @@ bundle exec steep check
 
 ## Skills Reference
 
-| Skill | Use When |
-|-------|----------|
-| `/pangea-refactoring` | Splitting large files, extracting modules, reducing duplication, improving types |
-| `/pangea-resource-testing` | Creating resources, writing synthesis tests, filling test coverage gaps |
+| Skill                      | Use When                                                                         |
+| -------------------------- | -------------------------------------------------------------------------------- |
+| `/pangea-refactoring`      | Splitting large files, extracting modules, reducing duplication, improving types |
+| `/pangea-resource-testing` | Creating resources, writing synthesis tests, filling test coverage gaps          |
