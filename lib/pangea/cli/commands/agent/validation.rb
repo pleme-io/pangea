@@ -5,9 +5,8 @@ require 'json'
 module Pangea
   module CLI
     module Commands
-      module Agent
-        # Validation and best practices
-        module Validation
+      # Validation and best practices for Agent command
+      module AgentValidation
           def validate_infrastructure(file, template: nil, namespace: nil)
             return { error: 'File required' } unless file
 
@@ -76,4 +75,3 @@ module Pangea
       end
     end
   end
-end

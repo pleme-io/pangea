@@ -3,9 +3,8 @@
 module Pangea
   module CLI
     module Commands
-      module Agent
-        # Infrastructure explanation
-        module Explanation
+      # Infrastructure explanation for Agent command
+      module AgentExplanation
           def explain_infrastructure(file, template: nil, namespace: nil)
             return { error: 'File required' } unless file
 
@@ -80,4 +79,3 @@ module Pangea
       end
     end
   end
-end

@@ -3,9 +3,8 @@
 module Pangea
   module CLI
     module Commands
-      module Agent
-        # Improvement suggestions
-        module Suggestions
+      # Improvement suggestions for Agent command
+      module AgentSuggestions
           def suggest_improvements(file, template: nil, namespace: nil)
             analysis = analyze_infrastructure(file, template: template, namespace: namespace)
             suggestions = []
@@ -54,4 +53,3 @@ module Pangea
       end
     end
   end
-end

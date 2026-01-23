@@ -3,9 +3,8 @@
 module Pangea
   module CLI
     module Commands
-      module Agent
-        # Complexity assessment
-        module Complexity
+      # Complexity assessment for Agent command
+      module AgentComplexity
           def assess_complexity(templates)
             complexity_scores = templates.map do |t|
               content = t[:content]
@@ -66,4 +65,3 @@ module Pangea
       end
     end
   end
-end

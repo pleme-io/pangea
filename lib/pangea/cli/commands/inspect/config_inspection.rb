@@ -19,9 +19,8 @@ require 'json'
 module Pangea
   module CLI
     module Commands
-      class Inspect
-        # Config, namespace, and state inspection methods
-        module ConfigInspection
+      # Config, namespace, and state inspection methods
+      module ConfigInspection
           private
 
           def inspect_namespaces
@@ -129,4 +128,3 @@ module Pangea
       end
     end
   end
-end

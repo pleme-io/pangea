@@ -44,7 +44,7 @@ module Pangea
 
         def run(file_path, namespace:, template: nil, show_compiled: false)
           @workspace_manager = Execution::WorkspaceManager.new
-          @diff = UI::Diff.new
+          @diff = UI::Diff::Renderer.new
           @visualizer = UI::Visualizer.new
           @progress = UI::Progress.new
           @namespace = namespace

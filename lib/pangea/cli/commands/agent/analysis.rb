@@ -3,9 +3,8 @@
 module Pangea
   module CLI
     module Commands
-      module Agent
-        # Template analysis operations
-        module Analysis
+      # Template analysis operations for Agent command
+      module AgentAnalysis
           def analyze_infrastructure(file, template: nil, namespace: nil)
             return { error: 'File required' } unless file
             return { error: "File not found: #{file}" } unless File.exist?(file)
@@ -106,4 +105,3 @@ module Pangea
       end
     end
   end
-end

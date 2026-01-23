@@ -19,9 +19,8 @@ require 'json'
 module Pangea
   module CLI
     module Commands
-      class Plan
-        # JSON formatting and display methods
-        module JsonFormatting
+      # JSON formatting and display methods
+      module JsonFormatting
           private
 
           def display_compiled_json(template_name, terraform_json)
@@ -52,4 +51,3 @@ module Pangea
       end
     end
   end
-end

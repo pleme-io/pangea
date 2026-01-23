@@ -17,9 +17,8 @@
 module Pangea
   module CLI
     module Commands
-      class Plan
-        # Plan output display methods
-        module PlanOutput
+      # Plan output display methods
+      module PlanOutput
           private
 
           def display_enhanced_plan_output(plan_result, resource_analysis)
@@ -151,4 +150,3 @@ module Pangea
       end
     end
   end
-end

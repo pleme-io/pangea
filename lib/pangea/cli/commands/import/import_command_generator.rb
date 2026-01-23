@@ -17,9 +17,8 @@
 module Pangea
   module CLI
     module Commands
-      module Import
-        # Generates import commands for different resource types
-        module ImportCommandGenerator
+      # Generates import commands for different resource types
+      module ImportCommandGeneratorHelper
           module_function
 
           def generate_import_commands(resources)
@@ -70,4 +69,3 @@ module Pangea
       end
     end
   end
-end

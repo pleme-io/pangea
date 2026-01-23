@@ -19,9 +19,8 @@ require 'json'
 module Pangea
   module CLI
     module Commands
-      class Plan
-        # JSON analysis and extraction for plan command
-        module JsonAnalysis
+      # JSON analysis and extraction for plan command
+      module JsonAnalysis
           private
 
           def analyze_terraform_json(terraform_json)
@@ -178,4 +177,3 @@ module Pangea
       end
     end
   end
-end

@@ -12,31 +12,31 @@ This project and everyone participating in it is governed by the [Pangea Code of
 
 Before creating bug reports, please check existing issues as you might find out that you don't need to create one. When you are creating a bug report, please include as many details as possible:
 
-* **Use a clear and descriptive title**
-* **Describe the exact steps which reproduce the problem**
-* **Provide specific examples to demonstrate the steps**
-* **Describe the behavior you observed after following the steps**
-* **Explain which behavior you expected to see instead and why**
-* **Include details about your configuration and environment**
+- **Use a clear and descriptive title**
+- **Describe the exact steps which reproduce the problem**
+- **Provide specific examples to demonstrate the steps**
+- **Describe the behavior you observed after following the steps**
+- **Explain which behavior you expected to see instead and why**
+- **Include details about your configuration and environment**
 
 ### Suggesting Enhancements
 
 Enhancement suggestions are tracked as GitHub issues. When creating an enhancement suggestion, please include:
 
-* **Use a clear and descriptive title**
-* **Provide a step-by-step description of the suggested enhancement**
-* **Provide specific examples to demonstrate the steps**
-* **Describe the current behavior and explain which behavior you expected to see instead**
-* **Explain why this enhancement would be useful**
+- **Use a clear and descriptive title**
+- **Provide a step-by-step description of the suggested enhancement**
+- **Provide specific examples to demonstrate the steps**
+- **Describe the current behavior and explain which behavior you expected to see instead**
+- **Explain why this enhancement would be useful**
 
 ### Pull Requests
 
-* Fill in the required template
-* Do not include issue numbers in the PR title
-* Follow the Ruby style guide
-* Include thoughtfully-worded, well-structured tests
-* Document new code with YARD comments
-* End all files with a newline
+- Fill in the required template
+- Do not include issue numbers in the PR title
+- Follow the Ruby style guide
+- Include thoughtfully-worded, well-structured tests
+- Document new code with YARD comments
+- End all files with a newline
 
 ## Development Setup
 
@@ -69,10 +69,10 @@ Enhancement suggestions are tracked as GitHub issues. When creating an enhanceme
 
 ## Testing
 
-* Write RSpec tests for any new functionality
-* Ensure all tests pass before submitting PR
-* Aim for high test coverage (80%+)
-* Include both unit and integration tests where appropriate
+- Write RSpec tests for any new functionality
+- Ensure all tests pass before submitting PR
+- Aim for high test coverage (80%+)
+- Include both unit and integration tests where appropriate
 
 ### Running Tests
 
@@ -103,25 +103,25 @@ bundle exec rbs prototype rb lib/pangea/new_file.rb > sig/pangea/new_file.rbs
 
 ### Ruby Style
 
-* Follow the community Ruby style guide
-* Use RuboCop for style checking
-* Prefer functional style where appropriate
-* Use descriptive variable names
-* Keep methods small and focused
+- Follow the community Ruby style guide
+- Use RuboCop for style checking
+- Prefer functional style where appropriate
+- Use descriptive variable names
+- Keep methods small and focused
 
 ### Git Commit Messages
 
-* Use the present tense ("Add feature" not "Added feature")
-* Use the imperative mood ("Move cursor to..." not "Moves cursor to...")
-* Limit the first line to 72 characters or less
-* Reference issues and pull requests liberally after the first line
+- Use the present tense ("Add feature" not "Added feature")
+- Use the imperative mood ("Move cursor to..." not "Moves cursor to...")
+- Limit the first line to 72 characters or less
+- Reference issues and pull requests liberally after the first line
 
 ### Documentation
 
-* Use YARD for API documentation
-* Update README.md with details of changes to the interface
-* Create or update example files in the `examples/` directory
-* Document complex logic with inline comments
+- Use YARD for API documentation
+- Update README.md with details of changes to the interface
+- Create or update example files in the `examples/` directory
+- Document complex logic with inline comments
 
 ## Project Structure
 

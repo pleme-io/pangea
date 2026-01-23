@@ -3,9 +3,8 @@
 module Pangea
   module CLI
     module Commands
-      module Agent
-        # Dependency analysis
-        module Dependencies
+      # Dependency analysis for Agent command
+      module AgentDependencies
           def analyze_dependencies(file, template: nil, namespace: nil)
             return { error: 'File required' } unless file
 
@@ -62,4 +61,3 @@ module Pangea
       end
     end
   end
-end

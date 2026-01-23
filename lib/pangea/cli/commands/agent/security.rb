@@ -3,9 +3,8 @@
 module Pangea
   module CLI
     module Commands
-      module Agent
-        # Security scanning
-        module Security
+      # Security scanning for Agent command
+      module AgentSecurity
           def security_scan(file, template: nil, namespace: nil)
             return { error: 'File required' } unless file
 
@@ -68,4 +67,3 @@ module Pangea
       end
     end
   end
-end

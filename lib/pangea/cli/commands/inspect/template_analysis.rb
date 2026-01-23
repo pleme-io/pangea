@@ -17,9 +17,8 @@
 module Pangea
   module CLI
     module Commands
-      class Inspect
-        # Template analysis methods for inspect command
-        module TemplateAnalysis
+      # Template analysis methods for inspect command
+      module TemplateAnalysis
           private
 
           def inspect_templates(file, template: nil)
@@ -123,4 +122,3 @@ module Pangea
       end
     end
   end
-end

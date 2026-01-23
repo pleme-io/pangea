@@ -17,100 +17,98 @@ require 'aws-sdk-dynamodb'
 
 module Pangea
   module Backends
-    class S3
-      # DynamoDB-based locking mechanism for S3 backend
-      module DynamoDBLock
-        LOCK_TABLE_SCHEMA = {
-          attribute_definitions: [
-            { attribute_name: 'LockID', attribute_type: 'S' }
-          ],
-          key_schema: [
-            { attribute_name: 'LockID', key_type: 'HASH' }
-          ],
-          billing_mode: 'PAY_PER_REQUEST'
-        }.freeze
+    # DynamoDB-based locking mechanism for S3 backend
+    module DynamoDBLock
+      LOCK_TABLE_SCHEMA = {
+        attribute_definitions: [
+          { attribute_name: 'LockID', attribute_type: 'S' }
+        ],
+        key_schema: [
+          { attribute_name: 'LockID', key_type: 'HASH' }
+        ],
+        billing_mode: 'PAY_PER_REQUEST'
+      }.freeze
 
-        # Lock state for exclusive access
-        def lock(lock_id:, info: {})
-          return true unless @config[:dynamodb_table]
+      # Lock state for exclusive access
+      def lock(lock_id:, info: {})
+        return true unless @config[:dynamodb_table]
 
-          lock_item = {
-            LockID: lock_id,
-            Info: info.to_json,
-            Created: Time.now.to_i
-          }
+        lock_item = {
+          LockID: lock_id,
+          Info: info.to_json,
+          Created: Time.now.to_i
+        }
 
-          @dynamodb.put_item(
-            table_name: @config[:dynamodb_table],
-            item: lock_item,
-            condition_expression: 'attribute_not_exists(LockID)'
-          )
-          true
-        rescue Aws::DynamoDB::Errors::ConditionalCheckFailedException
-          false
-        end
+        @dynamodb.put_item(
+          table_name: @config[:dynamodb_table],
+          item: lock_item,
+          condition_expression: 'attribute_not_exists(LockID)'
+        )
+        true
+      rescue Aws::DynamoDB::Errors::ConditionalCheckFailedException
+        false
+      end
 
-        # Unlock state
-        def unlock(lock_id:)
-          return true unless @config[:dynamodb_table]
+      # Unlock state
+      def unlock(lock_id:)
+        return true unless @config[:dynamodb_table]
 
-          @dynamodb.delete_item(
-            table_name: @config[:dynamodb_table],
-            key: { LockID: lock_id }
-          )
-          true
-        rescue Aws::DynamoDB::Errors::ServiceError
-          false
-        end
+        @dynamodb.delete_item(
+          table_name: @config[:dynamodb_table],
+          key: { LockID: lock_id }
+        )
+        true
+      rescue Aws::DynamoDB::Errors::ServiceError
+        false
+      end
 
-        # Check if state is locked
-        def locked?
-          return false unless @config[:dynamodb_table]
+      # Check if state is locked
+      def locked?
+        return false unless @config[:dynamodb_table]
 
-          !lock_info.nil?
-        end
+        !lock_info.nil?
+      end
 
-        # Get lock info
-        def lock_info
-          return nil unless @config[:dynamodb_table]
+      # Get lock info
+      def lock_info
+        return nil unless @config[:dynamodb_table]
 
-          response = @dynamodb.scan(
-            table_name: @config[:dynamodb_table],
-            limit: 1
-          )
+        response = @dynamodb.scan(
+          table_name: @config[:dynamodb_table],
+          limit: 1
+        )
 
-          return nil if response.items.empty?
+        return nil if response.items.empty?
 
-          item = response.items.first
-          {
-            id: item['LockID'],
-            info: JSON.parse(item['Info'] || '{}'),
-            created: Time.at(item['Created'].to_i)
-          }
-        rescue Aws::DynamoDB::Errors::ServiceError
-          nil
-        end
+        item = response.items.first
+        {
+          id: item['LockID'],
+          info: JSON.parse(item['Info'] || '{}'),
+          created: Time.at(item['Created'].to_i)
+        }
+      rescue Aws::DynamoDB::Errors::ServiceError
+        nil
+      end
 
-        # Check if DynamoDB table exists
-        def dynamodb_table_exists?
-          @dynamodb.describe_table(table_name: @config[:dynamodb_table])
-          true
-        rescue Aws::DynamoDB::Errors::ResourceNotFoundException
-          false
-        end
+      # Check if DynamoDB table exists
+      def dynamodb_table_exists?
+        @dynamodb.describe_table(table_name: @config[:dynamodb_table])
+        true
+      rescue Aws::DynamoDB::Errors::ResourceNotFoundException
+        false
+      end
 
-        # Create DynamoDB table if it doesn't exist
-        def ensure_dynamodb_table_exists!
-          return if dynamodb_table_exists?
+      # Create DynamoDB table if it doesn't exist
+      def ensure_dynamodb_table_exists!
+        return if dynamodb_table_exists?
 
-          @dynamodb.create_table(
-            table_name: @config[:dynamodb_table],
-            **LOCK_TABLE_SCHEMA
-          )
+        @dynamodb.create_table(
+          table_name: @config[:dynamodb_table],
+          **LOCK_TABLE_SCHEMA
+        )
 
-          # Wait for table to be active
-          @dynamodb.wait_until(:table_exists, table_name: @config[:dynamodb_table])
-        end
+        # Wait for table to be active
+        @dynamodb.wait_until(:table_exists, table_name: @config[:dynamodb_table])
       end
     end
   end

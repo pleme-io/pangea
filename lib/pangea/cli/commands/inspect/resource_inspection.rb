@@ -17,9 +17,8 @@
 module Pangea
   module CLI
     module Commands
-      class Inspect
-        # Resource, architecture, and component inspection methods
-        module ResourceInspection
+      # Resource, architecture, and component inspection methods
+      module ResourceInspection
           private
 
           def inspect_resources
@@ -104,4 +103,3 @@ module Pangea
       end
     end
   end
-end
