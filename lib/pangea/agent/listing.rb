@@ -9,11 +9,20 @@ module Pangea
       def list_resources
         resources = []
 
-        Dir.glob(File.join(File.dirname(__FILE__), '..', 'resources', 'aws', '**', '*.rb')).each do |file|
+        Dir.glob(
+          File.join(
+            File.dirname(__FILE__),
+            '..',
+            'resources',
+            'aws',
+            '**',
+            '*.rb'
+          )
+        ).each do |file|
           next if file.include?('/types.rb') || file.include?('_spec.rb')
 
-          service = file.split('/')[-2]
-          resource = File.basename(file, '.rb')
+          service   = file.split('/')[-2]
+          resource  = File.basename(file, '.rb')
 
           resources << {
             function: "aws_#{service}_#{resource}",
@@ -23,18 +32,36 @@ module Pangea
           }
         end
 
-        { total: resources.count, resources: resources.sort_by { |r| r[:function] } }
+        {
+          total: resources.count,
+          resources: resources.sort_by { |r| r[:function] }
+        }
       end
 
       def list_architectures
         architectures = []
 
-        Dir.glob(File.join(File.dirname(__FILE__), '..', 'architectures', 'patterns', '**', '*.rb')).each do |file|
+        Dir.glob(
+          File.join(
+            File.dirname(__FILE__),
+            '..',
+            'architectures',
+            'patterns',
+            '**',
+            '*.rb'
+          )
+        ).each do |file|
           pattern = File.basename(file, '.rb')
-          architectures << { function: "#{pattern}_architecture", pattern: pattern, file: file }
+          architectures << {
+            function: "#{pattern}_architecture",
+            pattern: pattern, file: file
+          }
         end
 
-        { total: architectures.count, architectures: architectures }
+        {
+          total: architectures.count,
+          architectures: architectures
+        }
       end
 
       def list_components
@@ -55,7 +82,11 @@ module Pangea
           r[:function].include?(keyword) || r[:service].include?(keyword) || r[:resource].include?(keyword)
         end
 
-        { keyword: keyword, count: matches.count, matches: matches }
+        {
+          keyword: keyword,
+          count: matches.count,
+          matches: matches
+        }
       end
 
       def get_namespaces
