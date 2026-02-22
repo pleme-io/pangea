@@ -14,15 +14,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+require 'pangea-core'
 require 'pangea/version'
 require 'pangea/configuration'
 require 'pangea/types'
 require 'pangea/entities'
 require 'pangea/utilities'
-require 'pangea/resource_registry'
-
-# Load network helpers
-require 'pangea/resources/network_helpers'
 
 module Pangea
   class << self

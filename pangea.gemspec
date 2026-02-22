@@ -52,6 +52,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency "aws-sdk-dynamodb", "~> 1.95"
   spec.add_dependency "abstract-synthesizer", "~> 0.0.15"
   spec.add_dependency "terraform-synthesizer", "~> 0.0.28"
+  spec.add_dependency "pangea-core", "~> 0.1.0"
   spec.add_dependency "pangea-aws", "~> 0.1.0"
   spec.add_dependency "pangea-cloudflare", "~> 0.1.0"
   spec.add_dependency "pangea-hcloud", "~> 0.1.0"

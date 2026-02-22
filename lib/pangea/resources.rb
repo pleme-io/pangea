@@ -17,15 +17,22 @@
 require 'pangea/resources/types'
 require 'pangea/resources/base'
 require 'pangea/resources/reference'
-require 'pangea/resources/aws'
+
+# Provider gems (loaded via gem dependencies)
+require 'pangea-aws'
+require 'pangea-cloudflare'
+require 'pangea-hcloud'
+
 require 'pangea/resources/composition'
 
 module Pangea
   # Resource abstraction system with type-safe functions and return values
   module Resources
-    # Auto-include AWS resources and composition helpers in template contexts
+    # Auto-include all provider resources and composition helpers in template contexts
     def self.included(base)
       base.include AWS
+      base.include Cloudflare
+      base.include Hetzner
       base.include Composition
     end
   end
