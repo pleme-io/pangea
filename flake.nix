@@ -407,18 +407,16 @@
           '');
         };
 
-        # Build .gem file
+        # Build .gem file via forge
         "gem:build" = rubyBuild.mkRubyGemBuildApp {
           srcDir = self;
           name = "pangea";
-          inherit ruby;
         };
 
-        # Push gem to RubyGems.org
+        # Push gem to RubyGems.org via forge
         "gem:push" = rubyBuild.mkRubyGemPushApp {
           srcDir = self;
           name = "pangea";
-          inherit ruby;
         };
 
         # Run synthesizer tests only (Nix-built, reproducible)
