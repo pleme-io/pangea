@@ -407,6 +407,20 @@
           '');
         };
 
+        # Build .gem file
+        "gem:build" = rubyBuild.mkRubyGemBuildApp {
+          srcDir = self;
+          name = "pangea";
+          inherit ruby;
+        };
+
+        # Push gem to RubyGems.org
+        "gem:push" = rubyBuild.mkRubyGemPushApp {
+          srcDir = self;
+          name = "pangea";
+          inherit ruby;
+        };
+
         # Run synthesizer tests only (Nix-built, reproducible)
         synthesizer-tests = {
           type = "app";
