@@ -16,23 +16,5 @@
 # Core types (must be loaded first)
 require_relative 'core'
 
-# AWS types
-require_relative 'aws/core'
-require_relative 'aws/compute'
-require_relative 'aws/networking'
-require_relative 'aws/storage'
-require_relative 'aws/database'
-require_relative 'aws/security'
-require_relative 'aws/monitoring'
-require_relative 'aws/load_balancer'
-require_relative 'aws/iot'
-require_relative 'aws/iot_analytics'
-
-# Cloudflare types
-require_relative 'cloudflare/core'
-require_relative 'cloudflare/workers'
-require_relative 'cloudflare/security'
-require_relative 'cloudflare/load_balancing'
-
-# Hetzner types
-require_relative 'hetzner/core'
+# Provider types are loaded by their respective gems:
+# pangea-aws, pangea-cloudflare, pangea-hcloud

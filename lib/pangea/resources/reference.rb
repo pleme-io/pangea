@@ -44,10 +44,19 @@ module Pangea
     # Resource reference object returned by resource functions
     # Provides access to resource attributes, outputs, and computed properties
     class ResourceReference < Dry::Struct
+      # Registry for provider-specific computed attributes classes
+      @@computed_attributes_registry = {}
+
       attribute :type, Types::String           # aws_vpc, aws_subnet, etc.
       attribute :name, Types::Symbol           # Resource name
       attribute :resource_attributes, Types::Hash       # Original attributes passed to function
       attribute :outputs, Types::Hash.default({}.freeze)  # Available outputs for this resource type
+
+      # Register computed attributes classes for resource types
+      # @param mapping [Hash] resource_type => computed_attributes_class
+      def self.register_computed_attributes(mapping)
+        @@computed_attributes_registry.merge!(mapping)
+      end
 
       # Generate terraform reference for any attribute
       def ref(attribute_name)
@@ -68,17 +77,11 @@ module Pangea
         ref(:arn)
       end
 
-      # Resource-specific computed properties
+      # Resource-specific computed properties (extensible via register_computed_attributes)
       def computed_attributes
-        @computed_attributes ||= case type
-        when 'aws_vpc'
-          VpcComputedAttributes.new(self)
-        when 'aws_subnet'
-          SubnetComputedAttributes.new(self)
-        when 'aws_instance'
-          InstanceComputedAttributes.new(self)
-        else
-          BaseComputedAttributes.new(self)
+        @computed_attributes ||= begin
+          klass = @@computed_attributes_registry[type]
+          klass ? klass.new(self) : BaseComputedAttributes.new(self)
         end
       end
 
@@ -110,8 +113,3 @@ module Pangea
     end
   end
 end
-
-# Require computed attributes after BaseComputedAttributes is defined
-require_relative 'reference/vpc_computed_attributes'
-require_relative 'reference/subnet_computed_attributes'
-require_relative 'reference/instance_computed_attributes'
