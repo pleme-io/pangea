@@ -36,6 +36,8 @@ module Pangea
             run_import(namespace)
           when 'sync'
             run_sync(namespace)
+          when 'new'
+            run_new
           else
             handle_unknown_command(command)
           end
@@ -116,6 +118,18 @@ module Pangea
             params[:file],
             namespace: namespace,
             template: params[:template]
+          )
+        end
+
+        def run_new
+          project_name = params[:file]
+          unless project_name
+            ui.error "Project name is required: pangea new <project-name> [--template basic|hetzner-k8s|aws-vpc]"
+            exit 1
+          end
+          Commands::NewProject.new.run(
+            project_name,
+            template: params[:template] || 'basic'
           )
         end
 

@@ -93,9 +93,9 @@ module Pangea
             # Group by type
             grouped = state_result[:resources].group_by { |r| r.split('.').first }
             grouped.each do |type, resources|
-              ui.say "  • #{ui.pastel.cyan(type)}: #{resources.count} resource(s)"
+              ui.say "  • #{Boreal.paint(type, :primary)}: #{resources.count} resource(s)"
               resources.each do |resource|
-                ui.say "    - #{ui.pastel.bright_black(resource.split('.', 2).last)}"
+                ui.say "    - #{Boreal.paint(resource.split('.', 2).last, :muted)}"
               end
             end
 

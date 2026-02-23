@@ -20,21 +20,20 @@ module Pangea
         # Handles display of resource action groups (create, update, delete, replace)
         module ActionGroupDisplay
           ACTION_CONFIG = {
-            create: { icon: :create, color: :green, label: 'CREATE' },
-            update: { icon: :update, color: :yellow, label: 'UPDATE' },
-            delete: { icon: :delete, color: :red, label: 'DELETE' },
-            replace: { icon: :replace, color: :magenta, label: 'REPLACE' }
+            create: { icon: :create, role: :create, label: 'CREATE' },
+            update: { icon: :update, role: :update, label: 'UPDATE' },
+            delete: { icon: :delete, role: :delete, label: 'DELETE' },
+            replace: { icon: :replace, role: :replace, label: 'REPLACE' }
           }.freeze
 
           # Display a group of resources for a specific action
           def display_action_group(action, resources, resource_analysis)
             config = ACTION_CONFIG[action]
             icon = OutputFormatter::ICONS[config[:icon]]
-            color = config[:color]
 
-            formatted_label = formatter.pastel.decorate(
+            formatted_label = Boreal.paint(
               "#{icon} #{config[:label]} (#{resources.count})",
-              color
+              config[:role]
             )
 
             puts
@@ -53,7 +52,7 @@ module Pangea
 
           # Display resource with its details
           def display_resource_with_details(resource_ref, resource_info, action)
-            formatter.list_items([formatter.pastel.bold(resource_ref)], indent: 4)
+            formatter.list_items([Boreal.bold(resource_ref)], indent: 4)
             display_action_message(action, resource_info)
             display_key_attributes(resource_info)
           end
@@ -65,11 +64,11 @@ module Pangea
             when :create
               formatter.kv_pair('Action', "Creating new #{resource_info[:type]}", indent: 6)
             when :delete
-              formatter.kv_pair('Action', formatter.pastel.red('Warning: Will destroy existing resource'), indent: 6)
+              formatter.kv_pair('Action', Boreal.paint('Warning: Will destroy existing resource', :error), indent: 6)
             when :update
               formatter.kv_pair('Action', "Modifying existing #{resource_info[:type]}", indent: 6)
             when :replace
-              formatter.kv_pair('Action', formatter.pastel.magenta('Warning: Will replace (destroy + create)'), indent: 6)
+              formatter.kv_pair('Action', Boreal.paint('Warning: Will replace (destroy + create)', :replace), indent: 6)
             end
           end
 

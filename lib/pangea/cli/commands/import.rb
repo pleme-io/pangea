@@ -120,7 +120,7 @@ module Pangea
         def display_resources(resources)
           ui.info "Resources defined in template:"
           resources.each_with_index do |resource, idx|
-            ui.say "  #{idx + 1}. #{ui.pastel.cyan(resource[:address])} (#{resource[:type]})"
+            ui.say "  #{idx + 1}. #{Boreal.paint(resource[:address], :primary)} (#{resource[:type]})"
             resource[:attributes].each do |key, value|
               ui.say "     #{key}: #{value}" if value
             end
@@ -135,7 +135,7 @@ module Pangea
 
           ui.info "Example import commands:"
           import_commands.each do |cmd|
-            ui.say "  #{ui.pastel.bright_black(cmd[:command])}"
+            ui.say "  #{Boreal.paint(cmd[:command], :muted)}"
             ui.say "    # #{cmd[:help]}" if cmd[:help]
           end
         end

@@ -68,11 +68,11 @@ module Pangea
         # Display when no changes are needed
         def display_no_changes(resource_analysis)
           formatter.status(:success, 'No changes required')
-          formatter.kv_pair('Status', formatter.pastel.green('Infrastructure is up-to-date'))
+          formatter.kv_pair('Status', Boreal.paint('Infrastructure is up-to-date', :success))
 
           if resource_analysis && resource_analysis[:resources]
             count = resource_analysis[:resources].count
-            formatter.kv_pair('Resources managed', formatter.pastel.cyan(count.to_s))
+            formatter.kv_pair('Resources managed', Boreal.paint(count.to_s, :primary))
           end
 
           formatter.blank_line
@@ -93,7 +93,7 @@ module Pangea
           formatter.blank_line
           formatter.kv_pair(
             'Total changes',
-            formatter.pastel.bold("#{total_changes} resource(s) will be modified")
+            Boreal.bold("#{total_changes} resource(s) will be modified")
           )
           formatter.blank_line
         end
@@ -130,8 +130,8 @@ module Pangea
 
           formatter.list_items([
             "Review the plan above carefully",
-            "To apply: #{formatter.pastel.cyan("pangea #{command} --namespace #{namespace}#{template ? " --template #{template}" : ""}")}",
-            "To destroy: #{formatter.pastel.cyan("pangea destroy --namespace #{namespace}#{template ? " --template #{template}" : ""}")}"
+            "To apply: #{Boreal.paint("pangea #{command} --namespace #{namespace}#{template ? " --template #{template}" : ""}", :primary)}",
+            "To destroy: #{Boreal.paint("pangea destroy --namespace #{namespace}#{template ? " --template #{template}" : ""}", :primary)}"
           ], icon: '→')
 
           formatter.blank_line

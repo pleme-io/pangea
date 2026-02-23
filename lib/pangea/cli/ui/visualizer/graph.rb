@@ -52,17 +52,17 @@ module Pangea
           end
 
           def display_graph_level(nodes, level)
-            puts "\n#{@pastel.bright_black("Level #{level}:")}"
+            puts "\n#{Boreal.paint("Level #{level}:", :muted)}"
 
             nodes.each do |node|
-              type, name = node.split('.')
-              color = resource_color(type)
-              puts "  #{@pastel.decorate('●', color)} #{node}"
+              type, _name = node.split('.')
+              role = resource_role(type)
+              puts "  #{Boreal.paint('●', role)} #{node}"
             end
           end
 
           def display_connections(graph)
-            puts "\n#{@pastel.bright_black("Dependencies:")}"
+            puts "\n#{Boreal.paint("Dependencies:", :muted)}"
 
             graph.each do |node, deps|
               if deps.any?
@@ -73,18 +73,13 @@ module Pangea
             end
           end
 
-          def resource_color(type)
+          def resource_role(type)
             case type
-            when /aws_/
-              :yellow
-            when /google_/
-              :blue
-            when /azurerm_/
-              :cyan
-            when /kubernetes_/
-              :magenta
-            else
-              :white
+            when /aws_/       then :update
+            when /google_/    then :info
+            when /azurerm_/   then :primary
+            when /kubernetes_/ then :replace
+            else :text
             end
           end
         end

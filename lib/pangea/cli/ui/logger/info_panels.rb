@@ -1,17 +1,6 @@
 # frozen_string_literal: true
-# Copyright 2025 The Pangea Authors
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
+
+# Copyright 2025 The Pangea Authors. Licensed under Apache 2.0.
 
 module Pangea
   module CLI
@@ -24,17 +13,17 @@ module Pangea
             return unless current || estimated || savings
 
             content = build_content do |c|
-              c << "#{@pastel.white('Current')}: #{@pastel.bright_white("$#{current}/month")}" if current
-              c << "#{@pastel.white('Estimated')}: #{@pastel.bright_white("$#{estimated}/month")}" if estimated
+              c << "#{Boreal.paint('Current', :text)}: #{Boreal.paint("$#{current}/month", :bright)}" if current
+              c << "#{Boreal.paint('Estimated', :text)}: #{Boreal.paint("$#{estimated}/month", :bright)}" if estimated
 
               if savings && savings != 0
-                color = savings > 0 ? :bright_green : :bright_red
+                role = savings > 0 ? :success : :error
                 symbol = savings > 0 ? "+" : "-"
-                c << "#{symbol} #{@pastel.white('Savings')}: #{@pastel.decorate("$#{savings.abs}/month", color)}"
+                c << "#{symbol} #{Boreal.paint('Savings', :text)}: #{Boreal.paint("$#{savings.abs}/month", role)}"
               end
             end
 
-            display_box(content, title: "Cost Impact", color: :yellow, width: 40)
+            display_box(content, title: "Cost Impact", color: :warning, width: 40)
           end
 
           # Time and performance metrics
@@ -49,48 +38,48 @@ module Pangea
 
             content = build_content do |c|
               metric_labels.each do |key, label|
-                c << "#{@pastel.white(label)}: #{@pastel.bright_white(metrics[key])}" if metrics[key]
+                c << "#{Boreal.paint(label, :text)}: #{Boreal.paint(metrics[key], :bright)}" if metrics[key]
               end
             end
 
             return if content.empty?
-            display_box(content, title: "Performance", color: :blue, width: 50)
+            display_box(content, title: "Performance", color: :info, width: 50)
           end
 
           # Namespace information display
           def namespace_info(namespace_entity)
             content = build_content do |c|
-              c << "#{@pastel.white('Name')}: #{@pastel.bright_white(namespace_entity.name)}"
-              c << "#{@pastel.white('Backend')}: #{@pastel.bright_white(namespace_entity.state.type)}"
+              c << "#{Boreal.paint('Name', :text)}: #{Boreal.paint(namespace_entity.name, :bright)}"
+              c << "#{Boreal.paint('Backend', :text)}: #{Boreal.paint(namespace_entity.state.type, :bright)}"
 
               case namespace_entity.state.type
               when 's3'
-                c << "#{@pastel.white('Bucket')}: #{@pastel.cyan(namespace_entity.state.bucket)}"
-                c << "#{@pastel.white('Region')}: #{@pastel.cyan(namespace_entity.state.region)}"
+                c << "#{Boreal.paint('Bucket', :text)}: #{Boreal.paint(namespace_entity.state.bucket, :primary)}"
+                c << "#{Boreal.paint('Region', :text)}: #{Boreal.paint(namespace_entity.state.region, :primary)}"
               when 'local'
-                c << "#{@pastel.white('Path')}: #{@pastel.cyan(namespace_entity.state.path)}"
+                c << "#{Boreal.paint('Path', :text)}: #{Boreal.paint(namespace_entity.state.path, :primary)}"
               end
 
               if namespace_entity.description
-                c << "#{@pastel.white('Description')}: #{@pastel.bright_black(namespace_entity.description)}"
+                c << "#{Boreal.paint('Description', :text)}: #{Boreal.paint(namespace_entity.description, :muted)}"
               end
             end
 
-            display_box(content, title: "Namespace", color: :cyan, width: 60)
+            display_box(content, title: "Namespace", color: :primary, width: 60)
           end
 
           # Warning panel for important notices
           def warning_panel(title, warnings)
-            content = @pastel.bright_yellow("! #{title}") + "\n\n"
-            content += warnings.map { |w| "#{@pastel.yellow('*')} #{@pastel.white(w)}" }.join("\n")
+            content = Boreal.paint("! #{title}", :warning) + "\n\n"
+            content += warnings.map { |w| "#{Boreal.paint('*', :warning)} #{Boreal.paint(w, :text)}" }.join("\n")
 
-            display_box(content, color: :yellow, width: 70, border: :thick)
+            display_box(content, color: :warning, width: 70, border: :thick)
           end
 
           # Command completion celebration
           def celebration(message, emoji = "*")
-            say "\n#{emoji} #{@pastel.bright_green(message)} #{emoji}", color: :bright_green
-            say @pastel.bright_black("-" * (message.length + 6))
+            say "\n#{emoji} #{Boreal.paint(message, :success)} #{emoji}"
+            say Boreal.paint("-" * (message.length + 6), :muted)
           end
         end
       end

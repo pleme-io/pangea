@@ -48,22 +48,14 @@ module Pangea
           terraform_json = @synthesizer.synthesis
           resource_count = terraform_json[:resource]&.size || 0
           
-          # Validate resources if validation is enabled
-          validation_warnings = []
-          if ENV['PANGEA_VALIDATE_RESOURCES'] != 'false'
-            validation_warnings = validate_resources(terraform_json, name, template_logger)
-          end
-          
-          template_logger.info "Template compiled successfully", 
+          template_logger.info "Template compiled successfully",
                               resource_count: resource_count,
-                              has_provider: !!terraform_json[:provider],
-                              validation_warnings: validation_warnings.size
+                              has_provider: !!terraform_json[:provider]
           
           # Convert result to JSON string for storage/output
           json_string = terraform_json.is_a?(String) ? terraform_json : JSON.pretty_generate(terraform_json)
           
-          # Combine warnings
-          all_warnings = collect_warnings + validation_warnings
+          all_warnings = collect_warnings
           
           Entities::CompilationResult.new(
             success: true,

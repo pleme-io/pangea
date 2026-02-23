@@ -1,19 +1,8 @@
 # frozen_string_literal: true
-# Copyright 2025 The Pangea Authors
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
 
-require 'pastel'
+# Copyright 2025 The Pangea Authors. Licensed under Apache 2.0.
+
+require 'boreal'
 require 'tty-logger'
 require 'tty-box'
 
@@ -33,7 +22,6 @@ module Pangea
         include DisplayHelpers
 
         def initialize
-          @pastel = Pastel.new
           @logger = TTY::Logger.new do |config|
             config.handlers = [
               [:console, { styles: LOG_STYLES }]
@@ -52,10 +40,10 @@ module Pangea
           @logger.debug(message, **metadata) if ENV['DEBUG']
         end
 
-        # Direct output with color
+        # Direct output with color (uses Boreal roles for 24-bit Nord colors)
         def say(message, color: nil)
           if color
-            puts @pastel.decorate(message, color)
+            puts Boreal.paint(message, color)
           else
             puts message
           end
@@ -63,12 +51,7 @@ module Pangea
 
         # Section headers
         def section(title)
-          say "\n--- #{title} ---", color: :bright_cyan
-        end
-
-        # Expose pastel for advanced formatting
-        def pastel
-          @pastel
+          say "\n--- #{title} ---", color: :primary
         end
 
         private
@@ -81,12 +64,13 @@ module Pangea
         end
 
         # Display a framed box
-        def display_box(content, title: nil, color: :white, width: 50, border: :light)
+        def display_box(content, title: nil, color: :text, width: 50, border: :light)
+          pastel_color = Boreal::Compat::PASTEL_MAP[color] || color
           options = {
             width: width,
             align: :left,
             border: border,
-            style: { border: { color: color } }
+            style: { border: { color: pastel_color } }
           }
 
           options[:title] = { top_left: title } if title

@@ -113,65 +113,6 @@
         '';
       };
 
-      # ── Pangea Compiler package ─────────────────────────────────────────
-      pangeaCompilerPackage = pkgs.stdenv.mkDerivation {
-        pname = "pangea-compiler";
-        version = "1.0.0";
-        src = ./.;
-        buildInputs = [env ruby];
-        installPhase = ''
-          mkdir -p $out/bin
-          mkdir -p $out/lib
-
-          # Copy gem environment
-          cp -r ${env}/lib/* $out/lib/
-
-          # Copy pangea source code to lib
-          cp -r $src/lib/* $out/lib/
-
-          # Create compiler server wrapper
-          cat > $out/bin/pangea-compiler <<EOF
-          #!${ruby}/bin/ruby
-          ENV['DRY_TYPES_WARNINGS'] = 'false'
-          \$LOAD_PATH.unshift(File.expand_path('../lib', __dir__))
-          require 'pangea/compiler_server'
-          server = Pangea::CompilerServer.new
-          server.start
-          EOF
-
-          chmod +x $out/bin/pangea-compiler
-        '';
-      };
-
-      # ── Compiler server package (HTTP sidecar for pangea-operator) ──────
-      compilerServer = pkgs.stdenv.mkDerivation {
-        pname = "pangea-compiler-server";
-        version = "1.0.0";
-        src = ./.;
-        buildInputs = [env ruby];
-        installPhase = ''
-          mkdir -p $out/bin
-          mkdir -p $out/lib
-
-          # Copy gem environment
-          cp -r ${env}/lib/* $out/lib/
-
-          # Copy pangea source code to lib
-          cp -r $src/lib/* $out/lib/
-
-          # Create wrapper script for compiler server
-          cat > $out/bin/pangea-compiler-server <<EOF
-          #!${ruby}/bin/ruby
-          # Suppress dry-types warnings
-          ENV['DRY_TYPES_WARNINGS'] = 'false'
-          \$LOAD_PATH.unshift(File.expand_path('../lib', __dir__))
-          load '${./.}/bin/pangea-compiler-server'
-          EOF
-
-          chmod +x $out/bin/pangea-compiler-server
-        '';
-      };
-
       # ── Synthesizer test suite ──────────────────────────────────────────
       synthesizerTests = pkgs.stdenv.mkDerivation {
         pname = "pangea-synthesizer-tests";
@@ -260,32 +201,12 @@
         ];
       };
 
-      # Compiler sidecar image — HTTP server for Ruby DSL compilation
-      compilerImage = rubyBuild.mkRubyDockerImage {
-        rubyPackage = compilerServer;
-        rubyEnv = env;
-        inherit ruby;
-        name = "ghcr.io/pleme-io/nexus/pangea-compiler";
-        cmd = ["${compilerServer}/bin/pangea-compiler-server"];
-        env = [
-          "COMPILER_PORT=8082"
-          "COMPILER_HOST=0.0.0.0"
-        ];
-        extraContents = with pkgs; [
-          tzdata
-          bash
-        ];
-        exposedPorts = {"8082/tcp" = {};};
-      };
-
     in {
       packages = {
         default = pangeaPackage;
         pangea = pangeaPackage;
-        pangea-compiler = pangeaCompilerPackage;
         synthesizer-tests = synthesizerTests;
-        compiler-server = compilerServer;
-        inherit env ruby dockerImage compilerImage;
+        inherit env ruby dockerImage;
       };
 
       devShells = rec {
@@ -320,15 +241,7 @@
           name = "pangea";
         };
 
-        # Push compiler image via forge
-        "push:compiler" = rubyBuild.mkRubyPushApp {
-          flakePath = self;
-          imageOutput = "compilerImage";
-          registry = "ghcr.io/pleme-io/nexus/pangea-compiler";
-          name = "pangea-compiler";
-        };
-
-        # Full release — regen + push both images
+        # Full release — regen + push image
         release = {
           type = "app";
           program = toString (pkgs.writeShellScript "release-pangea" ''
@@ -338,8 +251,6 @@
             nix run .#regen
             echo ""
             nix run .#push:pangea
-            echo ""
-            nix run .#push:compiler
             echo ""
             echo "Release complete!"
           '');

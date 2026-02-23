@@ -57,9 +57,9 @@ module Pangea
           formatter.subsection_header('Template Information', icon: :info)
           resource_count = parsed.dig('resource')&.values&.flat_map(&:keys)&.count || 0
           provider_count = parsed.dig('provider')&.keys&.count || 0
-          formatter.kv_pair('Name', formatter.pastel.bold(template_name))
-          formatter.kv_pair('Resources', formatter.pastel.cyan(resource_count.to_s))
-          formatter.kv_pair('Providers', formatter.pastel.cyan(provider_count.to_s))
+          formatter.kv_pair('Name', Boreal.bold(template_name))
+          formatter.kv_pair('Resources', Boreal.paint(resource_count.to_s, :primary))
+          formatter.kv_pair('Providers', Boreal.paint(provider_count.to_s, :primary))
           formatter.blank_line
         end
 
@@ -70,7 +70,7 @@ module Pangea
 
           formatter.subsection_header('Backend Configuration', icon: :backend)
           backend_type = backend.keys.first
-          formatter.kv_pair('Type', formatter.pastel.cyan(backend_type))
+          formatter.kv_pair('Type', Boreal.paint(backend_type, :primary))
           display_backend_type_config(backend_type, backend[backend_type])
           formatter.blank_line
         end
@@ -147,7 +147,7 @@ module Pangea
         end
 
         def display_single_provider(provider_type, config)
-          formatter.list_items([formatter.pastel.cyan(provider_type)])
+          formatter.list_items([Boreal.paint(provider_type, :primary)])
 
           return unless config.is_a?(Hash)
 
@@ -157,7 +157,7 @@ module Pangea
 
         def display_resource_type_group(type, type_resources)
           formatter.list_items(
-            ["#{formatter.pastel.cyan(type)}: #{type_resources.count}"],
+            ["#{Boreal.paint(type, :primary)}: #{type_resources.count}"],
             icon: '•'
           )
 
@@ -176,7 +176,7 @@ module Pangea
         end
 
         def display_list_item(name, description)
-          text = "#{formatter.pastel.cyan(name)}: #{formatter.pastel.bright_black(description)}"
+          text = "#{Boreal.paint(name, :primary)}: #{Boreal.paint(description, :muted)}"
           formatter.list_items([text], icon: '•')
         end
       end

@@ -50,12 +50,12 @@ module Pangea
 
             color, icon = action_style(action)
 
-            ui.info "\n#{ui.pastel.decorate("#{icon} #{action.to_s.upcase}:", color)}"
+            ui.say "\n#{Boreal.paint("#{icon} #{action.to_s.upcase}:", color)}"
 
             resources.each do |resource_ref|
               resource_info = find_resource_info(resource_ref, resource_analysis)
               if resource_info
-                ui.say "  * #{ui.pastel.bold(resource_ref)}"
+                ui.say "  * #{Boreal.bold(resource_ref)}"
                 display_resource_change_details(resource_info, action)
               else
                 ui.say "  * #{resource_ref}"
@@ -65,10 +65,10 @@ module Pangea
 
           def action_style(action)
             case action
-            when :create then [:green, '+']
-            when :update then [:yellow, '~']
-            when :delete then [:red, '-']
-            when :replace then [:magenta, '+/-']
+            when :create then [:create, '+']
+            when :update then [:update, '~']
+            when :delete then [:delete, '-']
+            when :replace then [:replace, '+/-']
             end
           end
 
@@ -84,12 +84,12 @@ module Pangea
               ui.say "    -> Creating new #{resource_info[:type]}"
               display_resource_attributes(resource_info[:attributes], '    ')
             when :delete
-              ui.say "    -> #{ui.pastel.red('Warning: Will destroy existing resource')}"
+              ui.say "    -> #{Boreal.paint('Warning: Will destroy existing resource', :error)}"
               display_resource_attributes(resource_info[:attributes], '    ')
             when :update
               ui.say "    -> Modifying existing #{resource_info[:type]}"
             when :replace
-              ui.say "    -> #{ui.pastel.magenta('Warning: Will replace (destroy + create)')}"
+              ui.say "    -> #{Boreal.paint('Warning: Will replace (destroy + create)', :replace)}"
               display_resource_attributes(resource_info[:attributes], '    ')
             end
           end
@@ -134,7 +134,7 @@ module Pangea
 
             grouped = resources.group_by { |r| r.split('.').first }
             grouped.each do |type, type_resources|
-              ui.say "  * #{ui.pastel.cyan(type)}: #{type_resources.count} instance(s)"
+              ui.say "  * #{Boreal.paint(type, :primary)}: #{type_resources.count} instance(s)"
             end
           end
 
@@ -143,7 +143,7 @@ module Pangea
 
             ui.info "\n Resources defined in template:"
             resources.each do |resource|
-              ui.say "  * #{ui.pastel.bright_black(resource[:full_name])}"
+              ui.say "  * #{Boreal.paint(resource[:full_name], :muted)}"
             end
           end
         end

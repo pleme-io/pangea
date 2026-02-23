@@ -1,27 +1,38 @@
 PATH
+  remote: ../boreal
+  specs:
+    boreal (0.1.0)
+      paint (~> 2.3)
+      pastel (~> 0.8)
+      tty-box (~> 0.7)
+      tty-progressbar (~> 0.18)
+      tty-spinner (~> 0.9)
+      tty-table (~> 0.12)
+
+PATH
   remote: .
   specs:
-    pangea (0.0.45)
+    pangea (0.1.0)
       abstract-synthesizer (~> 0.0.14)
       aws-sdk-dynamodb (~> 1.95)
       aws-sdk-s3 (~> 1.140)
+      boreal (~> 0.1)
       bundler (~> 2.4)
       diff-lcs (~> 1.5)
       dry-struct (~> 1.6)
       dry-types (~> 1.7)
       dry-validation (~> 1.10)
+      pangea-aws (~> 0.1.0)
+      pangea-cloudflare (~> 0.1.0)
+      pangea-core (~> 0.1.0)
+      pangea-hcloud (~> 0.1.0)
       parallel (~> 1.24)
-      pastel (~> 0.8)
       rexml (~> 3.2)
       terraform-synthesizer (~> 0.0.27)
       toml-rb (~> 2.2)
-      tty-box (~> 0.7)
       tty-config (~> 0.5)
       tty-logger (~> 0.6)
       tty-option (~> 0.3)
-      tty-progressbar (~> 0.18)
-      tty-spinner (~> 0.9)
-      tty-table (~> 0.12)
       webrick (~> 1.8)
 
 GEM
@@ -43,16 +54,8 @@ GEM
       uri (>= 0.13.1)
     ast (2.4.3)
     aws-eventstream (1.4.0)
-<<<<<<< HEAD
     aws-partitions (1.1200.0)
     aws-sdk-core (3.240.0)
-||||||| ebe434d
-    aws-partitions (1.1188.0)
-    aws-sdk-core (3.239.2)
-=======
-    aws-partitions (1.1199.0)
-    aws-sdk-core (3.240.0)
->>>>>>> 8846b500b296e88178cad99f9809f2132e30d367
       aws-eventstream (~> 1, >= 1.3.0)
       aws-partitions (~> 1, >= 1.992.0)
       aws-sigv4 (~> 1.9)
@@ -132,7 +135,6 @@ GEM
     erb (6.0.1)
     faker (3.5.3)
       i18n (>= 1.8.11, < 2)
-<<<<<<< HEAD
     ffi (1.17.3)
     ffi (1.17.3-aarch64-linux-gnu)
     ffi (1.17.3-aarch64-linux-musl)
@@ -144,17 +146,6 @@ GEM
     ffi (1.17.3-x86_64-darwin)
     ffi (1.17.3-x86_64-linux-gnu)
     ffi (1.17.3-x86_64-linux-musl)
-||||||| ebe434d
-    ffi (1.17.2-aarch64-linux-gnu)
-    ffi (1.17.2-arm64-darwin)
-    ffi (1.17.2-x86_64-darwin)
-    ffi (1.17.2-x86_64-linux-gnu)
-=======
-    ffi (1.17.3-aarch64-linux-gnu)
-    ffi (1.17.3-arm64-darwin)
-    ffi (1.17.3-x86_64-darwin)
-    ffi (1.17.3-x86_64-linux-gnu)
->>>>>>> 8846b500b296e88178cad99f9809f2132e30d367
     fileutils (1.8.0)
     i18n (1.14.8)
       concurrent-ruby (~> 1.0)
@@ -175,6 +166,27 @@ GEM
     minitest (6.0.1)
       prism (~> 1.5)
     mutex_m (0.3.0)
+    paint (2.3.0)
+    pangea-aws (0.1.0)
+      dry-struct (~> 1.6)
+      dry-types (~> 1.7)
+      pangea-core (>= 0.1.0)
+      terraform-synthesizer (~> 0.0.28)
+    pangea-cloudflare (0.1.0)
+      dry-struct (~> 1.6)
+      dry-types (~> 1.7)
+      pangea-core (~> 0.1.0)
+      terraform-synthesizer (~> 0.0.28)
+    pangea-core (0.1.0)
+      base64
+      dry-struct (~> 1.6)
+      dry-types (~> 1.7)
+      terraform-synthesizer (~> 0.0.28)
+    pangea-hcloud (0.1.0)
+      dry-struct (~> 1.6)
+      dry-types (~> 1.7)
+      pangea-core (~> 0.1.0)
+      terraform-synthesizer (~> 0.0.28)
     parallel (1.27.0)
     parser (3.3.10.0)
       ast (~> 2.4.1)
@@ -279,7 +291,7 @@ GEM
     strscan (3.1.6)
     terminal-table (4.0.0)
       unicode-display_width (>= 1.1.1, < 4)
-    terraform-synthesizer (0.0.27)
+    terraform-synthesizer (0.0.28)
       abstract-synthesizer
     thor (1.4.0)
     toml-rb (2.2.0)
@@ -315,14 +327,8 @@ GEM
     unicode-display_width (2.6.0)
     unicode_utils (1.4.0)
     uri (1.1.1)
-<<<<<<< HEAD
     webrick (1.9.2)
     zeitwerk (2.7.4)
-||||||| ebe434d
-    zeitwerk (2.7.3)
-=======
-    zeitwerk (2.7.4)
->>>>>>> 8846b500b296e88178cad99f9809f2132e30d367
 
 PLATFORMS
   aarch64-linux-gnu
@@ -338,6 +344,7 @@ PLATFORMS
   x86_64-linux-musl
 
 DEPENDENCIES
+  boreal!
   bundler-audit (~> 0.9)
   debug (~> 1.8)
   debug_inspector (~> 1.1)

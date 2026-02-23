@@ -37,7 +37,7 @@ module Pangea
           formatter.section_header(command_name, icon: icon, width: 70)
 
           if description
-            puts formatter.pastel.bright_black(description)
+            puts Boreal.paint(description, :muted)
             formatter.blank_line
           end
         end
@@ -46,8 +46,8 @@ module Pangea
         def display_namespace_info(namespace_entity)
           formatter.subsection_header('Namespace', icon: :namespace)
 
-          formatter.kv_pair('Name', formatter.pastel.bold(namespace_entity.name))
-          formatter.kv_pair('Backend', formatter.pastel.cyan(namespace_entity.state.type.to_s))
+          formatter.kv_pair('Name', Boreal.bold(namespace_entity.name))
+          formatter.kv_pair('Backend', Boreal.paint(namespace_entity.state.type.to_s, :primary))
 
           display_backend_details(namespace_entity)
 
@@ -103,7 +103,7 @@ module Pangea
           if details
             formatter.blank_line
             formatter.subsection_header('Details')
-            puts formatter.pastel.bright_black(details)
+            puts Boreal.paint(details, :muted)
           end
 
           formatter.blank_line

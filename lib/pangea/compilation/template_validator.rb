@@ -29,47 +29,6 @@ module Pangea
         end
       end
       
-      # Validate resources in terraform configuration
-      def validate_resources(terraform_json, template_name, logger)
-        validator = Validation::ValidatorManager.new
-        
-        logger.debug "Validating resources in template", template_name: template_name
-        
-        # Validate all resources in the terraform configuration
-        validator.validate_terraform_config(terraform_json)
-        
-        # Collect warnings from validation
-        warnings = []
-        
-        # Add validation failures as warnings (not errors, to maintain backward compatibility)
-        if validator.failures.any?
-          logger.warn "Resource validation found issues", 
-                     template_name: template_name,
-                     failed_count: validator.failures.size
-          
-          validator.failures.each do |failure|
-            resource_id = "#{failure[:resource_type]}.#{failure[:resource_name]}"
-            failure[:errors].each do |field, errors|
-              error_list = errors.is_a?(Array) ? errors : [errors]
-              error_list.each do |error|
-                warnings << "#{resource_id}: #{field} #{error}"
-              end
-            end
-          end
-        end
-        
-        # Add general warnings
-        warnings.concat(validator.warnings)
-        
-        logger.debug "Resource validation complete",
-                    total: validator.summary[:total],
-                    passed: validator.summary[:passed],
-                    failed: validator.summary[:failed],
-                    warnings: warnings.size
-        
-        warnings
-      end
-      
       # Validate file exists and is readable
       def validate_file!(file_path)
         raise CompilationError, "File not found: #{file_path}" unless File.exist?(file_path)

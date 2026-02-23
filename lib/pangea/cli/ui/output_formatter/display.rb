@@ -13,47 +13,47 @@ module Pangea
             full_title = icon ? "#{ICONS[icon]} #{title}" : title
             divider = '━' * width
             puts
-            puts @pastel.cyan(divider)
-            puts @pastel.bold(@pastel.cyan(full_title))
-            puts @pastel.cyan(divider)
+            puts Boreal.paint(divider, :primary)
+            puts Boreal.bold(full_title, :primary)
+            puts Boreal.paint(divider, :primary)
             puts
           end
 
           def subsection_header(title, icon: nil)
             full_title = icon ? "#{ICONS[icon]}  #{title}:" : "#{title}:"
-            puts @pastel.bold(full_title)
+            puts Boreal.bold(full_title)
           end
 
           def status(type, message, details: nil)
             icon = ICONS[type]
-            color = COLORS[type]
-            puts @pastel.decorate("#{icon} #{message}", color)
-            details&.each { |key, value| puts "  #{@pastel.white(key)}: #{@pastel.bright_black(value)}" }
+            role = COLORS[type]
+            puts Boreal.paint("#{icon} #{message}", role)
+            details&.each { |key, value| puts "  #{Boreal.paint(key, :text)}: #{Boreal.paint(value, :muted)}" }
           end
 
           def kv_pair(key, value, indent: 2)
-            puts "#{' ' * indent}#{@pastel.white(key)}: #{format_value(value)}"
+            puts "#{' ' * indent}#{Boreal.paint(key, :text)}: #{format_value(value)}"
           end
 
-          def list_items(items, icon: '•', color: :white, indent: 2)
-            items.each { |item| puts "#{' ' * indent}#{@pastel.decorate(icon, color)} #{item}" }
+          def list_items(items, icon: '•', color: :text, indent: 2)
+            items.each { |item| puts "#{' ' * indent}#{Boreal.paint(icon, color)} #{item}" }
           end
 
           def resource(type, name, attributes: {}, indent: 2)
             spaces = ' ' * indent
-            puts "#{spaces}• #{@pastel.decorate("#{type}.#{name}", :bold)}"
-            attributes.each { |key, value| puts "#{spaces}  #{key}: #{@pastel.bright_black(format_value(value))}" }
+            puts "#{spaces}• #{Boreal.bold("#{type}.#{name}")}"
+            attributes.each { |key, value| puts "#{spaces}  #{key}: #{Boreal.paint(format_value(value), :muted)}" }
           end
 
           def resource_change(action, type, name, attributes: {}, indent: 2)
             spaces = ' ' * indent
-            puts "#{spaces}#{@pastel.decorate(ICONS[action], COLORS[action])} #{@pastel.bold("#{type}.#{name}")}"
-            attributes.each { |key, value| puts "#{spaces}  #{key}: #{@pastel.bright_black(format_value(value))}" }
+            puts "#{spaces}#{Boreal.paint(ICONS[action], COLORS[action])} #{Boreal.bold("#{type}.#{name}")}"
+            attributes.each { |key, value| puts "#{spaces}  #{key}: #{Boreal.paint(format_value(value), :muted)}" }
           end
 
           def table(headers, rows, title: nil)
             puts
-            puts @pastel.bold(title) if title
+            puts Boreal.bold(title) if title
             table = TTY::Table.new(headers, rows)
             puts table.render(:unicode, padding: [0, 1])
             puts
@@ -76,34 +76,35 @@ module Pangea
           def success_banner(message, width: 60)
             divider = '━' * width
             puts
-            puts @pastel.green(divider)
-            puts @pastel.bold(@pastel.green("#{ICONS[:success]} #{message}"))
-            puts @pastel.green(divider)
+            puts Boreal.paint(divider, :success)
+            puts Boreal.bold("#{ICONS[:success]} #{message}", :success)
+            puts Boreal.paint(divider, :success)
             puts
           end
 
           def summary(items, title: 'Summary')
             subsection_header(title, icon: :summary)
-            items.each { |key, value| puts "  #{@pastel.white(key)}: #{format_value(value)}" }
+            items.each { |key, value| puts "  #{Boreal.paint(key, :text)}: #{format_value(value)}" }
             puts
           end
 
           def changes_summary(added: 0, changed: 0, destroyed: 0)
             subsection_header('Changes', icon: :diff)
-            puts "  #{@pastel.green(ICONS[:create])} Added: #{added}"
-            puts "  #{@pastel.yellow(ICONS[:update])} Changed: #{changed}"
-            puts "  #{@pastel.red(ICONS[:delete])} Destroyed: #{destroyed}"
+            puts "  #{Boreal.paint(ICONS[:create], :create)} Added: #{added}"
+            puts "  #{Boreal.paint(ICONS[:update], :update)} Changed: #{changed}"
+            puts "  #{Boreal.paint(ICONS[:delete], :delete)} Destroyed: #{destroyed}"
             puts
           end
 
           def progress_message(message, status: :pending)
-            puts @pastel.decorate("#{ICONS[status]} #{message}", COLORS[status] || :white)
+            role = COLORS[status] || :text
+            puts Boreal.paint("#{ICONS[status]} #{message}", role)
           end
 
           def code_block(code, language: nil, line_numbers: false)
             puts
             if line_numbers
-              code.lines.each_with_index { |line, idx| puts "#{@pastel.bright_black((idx + 1).to_s.rjust(4))} #{line.chomp}" }
+              code.lines.each_with_index { |line, idx| puts "#{Boreal.paint((idx + 1).to_s.rjust(4), :muted)} #{line.chomp}" }
             else
               puts code
             end
@@ -113,26 +114,26 @@ module Pangea
           def json_output(data, indent: 2)
             formatted = JSON.pretty_generate(data, indent: ' ' * indent)
             highlighted = formatted
-              .gsub(/"([^"]+)":/, @pastel.blue("\"\\1\":"))
-              .gsub(/:\s*"([^"]+)"/, ": #{@pastel.green("\"\\1\"")}")
-              .gsub(/:\s*(\d+)/, ": #{@pastel.cyan("\\1")}")
-              .gsub(/:\s*(true|false)/, ": #{@pastel.yellow("\\1")}")
-              .gsub(/([{}\[\],])/, @pastel.bright_black("\\1"))
+              .gsub(/"([^"]+)":/, Boreal.paint("\"\\1\":", :info))
+              .gsub(/:\s*"([^"]+)"/, ": #{Boreal.paint("\"\\1\"", :success)}")
+              .gsub(/:\s*(\d+)/, ": #{Boreal.paint("\\1", :primary)}")
+              .gsub(/:\s*(true|false)/, ": #{Boreal.paint("\\1", :update)}")
+              .gsub(/([{}\[\],])/, Boreal.paint("\\1", :muted))
             puts highlighted
             puts
           end
 
           def diff_line(type, content)
             case type
-            when :add then puts @pastel.green("+ #{content}")
-            when :remove then puts @pastel.red("- #{content}")
-            when :context then puts @pastel.bright_black("  #{content}")
-            when :header then puts @pastel.cyan("@@ #{content} @@")
+            when :add then puts Boreal.paint("+ #{content}", :added)
+            when :remove then puts Boreal.paint("- #{content}", :removed)
+            when :context then puts Boreal.paint("  #{content}", :muted)
+            when :header then puts Boreal.paint("@@ #{content} @@", :primary)
             end
           end
 
-          def separator(char: '─', width: 60, color: :bright_black)
-            puts @pastel.decorate(char * width, color)
+          def separator(char: '─', width: 60, color: :muted)
+            puts Boreal.paint(char * width, color)
           end
 
           def blank_line(count: 1)

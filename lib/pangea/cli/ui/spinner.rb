@@ -1,21 +1,9 @@
 # frozen_string_literal: true
-# Copyright 2025 The Pangea Authors
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
 
+# Copyright 2025 The Pangea Authors. Licensed under Apache 2.0.
 
+require 'boreal'
 require 'tty-spinner'
-require 'pastel'
 
 module Pangea
   module CLI
@@ -23,56 +11,55 @@ module Pangea
       # Enhanced Spinner UI component for showing progress
       class Spinner
         def initialize(message = nil, options = {})
-          @pastel = Pastel.new
           format = options.fetch(:format, :dots)
-          
+
           # Enhanced spinner with beautiful formatting
-          spinner_format = "[:spinner] #{@pastel.white(message)}"
-          
+          spinner_format = "[:spinner] #{Boreal.paint(message, :text)}"
+
           @spinner = TTY::Spinner.new(
             spinner_format,
             format: format,
             hide_cursor: true,
-            success_mark: @pastel.bright_green('✅'),
-            error_mark: @pastel.bright_red('❌'),
+            success_mark: Boreal.paint('✅', :success),
+            error_mark: Boreal.paint('❌', :error),
             clear: options.fetch(:clear, false),
             interval: options.fetch(:interval, 10)
           )
-          
+
           @start_time = nil
         end
-        
+
         def start
           @start_time = Time.now
           @spinner.start
         end
-        
+
         def stop
           @spinner.stop
         end
-        
+
         def success(message = nil)
           formatted_message = if message && @start_time
             duration = Time.now - @start_time
-            "#{@pastel.bright_green(message)} #{@pastel.bright_black("(#{format_duration(duration)})")}"
+            "#{Boreal.paint(message, :success)} #{Boreal.paint("(#{format_duration(duration)})", :muted)}"
           else
             message
           end
           @spinner.success(formatted_message)
         end
-        
+
         def error(message = nil)
-          @spinner.error(message ? @pastel.bright_red(message) : nil)
+          @spinner.error(message ? Boreal.paint(message, :error) : nil)
         end
-        
+
         def warning(message = nil)
-          @spinner.success("⚠️  #{message ? @pastel.bright_yellow(message) : nil}")
+          @spinner.success("⚠️  #{message ? Boreal.paint(message, :warning) : nil}")
         end
-        
+
         def update(message)
-          @spinner.update(title: "[:spinner] #{@pastel.white(message)}")
+          @spinner.update(title: "[:spinner] #{Boreal.paint(message, :text)}")
         end
-        
+
         def spin
           start
           result = yield
@@ -84,12 +71,12 @@ module Pangea
         ensure
           stop
         end
-        
+
         # Multi-stage spinner for complex operations
         def self.multi_stage(stages)
           stages.each_with_index do |stage_name, index|
             stage_spinner = new("#{stage_name} (#{index + 1}/#{stages.length})")
-            
+
             begin
               stage_spinner.start
               yield(stage_spinner, stage_name)
@@ -100,14 +87,14 @@ module Pangea
             end
           end
         end
-        
+
         # Specialized spinners for common operations
         OPERATION_FORMATS = {
           compilation: { format: :bouncing_ball, default_message: "Compiling templates" },
           network: { format: :pulse, default_message: "Network operation" },
           file: { format: :classic, default_message: "File operation" }
         }.freeze
-        
+
         TERRAFORM_MESSAGES = {
           init:     "Initializing Terraform",
           plan:     "Planning infrastructure",
@@ -116,35 +103,35 @@ module Pangea
           validate: "Validating configuration",
           refresh:  "Refreshing state"
         }.freeze
-        
+
         class << self
           def compilation(message = nil)
             create_spinner(:compilation, message)
           end
-          
+
           def network_operation(message = nil)
             create_spinner(:network, message)
           end
-          
+
           def file_operation(message = nil)
             create_spinner(:file, message)
           end
-          
+
           def terraform_operation(operation)
             message = TERRAFORM_MESSAGES[operation] || "Running Terraform"
             new(message, format: :arrow)
           end
-          
+
           private
-          
+
           def create_spinner(type, message = nil)
             config = OPERATION_FORMATS[type]
             new(message || config[:default_message], format: config[:format])
           end
         end
-        
+
         private
-        
+
         def format_duration(seconds)
           case seconds
           when 0...1 then "#{(seconds * 1000).round}ms"

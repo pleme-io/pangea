@@ -32,7 +32,7 @@ module Pangea
 
             formatted_json.lines.each_with_index do |line, index|
               line_number = (index + 1).to_s.rjust(4)
-              ui.say "#{ui.pastel.bright_black(line_number)} #{highlight_json_line(line.chomp)}"
+              ui.say "#{Boreal.paint(line_number, :muted)} #{highlight_json_line(line.chomp)}"
             end
           rescue JSON::ParserError
             ui.error 'Invalid JSON in compiled output'
@@ -41,11 +41,11 @@ module Pangea
 
           def highlight_json_line(line)
             line
-              .gsub(/"([^"]+)":/, ui.pastel.blue("\"\\1\":"))
-              .gsub(/:\s*"([^"]+)"/, ": #{ui.pastel.green("\"\\1\"")}")
-              .gsub(/:\s*(\d+)/, ": #{ui.pastel.cyan('\\1')}")
-              .gsub(/:\s*(true|false)/, ": #{ui.pastel.yellow('\\1')}")
-              .gsub(/([{}\[\],])/, ui.pastel.bright_black('\\1'))
+              .gsub(/"([^"]+)":/, Boreal.paint("\"\\1\":", :info))
+              .gsub(/:\s*"([^"]+)"/, ": #{Boreal.paint("\"\\1\"", :success)}")
+              .gsub(/:\s*(\d+)/, ": #{Boreal.paint('\\1', :primary)}")
+              .gsub(/:\s*(true|false)/, ": #{Boreal.paint('\\1', :update)}")
+              .gsub(/([{}\[\],])/, Boreal.paint('\\1', :muted))
           end
         end
       end

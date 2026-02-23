@@ -46,7 +46,7 @@ module Pangea
 
             argument :command do
               desc 'Command to execute'
-              permit %w[init plan apply destroy inspect agent import sync]
+              permit %w[init plan apply destroy inspect agent import sync new]
             end
 
             argument :file do

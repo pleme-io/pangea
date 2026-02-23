@@ -45,12 +45,12 @@ module Pangea
 
             formatter.kv_pair(
               'Estimated monthly cost',
-              formatter.pastel.cyan("$#{estimated_cost}/month")
+              Boreal.paint("$#{estimated_cost}/month", :primary)
             )
 
             formatter.blank_line
-            puts formatter.pastel.bright_black(
-              'Note: This is a rough estimate. Actual costs may vary based on usage.'
+            puts Boreal.paint(
+              'Note: This is a rough estimate. Actual costs may vary based on usage.', :muted
             )
             formatter.blank_line
           end

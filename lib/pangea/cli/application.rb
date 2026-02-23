@@ -25,6 +25,7 @@ require 'pangea/cli/commands/inspect'
 require 'pangea/cli/commands/agent'
 require 'pangea/cli/commands/import'
 require 'pangea/cli/commands/sync'
+require 'pangea/cli/commands/new_project'
 require 'pangea/cli/ui/banner'
 require_relative 'application/options'
 require_relative 'application/command_router'
@@ -40,6 +41,7 @@ module Pangea
         @banner = UI::Banner.new
 
         handle_version_flag
+        handle_new_command
         parse(ARGV.dup)
         handle_help_flag
 
@@ -58,11 +60,29 @@ module Pangea
         exit 1
       rescue StandardError => e
         ui.error "Error: #{e.message}"
-        ui.say e.backtrace.join("\n"), color: :red if params[:debug]
+        ui.say e.backtrace.join("\n"), color: :error if params[:debug]
         exit 1
       end
 
       private
+
+      def handle_new_command
+        return unless ARGV.first == 'new'
+
+        project_name = ARGV[1]
+        unless project_name && !project_name.start_with?('-')
+          ui.error "Usage: pangea new <project-name> [--template basic|hetzner-k8s|aws-vpc]"
+          exit 1
+        end
+
+        template = 'basic'
+        if (idx = ARGV.index('--template'))
+          template = ARGV[idx + 1] || 'basic'
+        end
+
+        Commands::NewProject.new.run(project_name, template: template)
+        exit
+      end
 
       def handle_version_flag
         return unless ARGV.include?('--version') || ARGV.include?('-v')

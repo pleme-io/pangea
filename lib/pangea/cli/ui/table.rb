@@ -1,20 +1,9 @@
 # frozen_string_literal: true
-# Copyright 2025 The Pangea Authors
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
 
+# Copyright 2025 The Pangea Authors. Licensed under Apache 2.0.
+
+require 'boreal'
 require 'tty-table'
-require 'pastel'
 require_relative 'table/formatters'
 
 module Pangea
@@ -23,10 +12,9 @@ module Pangea
       # Enhanced Table UI component for displaying beautiful tabular data
       class Table
         def initialize(headers = nil, rows = [], options = {})
-          @pastel = Pastel.new
           @table = TTY::Table.new(headers, rows)
 
-          # Enhanced default options
+          # Enhanced default options with Nord-themed borders
           border_chars = %w[─ ─ │ │ ┌ ┐ └ ┘ ┬ ─ ├ ┤ ┼ ┴]
           border_symbols = %i[top bottom left right top_left top_right bottom_left bottom_right
                              top_mid mid mid_left mid_right mid_mid bottom_mid]
@@ -37,7 +25,7 @@ module Pangea
             multiline: true,
             style: {
               border: border_symbols.zip(border_chars).map { |sym, char|
-                [sym, @pastel.bright_cyan(char)]
+                [sym, Boreal.paint(char, :border)]
               }.to_h
             }
           }.merge(options)
@@ -100,9 +88,8 @@ module Pangea
           result = render_table(headers: headers, rows: rows)
 
           if title
-            pastel = Pastel.new
-            title_line = pastel.bright_cyan(title)
-            separator = pastel.bright_cyan("─" * title.length)
+            title_line = Boreal.paint(title, :primary)
+            separator = Boreal.paint("─" * title.length, :primary)
             result = "#{title_line}\n#{separator}\n#{result}"
           end
 
@@ -116,8 +103,7 @@ module Pangea
 
         # Common render method
         def self.render_table(headers:, rows:)
-          pastel = Pastel.new
-          colored_headers = headers.map { |h| pastel.bright_white(h) }
+          colored_headers = headers.map { |h| Boreal.paint(h, :bright) }
           new(colored_headers, rows).render
         end
 

@@ -34,12 +34,12 @@ module Pangea
 
           def display_analysis_summary(summary)
             ui.info ' Summary:'
-            ui.say "  * #{ui.pastel.bold(summary[:total_resources])} resources defined"
-            ui.say "  * #{ui.pastel.bold(summary[:providers].count)} provider(s): #{summary[:providers].join(', ')}"
-            ui.say "  * #{ui.pastel.bold(summary[:variables_count])} variables"
-            ui.say "  * #{ui.pastel.bold(summary[:outputs_count])} outputs"
-            ui.say "  * Backend: #{summary[:has_backend] ? ui.pastel.green('configured') : ui.pastel.yellow('local')}"
-            ui.say "  * Estimated cost: #{ui.pastel.cyan("$#{summary[:estimated_cost]}/month")}"
+            ui.say "  * #{Boreal.bold(summary[:total_resources])} resources defined"
+            ui.say "  * #{Boreal.bold(summary[:providers].count)} provider(s): #{summary[:providers].join(', ')}"
+            ui.say "  * #{Boreal.bold(summary[:variables_count])} variables"
+            ui.say "  * #{Boreal.bold(summary[:outputs_count])} outputs"
+            ui.say "  * Backend: #{summary[:has_backend] ? Boreal.paint('configured', :success) : Boreal.paint('local', :update)}"
+            ui.say "  * Estimated cost: #{Boreal.paint("$#{summary[:estimated_cost]}/month", :primary)}"
           end
 
           def display_resource_breakdown(summary)
@@ -47,7 +47,7 @@ module Pangea
 
             ui.info "\n  Resources by type:"
             summary[:resource_types].sort_by { |_, count| -count }.each do |type, count|
-              ui.say "  * #{ui.pastel.cyan(type)}: #{count}"
+              ui.say "  * #{Boreal.paint(type, :primary)}: #{count}"
             end
           end
 
@@ -57,7 +57,7 @@ module Pangea
             ui.info "\n Resource Details:"
 
             resources.each do |resource|
-              ui.say "  * #{ui.pastel.bold(resource[:full_name])}"
+              ui.say "  * #{Boreal.bold(resource[:full_name])}"
               display_resource_attrs(resource[:attributes])
             end
           end
@@ -69,7 +69,7 @@ module Pangea
               next if value.nil? || value.to_s.empty?
 
               formatted_value = format_attribute_value(value)
-              ui.say "    #{key}: #{ui.pastel.bright_black(formatted_value)}"
+              ui.say "    #{key}: #{Boreal.paint(formatted_value, :muted)}"
             end
           end
 
@@ -89,7 +89,7 @@ module Pangea
               next if value.nil? || value.to_s.empty?
 
               formatted_value = format_attribute_value(value)
-              ui.say "#{indent}  #{key}: #{ui.pastel.bright_black(formatted_value)}"
+              ui.say "#{indent}  #{key}: #{Boreal.paint(formatted_value, :muted)}"
             end
           end
         end

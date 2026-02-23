@@ -27,7 +27,7 @@ module Pangea
 
             formatter.kv_pair(
               "#{operation} duration",
-              formatter.pastel.bright_black(formatted_time)
+              Boreal.paint(formatted_time, :muted)
             )
           end
 
@@ -36,17 +36,17 @@ module Pangea
           def format_output_value(value)
             case value
             when String
-              formatter.pastel.bright_black(value)
+              Boreal.paint(value, :muted)
             when Array
-              formatter.pastel.bright_black("[#{value.join(', ')}]")
+              Boreal.paint("[#{value.join(', ')}]", :muted)
             when Hash
-              formatter.pastel.bright_black(value.to_json)
+              Boreal.paint(value.to_json, :muted)
             when Numeric
-              formatter.pastel.cyan(value.to_s)
+              Boreal.paint(value.to_s, :primary)
             when TrueClass, FalseClass
-              formatter.pastel.yellow(value.to_s)
+              Boreal.paint(value.to_s, :update)
             else
-              formatter.pastel.bright_black(value.to_s)
+              Boreal.paint(value.to_s, :muted)
             end
           end
 

@@ -93,7 +93,7 @@ module Pangea
         def display_summary(title, data)
           return if data.empty?
           
-          ui.say "\n#{title}", color: :bright_cyan
+          ui.say "\n#{title}", color: :primary
           table.render(data)
         end
         
@@ -115,7 +115,7 @@ module Pangea
           result = yield
           elapsed = Time.now - start_time
           
-          ui.say "Completed in #{format_duration(elapsed)}", color: :bright_black
+          ui.say "Completed in #{format_duration(elapsed)}", color: :muted
           result
         end
         

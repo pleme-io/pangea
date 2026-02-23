@@ -104,36 +104,36 @@ module Pangea
           ui.info "\nResource changes:"
           
           if changes[:create]&.any?
-            ui.info "\n  + Resources to create:", color: :green
+            ui.say "\n  + Resources to create:", color: :create
             changes[:create].each { |r| ui.say "    #{r}" }
           end
-          
+
           if changes[:update]&.any?
-            ui.info "\n  ~ Resources to update:", color: :yellow
+            ui.say "\n  ~ Resources to update:", color: :update
             changes[:update].each { |r| ui.say "    #{r}" }
           end
-          
+
           if changes[:replace]&.any?
-            ui.info "\n  +/- Resources to replace:", color: :magenta
+            ui.say "\n  +/- Resources to replace:", color: :replace
             changes[:replace].each { |r| ui.say "    #{r}" }
           end
-          
+
           if changes[:delete]&.any?
-            ui.info "\n  - Resources to destroy:", color: :red
+            ui.say "\n  - Resources to destroy:", color: :delete
             changes[:delete].each { |r| ui.say "    #{r}" }
           end
-          
+
           total = changes.values.compact.map(&:count).sum
-          ui.say "\nTotal: #{total} resource(s) will be affected", color: :bright_cyan
+          ui.say "\nTotal: #{total} resource(s) will be affected", color: :primary
         end
         
         # Display apply summary
         def display_apply_summary(result)
           if result[:added] || result[:changed] || result[:destroyed]
             ui.info "\nSummary:"
-            ui.say "  Added: #{result[:added] || 0}", color: :green
-            ui.say "  Changed: #{result[:changed] || 0}", color: :yellow
-            ui.say "  Destroyed: #{result[:destroyed] || 0}", color: :red
+            ui.say "  Added: #{result[:added] || 0}", color: :create
+            ui.say "  Changed: #{result[:changed] || 0}", color: :update
+            ui.say "  Destroyed: #{result[:destroyed] || 0}", color: :delete
           end
         end
         
@@ -144,7 +144,7 @@ module Pangea
             ui.info "\nOutputs:"
             output_result[:data].each do |name, data|
               value = data['value']
-              ui.say "  #{name}: #{format_output_value(value)}", color: :bright_cyan
+              ui.say "  #{name}: #{format_output_value(value)}", color: :primary
             end
           end
         end

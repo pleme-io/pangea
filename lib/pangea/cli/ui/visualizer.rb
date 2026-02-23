@@ -1,22 +1,10 @@
 # frozen_string_literal: true
-# Copyright 2025 The Pangea Authors
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
 
+# Copyright 2025 The Pangea Authors. Licensed under Apache 2.0.
 
+require 'boreal'
 require 'tty-box'
 require 'tty-table'
-require 'pastel'
 require_relative 'visualizer/graph'
 require_relative 'visualizer/display'
 require_relative 'visualizer/cost'
@@ -33,14 +21,13 @@ module Pangea
         include Statistics
 
         def initialize
-          @pastel = Pastel.new
           @screen_width = TTY::Screen.width
         end
 
         # Visualize resource dependencies as a graph
         def dependency_graph(resources)
-          puts @pastel.bold("\nResource Dependency Graph")
-          puts @pastel.bright_black("─" * 40)
+          puts Boreal.bold("\nResource Dependency Graph")
+          puts Boreal.paint("─" * 40, :muted)
 
           # Build adjacency list
           graph = build_dependency_graph(resources)
@@ -59,15 +46,15 @@ module Pangea
 
         # Visualize terraform state as a tree
         def state_tree(state_data)
-          puts @pastel.bold("\nState Tree")
-          puts @pastel.bright_black("─" * 40)
+          puts Boreal.bold("\nState Tree")
+          puts Boreal.paint("─" * 40, :muted)
 
           # Group resources by type
           grouped = state_data.group_by { |r| r[:type] }
 
           grouped.each do |type, resources|
             # Type header
-            puts "\n#{@pastel.cyan('▼')} #{@pastel.bold(type)} (#{resources.count})"
+            puts "\n#{Boreal.paint('▼', :primary)} #{Boreal.bold(type)} (#{resources.count})"
 
             resources.each do |resource|
               display_resource_node(resource, indent: 2)
@@ -93,22 +80,22 @@ module Pangea
           ) do
             lines = []
 
-            lines << "Total Changes: #{@pastel.bold(total.to_s)}"
+            lines << "Total Changes: #{Boreal.bold(total.to_s)}"
             lines << ""
 
             if create_count > 0
-              lines << "#{@pastel.green('▲')} Create: #{create_count} resource(s)"
-              lines << "   Risk: #{@pastel.green('Low')} - New resources"
+              lines << "#{Boreal.paint('▲', :create)} Create: #{create_count} resource(s)"
+              lines << "   Risk: #{Boreal.paint('Low', :create)} - New resources"
             end
 
             if update_count > 0
-              lines << "#{@pastel.yellow('◆')} Update: #{update_count} resource(s)"
-              lines << "   Risk: #{@pastel.yellow('Medium')} - Existing resources modified"
+              lines << "#{Boreal.paint('◆', :update)} Update: #{update_count} resource(s)"
+              lines << "   Risk: #{Boreal.paint('Medium', :update)} - Existing resources modified"
             end
 
             if delete_count > 0
-              lines << "#{@pastel.red('▼')} Delete: #{delete_count} resource(s)"
-              lines << "   Risk: #{@pastel.red('High')} - Data loss possible"
+              lines << "#{Boreal.paint('▼', :delete)} Delete: #{delete_count} resource(s)"
+              lines << "   Risk: #{Boreal.paint('High', :delete)} - Data loss possible"
             end
 
             lines.join("\n")
@@ -124,8 +111,8 @@ module Pangea
 
         # Module hierarchy visualization
         def module_hierarchy(modules)
-          puts @pastel.bold("\nModule Hierarchy")
-          puts @pastel.bright_black("─" * 40)
+          puts Boreal.bold("\nModule Hierarchy")
+          puts Boreal.paint("─" * 40, :muted)
 
           # Build tree structure
           tree = build_module_tree(modules)
@@ -136,8 +123,8 @@ module Pangea
 
         # Cost estimation visualization
         def cost_estimate(resources)
-          puts @pastel.bold("\nEstimated Monthly Costs")
-          puts @pastel.bright_black("─" * 40)
+          puts Boreal.bold("\nEstimated Monthly Costs")
+          puts Boreal.paint("─" * 40, :muted)
 
           total_cost = 0
           items = []
@@ -171,8 +158,8 @@ module Pangea
           puts table.render(:unicode, padding: [0, 1])
 
           # Total
-          puts "\n" + @pastel.bold("Total Estimated Cost: $#{total_cost.round(2)}/month")
-          puts @pastel.bright_black("* Estimates based on typical usage patterns")
+          puts "\n" + Boreal.bold("Total Estimated Cost: $#{total_cost.round(2)}/month")
+          puts Boreal.paint("* Estimates based on typical usage patterns", :muted)
         end
       end
     end

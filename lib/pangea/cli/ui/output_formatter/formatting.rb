@@ -11,30 +11,30 @@ module Pangea
             case value
             when String then truncate_string(value)
             when Array then format_array(value)
-            when Hash then @pastel.bright_black("{#{value.size} items}")
-            when Numeric then @pastel.cyan(value.to_s)
-            when TrueClass, FalseClass then @pastel.yellow(value.to_s)
-            when NilClass then @pastel.bright_black('null')
-            else @pastel.bright_black(value.to_s)
+            when Hash then Boreal.paint("{#{value.size} items}", :muted)
+            when Numeric then Boreal.paint(value.to_s, :primary)
+            when TrueClass, FalseClass then Boreal.paint(value.to_s, :update)
+            when NilClass then Boreal.paint('null', :muted)
+            else Boreal.paint(value.to_s, :muted)
             end
           end
 
           def format_array(value)
             if value.empty?
-              @pastel.bright_black('[]')
+              Boreal.paint('[]', :muted)
             elsif value.length > 3
               formatted = value.first(3).join(', ')
-              @pastel.bright_black("[#{formatted}, ... +#{value.length - 3} more]")
+              Boreal.paint("[#{formatted}, ... +#{value.length - 3} more]", :muted)
             else
-              @pastel.bright_black("[#{value.join(', ')}]")
+              Boreal.paint("[#{value.join(', ')}]", :muted)
             end
           end
 
           def truncate_string(str, max_length: 60)
             if str.length > max_length
-              @pastel.bright_black("#{str[0...max_length - 3]}...")
+              Boreal.paint("#{str[0...max_length - 3]}...", :muted)
             else
-              @pastel.bright_black(str)
+              Boreal.paint(str, :muted)
             end
           end
         end

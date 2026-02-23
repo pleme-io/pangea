@@ -138,33 +138,33 @@ module Pangea
 
           grouped.sort.each do |type, type_resources|
             formatter.list_items(
-              ["#{formatter.pastel.red(type)}: #{type_resources.count} instance(s)"],
+              ["#{Boreal.paint(type, :delete)}: #{type_resources.count} instance(s)"],
               icon: '−',
-              color: :red,
+              color: :delete,
               indent: 2
             )
 
             type_resources.first(3).each do |resource|
               formatter.list_items(
-                [formatter.pastel.bright_black(resource)],
+                [Boreal.paint(resource, :muted)],
                 icon: '•',
-                color: :red,
+                color: :delete,
                 indent: 4
               )
             end
 
             if type_resources.count > 3
               formatter.list_items(
-                [formatter.pastel.bright_black("... and #{type_resources.count - 3} more")],
+                [Boreal.paint("... and #{type_resources.count - 3} more", :muted)],
                 icon: '•',
-                color: :red,
+                color: :delete,
                 indent: 4
               )
             end
           end
 
           formatter.blank_line
-          formatter.kv_pair('Total resources', formatter.pastel.red(resources.count.to_s))
+          formatter.kv_pair('Total resources', Boreal.paint(resources.count.to_s, :delete))
           formatter.blank_line
         end
 

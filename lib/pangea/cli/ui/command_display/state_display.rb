@@ -70,7 +70,7 @@ module Pangea
               formatter.status(:info, 'No resources found in state')
               formatter.kv_pair('Status', 'Empty state (no resources deployed)')
             else
-              formatter.kv_pair('Resources', formatter.pastel.cyan(resources.count.to_s))
+              formatter.kv_pair('Resources', Boreal.paint(resources.count.to_s, :primary))
               display_grouped_resources(resources)
             end
           end
@@ -79,7 +79,7 @@ module Pangea
             grouped = resources.group_by { |r| r.split('.').first }
             grouped.sort.each do |type, type_resources|
               formatter.list_items(
-                ["#{formatter.pastel.cyan(type)}: #{type_resources.count} instance(s)"],
+                ["#{Boreal.paint(type, :primary)}: #{type_resources.count} instance(s)"],
                 indent: 2
               )
             end
@@ -92,7 +92,7 @@ module Pangea
 
           def format_terraform_output(data)
             if data['sensitive']
-              formatter.pastel.bright_black('[sensitive]')
+              Boreal.paint('[sensitive]', :muted)
             else
               format_output_value(data['value'])
             end

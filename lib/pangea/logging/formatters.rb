@@ -21,12 +21,12 @@ module Pangea
   module Logging
     # Log output formatters for StructuredLogger
     module Formatters
-      LEVEL_COLORS = {
-        debug: :bright_black,
-        info: :bright_blue,
-        warn: :bright_yellow,
-        error: :bright_red,
-        fatal: :bright_magenta
+      LEVEL_ROLES = {
+        debug: :debug,
+        info: :info,
+        warn: :warning,
+        error: :error,
+        fatal: :replace
       }.freeze
 
       EXCLUDED_CONTEXT_KEYS = %i[
@@ -36,13 +36,12 @@ module Pangea
       def format_pretty(entry)
         timestamp = Time.parse(entry[:timestamp]).strftime('%Y-%m-%d %H:%M:%S.%L')
         level = entry[:level].ljust(5)
-        level_color = LEVEL_COLORS[entry[:level].downcase.to_sym]
+        level_role = LEVEL_ROLES[entry[:level].downcase.to_sym]
 
         context_str = build_context_string(entry)
 
-        if defined?(Pastel) && level_color
-          pastel = Pastel.new
-          level = pastel.decorate(level, level_color)
+        if defined?(Boreal) && level_role
+          level = Boreal.paint(level, level_role)
         end
 
         "#{timestamp} [#{level}] #{entry[:message]}#{context_str}"

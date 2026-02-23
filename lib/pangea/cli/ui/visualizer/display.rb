@@ -10,9 +10,9 @@ module Pangea
           def display_resource_node(resource, indent:)
             prefix = " " * indent
             status_icon = case resource[:status]
-                         when :active then @pastel.green('●')
-                         when :pending then @pastel.yellow('◐')
-                         when :failed then @pastel.red('✗')
+                         when :active then Boreal.paint('●', :success)
+                         when :pending then Boreal.paint('◐', :update)
+                         when :failed then Boreal.paint('✗', :error)
                          else '○'
                          end
 
@@ -22,7 +22,7 @@ module Pangea
             if resource[:attributes]
               important_attrs = resource[:attributes].slice(:id, :arn, :location, :size)
               important_attrs.each do |key, value|
-                puts "#{prefix}  #{@pastel.bright_black("#{key}:")} #{value}"
+                puts "#{prefix}  #{Boreal.paint("#{key}:", :muted)} #{value}"
               end
             end
           end
@@ -34,28 +34,22 @@ module Pangea
             filled = (width * percentage / 100).round
             empty = width - filled
 
-            bar = @pastel.green("█" * filled) + @pastel.bright_black("░" * empty)
+            bar = Boreal.paint("█" * filled, :success) + Boreal.paint("░" * empty, :muted)
             "#{bar} #{percentage}%"
           end
 
           def display_plan_details(details)
-            puts "\n" + @pastel.bold("Detailed Changes:")
+            puts "\n" + Boreal.bold("Detailed Changes:")
 
             # Group by change type
-            [:create, :update, :destroy].each do |action|
+            { create: :create, update: :update, destroy: :delete }.each do |action, role|
               next unless details[action] && details[action].any?
 
-              color = case action
-                     when :create then :green
-                     when :update then :yellow
-                     when :destroy then :red
-                     end
-
-              puts "\n#{@pastel.decorate(action.to_s.capitalize, color)}:"
+              puts "\n#{Boreal.paint(action.to_s.capitalize, role)}:"
               details[action].each do |resource|
                 puts "  • #{resource[:type]}.#{resource[:name]}"
                 if resource[:reason]
-                  puts "    #{@pastel.bright_black(resource[:reason])}"
+                  puts "    #{Boreal.paint(resource[:reason], :muted)}"
                 end
               end
             end
@@ -80,9 +74,9 @@ module Pangea
             prefix = " " * indent
 
             if node[:name] != 'root'
-              puts "#{prefix}├─ #{@pastel.cyan(node[:name])}"
+              puts "#{prefix}├─ #{Boreal.paint(node[:name], :primary)}"
               if node[:source]
-                puts "#{prefix}│  #{@pastel.bright_black("source: #{node[:source]}")}"
+                puts "#{prefix}│  #{Boreal.paint("source: #{node[:source]}", :muted)}"
               end
             end
 
