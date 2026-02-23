@@ -14,9 +14,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-require_relative 'shared/network_validators'
-require_relative 'shared/aws_validators'
-require_relative 'shared/format_validators'
+# NetworkValidators and FormatValidators are loaded from pangea-core.
+# AwsValidators is loaded from pangea-aws.
 
 module Pangea
   module Resources

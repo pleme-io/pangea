@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 # Copyright 2025 The Pangea Authors
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,134 +14,101 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
 require 'pangea/cli/commands/base_command'
-require 'pangea/cli/commands/template_processor'
-require 'pangea/cli/commands/workspace_operations'
-require 'pangea/compilation/validator'
+require 'pangea/cli/services/template_service'
+require 'pangea/cli/services/workspace_service'
+require 'pangea/cli/presenters/base_presenter'
+require 'pangea/cli/presenters/apply_presenter'
 require 'pangea/execution/terraform_executor'
 require 'pangea/execution/workspace_manager'
-require 'pangea/backends'
-require 'pangea/cli/ui/template_display'
-require 'pangea/cli/ui/plan_display'
-require 'pangea/cli/ui/command_display'
 
 module Pangea
   module CLI
     module Commands
       # Apply command - apply infrastructure changes
       class Apply < BaseCommand
-        include TemplateProcessor
-        include WorkspaceOperations
-        include UI::TemplateDisplay
-        include UI::PlanDisplay
-        include UI::CommandDisplay
-
         def run(file_path, namespace:, template: nil, auto_approve: true, show_compiled: false)
-          @workspace_manager = Execution::WorkspaceManager.new
-          @auto_approve = auto_approve
-          @show_compiled = show_compiled
-          @namespace = namespace
-          @file_path = file_path
-          @start_time = Time.now
+          @presenter  = Presenters::ApplyPresenter.new(ui: ui)
+          templates   = Services::TemplateService.new(ui: ui)
+          workspaces  = Services::WorkspaceService.new(
+            workspace_manager: Execution::WorkspaceManager.new, ui: ui
+          )
+          @namespace  = namespace
+          @file_path  = file_path
+          start_time  = Time.now
 
-          display_command_header('Apply Infrastructure Changes', icon: :applying)
+          @presenter.command_header('Apply Infrastructure Changes', icon: :applying)
 
-          # Load namespace configuration
           namespace_entity = load_namespace(namespace)
           return unless namespace_entity
 
-          display_namespace_info(namespace_entity)
+          @presenter.namespace_info(namespace_entity)
 
-          # Process templates using shared logic
-          process_templates(
-            file_path: file_path,
-            namespace: namespace,
-            template_name: template
-          ) do |template_name, terraform_json|
-            apply_template(template_name, terraform_json, namespace_entity)
+          templates.process_all(
+            file_path: file_path, namespace: namespace, template_name: template
+          ) do |name, json|
+            apply_template(name, json, workspaces, auto_approve: auto_approve, show_compiled: show_compiled)
           end
 
-          display_execution_time(@start_time, operation: 'Total apply')
+          @presenter.execution_time(start_time, operation: 'Total apply')
         end
 
         private
 
-        def apply_template(template_name, terraform_json, namespace_entity)
-          # Display the compiled template
-          resource_analysis = display_compiled_template(template_name, terraform_json, show_full: @show_compiled)
-          return unless resource_analysis
+        def apply_template(template_name, terraform_json, workspaces, auto_approve:, show_compiled:)
+          parsed = @presenter.compiled_template(template_name, terraform_json, show_full: show_compiled)
+          return unless parsed
 
-          # Set up workspace
-          workspace = setup_workspace(
-            template_name: template_name,
-            terraform_json: terraform_json,
-            namespace: @namespace,
-            source_file: @file_path
+          workspace = workspaces.setup(
+            template_name: template_name, terraform_json: terraform_json,
+            namespace: @namespace, source_file: @file_path
           )
+          @presenter.workspace_info(workspace)
 
-          display_workspace_info(workspace)
-
-          # Initialize if needed
-          return unless ensure_initialized(workspace)
+          return unless workspaces.ensure_initialized(workspace)
 
           executor = Execution::TerraformExecutor.new(working_dir: workspace)
 
-          # Always run plan first to show what will be applied
-          plan_result = with_spinner("Planning changes...") do
-            executor.plan
-          end
-
+          plan_result = with_spinner("Planning changes...") { executor.plan }
           unless plan_result[:success]
-            display_operation_failure('Planning', plan_result[:error])
+            @presenter.operation_failure('Planning', plan_result[:error])
             return
           end
 
-          # Build resource analysis from template
-          resource_analysis = {
-            resources: extract_resources(JSON.parse(terraform_json))
-          }
+          resource_analysis = { resources: extract_resources(JSON.parse(terraform_json)) }
+          @presenter.plan(plan_result, resource_analysis: resource_analysis)
+          return unless plan_result[:changes]
 
-          # Display the plan
-          display_plan(plan_result, resource_analysis: resource_analysis)
-
-          # Check if there are changes
-          unless plan_result[:changes]
-            return
-          end
-
-          # Prompt for confirmation if not auto-approved
-          unless @auto_approve
-            display_confirmation_prompt(action: 'apply', timeout: 5)
+          unless auto_approve
+            @presenter.confirmation_prompt(action: 'apply', timeout: 5)
             sleep 5
-            display_progress('Proceeding with apply...', status: :info)
+            @presenter.progress('Proceeding with apply...', status: :info)
           end
 
-          # Apply changes
-          apply_result = with_spinner("Applying changes...") do
-            executor.apply(auto_approve: true)
-          end
+          apply_result = with_spinner("Applying changes...") { executor.apply(auto_approve: true) }
 
           if apply_result[:success]
-            display_apply_success(template_name, apply_result, resource_analysis)
-            display_terraform_outputs(executor.output)
+            @presenter.apply_success(template_name, apply_result, resource_analysis, namespace: @namespace)
+            @presenter.terraform_outputs(executor.output)
           else
-            display_operation_failure('Apply', apply_result[:error], details: apply_result[:output])
+            @presenter.operation_failure('Apply', apply_result[:error], details: apply_result[:output])
           end
         end
 
-        def display_apply_success(template_name, apply_result, resource_analysis)
-          display_operation_success('Apply', details: {
-            'Template' => template_name,
-            'Namespace' => @namespace,
-            'Resources managed' => resource_analysis[:resources].count.to_s
-          })
+        def extract_resources(parsed)
+          return [] unless parsed['resource']
 
-          display_changes_summary(
-            added: apply_result[:added] || 0,
-            changed: apply_result[:changed] || 0,
-            destroyed: apply_result[:destroyed] || 0
-          )
+          resources = []
+          parsed['resource'].each do |rtype, instances|
+            next unless instances.is_a?(Hash)
+
+            instances.each do |rname, rcfg|
+              next unless rcfg.is_a?(Hash)
+
+              resources << { type: rtype, name: rname, full_name: "#{rtype}.#{rname}" }
+            end
+          end
+          resources
         end
       end
     end

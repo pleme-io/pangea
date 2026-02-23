@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 # Copyright 2025 The Pangea Authors
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,17 +14,5 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
-require 'pangea/types'
-require 'pangea/entities/namespace'
-require 'pangea/entities/project'
-require 'pangea/entities/module_definition'
-require 'pangea/entities/template'
-
-module Pangea
-  # Domain entities for Pangea
-  module Entities
-    # Custom error for validation failures
-    class ValidationError < StandardError; end
-  end
-end
+# Entities are provided by pangea-core.
+# This file exists for backward compatibility with existing requires.

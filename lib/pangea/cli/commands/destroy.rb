@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 # Copyright 2025 The Pangea Authors
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,185 +14,97 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
 require 'pangea/cli/commands/base_command'
-require 'pangea/cli/commands/template_processor'
-require 'pangea/cli/commands/workspace_operations'
+require 'pangea/cli/services/template_service'
+require 'pangea/cli/services/workspace_service'
+require 'pangea/cli/presenters/base_presenter'
+require 'pangea/cli/presenters/destroy_presenter'
 require 'pangea/execution/terraform_executor'
 require 'pangea/execution/workspace_manager'
-require 'pangea/cli/ui/command_display'
 
 module Pangea
   module CLI
     module Commands
       # Destroy command - destroy infrastructure
       class Destroy < BaseCommand
-        include TemplateProcessor
-        include WorkspaceOperations
-        include UI::CommandDisplay
-
         def run(file_path, namespace:, template: nil, auto_approve: true)
-          @workspace_manager = Execution::WorkspaceManager.new
+          @presenter  = Presenters::DestroyPresenter.new(ui: ui)
+          templates   = Services::TemplateService.new(ui: ui)
+          @workspaces = Services::WorkspaceService.new(
+            workspace_manager: Execution::WorkspaceManager.new, ui: ui
+          )
+          @namespace    = namespace
           @auto_approve = auto_approve
-          @namespace = namespace
-          @start_time = Time.now
+          start_time    = Time.now
 
-          display_command_header('Destroy Infrastructure', icon: :destroying, description: '⚠️  This will permanently delete all resources')
+          @presenter.command_header(
+            'Destroy Infrastructure', icon: :destroying,
+            description: 'This will permanently delete all resources'
+          )
 
-          # Load namespace configuration
           namespace_entity = load_namespace(namespace)
           return unless namespace_entity
 
-          display_namespace_info(namespace_entity)
+          @presenter.namespace_info(namespace_entity)
 
           if template
-            # Specific template requested
-            destroy_template(template, namespace_entity)
+            destroy_template(template)
           else
-            # Use template processor to handle multiple templates
-            process_templates(
-              file_path: file_path,
-              namespace: namespace,
-              template_name: nil
-            ) do |template_name, _terraform_json|
-              destroy_template(template_name, namespace_entity)
+            templates.process_all(
+              file_path: file_path, namespace: namespace, template_name: nil
+            ) do |name, _json|
+              destroy_template(name)
             end
           end
 
-          display_execution_time(@start_time, operation: 'Total destroy')
+          @presenter.execution_time(start_time, operation: 'Total destroy')
         end
 
         private
 
-        def destroy_template(template_name, namespace_entity)
-          formatter.section_header("Destroying Template: #{template_name}", icon: :template)
+        def destroy_template(template_name)
+          @presenter.formatter.section_header("Destroying Template: #{template_name}", icon: :template)
 
-          workspace = @workspace_manager.workspace_for(
-            namespace: @namespace,
-            project: template_name
-          )
+          workspace = @workspaces.workspace_for(namespace: @namespace, template_name: template_name)
 
-          unless Dir.exist?(workspace)
-            formatter.status(:error, 'Workspace not found')
-            formatter.kv_pair('Path', workspace, indent: 2)
-            formatter.blank_line
-            formatter.status(:info, "Run 'pangea apply' first to create resources")
+          unless @workspaces.workspace_exists?(workspace)
+            @presenter.workspace_not_found(workspace)
             return
           end
 
-          display_workspace_info(workspace)
+          @presenter.workspace_info(workspace)
 
-          # Initialize executor
           executor = Execution::TerraformExecutor.new(working_dir: workspace)
 
-          # Check current state
-          state_result = with_spinner("Checking current state...") do
-            executor.state_list
-          end
+          state_result = with_spinner("Checking current state...") { executor.state_list }
 
           if state_result[:success]
             if state_result[:resources].empty?
-              formatter.status(:info, 'No resources found in state')
-              formatter.kv_pair('Status', 'Nothing to destroy', indent: 2)
-              formatter.blank_line
+              @presenter.no_resources_in_state
               return
             else
-              display_resources_to_destroy(state_result[:resources], template_name)
+              @presenter.resources_to_destroy(state_result[:resources], template_name)
             end
           else
-            display_operation_failure('State check', state_result[:error])
+            @presenter.operation_failure('State check', state_result[:error])
             return
           end
 
-          # Confirm destruction
           unless @auto_approve
-            display_destroy_confirmation(template_name, state_result[:resources].count)
+            @presenter.destroy_confirmation(template_name, state_result[:resources].count)
+            sleep 10
+            @presenter.progress('Proceeding with destroy...', status: :info)
           end
 
-          # Run destroy
-          destroy_result = with_spinner("Destroying resources...") do
-            executor.destroy(auto_approve: true)
-          end
+          destroy_result = with_spinner("Destroying resources...") { executor.destroy(auto_approve: true) }
 
           if destroy_result[:success]
-            display_destroy_success(template_name, workspace, state_result[:resources].count)
-
-            # Clean workspace
-            @workspace_manager.clean(workspace)
-            formatter.status(:success, 'Workspace cleaned')
-            formatter.kv_pair('Path', workspace, indent: 2)
-            formatter.blank_line
+            @presenter.destroy_success(template_name, namespace: @namespace, resource_count: state_result[:resources].count)
+            @workspaces.clean(workspace)
+            @presenter.workspace_cleaned(workspace)
           else
-            display_operation_failure('Destroy', destroy_result[:error], details: destroy_result[:output])
+            @presenter.operation_failure('Destroy', destroy_result[:error], details: destroy_result[:output])
           end
-        end
-
-        def display_resources_to_destroy(resources, template_name)
-          formatter.subsection_header('Resources to Destroy', icon: :warning)
-          formatter.blank_line
-
-          formatter.status(:warning, "The following #{resources.count} resource(s) will be permanently deleted:")
-          formatter.blank_line
-
-          # Group by type
-          grouped = resources.group_by { |r| r.split('.').first }
-
-          grouped.sort.each do |type, type_resources|
-            formatter.list_items(
-              ["#{Boreal.paint(type, :delete)}: #{type_resources.count} instance(s)"],
-              icon: '−',
-              color: :delete,
-              indent: 2
-            )
-
-            type_resources.first(3).each do |resource|
-              formatter.list_items(
-                [Boreal.paint(resource, :muted)],
-                icon: '•',
-                color: :delete,
-                indent: 4
-              )
-            end
-
-            if type_resources.count > 3
-              formatter.list_items(
-                [Boreal.paint("... and #{type_resources.count - 3} more", :muted)],
-                icon: '•',
-                color: :delete,
-                indent: 4
-              )
-            end
-          end
-
-          formatter.blank_line
-          formatter.kv_pair('Total resources', Boreal.paint(resources.count.to_s, :delete))
-          formatter.blank_line
-        end
-
-        def display_destroy_confirmation(template_name, resource_count)
-          formatter.blank_line
-          formatter.warning_box(
-            'DESTRUCTION WARNING',
-            [
-              "This will PERMANENTLY DELETE #{resource_count} resource(s) from template '#{template_name}'",
-              'This action CANNOT be undone',
-              'All data will be LOST'
-            ],
-            width: 70
-          )
-          formatter.blank_line
-          formatter.status(:warning, 'Press Ctrl+C within 10 seconds to cancel...')
-          sleep 10
-          formatter.status(:info, 'Proceeding with destroy...')
-          formatter.blank_line
-        end
-
-        def display_destroy_success(template_name, workspace, resource_count)
-          display_operation_success('Destroy', details: {
-            'Template' => template_name,
-            'Resources destroyed' => resource_count.to_s,
-            'Namespace' => @namespace
-          })
         end
       end
     end

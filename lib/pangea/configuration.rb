@@ -21,7 +21,6 @@ require 'pangea/configuration/types'
 require 'pangea/configuration/namespace_manager'
 require 'pangea/configuration/config_loader'
 require 'pangea/configuration/defaults'
-require 'pangea/ui'
 
 module Pangea
   # Configuration loading error
@@ -39,7 +38,6 @@ module Pangea
       @config = TTY::Config.new
       @schema = nil
       @loaded_from = nil
-      @ui = UI.new
       @namespaces = nil
       setup_config
       load_config

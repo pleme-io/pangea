@@ -14,12 +14,9 @@
 # limitations under the License.
 
 
-require 'pangea/components/base'
-require 'pangea/components/types'
-
-require 'pangea/components/secure_vpc/component'
-require 'pangea/components/public_private_subnets/component'
-require 'pangea/components/vpc_with_subnets/component'
+# Components::Base is loaded from pangea-core.
+# Components::Types, SecureVpc, PublicPrivateSubnets, VpcWithSubnets
+# are loaded from pangea-aws.
 
 module Pangea
   module Components

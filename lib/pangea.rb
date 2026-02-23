@@ -14,11 +14,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-begin
-  require 'pangea-core'
-rescue LoadError
-  # pangea-core gem not available; core types provided by local definitions
-end
+require 'pangea-core'
+require 'pangea-aws'
 require 'pangea/version'
 require 'pangea/configuration'
 require 'pangea/types'

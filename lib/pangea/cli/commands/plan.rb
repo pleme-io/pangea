@@ -15,121 +15,77 @@
 # limitations under the License.
 
 require 'pangea/cli/commands/base_command'
-require 'pangea/cli/commands/template_processor'
-require 'pangea/cli/commands/workspace_operations'
-require 'pangea/compilation/validator'
+require 'pangea/cli/services/template_service'
+require 'pangea/cli/services/workspace_service'
+require 'pangea/cli/presenters/base_presenter'
+require 'pangea/cli/presenters/plan_presenter'
 require 'pangea/execution/terraform_executor'
 require 'pangea/execution/workspace_manager'
-require 'pangea/backends'
-require 'pangea/cli/ui/diff'
-require 'pangea/cli/ui/progress'
-require 'pangea/cli/ui/visualizer'
-
-require_relative 'plan/json_analysis'
-require_relative 'plan/resource_display'
-require_relative 'plan/plan_output'
-require_relative 'plan/json_formatting'
 
 module Pangea
   module CLI
     module Commands
       # Plan command - show what changes would be made
       class Plan < BaseCommand
-        include TemplateProcessor
-        include WorkspaceOperations
-        include JsonAnalysis
-        include ResourceDisplay
-        include PlanOutput
-        include JsonFormatting
-
         def run(file_path, namespace:, template: nil, show_compiled: false)
-          @workspace_manager = Execution::WorkspaceManager.new
-          @diff = UI::Diff::Renderer.new
-          @visualizer = UI::Visualizer.new
-          @progress = UI::Progress.new
-          @namespace = namespace
-          @file_path = file_path
-          @show_compiled = show_compiled
+          @presenter  = Presenters::PlanPresenter.new(ui: ui)
+          templates   = Services::TemplateService.new(ui: ui)
+          @workspaces = Services::WorkspaceService.new(
+            workspace_manager: Execution::WorkspaceManager.new, ui: ui
+          )
+          @namespace  = namespace
+          @file_path  = file_path
+          @template   = template
 
           namespace_entity = load_namespace(namespace)
           return unless namespace_entity
 
-          process_templates(
-            file_path: file_path,
-            namespace: namespace,
-            template_name: template
-          ) do |template_name, terraform_json|
-            plan_template(template_name, terraform_json, namespace_entity)
+          templates.process_all(
+            file_path: file_path, namespace: namespace, template_name: template
+          ) do |name, json|
+            plan_template(name, json, show_compiled: show_compiled)
           end
-        end
-
-        def plan_template(template_name, terraform_json, _namespace_entity)
-          if @show_compiled
-            display_compiled_json(template_name, terraform_json)
-            return
-          end
-
-          resource_analysis = analyze_terraform_json(terraform_json)
-          display_resource_analysis(template_name, resource_analysis)
-
-          workspace = setup_workspace(
-            template_name: template_name,
-            terraform_json: terraform_json,
-            namespace: @namespace,
-            source_file: @file_path
-          )
-
-          return unless ensure_initialized(workspace)
-
-          execute_plan(template_name, workspace, resource_analysis)
         end
 
         private
 
-        def execute_plan(template_name, workspace, resource_analysis)
-          executor = Execution::TerraformExecutor.new(working_dir: workspace)
+        def plan_template(template_name, terraform_json, show_compiled:)
+          if show_compiled
+            @presenter.compiled_json(template_name, terraform_json)
+            return
+          end
+
+          analysis = @presenter.analyze_terraform_json(terraform_json)
+          @presenter.resource_analysis(template_name, analysis)
+
+          workspace = @workspaces.setup(
+            template_name: template_name, terraform_json: terraform_json,
+            namespace: @namespace, source_file: @file_path
+          )
+
+          return unless @workspaces.ensure_initialized(workspace)
+
+          execute_plan(template_name, workspace, analysis)
+        end
+
+        def execute_plan(template_name, workspace, analysis)
+          executor  = Execution::TerraformExecutor.new(working_dir: workspace)
           plan_file = File.join(workspace, 'plan.tfplan')
 
-          plan_result = with_spinner('Planning changes...') do
-            executor.plan(out_file: plan_file)
-          end
+          plan_result = with_spinner('Planning changes...') { executor.plan(out_file: plan_file) }
 
-          handle_plan_result(template_name, workspace, plan_result, resource_analysis, executor)
-        end
-
-        def handle_plan_result(template_name, workspace, plan_result, resource_analysis, executor)
           if plan_result[:success]
             if plan_result[:changes]
-              display_successful_plan(template_name, workspace, plan_result, resource_analysis)
+              @presenter.successful_plan(
+                template_name, workspace, plan_result, analysis,
+                file_path: @file_path, namespace: @namespace, template_flag: @template
+              )
             else
-              display_no_changes(template_name, executor, resource_analysis)
+              @presenter.no_changes(template_name, executor, analysis)
             end
           else
-            display_plan_failure(template_name, plan_result)
+            @presenter.plan_failure(template_name, plan_result)
           end
-        end
-
-        def display_successful_plan(template_name, workspace, plan_result, resource_analysis)
-          ui.success "Plan generated for template '#{template_name}'"
-          ui.info "Plan saved to: #{File.join(workspace, 'plan.tfplan')}"
-
-          display_enhanced_plan_output(plan_result, resource_analysis)
-
-          ui.info "\nWorkspace: #{workspace}"
-          ui.info "\nTo apply these changes, run:"
-          template_flag = @template ? " --template #{@template}" : ''
-          ui.info "  pangea apply #{@file_path} --namespace #{@namespace}#{template_flag}"
-        end
-
-        def display_no_changes(template_name, executor, resource_analysis)
-          ui.info "No changes required for template '#{template_name}'. Infrastructure is up-to-date."
-          display_current_state(executor, resource_analysis)
-        end
-
-        def display_plan_failure(template_name, plan_result)
-          ui.error "Planning failed for template '#{template_name}':"
-          ui.error plan_result[:error] if plan_result[:error]
-          ui.error plan_result[:output] if plan_result[:output] && !plan_result[:output].empty?
         end
       end
     end

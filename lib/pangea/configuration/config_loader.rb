@@ -56,29 +56,29 @@ module Pangea
       def validate_and_load_schema
         @schema = ConfigurationTypes::Types::ConfigurationSchema.new(@config.to_h)
         @schema.validate!
-        @ui.success "Loaded configuration from: #{@loaded_from}/pangea.yml" if @loaded_from
+        $stderr.puts "[pangea] Loaded configuration from: #{@loaded_from}/pangea.yml" if @loaded_from
       rescue Dry::Struct::Error => e
-        @ui.error "Configuration validation failed: #{e.message}"
-        @ui.warn "Using default configuration"
+        $stderr.puts "[pangea] Configuration validation failed: #{e.message}"
+        $stderr.puts "[pangea] Using default configuration"
         set_defaults
         @schema = ConfigurationTypes::Types::ConfigurationSchema.new(@config.to_h)
       rescue ConfigurationError => e
-        @ui.error e.message
+        $stderr.puts "[pangea] #{e.message}"
         raise
       end
 
       def handle_missing_config
-        @ui.warn "No configuration file found in search paths"
-        @ui.info "Search paths: #{@config.location_paths.join(', ')}"
-        @ui.info "Using default configuration"
+        $stderr.puts "[pangea] No configuration file found in search paths"
+        $stderr.puts "[pangea] Search paths: #{@config.location_paths.join(', ')}"
+        $stderr.puts "[pangea] Using default configuration"
         set_defaults
         @schema = ConfigurationTypes::Types::ConfigurationSchema.new(@config.to_h)
       end
 
       def handle_yaml_error(error)
-        @ui.error "Invalid YAML syntax in configuration file"
-        @ui.error "  File: #{@loaded_from}/pangea.yml" if @loaded_from
-        @ui.error "  Error: #{error.message}"
+        $stderr.puts "[pangea] Invalid YAML syntax in configuration file"
+        $stderr.puts "[pangea]   File: #{@loaded_from}/pangea.yml" if @loaded_from
+        $stderr.puts "[pangea]   Error: #{error.message}"
         raise ConfigurationError, "Invalid YAML syntax: #{error.message}"
       end
     end

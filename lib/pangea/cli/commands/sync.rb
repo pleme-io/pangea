@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 # Copyright 2025 The Pangea Authors
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,8 +15,8 @@
 # limitations under the License.
 
 require 'pangea/cli/commands/base_command'
-require 'pangea/cli/commands/template_processor'
-require 'pangea/cli/commands/workspace_operations'
+require 'pangea/cli/services/template_service'
+require 'pangea/cli/services/workspace_service'
 require 'pangea/execution/terraform_executor'
 require 'pangea/execution/workspace_manager'
 
@@ -24,55 +25,45 @@ module Pangea
     module Commands
       # Sync command - refresh state from cloud provider without making changes
       class Sync < BaseCommand
-        include TemplateProcessor
-        include WorkspaceOperations
-
         def run(file_path, namespace:, template: nil)
-          @workspace_manager = Execution::WorkspaceManager.new
+          templates   = Services::TemplateService.new(ui: ui)
+          @workspaces = Services::WorkspaceService.new(
+            workspace_manager: Execution::WorkspaceManager.new, ui: ui
+          )
           @namespace = namespace
           @file_path = file_path
 
-          # Load namespace configuration
           namespace_entity = load_namespace(namespace)
           return unless namespace_entity
 
-          # Process templates using shared logic
-          process_templates(
-            file_path: file_path,
-            namespace: namespace,
-            template_name: template
-          ) do |template_name, terraform_json|
-            sync_template(template_name, terraform_json, namespace_entity)
+          templates.process_all(
+            file_path: file_path, namespace: namespace, template_name: template
+          ) do |name, json|
+            sync_template(name, json)
           end
         end
 
-        def sync_template(template_name, terraform_json, namespace_entity)
+        private
+
+        def sync_template(template_name, terraform_json)
           ui.info "Syncing state for template '#{template_name}'..."
 
-          # Set up workspace
-          workspace = setup_workspace(
-            template_name: template_name,
-            terraform_json: terraform_json,
-            namespace: @namespace,
-            source_file: @file_path
+          workspace = @workspaces.setup(
+            template_name: template_name, terraform_json: terraform_json,
+            namespace: @namespace, source_file: @file_path
           )
 
-          # Initialize if needed
-          return unless ensure_initialized(workspace)
+          return unless @workspaces.ensure_initialized(workspace)
 
           executor = Execution::TerraformExecutor.new(working_dir: workspace)
 
-          # Run refresh
           refresh_result = with_spinner("Refreshing state from cloud provider...") do
             executor.refresh
           end
 
           if refresh_result[:success]
             ui.success "State synced successfully for template '#{template_name}'"
-
-            # Show current state summary
             display_state_summary(executor, template_name)
-
             ui.info "\nWorkspace: #{workspace}"
           else
             ui.error "Sync failed for template '#{template_name}':"
@@ -81,28 +72,22 @@ module Pangea
           end
         end
 
-        private
-
         def display_state_summary(executor, template_name)
           state_result = executor.state_list
+          return unless state_result[:success] && state_result[:resources]&.any?
 
-          if state_result[:success] && state_result[:resources]&.any?
-            ui.info "\n📊 Current State Summary for '#{template_name}':"
-            ui.info "─" * 50
+          ui.info "\nCurrent State Summary for '#{template_name}':"
+          ui.info "\u2500" * 50
 
-            # Group by type
-            grouped = state_result[:resources].group_by { |r| r.split('.').first }
-            grouped.each do |type, resources|
-              ui.say "  • #{Boreal.paint(type, :primary)}: #{resources.count} resource(s)"
-              resources.each do |resource|
-                ui.say "    - #{Boreal.paint(resource.split('.', 2).last, :muted)}"
-              end
+          grouped = state_result[:resources].group_by { |r| r.split('.').first }
+          grouped.each do |type, resources|
+            ui.say "  #{Boreal.paint(type, :primary)}: #{resources.count} resource(s)"
+            resources.each do |resource|
+              ui.say "    - #{Boreal.paint(resource.split('.', 2).last, :muted)}"
             end
-
-            ui.info "\n✅ Total: #{state_result[:resources].count} resources in state"
-          else
-            ui.info "\nℹ️  No resources currently in state"
           end
+
+          ui.info "\nTotal: #{state_result[:resources].count} resources in state"
         end
       end
     end

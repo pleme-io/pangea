@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 # Copyright 2025 The Pangea Authors
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,8 +15,8 @@
 # limitations under the License.
 
 require 'pangea/cli/commands/base_command'
-require 'pangea/cli/commands/template_processor'
-require 'pangea/cli/commands/workspace_operations'
+require 'pangea/cli/services/template_service'
+require 'pangea/cli/services/workspace_service'
 require 'pangea/execution/terraform_executor'
 require 'pangea/execution/workspace_manager'
 require_relative 'import/resource_analyzer'
@@ -26,42 +27,34 @@ module Pangea
     module Commands
       # Import command - import existing resources into terraform state
       class Import < BaseCommand
-        include TemplateProcessor
-        include WorkspaceOperations
-
         def run(file_path, namespace:, template: nil, resource: nil, id: nil)
-          @workspace_manager = Execution::WorkspaceManager.new
+          @templates  = Services::TemplateService.new(ui: ui)
+          @workspaces = Services::WorkspaceService.new(
+            workspace_manager: Execution::WorkspaceManager.new, ui: ui
+          )
           @namespace = namespace
           @file_path = file_path
 
-          # Load namespace configuration
           namespace_entity = load_namespace(namespace)
           return unless namespace_entity
 
           if resource && id
-            # Direct import mode
-            import_single_resource(resource, id, template, namespace_entity)
+            import_single_resource(resource, id, template)
           else
-            # Interactive import mode
-            process_templates(
-              file_path: file_path,
-              namespace: namespace,
-              template_name: template
-            ) do |template_name, terraform_json|
-              interactive_import(template_name, terraform_json, namespace_entity)
+            @templates.process_all(
+              file_path: file_path, namespace: namespace, template_name: template
+            ) do |name, json|
+              interactive_import(name, json)
             end
           end
         end
 
         private
 
-        def import_single_resource(resource_address, resource_id, template_name, _namespace_entity)
-          workspace = @workspace_manager.workspace_for(
-            namespace: @namespace,
-            project: template_name
-          )
+        def import_single_resource(resource_address, resource_id, template_name)
+          workspace = @workspaces.workspace_for(namespace: @namespace, template_name: template_name)
 
-          unless @workspace_manager.initialized?(workspace)
+          unless @workspaces.workspace_exists?(workspace)
             ui.error "Workspace not initialized. Run 'pangea plan' first to initialize."
             return
           end
@@ -75,10 +68,6 @@ module Pangea
             executor.import_resource(resource_address, resource_id)
           end
 
-          handle_import_result(result, resource_address, executor)
-        end
-
-        def handle_import_result(result, resource_address, executor)
           if result[:success]
             ui.success "Successfully imported #{resource_address}"
             verify_import(executor)
@@ -90,20 +79,18 @@ module Pangea
         def verify_import(executor)
           ui.info "\nRunning plan to verify import..."
           plan_result = executor.plan
-
           return unless plan_result[:success]
 
           if plan_result[:changes]
-            ui.warn "Import successful but there are pending changes:"
-            display_resource_changes(plan_result[:resource_changes]) if plan_result[:resource_changes]
+            ui.warn "Import successful but there are pending changes"
           else
             ui.success "Import verified - no changes required"
           end
         end
 
-        def interactive_import(template_name, terraform_json, _namespace_entity)
+        def interactive_import(template_name, terraform_json)
           ui.info "Interactive import for template: #{template_name}"
-          ui.info "─" * 60
+          ui.info "\u2500" * 60
 
           resources = ImportResourceAnalyzer.analyze_resources(terraform_json)
 
@@ -114,7 +101,21 @@ module Pangea
 
           display_resources(resources)
           display_import_commands(resources)
-          setup_and_initialize_workspace(template_name, terraform_json)
+
+          workspace = @workspaces.setup(
+            template_name: template_name, terraform_json: terraform_json,
+            namespace: @namespace, source_file: @file_path
+          )
+
+          @workspaces.ensure_initialized(workspace)
+
+          ui.info "\nWorkspace ready at: #{workspace}"
+          ui.info "\nTo import resources manually, run:"
+          ui.say "  cd #{workspace}"
+          ui.say "  tofu import RESOURCE_ADDRESS RESOURCE_ID"
+          ui.info "\nOr use pangea import with --resource and --id flags:"
+          ui.say "  pangea import #{@file_path} --namespace #{@namespace} " \
+                 "--template #{template_name} --resource RESOURCE_ADDRESS --id RESOURCE_ID"
         end
 
         def display_resources(resources)
@@ -129,7 +130,7 @@ module Pangea
 
         def display_import_commands(resources)
           ui.info "\nTo import existing AWS resources, you'll need their IDs:"
-          ui.info "─" * 60
+          ui.info "\u2500" * 60
 
           import_commands = ImportCommandGeneratorHelper.generate_import_commands(resources)
 
@@ -138,41 +139,6 @@ module Pangea
             ui.say "  #{Boreal.paint(cmd[:command], :muted)}"
             ui.say "    # #{cmd[:help]}" if cmd[:help]
           end
-        end
-
-        def setup_and_initialize_workspace(template_name, terraform_json)
-          workspace = setup_workspace(
-            template_name: template_name,
-            terraform_json: terraform_json,
-            namespace: @namespace,
-            source_file: @file_path
-          )
-
-          initialize_workspace_if_needed(workspace)
-          display_workspace_instructions(workspace, template_name)
-        end
-
-        def initialize_workspace_if_needed(workspace)
-          return if @workspace_manager.initialized?(workspace)
-
-          ui.info "\nInitializing terraform..."
-          executor = Execution::TerraformExecutor.new(working_dir: workspace)
-
-          init_result = with_spinner("Initializing...") do
-            executor.init
-          end
-
-          ui.error "Failed to initialize: #{init_result[:error]}" unless init_result[:success]
-        end
-
-        def display_workspace_instructions(workspace, template_name)
-          ui.info "\nWorkspace ready at: #{workspace}"
-          ui.info "\nTo import resources manually, run:"
-          ui.say "  cd #{workspace}"
-          ui.say "  tofu import RESOURCE_ADDRESS RESOURCE_ID"
-          ui.info "\nOr use pangea import with --resource and --id flags:"
-          ui.say "  pangea import #{@file_path} --namespace #{@namespace} " \
-                 "--template #{template_name} --resource RESOURCE_ADDRESS --id RESOURCE_ID"
         end
       end
     end
