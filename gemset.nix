@@ -125,6 +125,16 @@
     };
     version = "3.3.1";
   };
+  boreal = {
+    dependencies = ["paint" "pastel" "tty-box" "tty-progressbar" "tty-spinner" "tty-table"];
+    groups = ["default"];
+    platforms = [];
+    source = {
+      path = ../boreal;
+      type = "path";
+    };
+    version = "0.1.0";
+  };
   bundler-audit = {
     dependencies = ["thor"];
     groups = ["development"];
@@ -499,15 +509,69 @@
     };
     version = "0.3.0";
   };
+  paint = {
+    groups = ["default"];
+    platforms = [];
+    source = {
+      remotes = ["https://rubygems.org"];
+      sha256 = "1r9vx3wcx0x2xqlh6zqc81wcsn9qjw3xprcsv5drsq9q80z64z9j";
+      type = "gem";
+    };
+    version = "2.3.0";
+  };
   pangea = {
-    dependencies = ["abstract-synthesizer" "aws-sdk-dynamodb" "aws-sdk-s3" "diff-lcs" "dry-struct" "dry-types" "dry-validation" "parallel" "pastel" "rexml" "terraform-synthesizer" "toml-rb" "tty-box" "tty-config" "tty-logger" "tty-option" "tty-progressbar" "tty-spinner" "tty-table" "webrick"];
+    dependencies = ["abstract-synthesizer" "aws-sdk-dynamodb" "aws-sdk-s3" "boreal" "diff-lcs" "dry-struct" "dry-types" "dry-validation" "pangea-aws" "pangea-cloudflare" "pangea-core" "pangea-hcloud" "parallel" "rexml" "terraform-synthesizer" "toml-rb" "tty-config" "tty-logger" "tty-option" "webrick"];
     groups = ["default"];
     platforms = [];
     source = {
       path = ./.;
       type = "path";
     };
-    version = "0.0.45";
+    version = "0.1.0";
+  };
+  pangea-aws = {
+    dependencies = ["dry-struct" "dry-types" "pangea-core" "terraform-synthesizer"];
+    groups = ["default"];
+    platforms = [];
+    source = {
+      remotes = ["https://rubygems.org"];
+      sha256 = "0j71hm5k282y4i9ynxkibjc1snq5w5gn952xj8z30pahn3g62cpf";
+      type = "gem";
+    };
+    version = "0.1.0";
+  };
+  pangea-cloudflare = {
+    dependencies = ["dry-struct" "dry-types" "pangea-core" "terraform-synthesizer"];
+    groups = ["default"];
+    platforms = [];
+    source = {
+      remotes = ["https://rubygems.org"];
+      sha256 = "14ld71cnj23c8s9dkdar13fhpaw5xny8zajs3md1g1isdinn0gkk";
+      type = "gem";
+    };
+    version = "0.1.0";
+  };
+  pangea-core = {
+    dependencies = ["base64" "dry-struct" "dry-types" "terraform-synthesizer"];
+    groups = ["default"];
+    platforms = [];
+    source = {
+      remotes = ["https://rubygems.org"];
+      sha256 = "1r94mk39ga81xsmwdfrp0dcq51z7kb781m7rlk4n8pm58ailpyz6";
+      type = "gem";
+    };
+    version = "0.1.0";
+  };
+  pangea-hcloud = {
+    dependencies = ["dry-struct" "dry-types" "pangea-core" "terraform-synthesizer"];
+    groups = ["default"];
+    platforms = [];
+    source = {
+      remotes = ["https://rubygems.org"];
+      sha256 = "0xw4f4n2sqpggfil80y7n4wn6lcx9dklk98d9i25hzp3hhrnbpj1";
+      type = "gem";
+    };
+    version = "0.1.0";
   };
   parallel = {
     groups = ["default" "development"];
@@ -937,10 +1001,10 @@
     platforms = [];
     source = {
       remotes = ["https://rubygems.org"];
-      sha256 = "1ymm9rhjvc38bkxlh1ghrcl2v8b3chh68kpgd9qf1rbn45xnggbd";
+      sha256 = "01yl1s6xnxn3qh42ybqanxdgcfpppg2cvjk8pka7xcf5hxz9qxda";
       type = "gem";
     };
-    version = "0.0.27";
+    version = "0.0.28";
   };
   thor = {
     groups = ["default" "development"];
