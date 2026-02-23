@@ -130,8 +130,9 @@
     groups = ["default"];
     platforms = [];
     source = {
-      path = ../boreal;
-      type = "path";
+      remotes = ["https://rubygems.org"];
+      sha256 = "0dijwpyihd4f5p4i11q6jl8zljzwr9s8q9p8h0yv9gpg7vhnl6y3";
+      type = "gem";
     };
     version = "0.1.0";
   };

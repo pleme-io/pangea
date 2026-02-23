@@ -1,15 +1,4 @@
 PATH
-  remote: ../boreal
-  specs:
-    boreal (0.1.0)
-      paint (~> 2.3)
-      pastel (~> 0.8)
-      tty-box (~> 0.7)
-      tty-progressbar (~> 0.18)
-      tty-spinner (~> 0.9)
-      tty-table (~> 0.12)
-
-PATH
   remote: .
   specs:
     pangea (0.1.0)
@@ -77,6 +66,13 @@ GEM
       aws-eventstream (~> 1, >= 1.0.2)
     base64 (0.3.0)
     bigdecimal (3.3.1)
+    boreal (0.1.0)
+      paint (~> 2.3)
+      pastel (~> 0.8)
+      tty-box (~> 0.7)
+      tty-progressbar (~> 0.18)
+      tty-spinner (~> 0.9)
+      tty-table (~> 0.12)
     bundler-audit (0.9.3)
       bundler (>= 1.2.0)
       thor (~> 1.0)
@@ -344,7 +340,6 @@ PLATFORMS
   x86_64-linux-musl
 
 DEPENDENCIES
-  boreal!
   bundler-audit (~> 0.9)
   debug (~> 1.8)
   debug_inspector (~> 1.1)
@@ -364,4 +359,4 @@ DEPENDENCIES
   typeprof (~> 0.21)
 
 BUNDLED WITH
-   2.7.2
+   2.5.22

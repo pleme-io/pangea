@@ -1,7 +1,5 @@
 source %(https://rubygems.org)
 
-gem 'boreal', path: '../boreal'
-
 gemspec
 
 # Development and testing gems
