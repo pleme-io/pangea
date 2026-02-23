@@ -45,6 +45,32 @@
         defaultGhcrToken = "";
       };
 
+      # ── Rspec test helpers ───────────────────────────────────────────────
+      rspecGemIncludes = gems: builtins.concatStringsSep " " (map (p: "-I${env}/lib/ruby/gems/3.3.0/gems/${p}-*/lib") gems);
+
+      rspecBaseGems = [
+        "rspec-core" "rspec-support" "rspec-expectations" "rspec-mocks"
+        "diff-lcs" "terraform-synthesizer" "abstract-synthesizer"
+        "dry-types" "dry-struct" "dry-core" "dry-logic" "dry-inflector"
+        "ice_nine" "concurrent-ruby" "psych"
+      ];
+
+      rspecCoverageGems = [
+        "simplecov" "simplecov-html" "simplecov_json_formatter"
+        "simplecov-lcov" "docile"
+      ];
+
+      rspecCmd = { srcLib, gems ? rspecBaseGems, testArgs }: ''
+        ${ruby}/bin/ruby \
+          ${rspecGemIncludes gems} \
+          -I${srcLib} \
+          ${env}/lib/ruby/gems/3.3.0/gems/rspec-core-*/exe/rspec \
+          ${testArgs} \
+          --format documentation \
+          --color \
+          --order defined
+      '';
+
       # ── Pangea CLI package ──────────────────────────────────────────────
       pangeaPackage = pkgs.stdenv.mkDerivation {
         pname = "pangea";
@@ -197,51 +223,9 @@
 
           # Run rspec directly without bundler (avoids gemspec evaluation)
           if [[ "$TEST_FILES" == *"*"* ]]; then
-            ${ruby}/bin/ruby \
-              -I${env}/lib/ruby/gems/3.3.0/gems/rspec-core-*/lib \
-              -I${env}/lib/ruby/gems/3.3.0/gems/rspec-support-*/lib \
-              -I${env}/lib/ruby/gems/3.3.0/gems/rspec-expectations-*/lib \
-              -I${env}/lib/ruby/gems/3.3.0/gems/rspec-mocks-*/lib \
-              -I${env}/lib/ruby/gems/3.3.0/gems/diff-lcs-*/lib \
-              -I${env}/lib/ruby/gems/3.3.0/gems/terraform-synthesizer-*/lib \
-              -I${env}/lib/ruby/gems/3.3.0/gems/abstract-synthesizer-*/lib \
-              -I${env}/lib/ruby/gems/3.3.0/gems/dry-types-*/lib \
-              -I${env}/lib/ruby/gems/3.3.0/gems/dry-struct-*/lib \
-              -I${env}/lib/ruby/gems/3.3.0/gems/dry-core-*/lib \
-              -I${env}/lib/ruby/gems/3.3.0/gems/dry-logic-*/lib \
-              -I${env}/lib/ruby/gems/3.3.0/gems/dry-inflector-*/lib \
-              -I${env}/lib/ruby/gems/3.3.0/gems/ice_nine-*/lib \
-              -I${env}/lib/ruby/gems/3.3.0/gems/concurrent-ruby-*/lib \
-              -I${env}/lib/ruby/gems/3.3.0/gems/psych-*/lib \
-              -I$src/lib \
-              ${env}/lib/ruby/gems/3.3.0/gems/rspec-core-*/exe/rspec \
-              --pattern "$TEST_FILES" \
-              --format documentation \
-              --color \
-              --order defined
+            ${rspecCmd { srcLib = "$src/lib"; testArgs = ''--pattern "$TEST_FILES"''; }}
           else
-            ${ruby}/bin/ruby \
-              -I${env}/lib/ruby/gems/3.3.0/gems/rspec-core-*/lib \
-              -I${env}/lib/ruby/gems/3.3.0/gems/rspec-support-*/lib \
-              -I${env}/lib/ruby/gems/3.3.0/gems/rspec-expectations-*/lib \
-              -I${env}/lib/ruby/gems/3.3.0/gems/rspec-mocks-*/lib \
-              -I${env}/lib/ruby/gems/3.3.0/gems/diff-lcs-*/lib \
-              -I${env}/lib/ruby/gems/3.3.0/gems/terraform-synthesizer-*/lib \
-              -I${env}/lib/ruby/gems/3.3.0/gems/abstract-synthesizer-*/lib \
-              -I${env}/lib/ruby/gems/3.3.0/gems/dry-types-*/lib \
-              -I${env}/lib/ruby/gems/3.3.0/gems/dry-struct-*/lib \
-              -I${env}/lib/ruby/gems/3.3.0/gems/dry-core-*/lib \
-              -I${env}/lib/ruby/gems/3.3.0/gems/dry-logic-*/lib \
-              -I${env}/lib/ruby/gems/3.3.0/gems/dry-inflector-*/lib \
-              -I${env}/lib/ruby/gems/3.3.0/gems/ice_nine-*/lib \
-              -I${env}/lib/ruby/gems/3.3.0/gems/concurrent-ruby-*/lib \
-              -I${env}/lib/ruby/gems/3.3.0/gems/psych-*/lib \
-              -I$src/lib \
-              ${env}/lib/ruby/gems/3.3.0/gems/rspec-core-*/exe/rspec \
-              $TEST_FILES \
-              --format documentation \
-              --color \
-              --order defined
+            ${rspecCmd { srcLib = "$src/lib"; testArgs = "$TEST_FILES"; }}
           fi
         '';
 
@@ -468,61 +452,9 @@
             echo ""
 
             if [[ "$TEST_FILES" == *"*"* ]]; then
-              ${ruby}/bin/ruby \
-                -I${env}/lib/ruby/gems/3.3.0/gems/rspec-core-*/lib \
-                -I${env}/lib/ruby/gems/3.3.0/gems/rspec-support-*/lib \
-                -I${env}/lib/ruby/gems/3.3.0/gems/rspec-expectations-*/lib \
-                -I${env}/lib/ruby/gems/3.3.0/gems/rspec-mocks-*/lib \
-                -I${env}/lib/ruby/gems/3.3.0/gems/diff-lcs-*/lib \
-                -I${env}/lib/ruby/gems/3.3.0/gems/terraform-synthesizer-*/lib \
-                -I${env}/lib/ruby/gems/3.3.0/gems/abstract-synthesizer-*/lib \
-                -I${env}/lib/ruby/gems/3.3.0/gems/dry-types-*/lib \
-                -I${env}/lib/ruby/gems/3.3.0/gems/dry-struct-*/lib \
-                -I${env}/lib/ruby/gems/3.3.0/gems/dry-core-*/lib \
-                -I${env}/lib/ruby/gems/3.3.0/gems/dry-logic-*/lib \
-                -I${env}/lib/ruby/gems/3.3.0/gems/dry-inflector-*/lib \
-                -I${env}/lib/ruby/gems/3.3.0/gems/ice_nine-*/lib \
-                -I${env}/lib/ruby/gems/3.3.0/gems/concurrent-ruby-*/lib \
-                -I${env}/lib/ruby/gems/3.3.0/gems/psych-*/lib \
-                -I${env}/lib/ruby/gems/3.3.0/gems/simplecov-*/lib \
-                -I${env}/lib/ruby/gems/3.3.0/gems/simplecov-html-*/lib \
-                -I${env}/lib/ruby/gems/3.3.0/gems/simplecov_json_formatter-*/lib \
-                -I${env}/lib/ruby/gems/3.3.0/gems/simplecov-lcov-*/lib \
-                -I${env}/lib/ruby/gems/3.3.0/gems/docile-*/lib \
-                -I${./.}/lib \
-                ${env}/lib/ruby/gems/3.3.0/gems/rspec-core-*/exe/rspec \
-                --pattern "$TEST_FILES" \
-                --format documentation \
-                --color \
-                --order defined
+              ${rspecCmd { srcLib = "${./.}/lib"; gems = rspecBaseGems ++ rspecCoverageGems; testArgs = ''--pattern "$TEST_FILES"''; }}
             else
-              ${ruby}/bin/ruby \
-                -I${env}/lib/ruby/gems/3.3.0/gems/rspec-core-*/lib \
-                -I${env}/lib/ruby/gems/3.3.0/gems/rspec-support-*/lib \
-                -I${env}/lib/ruby/gems/3.3.0/gems/rspec-expectations-*/lib \
-                -I${env}/lib/ruby/gems/3.3.0/gems/rspec-mocks-*/lib \
-                -I${env}/lib/ruby/gems/3.3.0/gems/diff-lcs-*/lib \
-                -I${env}/lib/ruby/gems/3.3.0/gems/terraform-synthesizer-*/lib \
-                -I${env}/lib/ruby/gems/3.3.0/gems/abstract-synthesizer-*/lib \
-                -I${env}/lib/ruby/gems/3.3.0/gems/dry-types-*/lib \
-                -I${env}/lib/ruby/gems/3.3.0/gems/dry-struct-*/lib \
-                -I${env}/lib/ruby/gems/3.3.0/gems/dry-core-*/lib \
-                -I${env}/lib/ruby/gems/3.3.0/gems/dry-logic-*/lib \
-                -I${env}/lib/ruby/gems/3.3.0/gems/dry-inflector-*/lib \
-                -I${env}/lib/ruby/gems/3.3.0/gems/ice_nine-*/lib \
-                -I${env}/lib/ruby/gems/3.3.0/gems/concurrent-ruby-*/lib \
-                -I${env}/lib/ruby/gems/3.3.0/gems/psych-*/lib \
-                -I${env}/lib/ruby/gems/3.3.0/gems/simplecov-*/lib \
-                -I${env}/lib/ruby/gems/3.3.0/gems/simplecov-html-*/lib \
-                -I${env}/lib/ruby/gems/3.3.0/gems/simplecov_json_formatter-*/lib \
-                -I${env}/lib/ruby/gems/3.3.0/gems/simplecov-lcov-*/lib \
-                -I${env}/lib/ruby/gems/3.3.0/gems/docile-*/lib \
-                -I${./.}/lib \
-                ${env}/lib/ruby/gems/3.3.0/gems/rspec-core-*/exe/rspec \
-                $TEST_FILES \
-                --format documentation \
-                --color \
-                --order defined
+              ${rspecCmd { srcLib = "${./.}/lib"; gems = rspecBaseGems ++ rspecCoverageGems; testArgs = "$TEST_FILES"; }}
             fi
 
             echo ""
