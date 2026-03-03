@@ -1,0 +1,80 @@
+# RBS type definitions for AWS CloudWatch Event Target
+
+module Pangea
+  module Resources
+    module AWS
+      # Input transformer configuration
+      type input_transformer = {
+        input_paths_map?: Hash[String, String]?,
+        input_template: String
+      }
+
+      # Retry policy configuration
+      type retry_policy = {
+        maximum_event_age_in_seconds?: Integer?,
+        maximum_retry_attempts?: Integer?
+      }
+
+      # Dead letter configuration
+      type dead_letter_config = {
+        arn: String
+      }
+
+      # ECS target configuration
+      type ecs_target = {
+        task_definition_arn: String,
+        task_count?: Integer?,
+        launch_type?: String?,
+        platform_version?: String?,
+        group?: String?,
+        network_configuration?: Hash[Symbol, untyped]?,
+        placement_constraints?: Array[Hash[Symbol, untyped]]?,
+        placement_strategy?: Array[Hash[Symbol, untyped]]?,
+        capacity_provider_strategy?: Array[Hash[Symbol, untyped]]?,
+        tags?: Hash[String, String]?
+      }
+
+      # Batch target configuration
+      type batch_target = {
+        job_definition: String,
+        job_name: String,
+        array_size?: Integer?,
+        job_attempts?: Integer?
+      }
+
+      # CloudWatch Event Target attributes
+      type cloudwatch_event_target_attributes = {
+        rule: String,
+        arn: String,
+        target_id?: String?,
+        event_bus_name?: String?,
+        input?: String?,
+        input_path?: String?,
+        input_transformer?: input_transformer?,
+        role_arn?: String?,
+        ecs_target?: ecs_target?,
+        batch_target?: batch_target?,
+        kinesis_target?: Hash[Symbol, untyped]?,
+        sqs_target?: Hash[Symbol, untyped]?,
+        http_target?: Hash[Symbol, untyped]?,
+        run_command_targets?: Array[Hash[Symbol, untyped]]?,
+        redshift_target?: Hash[Symbol, untyped]?,
+        sage_maker_pipeline_target?: Hash[Symbol, untyped]?,
+        retry_policy?: retry_policy?,
+        dead_letter_config?: dead_letter_config?
+      }
+
+      # CloudWatch Event Target computed properties
+      type cloudwatch_event_target_computed_properties = {
+        target_service: Symbol,
+        requires_role: bool,
+        has_input_transformation: bool,
+        has_retry_policy: bool,
+        has_dead_letter_queue: bool
+      }
+
+      # AWS CloudWatch Event Target resource function
+      def aws_cloudwatch_event_target: (Symbol name, cloudwatch_event_target_attributes attributes) -> ResourceReference
+    end
+  end
+end

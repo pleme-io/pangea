@@ -1,0 +1,29 @@
+# RBS type definitions for AWS SQS Queue Policy
+
+module Pangea
+  module Resources
+    module AWS
+      # SQS queue policy attributes type
+      type sqs_queue_policy_attributes = {
+        queue_url: String,
+        policy: String
+      }
+
+      # AWS SQS Queue Policy resource function
+      def aws_sqs_queue_policy: (Symbol name, sqs_queue_policy_attributes attributes) -> ResourceReference
+
+      # SQS Queue Policy Attributes class
+      class SQSQueuePolicyAttributes < Dry::Struct
+        attr_reader queue_url: String
+        attr_reader policy: String
+
+        def policy_document: () -> Hash[String, untyped]
+        def statement_count: () -> Integer
+        def allows_cross_account?: () -> bool
+        def allows_public_access?: () -> bool
+        def allowed_actions: () -> Array[String]
+        def denied_actions: () -> Array[String]
+      end
+    end
+  end
+end

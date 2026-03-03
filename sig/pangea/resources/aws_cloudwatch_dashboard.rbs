@@ -1,0 +1,69 @@
+# RBS type definitions for AWS CloudWatch Dashboard
+
+module Pangea
+  module Resources
+    module AWS
+      # Dashboard metric configuration
+      type dashboard_metric = {
+        namespace: String,
+        metric_name: String,
+        dimensions?: Hash[String, String]?,
+        stat?: ("Average" | "Maximum" | "Minimum" | "SampleCount" | "Sum" | "p50" | "p90" | "p95" | "p99" | "p99.9")?,
+        period?: Integer?,
+        region?: String?,
+        label?: String?
+      }
+
+      # Dashboard widget properties
+      type dashboard_widget_properties = {
+        # Metric widget properties
+        metrics?: Array[Array[String]]?,
+        view?: ("timeSeries" | "singleValue" | "pie" | "bar" | "number")?,
+        stacked?: bool?,
+        region?: String?,
+        title?: String?,
+        period?: Integer?,
+        stat?: String?,
+        yaxis?: Hash[String, untyped]?,
+        
+        # Text widget properties
+        markdown?: String?,
+        
+        # Log widget properties
+        query?: String?,
+        source?: String?,
+        log_group?: String?
+      }
+
+      # Dashboard widget configuration
+      type dashboard_widget = {
+        type: ("metric" | "text" | "log" | "number" | "explorer"),
+        x: Integer,
+        y: Integer,
+        width: Integer,
+        height: Integer,
+        properties: dashboard_widget_properties
+      }
+
+      # CloudWatch Dashboard attributes
+      type cloudwatch_dashboard_attributes = {
+        dashboard_name: String,
+        dashboard_body?: Hash[String, untyped]?,
+        dashboard_body_json?: String?,
+        widgets?: Array[dashboard_widget]?
+      }
+
+      # CloudWatch Dashboard computed properties
+      type cloudwatch_dashboard_computed_properties = {
+        widget_count: Integer,
+        has_custom_body: bool,
+        uses_widgets: bool,
+        dashboard_grid_height: Integer,
+        estimated_monthly_cost_usd: Float
+      }
+
+      # AWS CloudWatch Dashboard resource function
+      def aws_cloudwatch_dashboard: (Symbol name, cloudwatch_dashboard_attributes attributes) -> ResourceReference
+    end
+  end
+end

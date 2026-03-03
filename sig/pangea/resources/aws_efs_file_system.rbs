@@ -1,0 +1,34 @@
+# AWS EFS File System resource type signatures
+
+module Pangea
+  module Resources
+    module AWS
+      module Types
+        class EfsFileSystemAttributes < Dry::Struct
+          def self.new: (untyped attributes) -> EfsFileSystemAttributes
+          
+          def creation_token: () -> String?
+          def performance_mode: () -> ("generalPurpose" | "maxIO")
+          def throughput_mode: () -> ("bursting" | "provisioned")
+          def provisioned_throughput_in_mibps: () -> Integer?
+          def encrypted: () -> bool
+          def kms_key_id: () -> String?
+          def lifecycle_policy: () -> Hash[Symbol, String]?
+          def availability_zone_name: () -> String?
+          def tags: () -> Hash[Symbol, String]
+          
+          def is_one_zone?: () -> bool
+          def is_regional?: () -> bool
+          def storage_class: () -> ("One Zone" | "Regional")
+          def estimated_monthly_cost_per_gb: () -> Hash[Symbol, Float]
+        end
+      end
+      
+      # EFS File System resource function
+      def aws_efs_file_system: (
+        Symbol name,
+        ?Hash[Symbol, untyped] attributes
+      ) -> ResourceReference
+    end
+  end
+end

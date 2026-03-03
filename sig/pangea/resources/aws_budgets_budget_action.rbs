@@ -1,0 +1,95 @@
+# RBS type definitions for AWS Budgets Budget Action
+
+module Pangea
+  module Resources
+    module AWS
+      # Budget action types for automated responses
+      type budget_action_type = "APPLY_IAM_POLICY" | "APPLY_SCP_POLICY" | "RUN_SSM_DOCUMENTS"
+      
+      # Budget action status
+      type budget_action_status = "STANDBY" | "PENDING" | "EXECUTION_IN_PROGRESS" | "EXECUTION_SUCCESS" | "EXECUTION_FAILURE" | "REVERSE_IN_PROGRESS" | "REVERSE_SUCCESS" | "REVERSE_FAILURE" | "RESET"
+      
+      # Budget action notification type
+      type action_notification_type = "ACTUAL" | "FORECASTED"
+      
+      # Budget action approval model
+      type budget_action_approval_model = "AUTOMATIC" | "MANUAL"
+      
+      # Budget action subscriber
+      type action_subscriber = {
+        subscription_type: ("EMAIL" | "SNS"),
+        address: String
+      }
+      
+      # IAM policy definition for budget actions
+      type budget_iam_policy_definition = {
+        policy_arn: String,
+        roles?: Array[String]?,
+        groups?: Array[String]?,
+        users?: Array[String]?
+      }
+      
+      # Service Control Policy definition for budget actions
+      type budget_scp_policy_definition = {
+        policy_id: String,
+        target_ids: Array[String]
+      }
+      
+      # SSM document parameter
+      type budget_ssm_parameter = {
+        name: String,
+        value: String
+      }
+      
+      # SSM document definition for budget actions
+      type budget_ssm_document_definition = {
+        ssm_action_type: ("START_EC2_INSTANCES" | "STOP_EC2_INSTANCES" | "START_RDS_INSTANCES" | "STOP_RDS_INSTANCES"),
+        region: String,
+        instance_ids?: Array[String]?,
+        parameters?: Array[budget_ssm_parameter]?
+      }
+      
+      # Budget action definition union type
+      type budget_action_definition = {
+        iam_action_definition?: budget_iam_policy_definition?,
+        scp_action_definition?: budget_scp_policy_definition?,
+        ssm_action_definition?: budget_ssm_document_definition?
+      }
+      
+      # Budget action resource attributes
+      type budget_action_attributes = {
+        budget_name: String,
+        action_type: budget_action_type,
+        approval_model: budget_action_approval_model,
+        notification_type: action_notification_type,
+        action_threshold: Numeric,
+        action_threshold_type: ("PERCENTAGE" | "ABSOLUTE_VALUE"),
+        definition: budget_action_definition,
+        execution_role_arn: String,
+        subscribers?: Array[action_subscriber]?,
+        tags?: Hash[Symbol, String]?
+      }
+      
+      # Budget action computed properties
+      type budget_action_computed_properties = {
+        is_preventive_action: bool,
+        is_reactive_action: bool,
+        affects_iam_permissions: bool,
+        affects_organization_policies: bool,
+        affects_resource_state: bool,
+        requires_manual_approval: bool,
+        is_automatic: bool,
+        target_count: Integer,
+        subscriber_count: Integer,
+        has_email_notifications: bool,
+        has_sns_notifications: bool,
+        automation_risk_score: Integer,
+        risk_level: ("MINIMAL" | "LOW" | "MEDIUM" | "HIGH" | "CRITICAL"),
+        governance_compliance_score: Integer
+      }
+      
+      # AWS Budgets Budget Action resource function
+      def aws_budgets_budget_action: (Symbol name, budget_action_attributes attributes) -> ResourceReference
+    end
+  end
+end

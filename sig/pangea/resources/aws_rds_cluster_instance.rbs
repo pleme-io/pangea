@@ -1,0 +1,128 @@
+# RBS type definitions for AWS RDS Cluster Instance resources
+
+module Pangea
+  module Resources
+    module AWS
+      # RDS Cluster Instance attributes type
+      type rds_cluster_instance_attributes = {
+        identifier?: String?,
+        identifier_prefix?: String?,
+        cluster_identifier: String,
+        instance_class: ("db.t3.small" | "db.t3.medium" | "db.t3.large" | "db.t3.xlarge" | "db.t3.2xlarge" | "db.t4g.micro" | "db.t4g.small" | "db.t4g.medium" | "db.t4g.large" | "db.t4g.xlarge" | "db.t4g.2xlarge" | "db.r5.large" | "db.r5.xlarge" | "db.r5.2xlarge" | "db.r5.4xlarge" | "db.r5.8xlarge" | "db.r5.12xlarge" | "db.r5.16xlarge" | "db.r5.24xlarge" | "db.r6g.large" | "db.r6g.xlarge" | "db.r6g.2xlarge" | "db.r6g.4xlarge" | "db.r6g.8xlarge" | "db.r6g.12xlarge" | "db.r6g.16xlarge" | "db.r6i.large" | "db.r6i.xlarge" | "db.r6i.2xlarge" | "db.r6i.4xlarge" | "db.r6i.8xlarge" | "db.r6i.12xlarge" | "db.r6i.16xlarge" | "db.r6i.24xlarge" | "db.r6i.32xlarge" | "db.x2g.medium" | "db.x2g.large" | "db.x2g.xlarge" | "db.x2g.2xlarge" | "db.x2g.4xlarge" | "db.x2g.8xlarge" | "db.x2g.12xlarge" | "db.x2g.16xlarge" | "serverless"),
+        engine?: String?,
+        engine_version?: String?,
+        availability_zone?: String?,
+        db_parameter_group_name?: String?,
+        publicly_accessible?: bool?,
+        monitoring_interval?: Integer?,
+        monitoring_role_arn?: String?,
+        performance_insights_enabled?: bool?,
+        performance_insights_kms_key_id?: String?,
+        performance_insights_retention_period?: Integer?,
+        preferred_backup_window?: String?,
+        preferred_maintenance_window?: String?,
+        auto_minor_version_upgrade?: bool?,
+        apply_immediately?: bool?,
+        copy_tags_to_snapshot?: bool?,
+        ca_cert_identifier?: String?,
+        promotion_tier?: Integer?,
+        tags?: Hash[Symbol, String]?
+      }
+
+      # Performance characteristics type
+      type performance_characteristics = {
+        vcpus: (Integer | String),
+        memory_gb: (Integer | String),
+        instance_family: String,
+        instance_size: String,
+        is_burstable: bool,
+        is_memory_optimized: bool,
+        is_graviton: bool,
+        supports_performance_insights: bool,
+        supports_enhanced_monitoring: bool
+      }
+
+      # RDS Cluster Instance computed attributes
+      class RdsClusterInstanceComputedAttributes < BaseComputedAttributes
+        def is_serverless?: () -> bool
+        def is_burstable?: () -> bool
+        def is_memory_optimized?: () -> bool
+        def is_graviton?: () -> bool
+        def instance_family: () -> String
+        def instance_size: () -> String
+        def can_be_writer?: () -> bool
+        def is_likely_reader?: () -> bool
+        def role_description: () -> String
+        def has_enhanced_monitoring?: () -> bool
+        def has_performance_insights?: () -> bool
+        def estimated_vcpus: () -> (Integer | String)
+        def estimated_memory_gb: () -> (Integer | String)
+        def supports_performance_insights?: () -> bool
+        def supports_enhanced_monitoring?: () -> bool
+        def performance_characteristics: () -> performance_characteristics
+        def estimated_monthly_cost: () -> String
+      end
+
+      # RDS Cluster Instance resource function
+      def aws_rds_cluster_instance: (Symbol name, rds_cluster_instance_attributes attributes) -> ResourceReference
+
+      # RDS Cluster Instance attributes struct
+      class RdsClusterInstanceAttributes < Dry::Struct
+        attribute? :identifier, String?
+        attribute? :identifier_prefix, String?
+        attribute :cluster_identifier, String
+        attribute :instance_class, String
+        attribute? :engine, String?
+        attribute? :engine_version, String?
+        attribute? :availability_zone, String?
+        attribute? :db_parameter_group_name, String?
+        attribute :publicly_accessible, bool
+        attribute :monitoring_interval, Integer
+        attribute? :monitoring_role_arn, String?
+        attribute :performance_insights_enabled, bool
+        attribute? :performance_insights_kms_key_id, String?
+        attribute :performance_insights_retention_period, Integer
+        attribute? :preferred_backup_window, String?
+        attribute? :preferred_maintenance_window, String?
+        attribute :auto_minor_version_upgrade, bool
+        attribute :apply_immediately, bool
+        attribute :copy_tags_to_snapshot, bool
+        attribute? :ca_cert_identifier, String?
+        attribute :promotion_tier, Integer
+        attribute :tags, Hash[Symbol, String]
+
+        def self.new: (Hash[Symbol, untyped] attributes) -> RdsClusterInstanceAttributes
+
+        def is_serverless?: () -> bool
+        def is_burstable?: () -> bool
+        def is_memory_optimized?: () -> bool
+        def is_graviton?: () -> bool
+        def has_enhanced_monitoring?: () -> bool
+        def has_performance_insights?: () -> bool
+        def instance_family: () -> String
+        def instance_size: () -> String
+        def can_be_writer?: () -> bool
+        def is_likely_reader?: () -> bool
+        def role_description: () -> String
+        def estimated_vcpus: () -> (Integer | String)
+        def estimated_memory_gb: () -> (Integer | String)
+        def estimated_monthly_cost: () -> String
+        def supports_performance_insights?: () -> bool
+        def supports_enhanced_monitoring?: () -> bool
+        def performance_characteristics: () -> performance_characteristics
+      end
+
+      # Aurora instance configurations module
+      module AuroraInstanceConfigs
+        def self.writer_instance: (?instance_class: String) -> Hash[Symbol, untyped]
+        def self.reader_instance: (?instance_class: String, ?tier: Integer) -> Hash[Symbol, untyped]
+        def self.development_instance: () -> Hash[Symbol, untyped]
+        def self.production_writer: () -> Hash[Symbol, untyped]
+        def self.production_reader: (?tier: Integer) -> Hash[Symbol, untyped]
+        def self.graviton_writer: () -> Hash[Symbol, untyped]
+        def self.graviton_reader: (?tier: Integer) -> Hash[Symbol, untyped]
+        def self.multi_az_deployment: () -> Hash[Symbol, Hash[Symbol, untyped]]
+      end
+    end
+  end
+end

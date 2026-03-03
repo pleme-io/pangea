@@ -1,0 +1,176 @@
+# RBS type definitions for AWS Cognito User Pool
+
+module Pangea
+  module Resources
+    module AWS
+      # Password policy configuration
+      type cognito_user_pool_password_policy = {
+        minimum_length: Integer,
+        require_lowercase?: bool?,
+        require_numbers?: bool?,
+        require_symbols?: bool?,
+        require_uppercase?: bool?,
+        temporary_password_validity_days?: Integer?
+      }
+
+      # Device configuration
+      type cognito_user_pool_device_configuration = {
+        challenge_required_on_new_device?: bool?,
+        device_only_remembered_on_user_prompt?: bool?
+      }
+
+      # Email configuration
+      type cognito_user_pool_email_configuration = {
+        configuration_set?: String?,
+        email_sending_account?: ("COGNITO_DEFAULT" | "DEVELOPER")?,
+        from_email_address?: String?,
+        reply_to_email_address?: String?,
+        source_arn?: String?
+      }
+
+      # SMS configuration
+      type cognito_user_pool_sms_configuration = {
+        external_id: String,
+        sns_caller_arn: String,
+        sns_region?: String?
+      }
+
+      # Lambda configuration
+      type cognito_user_pool_lambda_config = {
+        create_auth_challenge?: String?,
+        custom_message?: String?,
+        define_auth_challenge?: String?,
+        post_authentication?: String?,
+        post_confirmation?: String?,
+        pre_authentication?: String?,
+        pre_sign_up?: String?,
+        pre_token_generation?: String?,
+        user_migration?: String?,
+        verify_auth_challenge_response?: String?,
+        kms_key_id?: String?
+      }
+
+      # User pool schema attribute
+      type cognito_user_pool_schema_attribute = {
+        attribute_data_type: ("String" | "Number" | "DateTime" | "Boolean"),
+        name: String,
+        developer_only_attribute?: bool?,
+        mutable?: bool?,
+        required?: bool?,
+        number_attribute_constraints?: {
+          max_value?: String?,
+          min_value?: String?
+        }?,
+        string_attribute_constraints?: {
+          max_length?: String?,
+          min_length?: String?
+        }?
+      }
+
+      # User attribute update settings
+      type cognito_user_pool_user_attribute_update_settings = {
+        attributes_require_verification_before_update: Array[("phone_number" | "email")]
+      }
+
+      # Verification message template
+      type cognito_user_pool_verification_message_template = {
+        default_email_option?: ("CONFIRM_WITH_LINK" | "CONFIRM_WITH_CODE")?,
+        email_message?: String?,
+        email_message_by_link?: String?,
+        email_subject?: String?,
+        email_subject_by_link?: String?,
+        sms_message?: String?
+      }
+
+      # Account recovery mechanism
+      type cognito_user_pool_recovery_mechanism = {
+        name: ("verified_email" | "verified_phone_number" | "admin_only"),
+        priority: Integer
+      }
+
+      # Account recovery setting
+      type cognito_user_pool_account_recovery_setting = {
+        recovery_mechanisms: Array[cognito_user_pool_recovery_mechanism]
+      }
+
+      # Invite message template
+      type cognito_user_pool_invite_message_template = {
+        email_message?: String?,
+        email_subject?: String?,
+        sms_message?: String?
+      }
+
+      # Admin create user config
+      type cognito_user_pool_admin_create_user_config = {
+        allow_admin_create_user_only?: bool?,
+        invite_message_template?: cognito_user_pool_invite_message_template?,
+        unused_account_validity_days?: Integer?
+      }
+
+      # User pool add-ons
+      type cognito_user_pool_add_ons = {
+        advanced_security_mode: ("OFF" | "AUDIT" | "ENFORCED")
+      }
+
+      # Username configuration
+      type cognito_user_pool_username_configuration = {
+        case_sensitive: bool
+      }
+
+      # Software token MFA configuration
+      type cognito_user_pool_software_token_mfa_configuration = {
+        enabled: bool
+      }
+
+      # Cognito User Pool attributes
+      type cognito_user_pool_attributes = {
+        name?: String?,
+        alias_attributes?: Array[("phone_number" | "email" | "preferred_username")]?,
+        auto_verified_attributes?: Array[("phone_number" | "email")]?,
+        username_attributes?: Array[("phone_number" | "email")]?,
+        username_configuration?: cognito_user_pool_username_configuration?,
+        password_policy?: cognito_user_pool_password_policy?,
+        mfa_configuration?: ("ON" | "OFF" | "OPTIONAL")?,
+        sms_authentication_message?: String?,
+        sms_configuration?: cognito_user_pool_sms_configuration?,
+        software_token_mfa_configuration?: cognito_user_pool_software_token_mfa_configuration?,
+        device_configuration?: cognito_user_pool_device_configuration?,
+        email_configuration?: cognito_user_pool_email_configuration?,
+        email_verification_message?: String?,
+        email_verification_subject?: String?,
+        sms_verification_message?: String?,
+        lambda_config?: cognito_user_pool_lambda_config?,
+        schema?: Array[cognito_user_pool_schema_attribute]?,
+        user_attribute_update_settings?: cognito_user_pool_user_attribute_update_settings?,
+        verification_message_template?: cognito_user_pool_verification_message_template?,
+        account_recovery_setting?: cognito_user_pool_account_recovery_setting?,
+        admin_create_user_config?: cognito_user_pool_admin_create_user_config?,
+        user_pool_add_ons?: cognito_user_pool_add_ons?,
+        tags?: Hash[String, String]?,
+        deletion_protection?: ("ACTIVE" | "INACTIVE")?
+      }
+
+      # Cognito User Pool computed properties
+      type cognito_user_pool_computed_properties = {
+        uses_email_auth: bool,
+        uses_phone_auth: bool,
+        mfa_enabled: bool,
+        mfa_optional: bool,
+        primary_auth_method: (:username | :email | :phone),
+        advanced_security_enabled: bool
+      }
+
+      # AWS Cognito User Pool resource function
+      def aws_cognito_user_pool: (Symbol name, cognito_user_pool_attributes attributes) -> ResourceReference
+
+      # Pre-configured user pool templates
+      module UserPoolTemplates
+        def self.basic_email_auth: (String pool_name) -> Hash[Symbol, untyped]
+        def self.phone_auth: (String pool_name, String sns_role_arn) -> Hash[Symbol, untyped]
+        def self.mfa_enabled: (String pool_name) -> Hash[Symbol, untyped]
+        def self.enterprise_security: (String pool_name) -> Hash[Symbol, untyped]
+        def self.social_signin: (String pool_name) -> Hash[Symbol, untyped]
+      end
+    end
+  end
+end

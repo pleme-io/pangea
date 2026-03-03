@@ -1,0 +1,42 @@
+# RBS type definitions for AWS ECR Replication Configuration
+
+module Pangea
+  module Resources
+    module AWS
+      # ECR Replication Configuration destination
+      type ecr_replication_destination = {
+        region: String,
+        registry_id?: String?
+      }
+
+      # ECR Replication Configuration rule
+      type ecr_replication_rule = {
+        destination: Array[ecr_replication_destination]
+      }
+
+      # ECR Replication Configuration attributes
+      type ecr_replication_configuration_attributes = {
+        replication_configuration: {
+          rule: Array[ecr_replication_rule]
+        }
+      }
+
+      # ECR Replication Configuration computed properties
+      type ecr_replication_configuration_computed_properties = {
+        rule_count: Integer,
+        destination_count: Integer,
+        destination_regions: Array[String],
+        destination_accounts: Array[String],
+        has_cross_account_replication: bool,
+        has_cross_region_replication: bool,
+        is_same_account_replication: bool,
+        all_destinations_have_registry_id: bool,
+        replication_scope: Symbol,
+        estimated_monthly_cost_multiplier: Integer
+      }
+
+      # AWS ECR Replication Configuration resource function
+      def aws_ecr_replication_configuration: (Symbol name, ecr_replication_configuration_attributes attributes) -> ResourceReference
+    end
+  end
+end

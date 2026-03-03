@@ -1,0 +1,35 @@
+module Pangea
+  module Resources
+    module AWS
+      # Type-safe attributes for AWS MediaPackage Channel resources
+      class MediaPackageChannelAttributes < Dry::Struct
+        # Channel ID (required) - must be unique within account
+        def channel_id: () -> String
+
+        # Channel description for documentation
+        def description: () -> String
+
+        # HLS ingest configuration  
+        def hls_ingest: () -> Hash[Symbol, untyped]
+
+        # Tags
+        def tags: () -> Hash[String | Symbol, String]
+
+        # Helper methods
+        def has_ingest_endpoints?: () -> bool
+        def ingest_endpoint_count: () -> Integer
+        def primary_ingest_endpoint: () -> Hash[Symbol, untyped]?
+        def backup_ingest_endpoints: () -> Array[Hash[Symbol, untyped]]
+        def has_redundant_ingest?: () -> bool
+        def channel_id_valid?: () -> bool
+      end
+
+      # Create an AWS MediaPackage Channel with type-safe attributes
+      #
+      # @param name The resource name
+      # @param attributes MediaPackage channel attributes
+      # @return Reference object with outputs and computed properties
+      def aws_media_package_channel: (Symbol name, Hash[Symbol, untyped] attributes) -> ResourceReference
+    end
+  end
+end

@@ -1,0 +1,31 @@
+require 'spec_helper'
+
+RSpec.describe "<%= resource_method %> synthesis" do
+  include Pangea::Resources::AWS
+  include Pangea::Testing::SynthesisHelpers
+  
+  let(:test_data) { TestDataRegistry.instance.for_resource(:<%= resource_type %>) }
+  
+  describe "terraform synthesis" do
+    it "generates valid Terraform JSON" do
+      result = synthesize_and_validate do
+        <%= resource_method %>(:test, test_data[:valid])
+      end
+      
+      expect(result).to have_key("resource")
+      expect(result["resource"]).to have_key("<%= resource_type %>")
+      expect(result["resource"]["<%= resource_type %>"]).to have_key("test")
+    end
+    
+    it "includes all required attributes" do
+      result = synthesize_and_validate do
+        <%= resource_method %>(:test, test_data[:valid])
+      end
+      
+      resource_json = result["resource"]["<%= resource_type %>"]["test"]
+      test_data[:valid].each do |key, value|
+        expect(resource_json[key.to_s]).to eq(value)
+      end
+    end
+  end
+end

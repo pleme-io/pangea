@@ -1,0 +1,204 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+# Helper script to generate Hetzner Cloud resource boilerplate
+#
+# Usage: bin/generate-hetzner-resource <resource_name> <attributes_yaml>
+
+require 'yaml'
+require 'fileutils'
+
+def generate_resource(resource_name, config)
+  base_path = File.join(__dir__, '..')
+
+  # Create directories
+  lib_dir = File.join(base_path, 'lib', 'pangea', 'resources', resource_name)
+  spec_dir = File.join(base_path, 'spec', 'resources', resource_name)
+
+  FileUtils.mkdir_p(lib_dir)
+  FileUtils.mkdir_p(spec_dir)
+
+  # Generate types.rb
+  types_content = generate_types(resource_name, config)
+  File.write(File.join(lib_dir, 'types.rb'), types_content)
+
+  # Generate resource.rb
+  resource_content = generate_resource_file(resource_name, config)
+  File.write(File.join(lib_dir, 'resource.rb'), resource_content)
+
+  # Generate synthesis_spec.rb
+  spec_content = generate_spec(resource_name, config)
+  File.write(File.join(spec_dir, 'synthesis_spec.rb'), spec_content)
+
+  puts "✅ Generated #{resource_name}"
+  puts "   - lib/pangea/resources/#{resource_name}/types.rb"
+  puts "   - lib/pangea/resources/#{resource_name}/resource.rb"
+  puts "   - spec/resources/#{resource_name}/synthesis_spec.rb"
+end
+
+def camelize(str)
+  str.split('_').map(&:capitalize).join
+end
+
+def module_name(resource_name)
+  camelize(resource_name)
+end
+
+def generate_types(resource_name, config)
+  mod_name = module_name(resource_name)
+  attributes = config['attributes'] || []
+
+  attrs_code = attributes.map do |attr|
+    name = attr['name']
+    type = attr['type']
+    required = attr.fetch('required', false)
+    default = attr['default']
+
+    if required
+      "          attribute :#{name}, Resources::Types::#{type}"
+    elsif default
+      "          attribute :#{name}, Resources::Types::#{type}.default(#{default.inspect})"
+    else
+      "          attribute :#{name}, Resources::Types::#{type}.optional.default(nil)"
+    end
+  end.join("\n")
+
+  <<~RUBY
+    # frozen_string_literal: true
+    # Copyright 2025 The Pangea Authors
+
+    require 'dry-struct'
+    require 'pangea/resources/types'
+
+    module Pangea
+      module Resources
+        module Hetzner
+          module Types
+            # #{config['description']}
+            class #{mod_name}Attributes < Dry::Struct
+              transform_keys(&:to_sym)
+
+    #{attrs_code}
+            end
+          end
+        end
+      end
+    end
+  RUBY
+end
+
+def generate_resource_file(resource_name, config)
+  mod_name = module_name(resource_name)
+  attributes = config['attributes'] || []
+  outputs = config['outputs'] || []
+
+  # Generate resource block code
+  attr_code = attributes.map do |attr|
+    name = attr['name']
+    if attr['nested']
+      generate_nested_block(name, attr)
+    elsif attr['array']
+      "          #{name} #{resource_name}_attrs.#{name} if #{resource_name}_attrs.#{name}.any?"
+    elsif attr.fetch('required', false)
+      "          #{name} #{resource_name}_attrs.#{name}"
+    else
+      "          #{name} #{resource_name}_attrs.#{name} if #{resource_name}_attrs.#{name}"
+    end
+  end.join("\n")
+
+  # Generate outputs hash
+  outputs_code = outputs.map do |output|
+    "            #{output}: \"${#{resource_name}.#{name}.#{output}}\","
+  end.join("\n")
+
+  <<~RUBY
+    # frozen_string_literal: true
+    # Copyright 2025 The Pangea Authors
+
+    require 'pangea/resources/base'
+    require 'pangea/resources/reference'
+    require 'pangea/resources/#{resource_name}/types'
+    require 'pangea/resource_registry'
+
+    module Pangea
+      module Resources
+        module #{mod_name}
+          # #{config['description']}
+          def #{resource_name}(name, attributes = {})
+            #{resource_name}_attrs = Hetzner::Types::#{mod_name}Attributes.new(attributes)
+
+            resource(:#{resource_name}, name) do
+    #{attr_code}
+            end
+
+            ResourceReference.new(
+              type: '#{resource_name}',
+              name: name,
+              resource_attributes: #{resource_name}_attrs.to_h,
+              outputs: {
+    #{outputs_code}
+              }
+            )
+          end
+        end
+
+        module Hetzner
+          include #{mod_name}
+        end
+      end
+    end
+
+    Pangea::ResourceRegistry.register_module(Pangea::Resources::Hetzner)
+  RUBY
+end
+
+def generate_spec(resource_name, config)
+  mod_name = module_name(resource_name)
+  example = config['example'] || {}
+
+  <<~RUBY
+    # frozen_string_literal: true
+    # Copyright 2025 The Pangea Authors
+
+    require 'spec_helper'
+    require 'terraform-synthesizer'
+    require 'pangea/resources/#{resource_name}/resource'
+
+    RSpec.describe '#{resource_name} synthesis' do
+      include Pangea::Resources::Hetzner
+
+      let(:synthesizer) { TerraformSynthesizer.new }
+
+      it 'synthesizes basic configuration' do
+        synthesizer.instance_eval do
+          extend Pangea::Resources::Hetzner
+          #{resource_name}(:test, #{example.inspect})
+        end
+
+        result = synthesizer.synthesis
+        resource = result[:resource][:#{resource_name}][:test]
+
+        expect(resource).to be_present
+      end
+    end
+  RUBY
+end
+
+def generate_nested_block(name, attr)
+  # Handle nested blocks
+  "          # TODO: Implement nested block for #{name}"
+end
+
+# Run if called directly
+if __FILE__ == $0
+  if ARGV.size < 2
+    puts "Usage: bin/generate-hetzner-resource <resource_name> <config_yaml_file>"
+    exit 1
+  end
+
+  resource_name = ARGV[0]
+  config_file = ARGV[1]
+
+  config = YAML.load_file(config_file)
+  generate_resource(resource_name, config)
+end

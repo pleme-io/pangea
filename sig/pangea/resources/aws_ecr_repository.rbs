@@ -1,0 +1,36 @@
+# RBS type definitions for AWS ECR Repository
+
+module Pangea
+  module Resources
+    module AWS
+      # ECR Repository attributes
+      type ecr_repository_attributes = {
+        name: String,
+        image_tag_mutability?: ("MUTABLE" | "IMMUTABLE")?,
+        image_scanning_configuration?: {
+          scan_on_push?: bool?
+        }?,
+        encryption_configuration?: {
+          encryption_type?: ("AES256" | "KMS")?,
+          kms_key?: String?
+        }?,
+        force_delete?: bool?,
+        tags?: Hash[String, String]?
+      }
+
+      # ECR Repository computed properties
+      type ecr_repository_computed_properties = {
+        repository_uri_template: String,
+        registry_id_template: String,
+        is_immutable: bool,
+        scan_on_push_enabled: bool,
+        uses_kms_encryption: bool,
+        uses_aes256_encryption: bool,
+        allows_force_delete: bool
+      }
+
+      # AWS ECR Repository resource function
+      def aws_ecr_repository: (Symbol name, ecr_repository_attributes attributes) -> ResourceReference
+    end
+  end
+end

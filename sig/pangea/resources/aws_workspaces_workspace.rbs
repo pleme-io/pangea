@@ -1,0 +1,40 @@
+# RBS type definitions for AWS WorkSpaces Workspace
+
+module Pangea
+  module Resources
+    module AWS
+      # WorkSpaces Workspace properties configuration
+      type workspace_properties = {
+        compute_type_name?: ("VALUE" | "STANDARD" | "PERFORMANCE" | "POWER" | "POWERPRO" | "GRAPHICS" | "GRAPHICSPRO")?,
+        root_volume_size_gib?: Integer?,
+        user_volume_size_gib?: Integer?,
+        running_mode?: ("AUTO_STOP" | "ALWAYS_ON")?,
+        running_mode_auto_stop_timeout_in_minutes?: (60 | 120 | 180 | 240 | 300 | 360 | 420 | 480 | 540 | 600 | 660 | 720)?
+      }
+
+      # WorkSpaces Workspace attributes
+      type workspaces_workspace_attributes = {
+        directory_id: String,
+        bundle_id: String,
+        user_name: String,
+        root_volume_encryption_enabled?: bool?,
+        user_volume_encryption_enabled?: bool?,
+        volume_encryption_key?: String?,
+        workspace_properties?: workspace_properties?,
+        tags?: Hash[String, String]?
+      }
+
+      # WorkSpaces Workspace computed properties
+      type workspaces_workspace_computed_properties = {
+        encrypted: bool,
+        compute_type: String,
+        estimated_monthly_cost: Float?,
+        auto_stop_enabled: bool?,
+        always_on: bool?
+      }
+
+      # AWS WorkSpaces Workspace resource function
+      def aws_workspaces_workspace: (Symbol name, workspaces_workspace_attributes attributes) -> ResourceReference
+    end
+  end
+end

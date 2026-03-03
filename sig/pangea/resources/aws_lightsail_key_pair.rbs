@@ -1,0 +1,12 @@
+module Pangea
+  module Resources
+    module AWS
+      # AWS Lightsail key pair resource function
+      #
+      # @param name [Symbol] The resource name
+      # @param attributes [Hash] Key pair attributes
+      # @return [ResourceReference] Reference object with outputs
+      def aws_lightsail_key_pair: (Symbol name, Hash[Symbol, untyped] attributes) -> ResourceReference
+    end
+  end
+end

@@ -1,0 +1,18 @@
+# RBS type definitions for AWS CloudFront Cache Policy
+
+module Pangea
+  module Resources
+    module AWS
+      type cloudfront_cache_policy_attributes = {
+        name: String,
+        comment?: String?,
+        default_ttl?: Integer?,
+        max_ttl?: Integer?,
+        min_ttl?: Integer?,
+        parameters_in_cache_key_and_forwarded_to_origin?: Hash[Symbol, untyped]?
+      }
+
+      def aws_cloudfront_cache_policy: (Symbol name, cloudfront_cache_policy_attributes attributes) -> ResourceReference
+    end
+  end
+end

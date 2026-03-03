@@ -1,0 +1,35 @@
+# Test Pangea Configuration
+default_namespace: development
+
+namespaces:
+  development:
+    description: "Local development environment for testing"
+    state:
+      type: local
+      config:
+        path: "./terraform_state/development.tfstate"
+    tags:
+      environment: development
+      purpose: testing
+      managed_by: pangea
+      
+  staging:
+    description: "Staging environment with local state"
+    state:
+      type: local
+      config:
+        path: "./terraform_state/staging.tfstate"
+    tags:
+      environment: staging
+      purpose: testing
+      managed_by: pangea
+
+# Module and cache configuration
+modules:
+  path: "./modules"
+
+cache:
+  directory: "./.pangea/cache"
+
+terraform:
+  binary: "tofu"  # Use OpenTofu

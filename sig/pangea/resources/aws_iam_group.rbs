@@ -1,0 +1,71 @@
+# RBS type definitions for AWS IAM Group
+
+module Pangea
+  module Resources
+    module AWS
+      # IAM Group attributes
+      type iam_group_attributes = {
+        name: String,
+        path?: String?
+      }
+
+      # IAM Group computed properties
+      type iam_group_computed_properties = {
+        administrative_group: bool,
+        developer_group: bool,
+        operations_group: bool,
+        readonly_group: bool,
+        department_group: bool,
+        environment_group: bool,
+        organizational_path: bool,
+        organizational_unit: String?,
+        group_category: (:administrative | :developer | :operations | :readonly | :department | :environment | :functional),
+        security_risk_level: (:low | :medium | :high),
+        suggested_access_level: (:full_admin | :infrastructure_admin | :development_access | :read_only | :department_specific | :environment_specific | :custom),
+        follows_naming_convention: bool,
+        naming_convention_score: Integer,
+        extracted_environment: String?,
+        extracted_department: String?
+      }
+
+      # AWS IAM Group resource function
+      def aws_iam_group: (Symbol name, iam_group_attributes attributes) -> ResourceReference
+
+      # Group Patterns Module
+      module GroupPatterns
+        def self.development_team_group: (String team_name, ?String department) -> iam_group_attributes
+        def self.environment_access_group: (String environment, ?String access_level) -> iam_group_attributes
+        def self.department_group: (String department, ?String access_level) -> iam_group_attributes
+        def self.admin_group: (?String scope, ?String department) -> iam_group_attributes
+        def self.readonly_group: (String scope, ?String purpose) -> iam_group_attributes
+        def self.service_group: (String service_name, ?String access_level) -> iam_group_attributes
+        def self.cross_functional_group: (String function, ?Array[String]? stakeholders) -> iam_group_attributes
+        def self.compliance_group: (String framework, ?String access_level) -> iam_group_attributes
+        def self.cicd_group: (String pipeline_scope, ?String? environment) -> iam_group_attributes
+        def self.emergency_group: (?String scope) -> iam_group_attributes
+      end
+
+      # Group Access Patterns Module
+      module GroupAccessPatterns
+        DEVELOPER_FULL: Symbol
+        DEVELOPER_LIMITED: Symbol
+        DEVELOPER_READONLY: Symbol
+        OPERATIONS_FULL: Symbol
+        OPERATIONS_INFRASTRUCTURE: Symbol
+        OPERATIONS_MONITORING: Symbol
+        DEPARTMENT_STANDARD: Symbol
+        DEPARTMENT_ELEVATED: Symbol
+        DEPARTMENT_READONLY: Symbol
+        ENVIRONMENT_ADMIN: Symbol
+        ENVIRONMENT_DEPLOY: Symbol
+        ENVIRONMENT_READONLY: Symbol
+        SERVICE_OWNER: Symbol
+        SERVICE_OPERATOR: Symbol
+        SERVICE_VIEWER: Symbol
+
+        def self.access_pattern_for_group_category: (Symbol category) -> Array[Symbol]
+        def self.recommended_policies_for_pattern: (Symbol pattern) -> Array[String]
+      end
+    end
+  end
+end

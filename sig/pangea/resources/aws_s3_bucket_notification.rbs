@@ -1,0 +1,65 @@
+# RBS type definitions for AWS S3 Bucket Notification Configuration
+
+module Pangea
+  module Resources
+    module AWS
+      # Notification destination configuration
+      type notification_destination = {
+        id?: String?,
+        events: Array[
+          ("s3:ObjectCreated:*" | "s3:ObjectCreated:Put" | "s3:ObjectCreated:Post" | 
+           "s3:ObjectCreated:Copy" | "s3:ObjectCreated:CompleteMultipartUpload" |
+           "s3:ObjectRemoved:*" | "s3:ObjectRemoved:Delete" | "s3:ObjectRemoved:DeleteMarkerCreated" |
+           "s3:ObjectRestore:*" | "s3:ObjectRestore:Post" | "s3:ObjectRestore:Completed" |
+           "s3:Replication:*" | "s3:Replication:OperationFailedReplication" |
+           "s3:Replication:OperationNotTracked" | "s3:Replication:OperationMissedThreshold" |
+           "s3:Replication:OperationReplicatedAfterThreshold")
+        ],
+        filter_prefix?: String?,
+        filter_suffix?: String?
+      }
+
+      # CloudWatch/SNS topic notification configuration
+      type cloudwatch_notification_config = notification_destination & {
+        topic_arn: String
+      }
+
+      # Lambda function notification configuration  
+      type lambda_notification_config = notification_destination & {
+        lambda_function_arn: String
+      }
+
+      # SQS queue notification configuration
+      type queue_notification_config = notification_destination & {
+        queue_arn: String
+      }
+
+      # S3 Bucket Notification Configuration attributes
+      type s3_bucket_notification_attributes = {
+        bucket: String,
+        cloudwatch_configuration?: Array[cloudwatch_notification_config]?,
+        lambda_function?: Array[lambda_notification_config]?,
+        queue?: Array[queue_notification_config]?,
+        eventbridge?: bool?
+      }
+
+      # S3 Bucket Notification Configuration computed properties
+      type s3_bucket_notification_computed_properties = {
+        total_notification_destinations: Integer,
+        has_lambda_notifications: bool,
+        has_sqs_notifications: bool,
+        has_sns_notifications: bool,
+        has_eventbridge_enabled: bool,
+        all_configured_events: Array[String],
+        uses_wildcard_events: bool,
+        monitors_object_creation: bool,
+        monitors_object_removal: bool,
+        monitors_object_restore: bool,
+        monitors_replication: bool
+      }
+
+      # AWS S3 Bucket Notification Configuration resource function
+      def aws_s3_bucket_notification: (Symbol name, s3_bucket_notification_attributes attributes) -> ResourceReference
+    end
+  end
+end

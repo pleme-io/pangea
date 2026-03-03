@@ -1,0 +1,193 @@
+# RBS type definitions for AWS RDS Cluster resources
+
+module Pangea
+  module Resources
+    module AWS
+      # Serverless v2 scaling configuration
+      type serverless_v2_scaling = {
+        min_capacity: Float,
+        max_capacity: Float
+      }
+
+      # Point-in-time restore configuration
+      type restore_to_point_in_time = {
+        source_cluster_identifier: String,
+        restore_to_time?: String?,
+        use_latest_restorable_time?: bool?,
+        restore_type?: ("full-copy" | "copy-on-write")?
+      }
+
+      # RDS Cluster attributes type
+      type rds_cluster_attributes = {
+        cluster_identifier?: String?,
+        cluster_identifier_prefix?: String?,
+        engine: ("aurora" | "aurora-mysql" | "aurora-postgresql"),
+        engine_version?: String?,
+        engine_mode?: ("provisioned" | "serverless" | "parallelquery" | "global")?,
+        database_name?: String?,
+        master_username?: String?,
+        master_password?: String?,
+        manage_master_user_password?: bool?,
+        master_user_secret_kms_key_id?: String?,
+        db_subnet_group_name?: String?,
+        vpc_security_group_ids?: Array[String]?,
+        availability_zones?: Array[String]?,
+        db_cluster_parameter_group_name?: String?,
+        port?: Integer?,
+        backup_retention_period?: Integer?,
+        preferred_backup_window?: String?,
+        preferred_maintenance_window?: String?,
+        copy_tags_to_snapshot?: bool?,
+        storage_encrypted?: bool?,
+        kms_key_id?: String?,
+        storage_type?: String?,
+        allocated_storage?: Integer?,
+        iops?: Integer?,
+        global_cluster_identifier?: String?,
+        scaling_configuration?: Hash[Symbol, untyped]?,
+        serverless_v2_scaling_configuration?: serverless_v2_scaling?,
+        restore_to_point_in_time?: restore_to_point_in_time?,
+        snapshot_identifier?: String?,
+        source_region?: String?,
+        enabled_cloudwatch_logs_exports?: Array[String]?,
+        monitoring_interval?: Integer?,
+        monitoring_role_arn?: String?,
+        performance_insights_enabled?: bool?,
+        performance_insights_kms_key_id?: String?,
+        performance_insights_retention_period?: Integer?,
+        backtrack_window?: Integer?,
+        apply_immediately?: bool?,
+        auto_minor_version_upgrade?: bool?,
+        deletion_protection?: bool?,
+        skip_final_snapshot?: bool?,
+        final_snapshot_identifier?: String?,
+        enable_http_endpoint?: bool?,
+        tags?: Hash[Symbol, String]?
+      }
+
+      # RDS Cluster computed attributes
+      class RdsClusterComputedAttributes < BaseComputedAttributes
+        def engine_family: () -> String
+        def is_mysql?: () -> bool
+        def is_postgresql?: () -> bool
+        def is_serverless?: () -> bool
+        def is_global?: () -> bool
+        def effective_port: () -> Integer
+        def has_enhanced_monitoring?: () -> bool
+        def has_performance_insights?: () -> bool
+        def has_backtrack?: () -> bool
+        def has_http_endpoint?: () -> bool
+        def supports_backtrack?: () -> bool
+        def supports_global?: () -> bool
+        def supports_serverless_v2?: () -> bool
+        def default_cloudwatch_logs_exports: () -> Array[String]
+        def estimated_monthly_cost: () -> String
+      end
+
+      # RDS Cluster resource function
+      def aws_rds_cluster: (Symbol name, rds_cluster_attributes attributes) -> ResourceReference
+
+      # Serverless v2 scaling struct
+      class ServerlessV2Scaling < Dry::Struct
+        attribute :min_capacity, Float
+        attribute :max_capacity, Float
+
+        def self.new: (Hash[Symbol, untyped] attributes) -> ServerlessV2Scaling
+
+        def is_minimal?: () -> bool
+        def is_high_performance?: () -> bool
+        def scaling_range: () -> Float
+        def estimated_hourly_cost_range: () -> String
+      end
+
+      # Restore to point in time struct
+      class RestoreToPointInTime < Dry::Struct
+        attribute? :source_cluster_identifier, String?
+        attribute? :restore_to_time, String?
+        attribute :use_latest_restorable_time, bool
+        attribute? :restore_type, String?
+
+        def self.new: (Hash[Symbol, untyped] attributes) -> RestoreToPointInTime
+
+        def uses_latest_time?: () -> bool
+        def uses_specific_time?: () -> bool
+      end
+
+      # RDS Cluster attributes struct
+      class RdsClusterAttributes < Dry::Struct
+        attribute? :cluster_identifier, String?
+        attribute? :cluster_identifier_prefix, String?
+        attribute :engine, String
+        attribute? :engine_version, String?
+        attribute :engine_mode, String
+        attribute? :database_name, String?
+        attribute? :master_username, String?
+        attribute? :master_password, String?
+        attribute :manage_master_user_password, bool
+        attribute? :master_user_secret_kms_key_id, String?
+        attribute? :db_subnet_group_name, String?
+        attribute :vpc_security_group_ids, Array[String]
+        attribute? :availability_zones, Array[String]?
+        attribute? :db_cluster_parameter_group_name, String?
+        attribute? :port, Integer?
+        attribute :backup_retention_period, Integer
+        attribute? :preferred_backup_window, String?
+        attribute? :preferred_maintenance_window, String?
+        attribute :copy_tags_to_snapshot, bool
+        attribute :storage_encrypted, bool
+        attribute? :kms_key_id, String?
+        attribute? :storage_type, String?
+        attribute? :allocated_storage, Integer?
+        attribute? :iops, Integer?
+        attribute? :global_cluster_identifier, String?
+        attribute? :scaling_configuration, Hash[Symbol, untyped]?
+        attribute? :serverless_v2_scaling_configuration, ServerlessV2Scaling?
+        attribute? :restore_to_point_in_time, RestoreToPointInTime?
+        attribute? :snapshot_identifier, String?
+        attribute? :source_region, String?
+        attribute :enabled_cloudwatch_logs_exports, Array[String]
+        attribute :monitoring_interval, Integer
+        attribute? :monitoring_role_arn, String?
+        attribute :performance_insights_enabled, bool
+        attribute? :performance_insights_kms_key_id, String?
+        attribute :performance_insights_retention_period, Integer
+        attribute? :backtrack_window, Integer?
+        attribute :apply_immediately, bool
+        attribute :auto_minor_version_upgrade, bool
+        attribute :deletion_protection, bool
+        attribute :skip_final_snapshot, bool
+        attribute? :final_snapshot_identifier, String?
+        attribute :enable_http_endpoint, bool
+        attribute :tags, Hash[Symbol, String]
+
+        def self.new: (Hash[Symbol, untyped] attributes) -> RdsClusterAttributes
+
+        def engine_family: () -> String
+        def is_mysql?: () -> bool
+        def is_postgresql?: () -> bool
+        def is_serverless?: () -> bool
+        def is_global?: () -> bool
+        def has_enhanced_monitoring?: () -> bool
+        def has_performance_insights?: () -> bool
+        def has_backtrack?: () -> bool
+        def has_http_endpoint?: () -> bool
+        def effective_port: () -> Integer
+        def default_cloudwatch_logs_exports: () -> Array[String]
+        def supports_backtrack?: () -> bool
+        def supports_global?: () -> bool
+        def supports_serverless_v2?: () -> bool
+        def estimated_monthly_cost: () -> String
+      end
+
+      # Aurora cluster configurations module
+      module AuroraClusterConfigs
+        def self.mysql_development: () -> Hash[Symbol, untyped]
+        def self.mysql_production: () -> Hash[Symbol, untyped]
+        def self.postgresql_development: () -> Hash[Symbol, untyped]
+        def self.postgresql_production: () -> Hash[Symbol, untyped]
+        def self.serverless_v2: (?min_capacity: Float, ?max_capacity: Float) -> Hash[Symbol, untyped]
+        def self.global_mysql: () -> Hash[Symbol, untyped]
+      end
+    end
+  end
+end

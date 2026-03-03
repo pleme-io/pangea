@@ -1,0 +1,67 @@
+module Pangea
+  module Resources
+    module AWS
+      # Type-safe attributes for AWS MediaLive Channel resources
+      class MediaLiveChannelAttributes < Dry::Struct
+        # Channel name (required)
+        def name: () -> String
+
+        # Channel class for billing (STANDARD or SINGLE_PIPELINE)  
+        def channel_class: () -> ("STANDARD" | "SINGLE_PIPELINE")
+
+        # Input attachments configuration
+        def input_attachments: () -> Array[Hash[Symbol, untyped]]
+
+        # Encoder settings for the channel
+        def encoder_settings: () -> Hash[Symbol, untyped]
+
+        # Channel destinations
+        def destinations: () -> Array[Hash[Symbol, untyped]]
+
+        # Input specification for the channel
+        def input_specification: () -> Hash[Symbol, untyped]
+
+        # Log level for the channel
+        def log_level: () -> ("ERROR" | "WARNING" | "INFO" | "DEBUG" | "DISABLED")
+
+        # Maintenance window
+        def maintenance: () -> Hash[Symbol, untyped]
+
+        # Reserved instances for pipeline redundancy
+        def reserved_instances: () -> Array[Hash[Symbol, untyped]]
+
+        # IAM role ARN for the channel
+        def role_arn: () -> String
+
+        # Scheduling configuration
+        def schedule: () -> Array[Hash[Symbol, untyped]]
+
+        # Tags
+        def tags: () -> Hash[String | Symbol, String]
+
+        # VPC configuration for enhanced security
+        def vpc: () -> Hash[Symbol, untyped]
+
+        # Helper methods
+        def single_pipeline?: () -> bool
+        def standard_channel?: () -> bool 
+        def has_redundancy?: () -> bool
+        def input_count: () -> Integer
+        def output_group_count: () -> Integer
+        def destination_count: () -> Integer
+        def has_vpc_config?: () -> bool
+        def maintenance_scheduled?: () -> bool
+        def schedule_actions_count: () -> Integer
+        def supports_hdr?: () -> bool
+        def maximum_resolution: () -> String
+      end
+
+      # Create an AWS MediaLive Channel with type-safe attributes
+      #
+      # @param name The resource name
+      # @param attributes MediaLive channel attributes  
+      # @return Reference object with outputs and computed properties
+      def aws_media_live_channel: (Symbol name, Hash[Symbol, untyped] attributes) -> ResourceReference
+    end
+  end
+end

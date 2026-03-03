@@ -1,0 +1,13 @@
+module Pangea
+  module Resources
+    module AWS
+      class MediaStoreContainerAttributes < Dry::Struct
+        def name: () -> String
+        def tags: () -> Hash[String | Symbol, String]
+        def name_valid?: () -> bool
+      end
+
+      def aws_media_store_container: (Symbol name, Hash[Symbol, untyped] attributes) -> ResourceReference
+    end
+  end
+end

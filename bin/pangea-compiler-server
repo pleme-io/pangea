@@ -1,0 +1,133 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+# Pangea Compiler Server
+# HTTP sidecar for compiling Ruby DSL to Terraform JSON
+# Used by pangea-operator as a sidecar container
+#
+# Endpoints:
+#   GET  /health     - Health check
+#   POST /compile    - Compile Ruby DSL to Terraform JSON
+
+require 'webrick'
+require 'json'
+require 'stringio'
+require 'tempfile'
+
+# Suppress dry-types warnings
+ENV['DRY_TYPES_WARNINGS'] = 'false'
+
+# Load Pangea library
+$LOAD_PATH.unshift(File.expand_path('../lib', __dir__))
+require 'pangea'
+require 'pangea/compilation/template_compiler'
+
+# Server configuration
+PORT = ENV.fetch('COMPILER_PORT', 8082).to_i
+HOST = ENV.fetch('COMPILER_HOST', '0.0.0.0')
+
+puts "🚀 Pangea Compiler Server starting..."
+puts "   Host: #{HOST}"
+puts "   Port: #{PORT}"
+
+# Create WEBrick server
+server = WEBrick::HTTPServer.new(
+  Port: PORT,
+  BindAddress: HOST,
+  Logger: WEBrick::Log.new($stdout, WEBrick::Log::INFO),
+  AccessLog: [[File.open('/dev/stdout', 'w'), WEBrick::AccessLog::COMMON_LOG_FORMAT]]
+)
+
+# Health check endpoint
+server.mount_proc '/health' do |_req, res|
+  res['Content-Type'] = 'application/json'
+  res.body = JSON.generate({
+    status: 'healthy',
+    service: 'pangea-compiler',
+    version: Pangea::VERSION,
+    timestamp: Time.now.iso8601
+  })
+end
+
+# Compile endpoint
+# Expects JSON body with:
+#   - source: Ruby DSL source code
+#   - template_name: Name of the template being compiled
+server.mount_proc '/compile' do |req, res|
+  res['Content-Type'] = 'application/json'
+
+  unless req.request_method == 'POST'
+    res.status = 405
+    res.body = JSON.generate({ error: 'Method not allowed. Use POST.' })
+    next
+  end
+
+  begin
+    # Parse request body
+    body = JSON.parse(req.body)
+    source = body['source']
+    template_name = body['template_name'] || 'inline_template'
+
+    unless source
+      res.status = 400
+      res.body = JSON.generate({ error: 'Missing required field: source' })
+      next
+    end
+
+    # Create temporary file for compilation
+    result = nil
+    Tempfile.create(['pangea_', '.rb']) do |f|
+      f.write(source)
+      f.flush
+
+      # Capture compilation output
+      output = StringIO.new
+      error_output = StringIO.new
+
+      begin
+        compiler = Pangea::Compilation::TemplateCompiler.new(
+          template_path: f.path,
+          output_stream: output
+        )
+
+        result = compiler.compile_to_json
+      rescue StandardError => e
+        res.status = 422
+        res.body = JSON.generate({
+          error: 'Compilation failed',
+          message: e.message,
+          backtrace: e.backtrace&.first(5)
+        })
+        next
+      end
+    end
+
+    # Return compiled Terraform JSON
+    res.status = 200
+    res.body = JSON.generate({
+      success: true,
+      terraform_json: result,
+      template_name: template_name
+    })
+  rescue JSON::ParserError => e
+    res.status = 400
+    res.body = JSON.generate({
+      error: 'Invalid JSON in request body',
+      message: e.message
+    })
+  rescue StandardError => e
+    res.status = 500
+    res.body = JSON.generate({
+      error: 'Internal server error',
+      message: e.message,
+      backtrace: e.backtrace&.first(5)
+    })
+  end
+end
+
+# Graceful shutdown
+trap('INT') { server.shutdown }
+trap('TERM') { server.shutdown }
+
+puts "✅ Pangea Compiler Server ready"
+server.start

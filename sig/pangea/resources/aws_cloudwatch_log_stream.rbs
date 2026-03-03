@@ -1,0 +1,25 @@
+# RBS type definitions for AWS CloudWatch Log Stream
+
+module Pangea
+  module Resources
+    module AWS
+      # CloudWatch Log Stream attributes
+      type cloudwatch_log_stream_attributes = {
+        name: String,
+        log_group_name: String
+      }
+
+      # CloudWatch Log Stream computed properties
+      type cloudwatch_log_stream_computed_properties = {
+        is_lambda_stream: bool,
+        is_ecs_stream: bool,
+        is_application_stream: bool,
+        stream_type: ("lambda" | "ecs" | "application"),
+        log_group_hierarchy: Array[String]
+      }
+
+      # AWS CloudWatch Log Stream resource function
+      def aws_cloudwatch_log_stream: (Symbol name, cloudwatch_log_stream_attributes attributes) -> ResourceReference
+    end
+  end
+end

@@ -1,0 +1,280 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+# Hetzner Cloud Implementation Tracker CLI
+#
+# Usage:
+#   bin/hetzner-tracker status                          # Show overall progress
+#   bin/hetzner-tracker list [batch]                    # List resources (optionally filtered by batch)
+#   bin/hetzner-tracker update <resource> <component>   # Mark component as complete
+#   bin/hetzner-tracker batch <number>                  # Show batch details
+#   bin/hetzner-tracker report                          # Generate progress report
+
+require 'json'
+require 'optparse'
+
+class HetznerTracker
+  TRACKER_FILE = File.join(__dir__, '..', 'HETZNER_IMPLEMENTATION.json')
+
+  def initialize
+    @data = JSON.parse(File.read(TRACKER_FILE))
+  end
+
+  def status
+    meta = @data['metadata']
+    progress = @data['progress']
+
+    puts "\n🔧 Hetzner Cloud Implementation Status"
+    puts "=" * 60
+    puts "Provider Version: v#{meta['provider_version']} (#{meta['provider_released']})"
+    puts "Total Resources: #{meta['total_resources']}"
+    puts "Implemented: #{meta['implemented']} (#{progress['completion_percentage']}%)"
+    puts "In Progress: #{meta['in_progress']}"
+    puts "Remaining: #{meta['remaining']}"
+    puts "Last Updated: #{meta['last_updated']}"
+    puts "\nEstimated Time: #{meta['estimated_hours']}"
+    puts "=" * 60
+
+    # Show batch progress
+    puts "\n📦 Batch Progress:"
+    @data['batches'].each do |key, batch|
+      batch_num = key.match(/\d+/)[0]
+      status_icon = batch['status'] == 'complete' ? '✅' : '📋'
+      puts "  #{status_icon} Batch #{batch_num}: #{batch['name']} (#{batch['resources'].size} resources) - #{batch['status'].upcase}"
+    end
+
+    # Show type definitions progress
+    types_implemented = @data['type_definitions'].count { |_, v| v['implemented'] }
+    types_total = @data['type_definitions'].size
+    puts "\n🔤 Type Definitions: #{types_implemented}/#{types_total} implemented"
+
+    puts ""
+  end
+
+  def list(batch_filter = nil)
+    resources = @data['resources']
+
+    if batch_filter
+      resources = resources.select { |_, r| r['batch'] == batch_filter.to_i }
+      puts "\n📋 Batch #{batch_filter} Resources:"
+    else
+      puts "\n📋 All Resources:"
+    end
+
+    puts "=" * 80
+    printf "%-30s %-12s %-10s %-15s\n", "Resource", "Category", "Priority", "Status"
+    puts "-" * 80
+
+    resources.sort_by { |_, r| [r['batch'], r['priority']] }.each do |name, resource|
+      status = resource['status']
+      overall_status = if status.values.all? { |v| v == true || v == 'complete' }
+                         '✅ Complete'
+                       elsif status.values.any? { |v| v == 'in_progress' }
+                         '🔄 In Progress'
+                       else
+                         '⏸️  Not Started'
+                       end
+
+      printf "%-30s %-12s %-10s %-15s\n",
+             name,
+             resource['category'][0..10],
+             resource['priority'],
+             overall_status
+    end
+
+    puts ""
+  end
+
+  def batch_details(batch_num)
+    batch = @data['batches']["batch_#{batch_num}"]
+
+    unless batch
+      puts "❌ Batch #{batch_num} not found"
+      return
+    end
+
+    puts "\n📦 Batch #{batch_num}: #{batch['name']}"
+    puts "=" * 60
+    puts "Priority: #{batch['priority']}"
+    puts "Description: #{batch['description']}"
+    puts "Status: #{batch['status'].upcase}"
+    puts "\nResources (#{batch['resources'].size}):"
+
+    batch['resources'].each do |resource_name|
+      resource = @data['resources'][resource_name]
+      status = resource['status']
+
+      types_status = status['types'] == 'complete' ? '✅' : '⏸️ '
+      resource_status = status['resource'] == 'complete' ? '✅' : '⏸️ '
+      spec_status = status['spec'] == 'complete' ? '✅' : '⏸️ '
+
+      puts "  • #{resource_name}"
+      puts "    #{types_status} types.rb    #{resource_status} resource.rb    #{spec_status} synthesis_spec.rb"
+    end
+
+    if batch['dependencies'].any?
+      puts "\nDependencies: #{batch['dependencies'].join(', ')}"
+    end
+
+    puts ""
+  end
+
+  def update_resource(resource_name, component)
+    resource = @data['resources'][resource_name]
+
+    unless resource
+      puts "❌ Resource '#{resource_name}' not found"
+      return
+    end
+
+    unless %w[types resource spec all].include?(component)
+      puts "❌ Component must be one of: types, resource, spec, all"
+      return
+    end
+
+    if component == 'all'
+      resource['status']['types'] = 'complete'
+      resource['status']['resource'] = 'complete'
+      resource['status']['spec'] = 'complete'
+      resource['status']['tested'] = true
+      resource['status']['documented'] = true
+      puts "✅ Marked all components of #{resource_name} as complete"
+    else
+      resource['status'][component] = 'complete'
+      puts "✅ Marked #{resource_name}/#{component} as complete"
+    end
+
+    # Update metadata
+    update_metadata
+
+    # Save
+    save
+  end
+
+  def report
+    puts "\n📊 Implementation Progress Report"
+    puts "=" * 80
+
+    # Group by category
+    by_category = @data['resources'].group_by { |_, r| r['category'] }
+
+    by_category.each do |category, resources|
+      total = resources.size
+      complete = resources.count { |_, r|
+        r['status'].values.all? { |v| v == true || v == 'complete' }
+      }
+      in_progress = resources.count { |_, r|
+        r['status'].values.any? { |v| v == 'in_progress' }
+      }
+
+      percentage = total > 0 ? (complete * 100.0 / total).round(1) : 0
+
+      puts "\n#{category}:"
+      puts "  Total: #{total} | Complete: #{complete} | In Progress: #{in_progress} | #{percentage}%"
+      puts "  " + progress_bar(complete, total)
+    end
+
+    # Overall progress
+    total_resources = @data['resources'].size
+    complete_resources = @data['resources'].count { |_, r|
+      r['status'].values.all? { |v| v == true || v == 'complete' }
+    }
+
+    puts "\n" + "=" * 80
+    puts "Overall Progress: #{complete_resources}/#{total_resources} (#{(complete_resources * 100.0 / total_resources).round(1)}%)"
+    puts progress_bar(complete_resources, total_resources)
+    puts ""
+  end
+
+  private
+
+  def progress_bar(current, total, width = 50)
+    filled = (current * width / total).round
+    bar = "█" * filled + "░" * (width - filled)
+    "[#{bar}]"
+  end
+
+  def update_metadata
+    resources = @data['resources']
+
+    complete = resources.count { |_, r|
+      r['status'].values.all? { |v| v == true || v == 'complete' }
+    }
+
+    in_progress = resources.count { |_, r|
+      r['status'].values.any? { |v| v == 'in_progress' } &&
+      !r['status'].values.all? { |v| v == true || v == 'complete' }
+    }
+
+    @data['metadata']['implemented'] = complete
+    @data['metadata']['in_progress'] = in_progress
+    @data['metadata']['remaining'] = resources.size - complete
+    @data['metadata']['last_updated'] = Time.now.strftime('%Y-%m-%d')
+
+    @data['progress']['resources_complete'] = complete
+    @data['progress']['completion_percentage'] = (complete * 100.0 / resources.size).round(1)
+
+    # Update batch status
+    @data['batches'].each do |batch_key, batch|
+      batch_resources = batch['resources'].map { |r| @data['resources'][r] }
+      if batch_resources.all? { |r| r['status'].values.all? { |v| v == true || v == 'complete' } }
+        batch['status'] = 'complete'
+      elsif batch_resources.any? { |r| r['status'].values.any? { |v| v == 'in_progress' || v == 'complete' } }
+        batch['status'] = 'in_progress'
+      else
+        batch['status'] = 'pending'
+      end
+    end
+  end
+
+  def save
+    File.write(TRACKER_FILE, JSON.pretty_generate(@data))
+    puts "💾 Tracker saved"
+  end
+end
+
+# CLI
+if __FILE__ == $0
+  tracker = HetznerTracker.new
+
+  command = ARGV[0]
+
+  case command
+  when 'status'
+    tracker.status
+  when 'list'
+    tracker.list(ARGV[1])
+  when 'update'
+    if ARGV.size < 3
+      puts "Usage: bin/hetzner-tracker update <resource> <component>"
+      puts "Example: bin/hetzner-tracker update hcloud_server types"
+      exit 1
+    end
+    tracker.update_resource(ARGV[1], ARGV[2])
+  when 'batch'
+    if ARGV.size < 2
+      puts "Usage: bin/hetzner-tracker batch <number>"
+      exit 1
+    end
+    tracker.batch_details(ARGV[1])
+  when 'report'
+    tracker.report
+  else
+    puts "Hetzner Cloud Implementation Tracker"
+    puts ""
+    puts "Usage:"
+    puts "  bin/hetzner-tracker status              # Show overall progress"
+    puts "  bin/hetzner-tracker list [batch]        # List resources"
+    puts "  bin/hetzner-tracker batch <number>      # Show batch details"
+    puts "  bin/hetzner-tracker update <res> <comp> # Mark component complete"
+    puts "  bin/hetzner-tracker report              # Generate progress report"
+    puts ""
+    puts "Examples:"
+    puts "  bin/hetzner-tracker status"
+    puts "  bin/hetzner-tracker list 1"
+    puts "  bin/hetzner-tracker batch 1"
+    puts "  bin/hetzner-tracker update hcloud_server types"
+    puts "  bin/hetzner-tracker update hcloud_server all"
+    puts "  bin/hetzner-tracker report"
+  end
+end

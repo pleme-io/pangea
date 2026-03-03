@@ -1,0 +1,39 @@
+# RBS type definitions for AWS ElastiCache Cluster resource
+
+module Pangea
+  module Resources
+    module AWS
+      # ElastiCache cluster attributes type
+      type elasticache_cluster_attributes = {
+        cluster_id: String,
+        engine: ("redis" | "memcached"),
+        node_type: String,
+        num_cache_nodes?: Integer,
+        engine_version?: String?,
+        parameter_group_name?: String?,
+        port?: Integer?,
+        subnet_group_name?: String?,
+        security_group_ids?: Array[String],
+        availability_zone?: String?,
+        preferred_availability_zones?: Array[String],
+        maintenance_window?: String?,
+        notification_topic_arn?: String?,
+        auto_minor_version_upgrade?: bool,
+        snapshot_arns?: Array[String]?,
+        snapshot_name?: String?,
+        snapshot_window?: String?,
+        snapshot_retention_limit?: Integer,
+        log_delivery_configuration?: Array[Hash[Symbol, untyped]],
+        transit_encryption_enabled?: bool?,
+        at_rest_encryption_enabled?: bool?,
+        auth_token?: String?,
+        apply_immediately?: bool,
+        tags?: Hash[Symbol, String],
+        final_snapshot_identifier?: String?
+      }
+
+      # ElastiCache cluster resource function
+      def aws_elasticache_cluster: (Symbol name, elasticache_cluster_attributes attributes) -> ResourceReference
+                                 | (Symbol name) -> ResourceReference
+    end
+end

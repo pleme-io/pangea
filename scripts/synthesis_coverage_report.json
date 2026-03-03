@@ -1,0 +1,3723 @@
+{
+  "generated_at": "2025-09-02T18:49:07Z",
+  "summary": {
+    "total_resources": 430,
+    "resources_with_tests": 15,
+    "resources_with_synthesis": 14,
+    "total_tests": 682,
+    "total_synthesis_tests": 163
+  },
+  "resources": {
+    "aws_acm_certificate": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_acm_certificate_validation": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_acmpca_certificate_authority": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_alb_target_group_attachment": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_ami": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_api_gateway_api_key": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_api_gateway_deployment": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_api_gateway_method": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_api_gateway_resource": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_api_gateway_rest_api": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_api_gateway_stage": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_api_gateway_usage_plan": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_appstream_fleet": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_appstream_image_builder": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_appstream_stack": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_appsync_datasource": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_appsync_graphql_api": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_appsync_resolver": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_athena_database": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_athena_named_query": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_athena_workgroup": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_autoscaling_attachment": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_autoscaling_group": {
+      "has_spec_dir": true,
+      "resource_spec": {
+        "test_count": 46,
+        "describe_blocks": 10,
+        "file_size": 25801
+      },
+      "synthesis_spec": {
+        "test_count": 15,
+        "describe_blocks": 2,
+        "file_size": 25806,
+        "patterns": {
+          "basic_synthesis": true,
+          "tag_synthesis": false,
+          "conditional_synthesis": true,
+          "output_validation": true,
+          "complex_synthesis": 10,
+          "mock_synthesizer": true
+        }
+      },
+      "total_tests": 61,
+      "synthesis_tests": 15,
+      "synthesis_coverage": [
+        "synthesizes basic auto scaling group terraform correctly",
+        "validates terraform reference outputs"
+      ]
+    },
+    "aws_autoscaling_group_tag": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_autoscaling_lifecycle_hook": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_autoscaling_notification": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_autoscaling_policy": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_autoscaling_policy_step_adjustment": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_autoscaling_policy_target_tracking_scaling_policy": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_autoscaling_schedule": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_autoscaling_tag": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_autoscaling_traffic_source_attachment": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_autoscaling_warm_pool": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_backup_framework": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_backup_region_settings": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_backup_report_plan": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_batch_compute_environment": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_batch_job_definition": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_batch_job_queue": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_billing_service_account": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_blockchain_query": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_blockchain_token_balance": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_braket_device": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_braket_device_capabilities": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_braket_job": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_braket_job_queue": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_braket_local_simulator": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_braket_quantum_task": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_budgets_budget": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_budgets_budget_action": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_ce_anomaly_detector": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_ce_anomaly_subscription": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_ce_cost_category": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_cloudformation_stack": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_cloudformation_stack_set": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_cloudfront_cache_policy": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_cloudfront_distribution": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_cloudfront_key_group": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_cloudfront_origin_access_control": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_cloudfront_origin_request_policy": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_cloudfront_public_key": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_cloudfront_response_headers_policy": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_cloudtrail": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_cloudtrail_event_data_store": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_cloudwatch_anomaly_detector": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_cloudwatch_composite_alarm": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_cloudwatch_dashboard": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_cloudwatch_event_rule": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_cloudwatch_event_target": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_cloudwatch_insight_rule": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_cloudwatch_log_data_protection_policy": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_cloudwatch_log_destination": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_cloudwatch_log_destination_policy": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_cloudwatch_log_group": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_cloudwatch_log_metric_filter": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_cloudwatch_log_resource_policy": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_cloudwatch_log_stream": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_cloudwatch_log_subscription_filter": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_cloudwatch_metric_alarm": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_cloudwatch_query_definition": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_codeartifact_domain": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_codeartifact_repository": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_codebuild_project": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_codecommit_repository": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_codedeploy_application": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_codedeploy_deployment_config": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_codedeploy_deployment_group": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_codepipeline": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_codepipeline_webhook": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_codestar_connection": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_cognito_identity_pool": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_cognito_identity_provider": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_cognito_user": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_cognito_user_group": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_cognito_user_pool": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_cognito_user_pool_client": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_cognito_user_pool_domain": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_config_config_rule": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_config_configuration_recorder": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_config_delivery_channel": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_config_remediation_configuration": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_cur_report_definition": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_customer_gateway": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_db_cluster_snapshot": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_db_instance": {
+      "has_spec_dir": true,
+      "resource_spec": {
+        "test_count": 46,
+        "describe_blocks": 7,
+        "file_size": 25566
+      },
+      "synthesis_spec": {
+        "test_count": 14,
+        "describe_blocks": 2,
+        "file_size": 23014,
+        "patterns": {
+          "basic_synthesis": true,
+          "tag_synthesis": true,
+          "conditional_synthesis": true,
+          "output_validation": true,
+          "complex_synthesis": 6,
+          "mock_synthesizer": true
+        }
+      },
+      "total_tests": 60,
+      "synthesis_tests": 14,
+      "synthesis_coverage": [
+        "synthesizes basic RDS instance terraform correctly",
+        "validates terraform reference outputs"
+      ]
+    },
+    "aws_db_parameter_group": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_db_snapshot": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_db_subnet_group": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_default_network_acl": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_default_route_table": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_default_security_group": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_default_vpc_dhcp_options": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_device_farm_project": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_directory_service_directory": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_docdb_certificate": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_docdb_cluster": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_docdb_cluster_backup": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_docdb_cluster_endpoint": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_docdb_cluster_instance": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_docdb_cluster_parameter_group": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_docdb_cluster_snapshot": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_docdb_event_subscription": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_docdb_global_cluster": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_docdb_subnet_group": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_drs_launch_configuration_template": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_drs_replication_configuration_template": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_dynamodb_global_table": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_dynamodb_kinesis_streaming_destination": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_dynamodb_table": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_dynamodb_table_export": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_ebs_volume": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_ec2_ami_launch_permission": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_ec2_availability_zone_group": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_ec2_capacity_block_reservation": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_ec2_capacity_reservation": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_ec2_dedicated_host": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_ec2_fleet": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_ec2_host_resource_group_association": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_ec2_image_block_public_access": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_ec2_instance_metadata_defaults": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_ec2_serial_console_access": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_ec2_snapshot_block_public_access": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_ec2_spot_datafeed_subscription": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_ec2_spot_fleet_request": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_ec2_spot_instance_request": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_ec2_tag": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_ec2_transit_gateway": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_ec2_transit_gateway_multicast_domain": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_ec2_transit_gateway_multicast_domain_association": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_ec2_transit_gateway_multicast_group_member": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_ec2_transit_gateway_route": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_ec2_transit_gateway_route_table": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_ec2_transit_gateway_route_table_association": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_ec2_transit_gateway_route_table_propagation": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_ec2_transit_gateway_vpc_attachment": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_ecr_lifecycle_policy": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_ecr_replication_configuration": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_ecr_repository": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_ecr_repository_policy": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_ecs_capacity_provider": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_ecs_cluster": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_ecs_cluster_capacity_providers": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_ecs_service": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_ecs_task_definition": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_efs_access_point": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_efs_file_system": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_efs_mount_target": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_eip": {
+      "has_spec_dir": true,
+      "resource_spec": {
+        "test_count": 32,
+        "describe_blocks": 6,
+        "file_size": 13734
+      },
+      "synthesis_spec": {
+        "test_count": 10,
+        "describe_blocks": 2,
+        "file_size": 14189,
+        "patterns": {
+          "basic_synthesis": true,
+          "tag_synthesis": true,
+          "conditional_synthesis": true,
+          "output_validation": true,
+          "complex_synthesis": 2,
+          "mock_synthesizer": true
+        }
+      },
+      "total_tests": 42,
+      "synthesis_tests": 10,
+      "synthesis_coverage": [
+        "synthesizes basic EIP terraform correctly",
+        "validates terraform reference outputs"
+      ]
+    },
+    "aws_eip_association": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_eks_access_entry": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_eks_addon": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_eks_cluster": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_eks_fargate_profile": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_eks_node_group": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_elasticache_cluster": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_elasticache_parameter_group": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_elasticache_subnet_group": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_elb_attachment": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_elb_service_account": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_elemental_data_plane_channel": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_emr_cluster": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_emr_instance_group": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_emr_step": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_eventbridge_bus": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_eventbridge_rule": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_eventbridge_target": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_gamelift_alias": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_gamelift_build": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_gamelift_compute": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_gamelift_fleet": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_gamelift_game_session": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_gamelift_game_session_queue": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_gamelift_matchmaking_configuration": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_gamelift_matchmaking_rule_set": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_gamelift_player_session": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_gamelift_script": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_gamesparks_game": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_glue_catalog_database": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_glue_catalog_table": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_glue_job": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_glue_trigger": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_guardduty_detector": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_guardduty_member": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_iam_group": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_iam_policy": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_iam_role": {
+      "has_spec_dir": true,
+      "resource_spec": {
+        "test_count": 40,
+        "describe_blocks": 6,
+        "file_size": 21847
+      },
+      "synthesis_spec": {
+        "test_count": 12,
+        "describe_blocks": 2,
+        "file_size": 22007,
+        "patterns": {
+          "basic_synthesis": true,
+          "tag_synthesis": true,
+          "conditional_synthesis": true,
+          "output_validation": true,
+          "complex_synthesis": 3,
+          "mock_synthesizer": true
+        }
+      },
+      "total_tests": 52,
+      "synthesis_tests": 12,
+      "synthesis_coverage": [
+        "synthesizes basic IAM role terraform correctly",
+        "validates terraform reference outputs"
+      ]
+    },
+    "aws_iam_role_policy_attachment": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_iam_user": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_inspector2_enabler": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_instance": {
+      "has_spec_dir": true,
+      "resource_spec": {
+        "test_count": 36,
+        "describe_blocks": 7,
+        "file_size": 20319
+      },
+      "synthesis_spec": {
+        "test_count": 9,
+        "describe_blocks": 2,
+        "file_size": 15912,
+        "patterns": {
+          "basic_synthesis": true,
+          "tag_synthesis": false,
+          "conditional_synthesis": false,
+          "output_validation": true,
+          "complex_synthesis": 6,
+          "mock_synthesizer": true
+        }
+      },
+      "total_tests": 45,
+      "synthesis_tests": 9,
+      "synthesis_coverage": [
+        "synthesizes basic EC2 instance terraform correctly",
+        "validates terraform reference outputs"
+      ]
+    },
+    "aws_internet_gateway": {
+      "has_spec_dir": true,
+      "resource_spec": {
+        "test_count": 21,
+        "describe_blocks": 6,
+        "file_size": 8867
+      },
+      "synthesis_spec": {
+        "test_count": 8,
+        "describe_blocks": 2,
+        "file_size": 14078,
+        "patterns": {
+          "basic_synthesis": true,
+          "tag_synthesis": false,
+          "conditional_synthesis": false,
+          "output_validation": true,
+          "complex_synthesis": 0,
+          "mock_synthesizer": true
+        }
+      },
+      "total_tests": 29,
+      "synthesis_tests": 8,
+      "synthesis_coverage": [
+        "synthesizes basic internet gateway terraform correctly",
+        "validates terraform reference outputs"
+      ]
+    },
+    "aws_iot_analytics_channel": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_iot_analytics_datastore": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_iot_authorizer": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_iot_billing_group": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_iot_ca_certificate": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_iot_certificate": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_iot_device_defender_security_profile": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_iot_domain_configuration": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_iot_job_template": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_iot_policy": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_iot_policy_attachment": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_iot_provisioning_template": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_iot_role_alias": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_iot_security_profile": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_iot_thing": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_iot_thing_group": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_iot_thing_group_membership": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_iot_thing_principal_attachment": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_iot_thing_type": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_iot_topic_rule": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_iot_topic_rule_destination": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_iot_wireless_destination": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_iotanalytics_dataset": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_key_pair": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_kinesis_analytics_application": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_kinesis_firehose_delivery_stream": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_kinesis_stream": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_kinesis_video_stream": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_kms_alias": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_kms_key": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_lambda_event_source_mapping": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_lambda_function": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_lambda_function_url": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_lambda_layer_version": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_lambda_permission": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_launch_configuration": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_launch_template": {
+      "has_spec_dir": true,
+      "resource_spec": {
+        "test_count": 42,
+        "describe_blocks": 11,
+        "file_size": 24761
+      },
+      "synthesis_spec": {
+        "test_count": 13,
+        "describe_blocks": 2,
+        "file_size": 25611,
+        "patterns": {
+          "basic_synthesis": true,
+          "tag_synthesis": false,
+          "conditional_synthesis": true,
+          "output_validation": true,
+          "complex_synthesis": 0,
+          "mock_synthesizer": true
+        }
+      },
+      "total_tests": 55,
+      "synthesis_tests": 13,
+      "synthesis_coverage": [
+        "synthesizes basic launch template terraform correctly",
+        "validates terraform reference outputs"
+      ]
+    },
+    "aws_lb": {
+      "has_spec_dir": true,
+      "resource_spec": {
+        "test_count": 40,
+        "describe_blocks": 6,
+        "file_size": 22615
+      },
+      "synthesis_spec": {
+        "test_count": 17,
+        "describe_blocks": 2,
+        "file_size": 23709,
+        "patterns": {
+          "basic_synthesis": true,
+          "tag_synthesis": false,
+          "conditional_synthesis": true,
+          "output_validation": true,
+          "complex_synthesis": 0,
+          "mock_synthesizer": true
+        }
+      },
+      "total_tests": 57,
+      "synthesis_tests": 17,
+      "synthesis_coverage": [
+        "synthesizes basic application load balancer terraform correctly",
+        "validates terraform reference outputs"
+      ]
+    },
+    "aws_lb_cookie_stickiness_policy": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_lb_listener": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_lb_listener_certificate": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_lb_listener_rule": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_lb_ssl_negotiation_policy": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_lb_target_group": {
+      "has_spec_dir": true,
+      "resource_spec": {
+        "test_count": 47,
+        "describe_blocks": 9,
+        "file_size": 24006
+      },
+      "synthesis_spec": {
+        "test_count": 16,
+        "describe_blocks": 2,
+        "file_size": 24730,
+        "patterns": {
+          "basic_synthesis": true,
+          "tag_synthesis": false,
+          "conditional_synthesis": true,
+          "output_validation": true,
+          "complex_synthesis": 0,
+          "mock_synthesizer": true
+        }
+      },
+      "total_tests": 63,
+      "synthesis_tests": 16,
+      "synthesis_coverage": [
+        "synthesizes basic HTTP target group terraform correctly",
+        "validates terraform reference outputs"
+      ]
+    },
+    "aws_lb_target_group_attachment": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_lb_trust_store": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_lb_trust_store_revocation": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_licensemanager_association": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_licensemanager_grant": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_licensemanager_grant_accepter": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_licensemanager_license_configuration": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_licensemanager_license_grant_accepter": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_licensemanager_report_generator": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_licensemanager_token": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_load_balancer_backend_server_policy": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_load_balancer_listener_policy": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_load_balancer_policy": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_managedblockchain_accessor": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_managedblockchain_ethereum_node": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_managedblockchain_member": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_managedblockchain_network": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_managedblockchain_node": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_media_convert_queue": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_media_live_channel": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_media_live_input": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_media_package_channel": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_media_package_origin_endpoint": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_media_store_container": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_memorydb_acl": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_memorydb_cluster": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_memorydb_cluster_endpoint": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_memorydb_multi_region_cluster": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_memorydb_parameter_group": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_memorydb_snapshot": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_memorydb_subnet_group": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_memorydb_user": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_mobile_analytics_app": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_mq_broker": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_mq_configuration": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_nat_gateway": {
+      "has_spec_dir": true,
+      "resource_spec": {
+        "test_count": 31,
+        "describe_blocks": 7,
+        "file_size": 15002
+      },
+      "synthesis_spec": {
+        "test_count": 11,
+        "describe_blocks": 2,
+        "file_size": 20197,
+        "patterns": {
+          "basic_synthesis": true,
+          "tag_synthesis": false,
+          "conditional_synthesis": false,
+          "output_validation": true,
+          "complex_synthesis": 0,
+          "mock_synthesizer": true
+        }
+      },
+      "total_tests": 42,
+      "synthesis_tests": 11,
+      "synthesis_coverage": [
+        "synthesizes basic public NAT gateway terraform correctly",
+        "synthesizes NAT gateway with terraform reference inputs",
+        "validates terraform reference outputs"
+      ]
+    },
+    "aws_neptune_cluster": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_neptune_cluster_endpoint": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_neptune_cluster_instance": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_neptune_cluster_parameter_group": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_neptune_cluster_snapshot": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_neptune_event_subscription": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_neptune_parameter_group": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_neptune_subnet_group": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_network_acl": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_network_acl_rule": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_network_interface": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_organizations_account": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_organizations_delegated_administrator": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_organizations_organization": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_organizations_resource_policy": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_pinpoint_app": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_placement_group": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_proxy_protocol_policy": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_qldb_ledger": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_qldb_stream": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_ram_invitation_accepter": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_ram_managed_permission": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_ram_permission": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_ram_permission_association": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_ram_principal_association": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_ram_resource_association": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_ram_resource_share": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_ram_resource_share_accepter": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_ram_resource_share_invitation": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_ram_sharing_with_organization": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_rds_cluster": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_rds_cluster_endpoint": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_rds_cluster_instance": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_rds_cluster_parameter_group": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_rds_global_cluster": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_rds_proxy": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_rds_proxy_default_target_group": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_rds_proxy_target": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_redshift_cluster": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_redshift_parameter_group": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_redshift_snapshot_schedule": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_redshift_subnet_group": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_resource_explorer_index": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_resource_explorer_view": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_resourcegroups_group": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_route": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_route53_delegation_set": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_route53_health_check": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_route53_query_log": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_route53_record": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_route53_zone": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_route_table": {
+      "has_spec_dir": true,
+      "resource_spec": {
+        "test_count": 32,
+        "describe_blocks": 7,
+        "file_size": 15696
+      },
+      "synthesis_spec": {
+        "test_count": 10,
+        "describe_blocks": 2,
+        "file_size": 18637,
+        "patterns": {
+          "basic_synthesis": true,
+          "tag_synthesis": false,
+          "conditional_synthesis": false,
+          "output_validation": true,
+          "complex_synthesis": 0,
+          "mock_synthesizer": true
+        }
+      },
+      "total_tests": 42,
+      "synthesis_tests": 10,
+      "synthesis_coverage": [
+        "synthesizes basic route table terraform correctly",
+        "validates terraform reference outputs"
+      ]
+    },
+    "aws_route_table_association": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_s3_access_point": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_s3_access_point_policy": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_s3_bucket": {
+      "has_spec_dir": true,
+      "resource_spec": {
+        "test_count": 41,
+        "describe_blocks": 6,
+        "file_size": 26005
+      },
+      "synthesis_spec": {
+        "test_count": 17,
+        "describe_blocks": 2,
+        "file_size": 25575,
+        "patterns": {
+          "basic_synthesis": true,
+          "tag_synthesis": true,
+          "conditional_synthesis": true,
+          "output_validation": true,
+          "complex_synthesis": 1,
+          "mock_synthesizer": true
+        }
+      },
+      "total_tests": 58,
+      "synthesis_tests": 17,
+      "synthesis_coverage": [
+        "synthesizes basic S3 bucket terraform correctly",
+        "validates terraform reference outputs"
+      ]
+    },
+    "aws_s3_bucket_accelerate_configuration": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_s3_bucket_analytics_configuration": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_s3_bucket_cors_configuration": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_s3_bucket_encryption": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_s3_bucket_inventory": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_s3_bucket_lifecycle_configuration": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_s3_bucket_notification": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_s3_bucket_object_lock_configuration": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_s3_bucket_policy": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_s3_bucket_public_access_block": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_s3_bucket_replication_configuration": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_s3_bucket_versioning": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_s3_bucket_website_configuration": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_s3_multi_region_access_point": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_s3_object": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_s3_object_lambda_access_point": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_sagemaker_domain": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_sagemaker_endpoint": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_sagemaker_endpoint_configuration": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_sagemaker_feature_group": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_sagemaker_model": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_sagemaker_notebook_instance": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_sagemaker_pipeline": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_sagemaker_processing_job": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_sagemaker_training_job": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_sagemaker_user_profile": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_secretsmanager_secret": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_secretsmanager_secret_version": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_security_group": {
+      "has_spec_dir": true,
+      "resource_spec": {
+        "test_count": 24,
+        "describe_blocks": 6,
+        "file_size": 13893
+      },
+      "synthesis_spec": {
+        "test_count": 6,
+        "describe_blocks": 2,
+        "file_size": 11483,
+        "patterns": {
+          "basic_synthesis": true,
+          "tag_synthesis": false,
+          "conditional_synthesis": false,
+          "output_validation": true,
+          "complex_synthesis": 0,
+          "mock_synthesizer": true
+        }
+      },
+      "total_tests": 30,
+      "synthesis_tests": 6,
+      "synthesis_coverage": [
+        "synthesizes basic security group terraform correctly",
+        "validates terraform reference outputs"
+      ]
+    },
+    "aws_securityhub_account": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_ses_configuration_set": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_ses_domain_identity": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_ses_email_identity": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_sfn_activity": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_sfn_state_machine": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_sns_subscription": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_sns_topic": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_sqs_queue": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_sqs_queue_policy": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_ssm_document": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_ssm_maintenance_window": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_ssm_parameter": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_ssm_patch_baseline": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_subnet": {
+      "has_spec_dir": true,
+      "resource_spec": {
+        "test_count": 23,
+        "describe_blocks": 4,
+        "file_size": 9981
+      },
+      "synthesis_spec": {
+        "test_count": 5,
+        "describe_blocks": 2,
+        "file_size": 9402,
+        "patterns": {
+          "basic_synthesis": true,
+          "tag_synthesis": false,
+          "conditional_synthesis": false,
+          "output_validation": true,
+          "complex_synthesis": 0,
+          "mock_synthesizer": true
+        }
+      },
+      "total_tests": 28,
+      "synthesis_tests": 5,
+      "synthesis_coverage": [
+        "synthesizes basic subnet terraform correctly",
+        "validates terraform reference outputs"
+      ]
+    },
+    "aws_sumerian_project": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_support_app_slack_channel_configuration": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_support_app_slack_workspace_configuration": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_timestream_access_policy": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_timestream_batch_load_task": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_timestream_database": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_timestream_influx_db_instance": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_timestream_scheduled_query": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_timestream_table": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_timestream_table_retention_properties": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_volume_attachment": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_vpc": {
+      "has_spec_dir": true,
+      "resource_spec": {
+        "test_count": 18,
+        "describe_blocks": 4,
+        "file_size": 6312
+      },
+      "synthesis_spec": null,
+      "total_tests": 18,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_vpc_dhcp_options_association": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_vpc_endpoint": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_vpc_endpoint_connection_accepter": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_vpc_endpoint_connection_notification": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_vpc_endpoint_route_table_association": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_vpc_endpoint_service": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_vpc_endpoint_service_allowed_principal": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_vpc_endpoint_subnet_association": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_vpc_network_performance_metric_subscription": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_vpc_peering_connection": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_vpc_peering_connection_accepter": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_vpc_peering_connection_options": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_vpc_security_group_egress_rule": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_vpc_security_group_ingress_rule": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_vpn_connection": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_vpn_gateway": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_wafv2_ip_set": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_wafv2_regex_pattern_set": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_wafv2_rule_group": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_wafv2_web_acl": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_workspaces_bundle": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_workspaces_directory": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_workspaces_ip_group": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_workspaces_workspace": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_xray_encryption_config": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_xray_group": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    },
+    "aws_xray_sampling_rule": {
+      "has_spec_dir": false,
+      "resource_spec": null,
+      "synthesis_spec": null,
+      "total_tests": 0,
+      "synthesis_tests": 0,
+      "synthesis_coverage": []
+    }
+  }
+}

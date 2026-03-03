@@ -1,0 +1,32 @@
+# RBS type definitions for AWS Braket Quantum Task resource
+
+module Pangea
+  module Resources
+    module AWS
+      # Braket quantum task attributes type
+      type braket_quantum_task_attributes = {
+        device_arn: String,
+        action: String,
+        device_parameters?: String?,
+        output_s3_bucket: String,
+        output_s3_key_prefix: String,
+        shots?: Integer?,
+        job_token?: String?,
+        tags?: Hash[String, String]?
+      }
+      
+      # Device type enumeration
+      type device_type = :simulator | :quantum_processing_unit | :state_vector_simulator | :density_matrix_simulator | :tensor_network_simulator | :unknown
+      
+      # Action summary type
+      type action_summary = {
+        type: String,
+        version: String,
+        qubit_count: Integer
+      }
+      
+      # Braket quantum task resource function
+      def aws_braket_quantum_task: (Symbol name, braket_quantum_task_attributes attributes) -> ResourceReference
+    end
+  end
+end

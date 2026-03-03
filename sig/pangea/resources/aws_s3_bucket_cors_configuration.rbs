@@ -1,0 +1,42 @@
+# RBS type definitions for AWS S3 Bucket CORS Configuration
+
+module Pangea
+  module Resources
+    module AWS
+      # CORS rule configuration
+      type cors_rule = {
+        id?: String?,
+        allowed_methods: Array[("GET" | "PUT" | "POST" | "DELETE" | "HEAD")],
+        allowed_origins: Array[String],
+        allowed_headers?: Array[String]?,
+        expose_headers?: Array[String]?,
+        max_age_seconds?: Integer?
+      }
+
+      # S3 Bucket CORS Configuration attributes
+      type s3_bucket_cors_configuration_attributes = {
+        bucket: String,
+        expected_bucket_owner?: String?,
+        cors_rule: Array[cors_rule]
+      }
+
+      # S3 Bucket CORS Configuration computed properties
+      type s3_bucket_cors_configuration_computed_properties = {
+        total_rules_count: Integer,
+        wildcard_rules_count: Integer,
+        rules_with_max_age_count: Integer,
+        rules_exposing_headers_count: Integer,
+        max_max_age_seconds: Integer?,
+        all_allowed_methods: Array[String],
+        all_allowed_origins: Array[String],
+        allows_get: bool,
+        allows_post: bool,
+        allows_put: bool,
+        allows_delete: bool
+      }
+
+      # AWS S3 Bucket CORS Configuration resource function
+      def aws_s3_bucket_cors_configuration: (Symbol name, s3_bucket_cors_configuration_attributes attributes) -> ResourceReference
+    end
+  end
+end

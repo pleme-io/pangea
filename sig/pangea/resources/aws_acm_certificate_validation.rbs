@@ -1,0 +1,20 @@
+# RBS type definitions for AWS ACM Certificate Validation resource
+
+module Pangea
+  module Resources
+    module AWS
+      # ACM Certificate Validation attributes type
+      type acm_certificate_validation_attributes = {
+        certificate_arn: String,
+        validation_record_fqdns?: Array[String]?,
+        timeouts?: {
+          create?: String?,
+          update?: String?
+        }
+      }
+      
+      # ACM Certificate Validation resource function
+      def aws_acm_certificate_validation: (Symbol name, acm_certificate_validation_attributes attributes) -> ResourceReference
+    end
+  end
+end

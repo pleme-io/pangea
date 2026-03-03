@@ -1,0 +1,54 @@
+# AWS Batch Compute Environment resource type signatures
+
+module Pangea
+  module Resources
+    module AWS
+      module Types
+        class BatchComputeEnvironmentAttributes < Dry::Struct
+          # Core attributes
+          attr_reader compute_environment_name: String
+          attr_reader type: String
+          
+          # Optional attributes
+          attr_reader state: String?
+          attr_reader service_role: String?
+          attr_reader compute_resources: Hash[Symbol, untyped]?
+          attr_reader tags: Hash[Symbol, String]?
+          
+          def self.new: (Hash[Symbol, untyped] attributes) -> BatchComputeEnvironmentAttributes
+          
+          # Validation methods
+          def self.validate_compute_environment_name: (String name) -> true
+          def self.validate_compute_resources: (Hash[Symbol, untyped] resources) -> true
+          def self.validate_instance_types: (Array[String] instance_types) -> true
+          def self.validate_vpc_configuration: (Hash[Symbol, untyped] vpc_config) -> true
+          
+          # Computed properties
+          def is_managed?: () -> bool
+          def is_unmanaged?: () -> bool
+          def is_enabled?: () -> bool
+          def is_disabled?: () -> bool
+          def supports_ec2?: () -> bool
+          def supports_fargate?: () -> bool
+          def is_spot_based?: () -> bool
+          
+          # Configuration templates
+          def self.ec2_managed_environment: (String name, Hash[Symbol, untyped] vpc_config, Hash[Symbol, untyped] options) -> Hash[Symbol, untyped]
+          def self.spot_managed_environment: (String name, Hash[Symbol, untyped] vpc_config, Hash[Symbol, untyped] options) -> Hash[Symbol, untyped]
+          def self.fargate_managed_environment: (String name, Hash[Symbol, untyped] vpc_config, Hash[Symbol, untyped] options) -> Hash[Symbol, untyped]
+          def self.fargate_spot_managed_environment: (String name, Hash[Symbol, untyped] vpc_config, Hash[Symbol, untyped] options) -> Hash[Symbol, untyped]
+          def self.unmanaged_environment: (String name, Hash[Symbol, untyped] options) -> Hash[Symbol, untyped]
+          
+          # Instance type helpers
+          def self.compute_optimized_instances: () -> Array[String]
+          def self.memory_optimized_instances: () -> Array[String]
+          def self.general_purpose_instances: () -> Array[String]
+          def self.gpu_instances: () -> Array[String]
+        end
+      end
+      
+      # Resource function
+      def aws_batch_compute_environment: (Symbol name, Hash[Symbol, untyped] attributes) -> ResourceReference
+    end
+  end
+end

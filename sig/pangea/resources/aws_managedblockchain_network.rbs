@@ -1,0 +1,102 @@
+# RBS type definitions for AWS Managed Blockchain Network resource
+
+module Pangea
+  module Resources
+    module AWS
+      # Framework type enumeration
+      type blockchain_framework = "HYPERLEDGER_FABRIC" | "ETHEREUM"
+      
+      # Fabric edition enumeration
+      type fabric_edition = "STARTER" | "STANDARD"
+      
+      # Threshold comparator enumeration
+      type threshold_comparator = "GREATER_THAN" | "GREATER_THAN_OR_EQUAL_TO"
+      
+      # Network type
+      type network_type = "Private Permissioned" | "Public Permissionless" | "Public Test Network"
+      
+      # Fabric configuration type
+      type network_fabric_configuration = {
+        edition: fabric_edition
+      }
+      
+      # Ethereum configuration type
+      type network_ethereum_configuration = {
+        chain_id: String
+      }
+      
+      # Framework configuration type
+      type framework_configuration = {
+        network_fabric_configuration?: network_fabric_configuration?,
+        network_ethereum_configuration?: network_ethereum_configuration?
+      }
+      
+      # Approval threshold policy type
+      type approval_threshold_policy = {
+        threshold_percentage?: Integer?,
+        proposal_duration_in_hours?: Integer?,
+        threshold_comparator?: threshold_comparator?
+      }
+      
+      # Voting policy type
+      type voting_policy = {
+        approval_threshold_policy?: approval_threshold_policy?
+      }
+      
+      # Member Fabric configuration type
+      type member_fabric_configuration = {
+        admin_username: String,
+        admin_password: String
+      }
+      
+      # Member framework configuration type
+      type member_framework_configuration = {
+        member_fabric_configuration?: member_fabric_configuration?
+      }
+      
+      # CloudWatch configuration type
+      type cloudwatch_config = {
+        enabled?: bool?
+      }
+      
+      # CA logs configuration type
+      type ca_logs_config = {
+        cloudwatch?: cloudwatch_config?
+      }
+      
+      # Fabric logs configuration type
+      type fabric_logs_config = {
+        ca_logs?: ca_logs_config?
+      }
+      
+      # Log publishing configuration type
+      type log_publishing_configuration = {
+        fabric?: fabric_logs_config?
+      }
+      
+      # Member configuration type
+      type member_configuration = {
+        name: String,
+        description?: String?,
+        framework_configuration: member_framework_configuration,
+        log_publishing_configuration?: log_publishing_configuration?,
+        tags?: Hash[String, String]?
+      }
+      
+      # Managed blockchain network attributes type
+      type managedblockchain_network_attributes = {
+        name: String,
+        description?: String?,
+        framework: blockchain_framework,
+        framework_version: String,
+        framework_configuration?: framework_configuration?,
+        voting_policy?: voting_policy?,
+        member_configuration: member_configuration,
+        tags?: Hash[String, String]?
+      }
+      
+      # Managed blockchain network resource function
+      def aws_managedblockchain_network: (Symbol name, managedblockchain_network_attributes attributes) -> ResourceReference
+    end
+  end
+end

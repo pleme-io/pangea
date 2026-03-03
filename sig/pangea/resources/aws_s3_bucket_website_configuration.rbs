@@ -1,0 +1,74 @@
+# RBS type definitions for AWS S3 Bucket Website Configuration
+
+module Pangea
+  module Resources
+    module AWS
+      # Website error document configuration
+      type website_error_document = {
+        key: String
+      }
+
+      # Website index document configuration
+      type website_index_document = {
+        suffix: String
+      }
+
+      # Website redirect all requests configuration
+      type website_redirect_all_requests_to = {
+        host_name: String,
+        protocol?: ("http" | "https")?
+      }
+
+      # Website routing rule condition configuration
+      type website_routing_rule_condition = {
+        http_error_code_returned_equals?: String?,
+        key_prefix_equals?: String?
+      }
+
+      # Website routing rule redirect configuration
+      type website_routing_rule_redirect = {
+        host_name?: String?,
+        http_redirect_code?: ("301" | "302" | "303" | "307" | "308")?,
+        protocol?: ("http" | "https")?,
+        replace_key_prefix_with?: String?,
+        replace_key_with?: String?
+      }
+
+      # Website routing rule configuration
+      type website_routing_rule = {
+        condition?: website_routing_rule_condition?,
+        redirect: website_routing_rule_redirect
+      }
+
+      # S3 Bucket Website Configuration attributes
+      type s3_bucket_website_configuration_attributes = {
+        bucket: String,
+        expected_bucket_owner?: String?,
+        error_document?: website_error_document?,
+        index_document?: website_index_document?,
+        redirect_all_requests_to?: website_redirect_all_requests_to?,
+        routing_rule?: Array[website_routing_rule]?
+      }
+
+      # S3 Bucket Website Configuration computed properties
+      type s3_bucket_website_configuration_computed_properties = {
+        hosting_mode: ("website_hosting" | "redirect_all"),
+        has_error_document: bool,
+        has_routing_rules: bool,
+        routing_rules_count: Integer,
+        unconditional_rules_count: Integer,
+        error_code_rules_count: Integer,
+        prefix_rules_count: Integer,
+        permanent_redirect_rules_count: Integer,
+        temporary_redirect_rules_count: Integer,
+        index_document_suffix: String?,
+        error_document_key: String?,
+        redirect_target_host: String?,
+        redirect_target_protocol: String?
+      }
+
+      # AWS S3 Bucket Website Configuration resource function
+      def aws_s3_bucket_website_configuration: (Symbol name, s3_bucket_website_configuration_attributes attributes) -> ResourceReference
+    end
+  end
+end

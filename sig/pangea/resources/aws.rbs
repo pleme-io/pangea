@@ -1,0 +1,254 @@
+# RBS type definitions for AWS resources
+
+module Pangea
+  module Resources
+    # Resource reference returned by all resource functions
+    class ResourceReference < Dry::Struct
+      attr_reader type: String
+      attr_reader name: Symbol
+      attr_reader attributes: Hash[Symbol, untyped]
+      attr_reader outputs: Hash[Symbol, String]
+      
+      def ref: (Symbol attribute_name) -> String
+      def []: (Symbol attribute_name) -> String
+      def id: () -> String
+      def arn: () -> String
+      def computed_attributes: () -> BaseComputedAttributes
+    end
+    
+    # Base computed attributes available on all resources
+    class BaseComputedAttributes
+      def initialize: (ResourceReference resource_ref) -> void
+      def id: () -> String
+      def terraform_resource_name: () -> String
+      def tags: () -> Hash[Symbol, String]
+    end
+    
+    # VPC-specific computed attributes
+    class VpcComputedAttributes < BaseComputedAttributes
+      def cidr_block: () -> String
+      def default_security_group_id: () -> String
+      def default_route_table_id: () -> String
+      def is_private_cidr?: () -> bool
+      def estimated_subnet_capacity: () -> Integer
+    end
+    
+    # Subnet-specific computed attributes
+    class SubnetComputedAttributes < BaseComputedAttributes
+      def availability_zone: () -> String
+      def cidr_block: () -> String
+      def vpc_id: () -> String
+      def is_public?: () -> bool
+      def is_private?: () -> bool
+      def subnet_type: () -> String
+      def ip_capacity: () -> Integer
+    end
+    
+    # Instance-specific computed attributes
+    class InstanceComputedAttributes < BaseComputedAttributes
+      def public_ip: () -> String
+      def private_ip: () -> String
+      def public_dns: () -> String
+      def private_dns: () -> String
+      def instance_type: () -> String
+      def compute_family: () -> String?
+      def compute_size: () -> String?
+    end
+    
+    module AWS
+      # VPC attributes type
+      type vpc_attributes = {
+        cidr_block: String,
+        enable_dns_hostnames?: bool,
+        enable_dns_support?: bool,
+        instance_tenancy?: ("default" | "dedicated" | "host"),
+        tags?: Hash[Symbol, String]
+      }
+      
+      # Subnet attributes type
+      type subnet_attributes = {
+        vpc_id: String,
+        cidr_block: String,
+        availability_zone: String,
+        map_public_ip_on_launch?: bool,
+        tags?: Hash[Symbol, String]
+      }
+      
+      # Internet Gateway attributes type
+      type igw_attributes = {
+        vpc_id?: String?,
+        tags?: Hash[Symbol, String]
+      }
+      
+      # Route attributes type
+      type route_attributes = {
+        cidr_block?: String?,
+        gateway_id?: String?,
+        nat_gateway_id?: String?,
+        vpc_peering_connection_id?: String?
+      }
+      
+      # Route Table attributes type  
+      type route_table_attributes = {
+        vpc_id: String,
+        routes?: Array[route_attributes],
+        tags?: Hash[Symbol, String]
+      }
+      
+      # EC2 Instance attributes type
+      type instance_attributes = {
+        ami: String,
+        instance_type: String,
+        subnet_id?: String?,
+        vpc_security_group_ids?: Array[String],
+        key_name?: String?,
+        user_data?: String?,
+        associate_public_ip_address?: bool?,
+        availability_zone?: String?,
+        tags?: Hash[Symbol, String]
+      }
+      
+      # AWS resource functions - now return ResourceReference objects
+      def aws_vpc: (Symbol name, vpc_attributes attributes) -> ResourceReference
+                 | (Symbol name) -> ResourceReference
+      
+      def aws_subnet: (Symbol name, subnet_attributes attributes) -> ResourceReference
+      
+      def aws_internet_gateway: (Symbol name, igw_attributes attributes) -> ResourceReference
+                              | (Symbol name) -> ResourceReference
+      
+      def aws_route_table: (Symbol name, route_table_attributes attributes) -> ResourceReference
+      
+      def aws_instance: (Symbol name, instance_attributes attributes) -> ResourceReference
+
+      # S3 Advanced Configuration attributes
+      type s3_bucket_lifecycle_configuration_attributes = {
+        bucket: String,
+        expected_bucket_owner?: String?,
+        rule: Array[untyped]
+      }
+
+      type s3_bucket_cors_configuration_attributes = {
+        bucket: String,
+        expected_bucket_owner?: String?,
+        cors_rule: Array[untyped]
+      }
+
+      type s3_bucket_website_configuration_attributes = {
+        bucket: String,
+        expected_bucket_owner?: String?,
+        error_document?: untyped?,
+        index_document?: untyped?,
+        redirect_all_requests_to?: untyped?,
+        routing_rule?: Array[untyped]?
+      }
+
+      # S3 Advanced Configuration resource functions
+      def aws_s3_bucket_lifecycle_configuration: (Symbol name, s3_bucket_lifecycle_configuration_attributes attributes) -> ResourceReference
+      
+      def aws_s3_bucket_cors_configuration: (Symbol name, s3_bucket_cors_configuration_attributes attributes) -> ResourceReference
+      
+      def aws_s3_bucket_website_configuration: (Symbol name, s3_bucket_website_configuration_attributes attributes) -> ResourceReference
+
+      # RDS/Database resource functions
+      def aws_db_subnet_group: (Symbol name, untyped attributes) -> ResourceReference
+      
+      def aws_db_parameter_group: (Symbol name, untyped attributes) -> ResourceReference
+      
+      def aws_rds_cluster: (Symbol name, untyped attributes) -> ResourceReference
+      
+      def aws_rds_cluster_instance: (Symbol name, untyped attributes) -> ResourceReference
+
+      # Security resource functions
+      def aws_acm_certificate: (Symbol name, untyped attributes) -> ResourceReference
+                              | (Symbol name) -> ResourceReference
+      
+      def aws_acm_certificate_validation: (Symbol name, untyped attributes) -> ResourceReference
+      
+      def aws_secretsmanager_secret: (Symbol name, untyped attributes) -> ResourceReference
+                                   | (Symbol name) -> ResourceReference
+      
+      def aws_secretsmanager_secret_version: (Symbol name, untyped attributes) -> ResourceReference
+      
+      def aws_kms_key: (Symbol name, untyped attributes) -> ResourceReference
+      
+      def aws_kms_alias: (Symbol name, untyped attributes) -> ResourceReference
+
+      # ElastiCache resource functions
+      def aws_elasticache_cluster: (Symbol name, untyped attributes) -> ResourceReference
+      
+      def aws_elasticache_subnet_group: (Symbol name, untyped attributes) -> ResourceReference
+      
+      def aws_elasticache_parameter_group: (Symbol name, untyped attributes) -> ResourceReference
+
+      # Route53 resource functions
+      def aws_route53_zone: (Symbol name, untyped attributes) -> ResourceReference
+      
+      def aws_route53_record: (Symbol name, untyped attributes) -> ResourceReference
+      
+      def aws_route53_health_check: (Symbol name, untyped attributes) -> ResourceReference
+    end
+    
+    module Composition
+      # Composite references
+      class CompositeVpcReference
+        attr_accessor vpc: ResourceReference
+        attr_accessor internet_gateway: ResourceReference
+        attr_accessor public_route_table: ResourceReference
+        attr_reader name_prefix: Symbol
+        attr_reader public_subnets: Array[ResourceReference]
+        attr_reader private_subnets: Array[ResourceReference]
+        
+        def initialize: (Symbol name_prefix) -> void
+        def public_subnet_ids: () -> Array[String]
+        def private_subnet_ids: () -> Array[String]
+        def all_subnet_ids: () -> Array[String]
+        def availability_zone_count: () -> Integer
+      end
+      
+      class CompositeWebServerReference
+        attr_accessor instance: ResourceReference
+        attr_accessor security_group: ResourceReference
+        attr_reader name: Symbol
+        
+        def initialize: (Symbol name) -> void
+        def public_ip: () -> String?
+        def private_ip: () -> String?
+        def instance_id: () -> String?
+        def security_group_id: () -> String?
+      end
+      
+      # Composition function types
+      type vpc_composition_attributes = {
+        vpc_tags?: Hash[Symbol, String],
+        igw_tags?: Hash[Symbol, String],
+        public_subnet_tags?: Hash[Symbol, String],
+        private_subnet_tags?: Hash[Symbol, String],
+        route_table_tags?: Hash[Symbol, String]
+      }
+      
+      type web_server_attributes = {
+        ami?: String,
+        instance_type?: String,
+        key_name?: String,
+        user_data?: String,
+        sg_tags?: Hash[Symbol, String],
+        instance_tags?: Hash[Symbol, String]
+      }
+      
+      # Composition functions
+      def vpc_with_subnets: (
+        Symbol name_prefix,
+        vpc_cidr: String,
+        availability_zones: Array[String],
+        ?attributes: vpc_composition_attributes
+      ) -> CompositeVpcReference
+      
+      def web_server: (
+        Symbol name,
+        subnet_ref: ResourceReference,
+        ?attributes: web_server_attributes
+      ) -> CompositeWebServerReference
+    end
+  end
+end

@@ -1,0 +1,20 @@
+# sig/pangea/structures/project.rbs
+
+module Pangea
+  module Structures
+    class Project < Dry::Struct
+      # Attributes
+      attr_reader name: String
+      attr_reader namespace: String
+      attr_reader site: String?
+      attr_reader modules: Array[String]
+      attr_reader variables: Hash[Symbol, untyped]
+      attr_reader outputs: Array[String]
+      
+      # Methods
+      def full_name: () -> String
+      def has_modules?: () -> bool
+      def state_key: () -> String
+    end
+  end
+end

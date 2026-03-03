@@ -1,0 +1,238 @@
+# RBS type definitions for AWS ECS Service
+
+module Pangea
+  module Resources
+    module AWS
+      # ECS Service attributes
+      type ecs_service_attributes = {
+        name: String,
+        cluster: String,
+        task_definition: String,
+        ?desired_count: Integer,
+        ?scheduling_strategy: ("REPLICA" | "DAEMON"),
+        ?launch_type: ("EC2" | "FARGATE" | "EXTERNAL")?,
+        ?capacity_provider_strategy: Array[ecs_capacity_provider_strategy],
+        ?platform_version: String,
+        ?load_balancer: Array[ecs_load_balancer],
+        ?network_configuration: ecs_network_configuration?,
+        ?service_registries: Array[ecs_service_registry],
+        ?deployment_configuration: ecs_deployment_configuration,
+        ?placement_constraints: Array[ecs_placement_constraint],
+        ?placement_strategy: Array[ecs_placement_strategy],
+        ?health_check_grace_period_seconds: Integer?,
+        ?enable_ecs_managed_tags: bool,
+        ?enable_execute_command: bool,
+        ?propagate_tags: ("TASK_DEFINITION" | "SERVICE" | "NONE"),
+        ?deployment_controller: ecs_deployment_controller,
+        ?service_connect_configuration: ecs_service_connect_configuration?,
+        ?tags: Hash[String, String],
+        ?wait_for_steady_state: bool,
+        ?force_new_deployment: bool
+      }
+
+      # Load balancer configuration
+      type ecs_load_balancer = {
+        target_group_arn: String,
+        container_name: String,
+        container_port: Integer
+      }
+
+      # Network configuration
+      type ecs_network_configuration = {
+        subnets: Array[String],
+        ?security_groups: Array[String]?,
+        ?assign_public_ip: bool
+      }
+
+      # Service registry
+      type ecs_service_registry = {
+        registry_arn: String,
+        ?port: Integer?,
+        ?container_port: Integer?,
+        ?container_name: String?
+      }
+
+      # Deployment configuration
+      type ecs_deployment_configuration = {
+        ?deployment_circuit_breaker: ecs_deployment_circuit_breaker,
+        ?maximum_percent: Integer,
+        ?minimum_healthy_percent: Integer
+      }
+
+      # Deployment circuit breaker
+      type ecs_deployment_circuit_breaker = {
+        enable: bool,
+        rollback: bool
+      }
+
+      # Placement constraint
+      type ecs_placement_constraint = {
+        type: ("distinctInstance" | "memberOf"),
+        ?expression: String?
+      }
+
+      # Placement strategy
+      type ecs_placement_strategy = {
+        type: ("random" | "spread" | "binpack"),
+        ?field: String?
+      }
+
+      # Capacity provider strategy
+      type ecs_capacity_provider_strategy = {
+        capacity_provider: String,
+        ?weight: Integer,
+        ?base: Integer
+      }
+
+      # Deployment controller
+      type ecs_deployment_controller = {
+        type: ("ECS" | "CODE_DEPLOY" | "EXTERNAL")
+      }
+
+      # Service Connect configuration
+      type ecs_service_connect_configuration = {
+        enabled: bool,
+        ?namespace: String?,
+        ?services: Array[ecs_service_connect_service]?,
+        ?log_configuration: ecs_service_connect_log_configuration?
+      }
+
+      # Service Connect service
+      type ecs_service_connect_service = {
+        port_name: String,
+        ?discovery_name: String?,
+        ?client_aliases: Array[ecs_service_connect_client_alias]?,
+        ?ingress_port_override: Integer?,
+        ?timeout: ecs_service_connect_timeout?,
+        ?tls: ecs_service_connect_tls?
+      }
+
+      # Service Connect client alias
+      type ecs_service_connect_client_alias = {
+        port: Integer,
+        ?dns_name: String?
+      }
+
+      # Service Connect timeout
+      type ecs_service_connect_timeout = {
+        ?idle_timeout_seconds: Integer?,
+        ?per_request_timeout_seconds: Integer?
+      }
+
+      # Service Connect TLS
+      type ecs_service_connect_tls = {
+        issuer_certificate_authority: ecs_service_connect_issuer_cert_authority,
+        ?kms_key: String?,
+        ?role_arn: String?
+      }
+
+      # Service Connect issuer certificate authority
+      type ecs_service_connect_issuer_cert_authority = {
+        aws_pca_authority_arn: String
+      }
+
+      # Service Connect log configuration
+      type ecs_service_connect_log_configuration = {
+        log_driver: String,
+        ?options: Hash[String, String]?,
+        ?secret_options: Array[{ name: String, value_from: String }]?
+      }
+
+      # ECS Service computed properties
+      type ecs_service_computed_properties = {
+        using_fargate: bool,
+        load_balanced: bool,
+        service_discovery_enabled: bool,
+        service_connect_enabled: bool,
+        estimated_monthly_cost: Float,
+        deployment_safe: bool,
+        is_daemon_service: bool
+      }
+
+      # AWS ECS Service resource function
+      def aws_ecs_service: (Symbol name, ecs_service_attributes attributes) -> ResourceReference
+
+      # Load Balancer class
+      class EcsLoadBalancer < Dry::Struct
+        attr_reader target_group_arn: String
+        attr_reader container_name: String
+        attr_reader container_port: Integer
+      end
+
+      # Network Configuration class
+      class EcsNetworkConfiguration < Dry::Struct
+        attr_reader subnets: Array[String]
+        attr_reader security_groups: Array[String]?
+        attr_reader assign_public_ip: bool
+      end
+
+      # Service Registries class
+      class EcsServiceRegistries < Dry::Struct
+        attr_reader registry_arn: String
+        attr_reader port: Integer?
+        attr_reader container_port: Integer?
+        attr_reader container_name: String?
+      end
+
+      # Deployment Configuration class
+      class EcsDeploymentConfiguration < Dry::Struct
+        attr_reader deployment_circuit_breaker: Hash[Symbol, bool]
+        attr_reader maximum_percent: Integer
+        attr_reader minimum_healthy_percent: Integer
+      end
+
+      # Placement Constraint class
+      class EcsPlacementConstraint < Dry::Struct
+        attr_reader type: String
+        attr_reader expression: String?
+      end
+
+      # Placement Strategy class
+      class EcsPlacementStrategy < Dry::Struct
+        attr_reader type: String
+        attr_reader field: String?
+      end
+
+      # Capacity Provider Strategy class (shared)
+      class EcsCapacityProviderStrategy < Dry::Struct
+        attr_reader capacity_provider: String
+        attr_reader weight: Integer
+        attr_reader base: Integer
+      end
+
+      # Service Attributes class
+      class EcsServiceAttributes < Dry::Struct
+        attr_reader name: String
+        attr_reader cluster: String
+        attr_reader task_definition: String
+        attr_reader desired_count: Integer
+        attr_reader scheduling_strategy: String
+        attr_reader launch_type: String?
+        attr_reader capacity_provider_strategy: Array[EcsCapacityProviderStrategy]
+        attr_reader platform_version: String
+        attr_reader load_balancer: Array[EcsLoadBalancer]
+        attr_reader network_configuration: EcsNetworkConfiguration?
+        attr_reader service_registries: Array[EcsServiceRegistries]
+        attr_reader deployment_configuration: EcsDeploymentConfiguration
+        attr_reader placement_constraints: Array[EcsPlacementConstraint]
+        attr_reader placement_strategy: Array[EcsPlacementStrategy]
+        attr_reader health_check_grace_period_seconds: Integer?
+        attr_reader enable_ecs_managed_tags: bool
+        attr_reader enable_execute_command: bool
+        attr_reader propagate_tags: String
+        attr_reader deployment_controller: Hash[Symbol, String]
+        attr_reader service_connect_configuration: Hash[Symbol, untyped]?
+        attr_reader tags: Hash[String, String]
+        attr_reader wait_for_steady_state: bool
+        attr_reader force_new_deployment: bool
+
+        def using_fargate?: () -> bool
+        def load_balanced?: () -> bool
+        def service_discovery_enabled?: () -> bool
+        def service_connect_enabled?: () -> bool
+        def estimated_monthly_cost: () -> Float
+        def deployment_safe?: () -> bool
+      end
+    end
+  end
+end

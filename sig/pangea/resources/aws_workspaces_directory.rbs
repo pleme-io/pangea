@@ -1,0 +1,63 @@
+# RBS type definitions for AWS WorkSpaces Directory
+
+module Pangea
+  module Resources
+    module AWS
+      # Self-service permissions configuration
+      type self_service_permissions = {
+        restart_workspace?: ("ENABLED" | "DISABLED")?,
+        increase_volume_size?: ("ENABLED" | "DISABLED")?,
+        change_compute_type?: ("ENABLED" | "DISABLED")?,
+        switch_running_mode?: ("ENABLED" | "DISABLED")?,
+        rebuild_workspace?: ("ENABLED" | "DISABLED")?
+      }
+
+      # Workspace creation properties
+      type workspace_creation_properties = {
+        custom_security_group_id?: String?,
+        default_ou?: String?,
+        enable_internet_access?: bool?,
+        enable_maintenance_mode?: bool?,
+        user_enabled_as_local_administrator?: bool?
+      }
+
+      # Workspace access properties
+      type workspace_access_properties = {
+        device_type_windows?: ("ALLOW" | "DENY")?,
+        device_type_osx?: ("ALLOW" | "DENY")?,
+        device_type_web?: ("ALLOW" | "DENY")?,
+        device_type_ios?: ("ALLOW" | "DENY")?,
+        device_type_android?: ("ALLOW" | "DENY")?,
+        device_type_chrome_os?: ("ALLOW" | "DENY")?,
+        device_type_zero_client?: ("ALLOW" | "DENY")?,
+        device_type_linux?: ("ALLOW" | "DENY")?
+      }
+
+      # WorkSpaces Directory attributes
+      type workspaces_directory_attributes = {
+        directory_id: String,
+        subnet_ids?: Array[String]?,
+        self_service_permissions?: self_service_permissions?,
+        workspace_creation_properties?: workspace_creation_properties?,
+        workspace_access_properties?: workspace_access_properties?,
+        ip_group_ids?: Array[String]?,
+        tags?: Hash[String, String]?
+      }
+
+      # WorkSpaces Directory computed properties
+      type workspaces_directory_computed_properties = {
+        multi_az: bool,
+        self_service_enabled: bool,
+        device_access_enabled: bool,
+        allowed_device_types: Array[String]?,
+        mobile_access_allowed: bool?,
+        web_access_allowed: bool?,
+        desktop_access_allowed: bool?,
+        security_level: Symbol?
+      }
+
+      # AWS WorkSpaces Directory resource function
+      def aws_workspaces_directory: (Symbol name, workspaces_directory_attributes attributes) -> ResourceReference
+    end
+  end
+end

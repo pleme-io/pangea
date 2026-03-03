@@ -1,0 +1,18 @@
+# RBS type definitions for AWS ElastiCache Parameter Group resource
+
+module Pangea
+  module Resources
+    module AWS
+      # ElastiCache parameter group attributes type
+      type elasticache_parameter_group_attributes = {
+        name: String,
+        description?: String?,
+        family: ("redis2.6" | "redis2.8" | "redis3.2" | "redis4.0" | "redis5.0" | "redis6.x" | "redis7.x" | "memcached1.4" | "memcached1.5" | "memcached1.6"),
+        parameters?: Array[Hash[Symbol, String]],
+        tags?: Hash[Symbol, String]
+      }
+
+      # ElastiCache parameter group resource function
+      def aws_elasticache_parameter_group: (Symbol name, elasticache_parameter_group_attributes attributes) -> ResourceReference
+    end
+end

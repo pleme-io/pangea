@@ -1,0 +1,44 @@
+# RBS type definitions for AWS Lambda Permission
+
+module Pangea
+  module Resources
+    module AWS
+      # Lambda permission attributes type
+      type lambda_permission_attributes = {
+        action: String,
+        function_name: String,
+        principal: String,
+        ?statement_id: String,
+        ?qualifier: String?,
+        ?source_arn: String?,
+        ?source_account: String?,
+        ?event_source_token: String?,
+        ?principal_org_id: String?,
+        ?function_url_auth_type: ("AWS_IAM" | "NONE")?
+      }
+
+      # AWS Lambda Permission resource function
+      def aws_lambda_permission: (Symbol name, lambda_permission_attributes attributes) -> ResourceReference
+
+      # Lambda Permission Attributes class
+      class LambdaPermissionAttributes < Dry::Struct
+        attr_reader action: String
+        attr_reader function_name: String
+        attr_reader principal: String
+        attr_reader statement_id: String
+        attr_reader qualifier: String?
+        attr_reader source_arn: String?
+        attr_reader source_account: String?
+        attr_reader event_source_token: String?
+        attr_reader principal_org_id: String?
+        attr_reader function_url_auth_type: String?
+
+        def is_service_principal?: () -> bool
+        def service_name: () -> String?
+        def allows_all_actions?: () -> bool
+        def is_cross_account?: () -> bool
+        def requires_source_arn?: () -> bool
+      end
+    end
+  end
+end

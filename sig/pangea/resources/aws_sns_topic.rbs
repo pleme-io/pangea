@@ -1,0 +1,78 @@
+# RBS type definitions for AWS SNS Topic
+
+module Pangea
+  module Resources
+    module AWS
+      # SNS topic attributes type
+      type sns_topic_attributes = {
+        ?name: String?,
+        ?display_name: String?,
+        ?kms_master_key_id: String?,
+        ?fifo_topic: bool,
+        ?content_based_deduplication: bool,
+        ?delivery_policy: String?,
+        ?policy: String?,
+        ?application_success_feedback_role_arn: String?,
+        ?application_success_feedback_sample_rate: Integer?,
+        ?application_failure_feedback_role_arn: String?,
+        ?http_success_feedback_role_arn: String?,
+        ?http_success_feedback_sample_rate: Integer?,
+        ?http_failure_feedback_role_arn: String?,
+        ?lambda_success_feedback_role_arn: String?,
+        ?lambda_success_feedback_sample_rate: Integer?,
+        ?lambda_failure_feedback_role_arn: String?,
+        ?sqs_success_feedback_role_arn: String?,
+        ?sqs_success_feedback_sample_rate: Integer?,
+        ?sqs_failure_feedback_role_arn: String?,
+        ?firehose_success_feedback_role_arn: String?,
+        ?firehose_success_feedback_sample_rate: Integer?,
+        ?firehose_failure_feedback_role_arn: String?,
+        ?message_data_protection_policy: String?,
+        ?tracing_config: ("Active" | "PassThrough")?,
+        ?tags: Hash[String, String]
+      }
+
+      # AWS SNS Topic resource function
+      def aws_sns_topic: (Symbol name, sns_topic_attributes attributes) -> ResourceReference
+
+      # SNS Topic Attributes class
+      class SNSTopicAttributes < Dry::Struct
+        attr_reader name: String?
+        attr_reader display_name: String?
+        attr_reader kms_master_key_id: String?
+        attr_reader fifo_topic: bool
+        attr_reader content_based_deduplication: bool
+        attr_reader delivery_policy: String?
+        attr_reader policy: String?
+        attr_reader application_success_feedback_role_arn: String?
+        attr_reader application_success_feedback_sample_rate: Integer?
+        attr_reader application_failure_feedback_role_arn: String?
+        attr_reader http_success_feedback_role_arn: String?
+        attr_reader http_success_feedback_sample_rate: Integer?
+        attr_reader http_failure_feedback_role_arn: String?
+        attr_reader lambda_success_feedback_role_arn: String?
+        attr_reader lambda_success_feedback_sample_rate: Integer?
+        attr_reader lambda_failure_feedback_role_arn: String?
+        attr_reader sqs_success_feedback_role_arn: String?
+        attr_reader sqs_success_feedback_sample_rate: Integer?
+        attr_reader sqs_failure_feedback_role_arn: String?
+        attr_reader firehose_success_feedback_role_arn: String?
+        attr_reader firehose_success_feedback_sample_rate: Integer?
+        attr_reader firehose_failure_feedback_role_arn: String?
+        attr_reader message_data_protection_policy: String?
+        attr_reader tracing_config: String?
+        attr_reader tags: Hash[String, String]
+
+        def is_fifo?: () -> bool
+        def is_encrypted?: () -> bool
+        def has_delivery_policy?: () -> bool
+        def has_access_policy?: () -> bool
+        def has_data_protection?: () -> bool
+        def has_feedback_enabled?: () -> bool
+        def feedback_protocols: () -> Array[String]
+        def topic_type: () -> String
+        def tracing_enabled?: () -> bool
+      end
+    end
+  end
+end

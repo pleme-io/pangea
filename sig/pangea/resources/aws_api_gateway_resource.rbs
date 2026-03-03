@@ -1,0 +1,33 @@
+# RBS type definitions for AWS API Gateway Resource
+
+module Pangea
+  module Resources
+    module AWS
+      # API Gateway Resource attributes type
+      type api_gateway_resource_attributes = {
+        rest_api_id: String,
+        parent_id: String,
+        path_part: String
+      }
+
+      # AWS API Gateway Resource function
+      def aws_api_gateway_resource: (Symbol name, api_gateway_resource_attributes attributes) -> ResourceReference
+
+      # API Gateway Resource Attributes class
+      class ApiGatewayResourceAttributes < Dry::Struct
+        attr_reader rest_api_id: String
+        attr_reader parent_id: String
+        attr_reader path_part: String
+
+        def is_path_parameter?: () -> bool
+        def is_greedy_parameter?: () -> bool
+        def parameter_name: () -> String?
+        def requires_request_validator?: () -> bool
+        
+        def self.common_path_parts: () -> Hash[Symbol, String]
+        def self.validate_path_hierarchy: (Array[Hash[Symbol, untyped]] resources) -> bool
+        def self.build_full_path: (String resource_id, Hash[String, Hash[Symbol, untyped]] resource_map) -> String
+      end
+    end
+  end
+end

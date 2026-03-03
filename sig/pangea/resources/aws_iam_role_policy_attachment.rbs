@@ -1,0 +1,88 @@
+# RBS type definitions for AWS IAM Role Policy Attachment
+
+module Pangea
+  module Resources
+    module AWS
+      # IAM Role Policy Attachment attributes
+      type iam_role_policy_attachment_attributes = {
+        role: String,
+        policy_arn: String
+      }
+
+      # IAM Role Policy Attachment computed properties
+      type iam_role_policy_attachment_computed_properties = {
+        aws_managed_policy: bool,
+        customer_managed_policy: bool,
+        policy_name: String,
+        policy_account_id: String?,
+        role_name: String,
+        role_specified_by_arn: bool,
+        attachment_id: String,
+        potentially_dangerous: bool,
+        policy_category: (:administrative | :power_user | :read_only | :service_specific | :service_linked | :custom),
+        security_risk_level: (:low | :medium | :high)
+      }
+
+      # AWS IAM Role Policy Attachment resource function
+      def aws_iam_role_policy_attachment: (Symbol name, iam_role_policy_attachment_attributes attributes) -> ResourceReference
+
+      # AWS Managed Policies Module
+      module AwsManagedPolicies
+        # Administrative policies
+        ADMINISTRATOR_ACCESS: String
+        POWER_USER_ACCESS: String
+        IAM_FULL_ACCESS: String
+        READ_ONLY_ACCESS: String
+        SECURITY_AUDIT: String
+
+        module S3
+          FULL_ACCESS: String
+          READ_ONLY: String
+        end
+
+        module EC2
+          FULL_ACCESS: String
+          READ_ONLY: String
+        end
+
+        module RDS
+          FULL_ACCESS: String
+          READ_ONLY: String
+        end
+
+        module Lambda
+          FULL_ACCESS: String
+          READ_ONLY: String
+          BASIC_EXECUTION_ROLE: String
+          VPC_ACCESS_EXECUTION_ROLE: String
+        end
+
+        module CloudWatch
+          FULL_ACCESS: String
+          READ_ONLY: String
+          AGENT_SERVER_POLICY: String
+        end
+
+        module ECS
+          TASK_EXECUTION_ROLE: String
+          SERVICE_ROLE: String
+        end
+
+        def self.all_policies: () -> Array[String]
+        def self.service_policies: () -> Hash[Symbol, Module]
+        def self.administrative_policies: () -> Array[String]
+        def self.read_only_policies: () -> Array[String]
+      end
+
+      # Attachment Patterns Module
+      module AttachmentPatterns
+        def self.lambda_execution_role_policies: () -> Array[String]
+        def self.lambda_vpc_execution_role_policies: () -> Array[String]
+        def self.ec2_instance_basic_policies: () -> Array[String]
+        def self.ecs_task_execution_policies: () -> Array[String]
+        def self.development_policies: () -> Array[String]
+        def self.production_read_only_policies: () -> Array[String]
+      end
+    end
+  end
+end

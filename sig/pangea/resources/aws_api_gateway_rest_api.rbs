@@ -1,0 +1,60 @@
+# RBS type definitions for AWS API Gateway REST API
+
+module Pangea
+  module Resources
+    module AWS
+      # API Gateway REST API attributes type
+      type api_gateway_rest_api_attributes = {
+        name: String,
+        ?description: String?,
+        ?endpoint_configuration: api_gateway_endpoint_configuration?,
+        ?version: String?,
+        ?clone_from: String?,
+        ?binary_media_types: Array[String],
+        ?minimum_tls_version: ("TLS_1_0" | "TLS_1_2"),
+        ?minimum_compression_size: Integer?,
+        ?api_key_source: ("HEADER" | "AUTHORIZER"),
+        ?policy: String?,
+        ?body: String?,
+        ?disable_execute_api_endpoint: bool,
+        ?custom_domain_name: String?,
+        ?tags: Hash[String, String]
+      }
+
+      # API Gateway endpoint configuration
+      type api_gateway_endpoint_configuration = {
+        ?types: Array[("EDGE" | "REGIONAL" | "PRIVATE")],
+        ?vpc_endpoint_ids: Array[String]?
+      }
+
+      # AWS API Gateway REST API resource function
+      def aws_api_gateway_rest_api: (Symbol name, api_gateway_rest_api_attributes attributes) -> ResourceReference
+
+      # API Gateway REST API Attributes class
+      class ApiGatewayRestApiAttributes < Dry::Struct
+        attr_reader name: String
+        attr_reader description: String?
+        attr_reader endpoint_configuration: Hash[Symbol, untyped]?
+        attr_reader version: String?
+        attr_reader clone_from: String?
+        attr_reader binary_media_types: Array[String]
+        attr_reader minimum_tls_version: String
+        attr_reader minimum_compression_size: Integer?
+        attr_reader api_key_source: String
+        attr_reader policy: String?
+        attr_reader body: String?
+        attr_reader disable_execute_api_endpoint: bool
+        attr_reader custom_domain_name: String?
+        attr_reader tags: Hash[String, String]
+
+        def is_edge_optimized?: () -> bool
+        def is_regional?: () -> bool
+        def is_private?: () -> bool
+        def supports_binary_content?: () -> bool
+        def has_custom_domain?: () -> bool
+        def estimated_monthly_cost: () -> Float
+        def self.common_binary_types: () -> Array[String]
+      end
+    end
+  end
+end

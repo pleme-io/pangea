@@ -1,0 +1,56 @@
+# RBS type definitions for AWS Cognito Identity Pool
+
+module Pangea
+  module Resources
+    module AWS
+      # Cognito identity provider configuration
+      type cognito_identity_pool_provider = {
+        client_id?: String?,
+        provider_name?: String?,
+        server_side_token_check?: bool?
+      }
+
+      # Cognito Identity Pool attributes
+      type cognito_identity_pool_attributes = {
+        identity_pool_name: String,
+        allow_unauthenticated_identities?: bool?,
+        allow_classic_flow?: bool?,
+        cognito_identity_providers?: Array[cognito_identity_pool_provider]?,
+        supported_login_providers?: Hash[String, String]?,
+        openid_connect_provider_arns?: Array[String]?,
+        saml_provider_arns?: Array[String]?,
+        developer_provider_name?: String?,
+        tags?: Hash[String, String]?
+      }
+
+      # Cognito Identity Pool computed properties
+      type cognito_identity_pool_computed_properties = {
+        has_authentication: bool,
+        uses_cognito_user_pools: bool,
+        uses_social_providers: bool,
+        uses_saml_providers: bool,
+        uses_oidc_providers: bool,
+        uses_developer_auth: bool,
+        authentication_methods: Array[Symbol],
+        social_providers: Array[Symbol],
+        security_level: (:low | :medium | :medium_high | :high | :unknown)
+      }
+
+      # AWS Cognito Identity Pool resource function
+      def aws_cognito_identity_pool: (Symbol name, cognito_identity_pool_attributes attributes) -> ResourceReference
+
+      # Pre-configured identity pool templates
+      module IdentityPoolTemplates
+        def self.basic_authenticated: (String pool_name, String user_pool_id, String user_pool_client_id) -> Hash[Symbol, untyped]
+        def self.social_login: (String pool_name, ?Hash[String, String] social_providers) -> Hash[Symbol, untyped]
+        def self.mixed_authentication: (String pool_name, Hash[Symbol, untyped] user_pool_config, ?Hash[String, String] social_providers) -> Hash[Symbol, untyped]
+        def self.enterprise_saml: (String pool_name, Array[String] saml_provider_arns) -> Hash[Symbol, untyped]
+        def self.mobile_app: (String pool_name, ?Hash[Symbol, untyped]? user_pool_config, ?bool allow_unauthenticated) -> Hash[Symbol, untyped]
+        def self.development: (String pool_name, ?Hash[Symbol, untyped]? user_pool_config) -> Hash[Symbol, untyped]
+        def self.iot_devices: (String pool_name, ?bool certificate_based) -> Hash[Symbol, untyped]
+        def self.web_application: (String pool_name, Hash[Symbol, untyped] user_pool_config, ?String? google_client_id) -> Hash[Symbol, untyped]
+        def self.analytics: (String pool_name, ?Hash[Symbol, untyped]? user_pool_config) -> Hash[Symbol, untyped]
+      end
+    end
+  end
+end

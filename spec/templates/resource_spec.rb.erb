@@ -1,0 +1,30 @@
+require 'spec_helper'
+
+RSpec.describe "<%= resource_method %>" do
+  include Pangea::Resources::AWS
+  include Pangea::Testing::TestDataHelpers
+  
+  let(:test_data) { TestDataRegistry.instance.for_resource(:<%= resource_type %>) }
+  
+  describe "basic functionality" do
+    it "creates a resource reference" do
+      ref = <%= resource_method %>(:test, test_data[:valid])
+      
+      expect(ref).to be_a(ResourceReference)
+      expect(ref.type).to eq('<%= resource_type %>')
+      expect(ref.name).to eq(:test)
+    end
+    
+    it "validates required attributes" do
+      expect {
+        <%= resource_method %>(:test, {})
+      }.to raise_error(ValidationError, /Missing required attribute/)
+    end
+    
+    it "rejects invalid attributes" do
+      expect {
+        <%= resource_method %>(:test, test_data[:invalid])
+      }.to raise_error(ValidationError)
+    end
+  end
+end

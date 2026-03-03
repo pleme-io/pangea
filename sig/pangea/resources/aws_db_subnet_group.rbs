@@ -1,0 +1,42 @@
+# RBS type definitions for AWS DB Subnet Group resources
+
+module Pangea
+  module Resources
+    module AWS
+      # DB Subnet Group attributes type
+      type db_subnet_group_attributes = {
+        name: String,
+        subnet_ids: Array[String],
+        description?: String?,
+        tags?: Hash[Symbol, String]?
+      }
+
+      # DB Subnet Group computed attributes
+      class DbSubnetGroupComputedAttributes < BaseComputedAttributes
+        def subnet_count: () -> Integer
+        def is_multi_az?: () -> bool
+        def effective_description: () -> String
+        def estimated_monthly_cost: () -> String
+      end
+
+      # DB Subnet Group resource function
+      def aws_db_subnet_group: (Symbol name, db_subnet_group_attributes attributes) -> ResourceReference
+
+      # DB Subnet Group attributes struct
+      class DbSubnetGroupAttributes < Dry::Struct
+        attribute :name, String
+        attribute :subnet_ids, Array[String]
+        attribute? :description, String?
+        attribute :tags, Hash[Symbol, String]
+
+        def self.new: (Hash[Symbol, untyped] attributes) -> DbSubnetGroupAttributes
+
+        def subnet_count: () -> Integer
+        def is_multi_az?: () -> bool
+        def effective_description: () -> String
+        def validate_for_engine: (String engine) -> untyped
+        def estimated_monthly_cost: () -> String
+      end
+    end
+  end
+end

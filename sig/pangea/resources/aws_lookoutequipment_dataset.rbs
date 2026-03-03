@@ -1,0 +1,73 @@
+# Lookout for Equipment resource type definitions
+
+module Pangea
+  module Resources
+    module AWS
+      module Lookout
+        module Equipment
+          # AWS Lookout for Equipment Dataset for predictive maintenance
+          #
+          # @example Basic equipment dataset
+          #   aws_lookoutequipment_dataset(:sensor_data, {
+          #     dataset_name: "turbine-sensor-data",
+          #     dataset_schema: schema_json
+          #   })
+          def aws_lookoutequipment_dataset: (
+            Symbol name,
+            {
+              dataset_name: String,
+              ?dataset_schema: String,
+              ?server_side_kms_key_id: String,
+              ?tags: Hash[String, String]
+            } attributes
+          ) -> ResourceReference
+
+          # AWS Lookout for Equipment Model
+          def aws_lookoutequipment_model: (
+            Symbol name,
+            {
+              model_name: String,
+              dataset_name: String,
+              role_arn: String,
+              training_data_start_time: String,
+              training_data_end_time: String,
+              ?labels_input_configuration: String,
+              ?evaluation_data_start_time: String,
+              ?evaluation_data_end_time: String,
+              ?data_preprocessing_configuration: String,
+              ?server_side_kms_key_id: String,
+              ?tags: Hash[String, String]
+            } attributes
+          ) -> ResourceReference
+
+          # AWS Lookout for Equipment Inference Scheduler
+          def aws_lookoutequipment_inference_scheduler: (
+            Symbol name,
+            {
+              inference_scheduler_name: String,
+              model_name: String,
+              role_arn: String,
+              data_input_configuration: {
+                s3_input_configuration: {
+                  bucket: String,
+                  prefix: String
+                }
+              },
+              data_output_configuration: {
+                s3_output_configuration: {
+                  bucket: String,
+                  prefix: String,
+                  ?kms_key_id: String
+                }
+              },
+              ?data_upload_frequency: String,
+              ?data_delay_offset_in_minutes: String,
+              ?server_side_kms_key_id: String,
+              ?tags: Hash[String, String]
+            } attributes
+          ) -> ResourceReference
+        end
+      end
+    end
+  end
+end

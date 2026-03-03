@@ -1,0 +1,37 @@
+# RBS type definitions for AWS QLDB Ledger resource
+
+module Pangea
+  module Resources
+    module AWS
+      # Permissions mode enumeration
+      type qldb_permissions_mode = "ALLOW_ALL" | "STANDARD"
+      
+      # Compliance level enumeration
+      type qldb_compliance_level = :high | :medium | :low
+      
+      # Query performance tier
+      type query_performance_tier = :serverless
+      
+      # Security feature symbols
+      type qldb_security_feature = :iam_authentication | :encryption_at_rest | :customer_managed_keys | :deletion_protection | :cryptographic_verification | :immutable_journal
+      
+      # Ledger capability symbols
+      type ledger_capability = :acid_transactions | :cryptographic_verification | :immutable_history | :partiql_queries | :document_revisions | :merkle_tree_proofs | :streaming_to_kinesis | :journal_export_to_s3
+      
+      # Use case symbols
+      type ledger_use_case = :financial_transactions | :supply_chain_tracking | :regulatory_compliance | :healthcare_records | :insurance_claims | :identity_verification | :voting_systems | :audit_logs
+      
+      # QLDB ledger attributes type
+      type qldb_ledger_attributes = {
+        name: String,
+        permissions_mode: qldb_permissions_mode,
+        deletion_protection?: bool?,
+        kms_key?: String?,
+        tags?: Hash[String, String]?
+      }
+      
+      # QLDB ledger resource function
+      def aws_qldb_ledger: (Symbol name, qldb_ledger_attributes attributes) -> ResourceReference
+    end
+  end
+end

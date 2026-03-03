@@ -1,0 +1,51 @@
+# RBS type definitions for AWS S3 Bucket Object Lock Configuration
+
+module Pangea
+  module Resources
+    module AWS
+      # Default retention configuration
+      type object_lock_default_retention = {
+        mode: ("GOVERNANCE" | "COMPLIANCE"),
+        days?: Integer?,
+        years?: Integer?
+      }
+
+      # Object lock rule configuration
+      type object_lock_rule = {
+        default_retention: object_lock_default_retention
+      }
+
+      # S3 Bucket Object Lock Configuration attributes
+      type s3_bucket_object_lock_configuration_attributes = {
+        bucket: String,
+        expected_bucket_owner?: String?,
+        object_lock_enabled?: ("Enabled")?,
+        token?: String?,
+        rule?: object_lock_rule?
+      }
+
+      # S3 Bucket Object Lock Configuration computed properties
+      type s3_bucket_object_lock_configuration_computed_properties = {
+        has_default_retention: bool,
+        governance_mode: bool,
+        compliance_mode: bool,
+        retention_period_in_days: Integer,
+        retention_period_in_years: Float,
+        short_term_retention: bool,
+        medium_term_retention: bool,
+        long_term_retention: bool,
+        compliance_grade_retention: bool,
+        allows_privileged_deletion: bool,
+        prevents_all_deletion: bool,
+        estimated_storage_cost_impact: String,
+        retention_category: ("monthly" | "yearly" | "multi_year" | "long_term_archive"),
+        cross_account_scenario: bool,
+        bucket_name_only: String,
+        estimated_compliance_level: ("minimal" | "standard" | "high" | "maximum")
+      }
+
+      # AWS S3 Bucket Object Lock Configuration resource function
+      def aws_s3_bucket_object_lock_configuration: (Symbol name, s3_bucket_object_lock_configuration_attributes attributes) -> ResourceReference
+    end
+  end
+end

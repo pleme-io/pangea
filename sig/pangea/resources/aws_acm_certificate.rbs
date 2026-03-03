@@ -1,0 +1,23 @@
+# RBS type definitions for AWS ACM Certificate resource
+
+module Pangea
+  module Resources
+    module AWS
+      # ACM Certificate attributes type
+      type acm_certificate_attributes = {
+        domain_name: String,
+        subject_alternative_names?: Array[String]?,
+        validation_method?: ("DNS" | "EMAIL"),
+        key_algorithm?: ("RSA-1024" | "RSA-2048" | "RSA-4096" | "EC-prime256v1" | "EC-secp384r1" | "EC-secp521r1"),
+        certificate_transparency_logging_preference?: ("ENABLED" | "DISABLED"),
+        validation_options?: Array[untyped]?,
+        lifecycle?: untyped?,
+        tags?: Hash[Symbol, String]
+      }
+      
+      # ACM Certificate resource function
+      def aws_acm_certificate: (Symbol name, acm_certificate_attributes attributes) -> ResourceReference
+                             | (Symbol name) -> ResourceReference
+    end
+  end
+end

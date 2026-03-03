@@ -1,0 +1,13 @@
+# sig/pangea.rbs - Main module type definitions
+
+module Pangea
+  VERSION: String
+  
+  module App
+    def self.cfg: () -> Hash[Symbol, untyped]
+    def self.run: () -> void
+  end
+  
+  # Autoloaded module
+  autoload :Module, String
+end

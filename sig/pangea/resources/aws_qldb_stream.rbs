@@ -1,0 +1,53 @@
+# RBS type definitions for AWS QLDB Stream resource
+
+module Pangea
+  module Resources
+    module AWS
+      # Stream type enumeration
+      type qldb_stream_type = :continuous | :bounded
+      
+      # Stream feature symbols
+      type stream_feature = :real_time_streaming | :journal_export | :record_aggregation | :continuous_streaming | :bounded_export
+      
+      # Use case symbols
+      type stream_use_case = :real_time_analytics | :event_driven_processing | :data_lake_ingestion | :cross_region_replication | :point_in_time_export | :audit_log_extraction | :compliance_reporting | :data_migration
+      
+      # Kinesis configuration type
+      type kinesis_configuration = {
+        stream_arn: String,
+        aggregation_enabled?: bool?
+      }
+      
+      # Stream record format type
+      type stream_record_format = {
+        qldbStreamArn: String,
+        recordType: String,
+        payload: {
+          blockAddress: String,
+          transactionId: String,
+          blockTimestamp: String,
+          blockHash: String,
+          entriesHash: String,
+          previousBlockHash: String,
+          entriesHashList: String,
+          transactionInfo: String,
+          revisionSummaries: String
+        }
+      }
+      
+      # QLDB stream attributes type
+      type qldb_stream_attributes = {
+        stream_name: String,
+        ledger_name: String,
+        role_arn: String,
+        kinesis_configuration: kinesis_configuration,
+        inclusive_start_time: String,
+        exclusive_end_time?: String?,
+        tags?: Hash[String, String]?
+      }
+      
+      # QLDB stream resource function
+      def aws_qldb_stream: (Symbol name, qldb_stream_attributes attributes) -> ResourceReference
+    end
+  end
+end

@@ -1,0 +1,33 @@
+# AWS EFS Access Point resource type signatures
+
+module Pangea
+  module Resources
+    module AWS
+      module Types
+        class EfsAccessPointAttributes < Dry::Struct
+          def self.new: (untyped attributes) -> EfsAccessPointAttributes
+          
+          def file_system_id: () -> String
+          def posix_user: () -> Hash[Symbol, untyped]?
+          def root_directory: () -> Hash[Symbol, untyped]?
+          def tags: () -> Hash[Symbol, String]
+          
+          def has_posix_user?: () -> bool
+          def has_root_directory?: () -> bool
+          def has_creation_info?: () -> bool
+          def effective_root_path: () -> String
+          def effective_uid: () -> Integer
+          def effective_gid: () -> Integer
+          def is_root_user?: () -> bool
+          def security_assessment: () -> Hash[Symbol, untyped]
+        end
+      end
+      
+      # EFS Access Point resource function
+      def aws_efs_access_point: (
+        Symbol name,
+        Hash[Symbol, untyped] attributes
+      ) -> ResourceReference
+    end
+  end
+end

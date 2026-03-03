@@ -1,0 +1,69 @@
+# AWS Batch Job Definition resource type signatures
+
+module Pangea
+  module Resources
+    module AWS
+      module Types
+        class BatchJobDefinitionAttributes < Dry::Struct
+          # Core attributes
+          attr_reader job_definition_name: String
+          attr_reader type: String
+          
+          # Optional attributes
+          attr_reader container_properties: Hash[Symbol, untyped]?
+          attr_reader node_properties: Hash[Symbol, untyped]?
+          attr_reader retry_strategy: Hash[Symbol, untyped]?
+          attr_reader timeout: Hash[Symbol, untyped]?
+          attr_reader propagate_tags: bool?
+          attr_reader platform_capabilities: Array[String]?
+          attr_reader tags: Hash[Symbol, String]?
+          
+          def self.new: (Hash[Symbol, untyped] attributes) -> BatchJobDefinitionAttributes
+          
+          # Validation methods
+          def self.validate_job_definition_name: (String name) -> true
+          def self.validate_container_properties: (Hash[Symbol, untyped] properties) -> true
+          def self.validate_node_properties: (Hash[Symbol, untyped] properties) -> true
+          def self.validate_environment_variables: (Array[Hash[Symbol, untyped]] env_vars) -> true
+          def self.validate_mount_points: (Array[Hash[Symbol, untyped]] mount_points) -> true
+          def self.validate_volumes: (Array[Hash[Symbol, untyped]] volumes) -> true
+          def self.validate_retry_strategy: (Hash[Symbol, untyped] retry_strategy) -> true
+          def self.validate_timeout: (Hash[Symbol, untyped] timeout) -> true
+          def self.validate_platform_capabilities: (Array[String] capabilities) -> true
+          
+          # Computed properties
+          def is_container_job?: () -> bool
+          def is_multinode_job?: () -> bool
+          def supports_ec2?: () -> bool
+          def supports_fargate?: () -> bool
+          def has_retry_strategy?: () -> bool
+          def has_timeout?: () -> bool
+          def estimated_memory_mb: () -> Integer?
+          def estimated_vcpus: () -> Integer?
+          
+          # Job definition templates
+          def self.simple_container_job: (String name, String image, Hash[Symbol, untyped] options) -> Hash[Symbol, untyped]
+          def self.fargate_container_job: (String name, String image, Hash[Symbol, untyped] options) -> Hash[Symbol, untyped]
+          def self.gpu_container_job: (String name, String image, Hash[Symbol, untyped] options) -> Hash[Symbol, untyped]
+          def self.multinode_job: (String name, String image, Integer num_nodes, Hash[Symbol, untyped] options) -> Hash[Symbol, untyped]
+          
+          # Workload-specific templates
+          def self.data_processing_job: (String name, String image, Hash[Symbol, untyped] options) -> Hash[Symbol, untyped]
+          def self.ml_training_job: (String name, String image, Hash[Symbol, untyped] options) -> Hash[Symbol, untyped]
+          def self.batch_processing_job: (String name, String image, Hash[Symbol, untyped] options) -> Hash[Symbol, untyped]
+          def self.real_time_job: (String name, String image, Hash[Symbol, untyped] options) -> Hash[Symbol, untyped]
+          
+          # Configuration helpers
+          def self.standard_environment_variables: (Hash[Symbol, untyped] options) -> Array[Hash[Symbol, String]]
+          def self.common_resource_requirements: (Integer? gpu_count) -> Array[Hash[Symbol, String]]
+          def self.efs_volume: (String volume_name, String file_system_id, Hash[Symbol, untyped] options) -> Hash[Symbol, untyped]
+          def self.host_volume: (String volume_name, String host_path) -> Hash[Symbol, untyped]
+          def self.standard_mount_point: (String volume_name, String container_path, bool read_only) -> Hash[Symbol, untyped]
+        end
+      end
+      
+      # Resource function
+      def aws_batch_job_definition: (Symbol name, Hash[Symbol, untyped] attributes) -> ResourceReference
+    end
+  end
+end

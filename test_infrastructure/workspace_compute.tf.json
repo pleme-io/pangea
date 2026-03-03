@@ -1,0 +1,46 @@
+{
+  "resource": {
+    "random_string": {
+      "instance_password": {
+        "length": 32,
+        "special": true,
+        "upper": true,
+        "lower": true,
+        "numeric": true
+      }
+    },
+    "random_id": {
+      "instance_suffix": {
+        "byte_length": 6
+      }
+    },
+    "local_file": {
+      "instance_userdata": {
+        "content": "#!/bin/bash\necho 'Instance ID: ${random_id.instance_suffix.hex}' > /tmp/instance-info.txt\necho 'Password: ${random_string.instance_password.result}' > /tmp/password.txt\nchmod 600 /tmp/password.txt",
+        "filename": "./compute-userdata.sh",
+        "file_permission": "0755"
+      }
+    },
+    "random_pet": {
+      "instance_name": {
+        "length": 3,
+        "separator": "-",
+        "prefix": "web"
+      }
+    }
+  },
+  "output": {
+    "instance_id": {
+      "value": "${random_id.instance_suffix.hex}",
+      "description": "Unique instance identifier"
+    },
+    "instance_name": {
+      "value": "${random_pet.instance_name.id}",
+      "description": "Generated instance name"
+    },
+    "userdata_file": {
+      "value": "${local_file.instance_userdata.filename}",
+      "description": "Path to userdata script"
+    }
+  }
+}

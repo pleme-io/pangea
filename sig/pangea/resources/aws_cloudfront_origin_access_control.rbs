@@ -1,0 +1,27 @@
+# RBS type definitions for AWS CloudFront Origin Access Control
+
+module Pangea
+  module Resources
+    module AWS
+      type cloudfront_origin_access_control_attributes = {
+        name: String,
+        description?: String?,
+        origin_access_control_origin_type?: String?,
+        signing_behavior?: String?,
+        signing_protocol?: String?
+      }
+
+      type cloudfront_origin_access_control_computed_properties = {
+        s3_origin_type: bool,
+        always_signs: bool,
+        never_signs: bool,
+        no_override_signing: bool,
+        uses_sigv4: bool,
+        has_description: bool,
+        security_level: String
+      }
+
+      def aws_cloudfront_origin_access_control: (Symbol name, cloudfront_origin_access_control_attributes attributes) -> ResourceReference
+    end
+  end
+end

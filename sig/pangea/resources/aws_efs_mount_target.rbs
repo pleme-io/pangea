@@ -1,0 +1,29 @@
+# AWS EFS Mount Target resource type signatures
+
+module Pangea
+  module Resources
+    module AWS
+      module Types
+        class EfsMountTargetAttributes < Dry::Struct
+          def self.new: (untyped attributes) -> EfsMountTargetAttributes
+          
+          def file_system_id: () -> String
+          def subnet_id: () -> String
+          def ip_address: () -> String?
+          def security_groups: () -> Array[String]
+          
+          def has_custom_ip?: () -> bool
+          def security_group_count: () -> Integer
+          def is_fully_configured?: () -> bool
+          def estimated_data_transfer_cost_per_gb: () -> Hash[Symbol, untyped]
+        end
+      end
+      
+      # EFS Mount Target resource function
+      def aws_efs_mount_target: (
+        Symbol name,
+        Hash[Symbol, untyped] attributes
+      ) -> ResourceReference
+    end
+  end
+end

@@ -1,0 +1,114 @@
+# RBS type definitions for AWS Braket Device resource
+
+module Pangea
+  module Resources
+    module AWS
+      # Device type enumeration
+      type braket_device_type = "QPU" | "SIMULATOR"
+      
+      # Provider enumeration
+      type braket_provider = "AMAZON" | "IONQ" | "RIGETTI" | "OQC" | "XANADU" | "QUERA"
+      
+      # Device status enumeration
+      type braket_device_status = "ONLINE" | "OFFLINE" | "RETIRED"
+      
+      # Execution day enumeration
+      type execution_day = "Everyday" | "Weekdays" | "Weekend" | "Monday" | "Tuesday" | "Wednesday" | "Thursday" | "Friday" | "Saturday" | "Sunday"
+      
+      # Connectivity type
+      type connectivity_type = :fully_connected | :limited_connectivity | :unknown
+      
+      # Execution window type
+      type execution_window = {
+        executionDay: execution_day,
+        windowStartHour: String,
+        windowEndHour: String
+      }
+      
+      # Device cost type
+      type device_cost = {
+        price: Float,
+        unit: String
+      }
+      
+      # Result type specification
+      type result_type = {
+        name: String,
+        observables?: Array[String]?,
+        minShots?: Integer?,
+        maxShots?: Integer?
+      }
+      
+      # Service capabilities type
+      type service_capabilities = {
+        braketSchemaHeader: {
+          name: String,
+          version: String
+        },
+        executionWindows?: Array[execution_window]?,
+        shotsRange?: Array[Integer]?,
+        deviceCost?: device_cost?
+      }
+      
+      # Action capabilities type
+      type action_capabilities = {
+        "braket.ir.jaqcd.program"?: {
+          supportedOperations: Array[String],
+          supportedResultTypes?: Array[result_type]?
+        }?,
+        "braket.ir.openqasm.program"?: {
+          supportedOperations: Array[String]
+        }?
+      }
+      
+      # Paradigm capabilities type
+      type paradigm_capabilities = {
+        qubitCount: Integer,
+        nativeGateSet?: Array[String]?,
+        connectivity?: {
+          fullyConnected: bool,
+          connectivityGraph?: Hash[untyped, untyped]?
+        }?
+      }
+      
+      # Device capabilities type
+      type device_capabilities = {
+        service: service_capabilities,
+        action: action_capabilities,
+        deviceParameters?: Hash[untyped, untyped]?,
+        paradigm: paradigm_capabilities
+      }
+      
+      # Braket device attributes type
+      type braket_device_attributes = {
+        device_name: String,
+        device_type: braket_device_type,
+        provider_name: braket_provider,
+        device_capabilities: device_capabilities,
+        device_arn?: String?,
+        device_status?: braket_device_status?,
+        tags?: Hash[String, String]?
+      }
+      
+      # Device query filters type
+      type device_query_filters = {
+        providers?: Array[braket_provider]?,
+        types?: Array[braket_device_type]?,
+        statuses?: Array[braket_device_status]?
+      }
+      
+      # Simplified execution window type for computed property
+      type simple_execution_window = {
+        day: String,
+        start: String,
+        end: String
+      }
+      
+      # Braket device resource function
+      def aws_braket_device: (Symbol name, braket_device_attributes attributes) -> ResourceReference
+      
+      # Braket device query function
+      def aws_braket_device_query: (Symbol name, ?device_query_filters filters) -> ResourceReference
+    end
+  end
+end

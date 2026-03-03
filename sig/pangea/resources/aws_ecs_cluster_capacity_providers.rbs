@@ -1,0 +1,59 @@
+# RBS type definitions for AWS ECS Cluster Capacity Providers
+
+module Pangea
+  module Resources
+    module AWS
+      # ECS Cluster Capacity Providers attributes
+      type ecs_cluster_capacity_providers_attributes = {
+        cluster_name: String,
+        ?capacity_providers: Array[String],
+        ?default_capacity_provider_strategy: Array[ecs_default_capacity_provider_strategy]
+      }
+
+      # Default capacity provider strategy
+      type ecs_default_capacity_provider_strategy = {
+        capacity_provider: String,
+        ?weight: Integer,
+        ?base: Integer
+      }
+
+      # ECS Cluster Capacity Providers computed properties
+      type ecs_cluster_capacity_providers_computed_properties = {
+        using_fargate: bool,
+        using_ec2: bool,
+        using_custom_providers: bool,
+        primary_capacity_provider: String?,
+        capacity_distribution: Hash[String, { percentage: Float, base: Integer }],
+        spot_prioritized: bool,
+        estimated_spot_savings_percent: Float,
+        provider_count: Integer,
+        has_default_strategy: bool
+      }
+
+      # AWS ECS Cluster Capacity Providers resource function
+      def aws_ecs_cluster_capacity_providers: (Symbol name, ecs_cluster_capacity_providers_attributes attributes) -> ResourceReference
+
+      # Default Capacity Provider Strategy class
+      class EcsDefaultCapacityProviderStrategy < Dry::Struct
+        attr_reader capacity_provider: String
+        attr_reader weight: Integer
+        attr_reader base: Integer
+      end
+
+      # Cluster Capacity Providers Attributes class
+      class EcsClusterCapacityProvidersAttributes < Dry::Struct
+        attr_reader cluster_name: String
+        attr_reader capacity_providers: Array[String]
+        attr_reader default_capacity_provider_strategy: Array[EcsDefaultCapacityProviderStrategy]
+
+        def using_fargate?: () -> bool
+        def using_ec2?: () -> bool
+        def using_custom_providers?: () -> bool
+        def primary_capacity_provider: () -> String?
+        def capacity_distribution: () -> Hash[String, { percentage: Float, base: Integer }]
+        def spot_prioritized?: () -> bool
+        def estimated_spot_savings_percent: () -> Float
+      end
+    end
+  end
+end

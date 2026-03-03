@@ -1,0 +1,34 @@
+# RBS type definitions for AWS Route53 Health Check resource
+
+module Pangea
+  module Resources
+    module AWS
+      # Route53 health check attributes type
+      type route53_health_check_attributes = {
+        type: ("HTTP" | "HTTPS" | "HTTP_STR_MATCH" | "HTTPS_STR_MATCH" | "TCP" | "CALCULATED" | "CLOUDWATCH_METRIC"),
+        fqdn?: String?,
+        ip_address?: String?,
+        port?: Integer?,
+        resource_path?: String?,
+        failure_threshold?: Integer,
+        request_interval?: (10 | 30),
+        search_string?: String?,
+        measure_latency?: bool,
+        invert_healthcheck?: bool,
+        disabled?: bool,
+        enable_sni?: bool,
+        cloudwatch_alarm_region?: String?,
+        cloudwatch_alarm_name?: String?,
+        insufficient_data_health_status?: ("Healthy" | "Unhealthy" | "LastKnownStatus")?,
+        child_health_checks?: Array[String],
+        child_health_threshold?: Integer?,
+        regions?: Array[String],
+        reference_name?: String?,
+        tags?: Hash[Symbol, String]
+      }
+
+      # Route53 health check resource function
+      def aws_route53_health_check: (Symbol name, route53_health_check_attributes attributes) -> ResourceReference
+                                   | (Symbol name) -> ResourceReference
+    end
+end

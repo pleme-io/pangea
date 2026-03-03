@@ -1,0 +1,37 @@
+# sig/pangea/entities/namespace.rbs
+
+module Pangea
+  module Entities
+    class Namespace < Dry::Struct
+      class StateConfig < Dry::Struct
+        attr_reader bucket: String?
+        attr_reader region: String
+        attr_reader lock: String?
+        
+        def validate_s3!: () -> void
+      end
+      
+      class State < Dry::Struct
+        attr_reader type: :s3 | :local
+        attr_reader config: StateConfig
+        
+        def s3?: () -> bool
+        def local?: () -> bool
+      end
+      
+      attr_reader name: String
+      attr_reader state: State
+      attr_reader description: String?
+      attr_reader tags: Hash[Symbol, untyped]
+      
+      def s3_backend?: () -> bool
+      def local_backend?: () -> bool
+      def state_config: () -> Hash[Symbol, String | Symbol | nil]
+      def s3_config: () -> Hash[Symbol, String]
+      def to_terraform_backend: () -> Hash[Symbol, Hash[Symbol, untyped]]
+    end
+    
+    class ValidationError < StandardError
+    end
+  end
+end

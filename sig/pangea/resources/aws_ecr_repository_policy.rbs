@@ -1,0 +1,27 @@
+# RBS type definitions for AWS ECR Repository Policy
+
+module Pangea
+  module Resources
+    module AWS
+      # ECR Repository Policy attributes
+      type ecr_repository_policy_attributes = {
+        repository: String,
+        policy: String
+      }
+
+      # ECR Repository Policy computed properties
+      type ecr_repository_policy_computed_properties = {
+        statement_count: Integer,
+        allows_cross_account_access: bool,
+        allowed_actions: Array[String],
+        denied_actions: Array[String],
+        grants_pull_access: bool,
+        grants_push_access: bool,
+        is_terraform_reference: bool
+      }
+
+      # AWS ECR Repository Policy resource function
+      def aws_ecr_repository_policy: (Symbol name, ecr_repository_policy_attributes attributes) -> ResourceReference
+    end
+  end
+end

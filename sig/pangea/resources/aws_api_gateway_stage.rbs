@@ -1,0 +1,89 @@
+# RBS type definitions for AWS API Gateway Stage
+
+module Pangea
+  module Resources
+    module AWS
+      # API Gateway Stage attributes type
+      type api_gateway_stage_attributes = {
+        rest_api_id: String,
+        deployment_id: String,
+        stage_name: String,
+        ?description: String?,
+        ?documentation_version: String?,
+        ?cache_cluster_enabled: bool,
+        ?cache_cluster_size: ("0.5" | "1.6" | "6.1" | "13.5" | "28.4" | "58.2" | "118" | "237")?,
+        ?variables: Hash[String, String],
+        ?xray_tracing_enabled: bool,
+        ?access_log_settings: api_gateway_access_log_settings?,
+        ?throttle_burst_limit: Integer?,
+        ?throttle_rate_limit: Float?,
+        ?method_settings: Array[api_gateway_method_setting],
+        ?canary_settings: api_gateway_stage_canary_settings?,
+        ?client_certificate_id: String?,
+        ?tags: Hash[String, String]
+      }
+
+      # API Gateway access log settings
+      type api_gateway_access_log_settings = {
+        destination_arn: String,
+        format: String
+      }
+
+      # API Gateway method setting
+      type api_gateway_method_setting = {
+        resource_path: String,
+        http_method: String,
+        ?metrics_enabled: bool?,
+        ?logging_level: ("OFF" | "ERROR" | "INFO")?,
+        ?data_trace_enabled: bool?,
+        ?throttling_burst_limit: Integer?,
+        ?throttling_rate_limit: Float?,
+        ?caching_enabled: bool?,
+        ?cache_ttl_in_seconds: Integer?,
+        ?cache_data_encrypted: bool?,
+        ?require_authorization_for_cache_control: bool?
+      }
+
+      # API Gateway stage canary settings
+      type api_gateway_stage_canary_settings = {
+        percent_traffic: Float,
+        ?deployment_id: String?,
+        ?stage_variable_overrides: Hash[String, String]?,
+        ?use_stage_cache: bool?
+      }
+
+      # AWS API Gateway Stage function
+      def aws_api_gateway_stage: (Symbol name, api_gateway_stage_attributes attributes) -> ResourceReference
+
+      # API Gateway Stage Attributes class
+      class ApiGatewayStageAttributes < Dry::Struct
+        attr_reader rest_api_id: String
+        attr_reader deployment_id: String
+        attr_reader stage_name: String
+        attr_reader description: String?
+        attr_reader documentation_version: String?
+        attr_reader cache_cluster_enabled: bool
+        attr_reader cache_cluster_size: String?
+        attr_reader variables: Hash[String, String]
+        attr_reader xray_tracing_enabled: bool
+        attr_reader access_log_settings: Hash[Symbol, String]?
+        attr_reader throttle_burst_limit: Integer?
+        attr_reader throttle_rate_limit: Float?
+        attr_reader method_settings: Array[Hash[Symbol, untyped]]
+        attr_reader canary_settings: Hash[Symbol, untyped]?
+        attr_reader client_certificate_id: String?
+        attr_reader tags: Hash[String, String]
+
+        def has_caching?: () -> bool
+        def has_access_logging?: () -> bool
+        def has_canary?: () -> bool
+        def has_throttling?: () -> bool
+        def has_method_settings?: () -> bool
+        def estimated_monthly_cost: () -> Float
+
+        def self.common_log_formats: () -> Hash[Symbol, String]
+        def self.common_method_paths: () -> Hash[Symbol, String]
+      end
+    end
+  end
+end

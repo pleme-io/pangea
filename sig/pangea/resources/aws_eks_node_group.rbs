@@ -1,0 +1,106 @@
+module Pangea
+  module Resources
+    module AWS
+      module Types
+        class ScalingConfig < Dry::Struct
+          attr_reader desired_size: Integer
+          attr_reader max_size: Integer
+          attr_reader min_size: Integer
+          
+          def self.new: (Hash[Symbol, untyped] attributes) -> ScalingConfig
+          def to_h: () -> { desired_size: Integer, max_size: Integer, min_size: Integer }
+        end
+        
+        class UpdateConfig < Dry::Struct
+          attr_reader max_unavailable: Integer?
+          attr_reader max_unavailable_percentage: Integer?
+          
+          def self.new: (Hash[Symbol, untyped] attributes) -> UpdateConfig
+          def to_h: () -> Hash[Symbol, Integer]
+        end
+        
+        class RemoteAccess < Dry::Struct
+          attr_reader ec2_ssh_key: String?
+          attr_reader source_security_group_ids: Array[String]
+          
+          def to_h: () -> Hash[Symbol, untyped]
+        end
+        
+        class LaunchTemplate < Dry::Struct
+          attr_reader id: String?
+          attr_reader name: String?
+          attr_reader version: String?
+          
+          def self.new: (Hash[Symbol, untyped] attributes) -> LaunchTemplate
+          def to_h: () -> Hash[Symbol, String]
+        end
+        
+        class Taint < Dry::Struct
+          VALID_EFFECTS: Array[String]
+          
+          attr_reader key: String
+          attr_reader value: String?
+          attr_reader effect: String
+          
+          def to_h: () -> Hash[Symbol, String]
+        end
+        
+        class EksNodeGroupAttributes < Dry::Struct
+          AMI_TYPES: Array[String]
+          CAPACITY_TYPES: Array[String]
+          
+          attr_reader cluster_name: String
+          attr_reader node_role_arn: String
+          attr_reader subnet_ids: Array[String]
+          attr_reader node_group_name: String?
+          attr_reader scaling_config: ScalingConfig
+          attr_reader update_config: UpdateConfig?
+          attr_reader instance_types: Array[String]
+          attr_reader capacity_type: String
+          attr_reader ami_type: String
+          attr_reader release_version: String?
+          attr_reader version: String?
+          attr_reader disk_size: Integer
+          attr_reader remote_access: RemoteAccess?
+          attr_reader launch_template: LaunchTemplate?
+          attr_reader labels: Hash[Symbol, String]
+          attr_reader taints: Array[Taint]
+          attr_reader tags: Hash[Symbol, String]
+          attr_reader force_update_version: bool
+          
+          def self.new: (Hash[Symbol, untyped] attributes) -> EksNodeGroupAttributes
+          def spot_instances?: () -> bool
+          def custom_ami?: () -> bool
+          def has_remote_access?: () -> bool
+          def has_taints?: () -> bool
+          def has_labels?: () -> bool
+          def to_h: () -> Hash[Symbol, untyped]
+        end
+      end
+      
+      interface _EksNodeGroupAttributes
+        def cluster_name: () -> String
+        def node_role_arn: () -> String
+        def subnet_ids: () -> Array[String]
+        def node_group_name: () -> String?
+        def scaling_config: () -> Hash[Symbol, Integer]?
+        def update_config: () -> Hash[Symbol, Integer]?
+        def instance_types: () -> Array[String]?
+        def capacity_type: () -> String?
+        def ami_type: () -> String?
+        def release_version: () -> String?
+        def version: () -> String?
+        def disk_size: () -> Integer?
+        def remote_access: () -> Hash[Symbol, untyped]?
+        def launch_template: () -> Hash[Symbol, String]?
+        def labels: () -> Hash[Symbol, String]?
+        def taints: () -> Array[Hash[Symbol, String]]?
+        def tags: () -> Hash[Symbol, String]?
+        def force_update_version: () -> bool?
+      end
+      
+      # Create an AWS EKS Node Group with type-safe attributes
+      def aws_eks_node_group: (Symbol name, ?_EksNodeGroupAttributes attributes) -> ResourceReference
+    end
+  end
+end

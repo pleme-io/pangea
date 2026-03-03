@@ -1,0 +1,74 @@
+{
+  "generated_at": "2025-09-02T18:50:10Z",
+  "total_tasks": 5,
+  "tasks": [
+    {
+      "id": "SYNTH-ENHANCE-001",
+      "priority": "high",
+      "title": "Add tag synthesis tests for resources missing them",
+      "resources": [
+        "aws_vpc",
+        "aws_subnet",
+        "aws_security_group",
+        "aws_instance",
+        "aws_internet_gateway",
+        "aws_route_table",
+        "aws_nat_gateway",
+        "aws_launch_template",
+        "aws_autoscaling_group",
+        "aws_lb_target_group",
+        "aws_lb"
+      ],
+      "description": "Add explicit tag synthesis tests to ensure tag blocks are properly generated"
+    },
+    {
+      "id": "SYNTH-ENHANCE-002",
+      "priority": "medium",
+      "title": "Add conditional attribute synthesis tests",
+      "resources": [
+        "aws_subnet",
+        "aws_security_group",
+        "aws_instance",
+        "aws_internet_gateway",
+        "aws_nat_gateway",
+        "aws_route_table"
+      ],
+      "description": "Test that optional attributes are only synthesized when present"
+    },
+    {
+      "id": "SYNTH-ENHANCE-003",
+      "priority": "medium",
+      "title": "Increase synthesis test coverage to 10+ tests",
+      "resources": [
+        "aws_vpc",
+        "aws_subnet",
+        "aws_security_group",
+        "aws_instance",
+        "aws_internet_gateway"
+      ],
+      "description": "Add more synthesis scenarios to reach minimum 10 tests per resource"
+    },
+    {
+      "id": "SYNTH-ENHANCE-004",
+      "priority": "low",
+      "title": "Add complex synthesis scenarios",
+      "resources": [
+        "aws_vpc",
+        "aws_subnet",
+        "aws_security_group",
+        "aws_route_table",
+        "aws_nat_gateway"
+      ],
+      "description": "Add tests for resources with multiple complex attributes set"
+    },
+    {
+      "id": "SYNTH-ENHANCE-005",
+      "priority": "low",
+      "title": "Add cross-reference synthesis tests",
+      "resources": [
+        "all"
+      ],
+      "description": "Test synthesis with terraform variable and resource references"
+    }
+  ]
+}

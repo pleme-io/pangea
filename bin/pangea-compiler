@@ -1,0 +1,15 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+# Pangea Compiler Server
+# HTTP service for compiling Pangea Ruby DSL to Terraform JSON
+
+# Suppress dry-types warnings
+ENV['DRY_TYPES_WARNINGS'] = 'false'
+
+$LOAD_PATH.unshift(File.expand_path('../lib', __dir__))
+
+require 'pangea/compiler_server'
+
+server = Pangea::CompilerServer.new
+server.start

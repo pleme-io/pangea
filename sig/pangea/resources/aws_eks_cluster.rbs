@@ -1,0 +1,79 @@
+module Pangea
+  module Resources
+    module AWS
+      module Types
+        class EncryptionConfig < Dry::Struct
+          class Provider < Dry::Struct
+            attr_reader key_arn: String
+            
+            def to_h: () -> { key_arn: String }
+          end
+          
+          attr_reader resources: Array[String]
+          attr_reader provider: Provider
+          
+          def to_h: () -> { resources: Array[String], provider: Hash[Symbol, String] }
+        end
+        
+        class VpcConfig < Dry::Struct
+          attr_reader subnet_ids: Array[String]
+          attr_reader security_group_ids: Array[String]
+          attr_reader endpoint_private_access: bool
+          attr_reader endpoint_public_access: bool
+          attr_reader public_access_cidrs: Array[String]
+          
+          def self.new: (Hash[Symbol, untyped] attributes) -> VpcConfig
+          def to_h: () -> Hash[Symbol, untyped]
+        end
+        
+        class KubernetesNetworkConfig < Dry::Struct
+          attr_reader service_ipv4_cidr: String?
+          attr_reader ip_family: String
+          
+          def to_h: () -> Hash[Symbol, untyped]
+        end
+        
+        class ClusterLogging < Dry::Struct
+          VALID_LOG_TYPES: Array[String]
+          
+          attr_reader enabled_types: Array[String]
+          
+          def to_h: () -> Hash[Symbol, untyped]
+        end
+        
+        class EksClusterAttributes < Dry::Struct
+          SUPPORTED_VERSIONS: Array[String]
+          
+          attr_reader name: String?
+          attr_reader role_arn: String
+          attr_reader vpc_config: VpcConfig
+          attr_reader version: String
+          attr_reader enabled_cluster_log_types: Array[String]
+          attr_reader encryption_config: Array[EncryptionConfig]
+          attr_reader kubernetes_network_config: KubernetesNetworkConfig?
+          attr_reader tags: Hash[Symbol, String]
+          
+          def encryption_enabled?: () -> bool
+          def logging_enabled?: () -> bool
+          def private_endpoint?: () -> bool
+          def public_endpoint?: () -> bool
+          def to_h: () -> Hash[Symbol, untyped]
+        end
+      end
+      
+      interface _EksClusterAttributes
+        def name: () -> String?
+        def role_arn: () -> String
+        def vpc_config: () -> Hash[Symbol, untyped]
+        def version: () -> String?
+        def enabled_cluster_log_types: () -> Array[String]?
+        def encryption_config: () -> Array[Hash[Symbol, untyped]]?
+        def kubernetes_network_config: () -> Hash[Symbol, untyped]?
+        def tags: () -> Hash[Symbol, String]?
+      end
+      
+      # Create an AWS EKS Cluster with type-safe attributes
+      def aws_eks_cluster: (Symbol name, ?_EksClusterAttributes attributes) -> ResourceReference
+    end
+  end
+end

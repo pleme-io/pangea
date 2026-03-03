@@ -1,0 +1,51 @@
+# RBS type definitions for AWS API Gateway Method
+
+module Pangea
+  module Resources
+    module AWS
+      # API Gateway Method attributes type
+      type api_gateway_method_attributes = {
+        rest_api_id: String,
+        resource_id: String,
+        http_method: ("GET" | "POST" | "PUT" | "DELETE" | "OPTIONS" | "HEAD" | "PATCH" | "ANY"),
+        ?authorization: ("NONE" | "AWS_IAM" | "CUSTOM" | "COGNITO_USER_POOLS"),
+        ?authorizer_id: String?,
+        ?authorization_scopes: Array[String],
+        ?api_key_required: bool,
+        ?request_parameters: Hash[String, bool],
+        ?request_models: Hash[String, String],
+        ?request_validator_id: String?,
+        ?operation_name: String?
+      }
+
+      # AWS API Gateway Method function
+      def aws_api_gateway_method: (Symbol name, api_gateway_method_attributes attributes) -> ResourceReference
+
+      # API Gateway Method Attributes class
+      class ApiGatewayMethodAttributes < Dry::Struct
+        attr_reader rest_api_id: String
+        attr_reader resource_id: String
+        attr_reader http_method: String
+        attr_reader authorization: String
+        attr_reader authorizer_id: String?
+        attr_reader authorization_scopes: Array[String]
+        attr_reader api_key_required: bool
+        attr_reader request_parameters: Hash[String, bool]
+        attr_reader request_models: Hash[String, String]
+        attr_reader request_validator_id: String?
+        attr_reader operation_name: String?
+
+        def requires_authorization?: () -> bool
+        def is_cognito_authorized?: () -> bool
+        def is_iam_authorized?: () -> bool
+        def is_custom_authorized?: () -> bool
+        def has_request_validation?: () -> bool
+        def cors_enabled?: () -> bool
+
+        def self.build_request_parameter: (String location, String name, ?bool required) -> [String, bool]
+        def self.common_request_parameters: () -> Hash[Symbol, [String, bool]]
+        def self.common_content_types: () -> Hash[Symbol, String]
+      end
+    end
+  end
+end

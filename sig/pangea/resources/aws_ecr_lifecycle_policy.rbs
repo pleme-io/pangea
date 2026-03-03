@@ -1,0 +1,28 @@
+# RBS type definitions for AWS ECR Lifecycle Policy
+
+module Pangea
+  module Resources
+    module AWS
+      # ECR Lifecycle Policy attributes
+      type ecr_lifecycle_policy_attributes = {
+        repository: String,
+        policy: String
+      }
+
+      # ECR Lifecycle Policy computed properties
+      type ecr_lifecycle_policy_computed_properties = {
+        rule_count: Integer,
+        rule_priorities: Array[Integer],
+        has_tagged_image_rules: bool,
+        has_untagged_image_rules: bool,
+        has_count_based_rules: bool,
+        has_age_based_rules: bool,
+        estimated_retention_days: Integer?,
+        is_terraform_reference: bool
+      }
+
+      # AWS ECR Lifecycle Policy resource function
+      def aws_ecr_lifecycle_policy: (Symbol name, ecr_lifecycle_policy_attributes attributes) -> ResourceReference
+    end
+  end
+end
