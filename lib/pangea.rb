@@ -14,8 +14,18 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-require 'pangea-core'
-require 'pangea-aws'
+# Provider gems (loaded when available via gem dependencies)
+begin
+  require 'pangea-core'
+rescue LoadError
+  # pangea-core gem not available; local stubs in pangea provide fallback definitions
+end
+
+begin
+  require 'pangea-aws'
+rescue LoadError
+  # pangea-aws gem not available; AWS-specific resource types won't be loaded
+end
 require 'pangea/version'
 require 'pangea/configuration'
 require 'pangea/types'

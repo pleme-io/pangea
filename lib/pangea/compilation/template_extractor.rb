@@ -65,16 +65,18 @@ module Pangea
         logger.debug "Loading required file", path: require_path
         require require_path
         logger.debug "Successfully loaded", path: require_path
-      rescue LoadError => e
+      rescue LoadError
         # Try relative to the file's directory
-        relative_path = File.join(File.dirname(file_path), require_path)
-        logger.debug "Trying relative path", path: relative_path
-        require relative_path
-        logger.debug "Successfully loaded", path: relative_path
-      rescue LoadError => e
-        logger.warn "Could not load required file", 
-                    path: require_path, 
-                    error: e.message
+        begin
+          relative_path = File.join(File.dirname(file_path), require_path)
+          logger.debug "Trying relative path", path: relative_path
+          require relative_path
+          logger.debug "Successfully loaded", path: relative_path
+        rescue LoadError => e
+          logger.warn "Could not load required file",
+                      path: require_path,
+                      error: e.message
+        end
       end
     end
   end

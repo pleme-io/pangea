@@ -64,5 +64,55 @@ module Pangea
       min_size: 3,
       max_size: 255
     )
+
+    # Domain types (mirrored from pangea-core for standalone operation)
+    unless const_defined?(:StringArray)
+      StringArray = Strict::Array.of(Strict::String)
+    end
+
+    unless const_defined?(:Identifier)
+      Identifier = Strict::String.constrained(
+        format: /\A[a-z][a-z0-9_]*\z/,
+        min_size: 1,
+        max_size: 128
+      )
+    end
+
+    unless const_defined?(:NamespaceString)
+      NamespaceString = Identifier
+    end
+
+    unless const_defined?(:ProjectString)
+      ProjectString = Identifier
+    end
+
+    unless const_defined?(:FilePath)
+      FilePath = Strict::String.constrained(min_size: 1)
+    end
+
+    unless const_defined?(:SymbolizedHash)
+      SymbolizedHash = Strict::Hash.constructor do |value|
+        case value
+        when Hash
+          value.transform_keys(&:to_sym)
+        else
+          value
+        end
+      end
+    end
+
+    unless const_defined?(:TerraformVersion)
+      TerraformVersion = Strict::String.constrained(
+        format: /\A\d+\.\d+(\.\d+)?\z/
+      )
+    end
+
+    unless const_defined?(:StateBackendType)
+      StateBackendType = Strict::Symbol.enum(:s3, :local)
+    end
+
+    unless const_defined?(:OptionalString)
+      OptionalString = Strict::String.optional
+    end
   end
 end
