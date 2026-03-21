@@ -18,6 +18,8 @@
 # AWS-specific types (AWSTypes, ComputedTypes) are loaded from pangea-aws.
 # This file adds pangea-specific types on top of the core type system.
 
+require 'dry-types'
+
 module Pangea
   module Types
     # Registry-based type system for enhanced validation.
@@ -36,8 +38,10 @@ module Pangea
       registry[name]
     end
 
+    include Dry.Types()
+
     # AWS-specific types (kept here for backward compatibility with pangea config)
-    AwsRegion = Strict::String.enum(
+    AwsRegion = String.enum(
       'us-east-1', 'us-east-2',
       'us-west-1', 'us-west-2',
       'eu-west-1', 'eu-west-2', 'eu-west-3',
@@ -49,13 +53,13 @@ module Pangea
       'sa-east-1'
     )
 
-    S3BucketName = Strict::String.constrained(
+    S3BucketName = String.constrained(
       format: /\A[a-z0-9][a-z0-9.-]*[a-z0-9]\z/,
       min_size: 3,
       max_size: 63
     )
 
-    DynamoTableName = Strict::String.constrained(
+    DynamoTableName = String.constrained(
       format: /\A[a-zA-Z0-9_.-]+\z/,
       min_size: 3,
       max_size: 255
