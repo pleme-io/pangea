@@ -18,9 +18,10 @@ module Pangea
     # Builds Terraform commands with proper arguments
     module TerraformCommandBuilder
       # Build init command arguments
-      def build_init_args(upgrade: false)
+      def build_init_args(upgrade: false, migrate_state: false)
         args = ['init', '-no-color', '-input=false']
         args << '-upgrade' if upgrade
+        args << '-migrate-state' if migrate_state
         args
       end
       

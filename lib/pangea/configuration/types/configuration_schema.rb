@@ -29,6 +29,7 @@ module Pangea
         attribute? :terraform, TerraformConfig.optional
         attribute? :modules, ModulesConfig.optional
         attribute? :cache, CacheConfig.optional
+        attribute :workspaces, Types::Hash.default({}.freeze)
 
         def self.new(attributes)
           attrs = attributes.is_a?(Hash) ? attributes.dup : {}
@@ -52,6 +53,18 @@ module Pangea
             end
           end
 
+          # Transform workspaces to WorkspaceConfig instances
+          raw_workspaces = instance.workspaces
+          if raw_workspaces.is_a?(Hash)
+            raw_workspaces.each do |name, ws_config|
+              next unless ws_config.is_a?(Hash)
+
+              ws_attrs = ws_config.merge(name: name.to_s)
+              ws = WorkspaceConfig.new(ws_attrs)
+              instance.workspace_configs[name.to_sym] = ws
+            end
+          end
+
           instance
         end
 
@@ -61,6 +74,14 @@ module Pangea
 
         def get_namespace(name)
           namespace_configs[name.to_sym]
+        end
+
+        def workspace_configs
+          @workspace_configs ||= {}
+        end
+
+        def get_workspace(name)
+          workspace_configs[name.to_sym]
         end
 
         def validate!

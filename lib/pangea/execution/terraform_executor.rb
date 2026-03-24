@@ -59,9 +59,12 @@ module Pangea
       end
       
       # Initialize Terraform in the working directory
-      def init(upgrade: false, stream_output: false)
+      def init(upgrade: false, stream_output: false, migrate_state: false)
         with_retries do
-          result = execute_command(build_init_args(upgrade: upgrade), stream_output: stream_output)
+          result = execute_command(
+            build_init_args(upgrade: upgrade, migrate_state: migrate_state),
+            stream_output: stream_output
+          )
           handle_retryable_result(result)
 
           if result[:success]

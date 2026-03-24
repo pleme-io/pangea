@@ -38,6 +38,8 @@ module Pangea
             run_sync(namespace)
           when 'new'
             run_new
+          when 'workspace'
+            run_workspace
           else
             handle_unknown_command(command)
           end
@@ -130,6 +132,23 @@ module Pangea
           Commands::NewProject.new.run(
             project_name,
             template: params[:template] || 'basic'
+          )
+        end
+
+        def run_workspace
+          # pangea workspace <action> [<workspace-name>]
+          action = params[:file]
+          workspace_name = ARGV[2] unless ARGV[2]&.start_with?('-')
+
+          unless action
+            ui.error "Usage: pangea workspace <plan|apply|destroy|show|status|migrate|list> [workspace-name]"
+            exit 1
+          end
+
+          Commands::Workspace.new.run(
+            action,
+            workspace_name,
+            auto_approve: !params[:no_auto_approve]
           )
         end
 
